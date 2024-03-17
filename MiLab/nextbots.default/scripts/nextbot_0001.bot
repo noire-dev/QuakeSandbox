@@ -1,0 +1,6 @@
+// Nextbots model
+{
+name		nb_0001
+model		nextbot/nb0001
+aifile	bots/nextbots_c.c
+}
