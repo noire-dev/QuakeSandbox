@@ -1,5 +1,4 @@
 echo off
-color 0D
 cd ..
 mkdir windows
 mkdir windows\build
@@ -78,7 +77,6 @@ copy  ..\..\..\code\game\g_syscalls.asm ..
 q3asm -f ../game
 cd ..\..\..
 cd windows_scripts
-color 0E
 cd ..
 mkdir windows
 mkdir windows\build
@@ -145,7 +143,6 @@ copy  ..\..\..\code\cgame\cg_syscalls.asm ..
 q3asm -f ../cgame
 cd ..\..\..
 cd windows_scripts
-color 0B
 cd ..
 mkdir windows
 mkdir windows\build
