@@ -183,29 +183,7 @@ void SP_target_clienttarg( gentity_t *ent ) {
 	ent->use = Use_Target_Clienttarg;
 }
 
-//==========================================================
-
-/*QUAKED target_cmd (1 0 0) (-8 -8 -8) (8 8 8)
-"count" number of points to add, default 1
-
-The activator is given this many points.
-*/
-void Use_Target_Cmd (gentity_t *ent, gentity_t *other, gentity_t *activator) {
-	trap_SendConsoleCommand( EXEC_APPEND, va("%s\n", ent->target ) );
-}
-
-void SP_target_cmd( gentity_t *ent ) {
-	if ( !ent->target ) {
-G_Printf ("No target in target_cmd\n");
-	}
-	ent->use = Use_Target_Cmd;
-}
-
-/*QUAKED target_stats for QSandbox (1 0 0) (-8 -8 -8) (8 8 8)
-"count" number of points to add, default 1
-
-The activator is given this many points.
-*/
+/*QUAKED target_stats for QSandbox (1 0 0) (-8 -8 -8) (8 8 8)*/
 void Use_Target_Stats (gentity_t *ent, gentity_t *other, gentity_t *activator) {
 if(ent->spawnflags & 1){
 if(ent->type == 1){
@@ -281,70 +259,6 @@ void SP_target_stats( gentity_t *ent ) {
 G_Printf ("No type in target_stats\n");
 	}
 	ent->use = Use_Target_Stats;
-}
-
-/*QUAKED target_cmd (1 0 0) (-8 -8 -8) (8 8 8)
-"count" number of points to add, default 1
-
-The activator is given this many points.
-*/
-void Use_Target_Sound (gentity_t *ent, gentity_t *other, gentity_t *activator) {
-trap_SendServerCommand(activator-g_entities, va( "csound %s", ent->target));
-}
-
-void SP_target_sound( gentity_t *ent ) {
-	if ( !ent->target ) {
-G_Printf ("No target in target_sound\n");
-	}
-	ent->use = Use_Target_Sound;
-}
-
-/*QUAKED target_cmd (1 0 0) (-8 -8 -8) (8 8 8)
-"count" number of points to add, default 1
-
-The activator is given this many points.
-*/
-void Use_Target_Model (gentity_t *ent, gentity_t *other, gentity_t *activator) {
-trap_SendServerCommand(activator-g_entities, va( "cmodel %s", ent->target));
-}
-
-void SP_target_model( gentity_t *ent ) {
-	if ( !ent->target ) {
-G_Printf ("No target in target_model\n");
-	}
-	ent->use = Use_Target_Model;
-}
-
-/*QUAKED target_cmd (1 0 0) (-8 -8 -8) (8 8 8)
-"count" number of points to add, default 1
-
-The activator is given this many points.
-*/
-void Use_Target_Head (gentity_t *ent, gentity_t *other, gentity_t *activator) {
-trap_SendServerCommand(activator-g_entities, va( "chead %s", ent->target));
-}
-
-void SP_target_head( gentity_t *ent ) {
-	if ( !ent->target ) {
-G_Printf ("No target in target_head\n");
-	}
-	ent->use = Use_Target_Head;
-}
-
-/*QUAKED target_cmd (1 0 0) (-8 -8 -8) (8 8 8)
-"count" number of points to add, default 1
-
-The activator is given this many points.
-*/
-void Use_Target_Legs (gentity_t *ent, gentity_t *other, gentity_t *activator) {
-trap_SendServerCommand(activator-g_entities, va( "clegs %s", ent->target));
-}
-
-void SP_target_legs( gentity_t *ent ) {
-	if ( !ent->target ) {
-G_Printf ("No target in target_legs\n");
-	}
-	ent->use = Use_Target_Legs;
 }
 
 //==========================================================
@@ -466,21 +380,6 @@ void SP_target_print( gentity_t *ent ) {
 
 	ent->use = Use_Target_Print;
 }
-
-
-void Use_Target_ClientCmd (gentity_t *ent, gentity_t *other, gentity_t *activator) {
-	if ( activator->client && ( ent->spawnflags & 1 ) ) {
-		trap_SendServerCommand( activator-g_entities, va("clcmd \"%s\"", ent->message ));
-		return;
-	}
-
-	trap_SendServerCommand( -1, va("clcmd \"%s\"", ent->message ));
-}
-
-void SP_target_clientcmd( gentity_t *ent ) {
-	ent->use = Use_Target_ClientCmd;
-}
-
 //==========================================================
 
 
@@ -1950,22 +1849,6 @@ void SP_target_location( gentity_t *self ){
 	G_SetOrigin( self, self->s.origin );
 }
 
-/*QUAKED target_music (0 .7 .7) (-8 -8 -8) (8 8 8)
-When triggered, starts playing specified music track
-*/
-void target_music_use (gentity_t *self, gentity_t *other, gentity_t *activator) {
-	trap_SetConfigstring( CS_MUSIC, self->music );
-}
-
-void SP_target_music (gentity_t *self) {
-	char	*s;
-	char	buffer[MAX_INFO_STRING];
-	G_SpawnString( "music", "", &s );
-	Q_strncpyz( self->music, s, sizeof(self->music) );
-
-	self->use = target_music_use;
-}
-
 // FIXME: improve these so they only need to be send to the client once?
 void SP_rally_weather_rain( gentity_t *ent ){
 	trap_SetBrushModel( ent, ent->model );
@@ -2008,22 +1891,22 @@ void script_variable_use (gentity_t *self, gentity_t *other, gentity_t *activato
 		}
 		
 		if ( (self->spawnflags & 1) && !strcmp(value, self->value) ) {
-			if ( g_debugVariables.integer ) G_Printf("Variables match, targets will be activated\n");
+			if ( g_debugVariables.integer ) G_Printf("Variable =, targets will be activated\n");
 			G_UseTargets (self, activator);
 		}
 		
 		if ( (self->spawnflags & 2) && strcmp(value, self->value) ) {
-			if ( g_debugVariables.integer ) G_Printf("Variables do not match, targets will be activated\n");
+			if ( g_debugVariables.integer ) G_Printf("Variable !=, targets will be activated\n");
 			G_UseTargets (self, activator);
 		}
 		
 		if ( (self->spawnflags & 4) && (atoi(value) <= atoi(self->value)) ) {
-			if ( g_debugVariables.integer ) G_Printf("Variables do not match, targets will be activated\n");
+			if ( g_debugVariables.integer ) G_Printf("Variable <=, targets will be activated\n");
 			G_UseTargets (self, activator);
 		}
 		
 		if ( (self->spawnflags & 8) && (atoi(value) >= atoi(self->value)) ) {
-			if ( g_debugVariables.integer ) G_Printf("Variables do not match, targets will be activated\n");
+			if ( g_debugVariables.integer ) G_Printf("Variable >=, targets will be activated\n");
 			G_UseTargets (self, activator);
 		}
 		
@@ -2064,5 +1947,87 @@ void SP_script_variable (gentity_t *self) {
 		self->nextthink = level.time + FRAMETIME * 3;	//trigger entities next frame so they can spawn first
 		self->think = script_variable_think;
 	}
+}
+
+void script_layer_use( gentity_t *self, gentity_t *other, gentity_t *activator ) {
+	gentity_t	*dest;
+
+	if (!activator->client)
+		return;
+
+	TeleportPlayerForLayer( activator, self->distance, self->s.origin[2] );
+}
+
+void SP_script_layer( gentity_t *self ) {
+	self->use = script_layer_use;
+}
+
+void use_script_cmd (gentity_t *ent, gentity_t *other, gentity_t *activator) {
+	if (ent->spawnflags & 1) {
+	trap_SendConsoleCommand( EXEC_APPEND, va("%s\n", ent->target) );
+	}
+	if (ent->spawnflags & 2) {
+	trap_SendServerCommand( activator-g_entities, va("clcmd \"%s\"", ent->target ));	
+	}
+	if (ent->spawnflags & 4) {
+	trap_SendServerCommand( -1, va("clcmd \"%s\"", ent->target ));	
+	}
+}
+
+//used for immediately spawnflag
+void script_cmd_think (gentity_t *ent) {
+	ent->nextthink = 0;
+	use_script_cmd( ent, NULL, ent );
+}
+
+void SP_script_cmd( gentity_t *ent ) {
+	if ( !ent->target ) {
+	G_Printf ("No target in script_cmd\n");
+	}
+	if ( ent->spawnflags & 4096 ) {
+		ent->nextthink = level.time + FRAMETIME * 10;	//trigger entities next frame so they can spawn first
+		ent->think = script_cmd_think;
+	}
+	ent->use = use_script_cmd;
+}
+
+void use_script_menu (gentity_t *ent, gentity_t *other, gentity_t *activator) {
+	if (ent->spawnflags & 1) {
+	trap_SendConsoleCommand( EXEC_APPEND, va("as_run mgui %s\n", ent->target) );
+	}
+	if (ent->spawnflags & 2) {
+	trap_SendServerCommand( activator-g_entities, va("clcmd \"as_run mgui %s\"", ent->target ));	
+	}
+	if (ent->spawnflags & 4) {
+	trap_SendServerCommand( -1, va("clcmd \"as_run mgui %s\"", ent->target ));	
+	}
+}
+
+//used for immediately spawnflag
+void script_menu_think (gentity_t *ent) {
+	ent->nextthink = 0;
+	use_script_menu( ent, NULL, ent );
+}
+
+void SP_script_menu( gentity_t *ent ) {
+	if ( !ent->target ) {
+	G_Printf ("No target in script_menu\n");
+	}
+	if ( ent->spawnflags & 4096 ) {
+		ent->nextthink = level.time + FRAMETIME * 10;	//trigger entities next frame so they can spawn first
+		ent->think = script_menu_think;
+	}
+	ent->use = use_script_menu;
+}
+
+void use_script_aicontrol (gentity_t *ent, gentity_t *other, gentity_t *activator) {
+	trap_SendConsoleCommand( EXEC_APPEND, va("say_team %s %s\n", ent->clientname, ent->target) );
+}
+
+void SP_script_aicontrol( gentity_t *ent ) {
+	if ( !ent->target ) {
+	G_Printf ("No target in script_aicontrol\n");
+	}
+	ent->use = use_script_aicontrol;
 }
 

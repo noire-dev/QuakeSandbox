@@ -136,7 +136,7 @@ void UI_MGUI( void ) {
 	memset( &s_mgui, 0 ,sizeof(mgui_t) );
 
 	MainMenu_Cache();
-
+	
 	s_mgui.menu.draw = MGUI_MenuDraw;
 	if(UI_ArenaScriptAutoInt("mgui_ingame") <= 0){
 	s_mgui.menu.fullscreen = qtrue;
@@ -230,8 +230,6 @@ void UI_MGUI( void ) {
 			Menu_AddItem( &s_mgui.menu,	&s_mgui.item[i] );
 		}
 	}
-
-	trap_Key_SetCatcher( KEYCATCH_UI );
 }
 
 void MGUI_Load( void ) {

@@ -474,12 +474,12 @@ void Add_Ammo (gentity_t *ent, int weapon, int count)
 {
 if(weapon <= 15){
 	ent->client->ps.ammo[weapon] += count;
-	if ( ent->client->ps.ammo[weapon] > mod_ammolimit ) {
+	if ( ent->client->ps.ammo[weapon] > mod_ammolimit && count != 9999 ) {
 		ent->client->ps.ammo[weapon] = mod_ammolimit;
 	}
 } else {
 	ent->swep_ammo[weapon] += count;
-	if ( ent->swep_ammo[weapon] > mod_ammolimit ) {
+	if ( ent->swep_ammo[weapon] > mod_ammolimit && count != 9999 ) {
 		ent->swep_ammo[weapon] = mod_ammolimit;
 	}
 }

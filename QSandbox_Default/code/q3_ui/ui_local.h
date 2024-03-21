@@ -17,7 +17,7 @@
 typedef void (*voidfunc_f)(void);
 
 // QSandbox version string
-#define DMOD_VERSION "v2024.03.15"
+#define DMOD_VERSION "v2024.03.21"
 
 
 // An additional font size tag for use with
@@ -905,7 +905,7 @@ typedef struct {
 	int					spawnlist_folder;
 	qboolean			demoversion;
 	qboolean			firstdraw;
-   qboolean       		punkbuster; // UIE detected
+	qboolean       		punkbuster;
 } uiStatic_t;
 
 extern void			UI_Init( void );

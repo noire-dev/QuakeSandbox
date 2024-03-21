@@ -1591,10 +1591,7 @@ static void Cmd_BuildProp_f( gentity_t *ent ){
 	trap_Trace (&tr, start, NULL, NULL, end, ent->s.number, MASK_SELECT );
 	
 	if(g_safe.integer){
-	if(!Q_stricmp (class, "target_cmd")){
-	return;
-	}
-	if(!Q_stricmp (class, "target_clientcmd")){
+	if(!Q_stricmp (class, "script_cmd")){
 	return;
 	}
 	if(!Q_stricmp (class, "target_modify")){
@@ -1713,10 +1710,7 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	if(!g_allowprops.integer){ return; }
 		
 	if(g_safe.integer){
-	if(!Q_stricmp (arg03, "target_cmd")){
-	return;
-	}
-	if(!Q_stricmp (arg03, "target_clientcmd")){
+	if(!Q_stricmp (arg03, "script_cmd")){
 	return;
 	}
 	if(!Q_stricmp (arg03, "target_modify")){
@@ -1874,10 +1868,7 @@ static void Cmd_PropNpc_AS_f( gentity_t *ent ){
 	if(!g_allowprops.integer){ return; }
 		
 	if(g_safe.integer){
-	if(!Q_stricmp (arg03, "target_cmd")){
-	return;
-	}
-	if(!Q_stricmp (arg03, "target_clientcmd")){
+	if(!Q_stricmp (arg03, "script_cmd")){
 	return;
 	}
 	if(!Q_stricmp (arg03, "target_modify")){

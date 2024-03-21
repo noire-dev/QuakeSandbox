@@ -227,16 +227,10 @@ void SP_target_give (gentity_t *ent);
 void SP_target_delay (gentity_t *ent);
 void SP_target_speaker (gentity_t *ent);
 void SP_target_print (gentity_t *ent);
-void SP_target_clientcmd (gentity_t *ent);
 void SP_target_laser (gentity_t *self);
 void SP_target_character (gentity_t *ent);
 void SP_target_score( gentity_t *ent );
 void SP_target_clienttarg( gentity_t *ent );
-void SP_target_cmd( gentity_t *ent );
-void SP_target_sound( gentity_t *ent );
-void SP_target_model( gentity_t *ent );
-void SP_target_legs( gentity_t *ent );
-void SP_target_head( gentity_t *ent );
 void SP_target_teleporter( gentity_t *ent );
 void SP_target_relay (gentity_t *ent);
 void SP_target_kill (gentity_t *ent);
@@ -262,9 +256,12 @@ void SP_target_variable (gentity_t *ent);
 void SP_target_cutscene (gentity_t *ent);
 void SP_target_botremove (gentity_t *ent);
 void SP_target_stats (gentity_t *ent);
-void SP_target_music (gentity_t *ent);
 
 void SP_script_variable (gentity_t *ent);
+void SP_script_layer (gentity_t *ent);
+void SP_script_cmd (gentity_t *ent);
+void SP_script_menu (gentity_t *ent);
+void SP_script_aicontrol (gentity_t *ent);
 
 void SP_light (gentity_t *self);
 void SP_info_null (gentity_t *self);
@@ -361,17 +358,10 @@ spawn_t	spawns[] = {
 	{"target_delay", SP_target_delay},
 	{"target_speaker", SP_target_speaker},
 	{"target_print", SP_target_print},
-	{"target_clientcmd", SP_target_clientcmd},
 	{"target_laser", SP_target_laser},
 	{"target_score", SP_target_score},
 	{"target_clienttarg", SP_target_clienttarg},
 	
-	{"target_cmd", SP_target_cmd},
-	{"target_music", SP_target_music},
-	{"target_sound", SP_target_sound},
-	{"target_model", SP_target_model},
-	{"target_legs", SP_target_legs},
-	{"target_head", SP_target_head},
 	{"target_teleporter", SP_target_teleporter},
 	{"target_relay", SP_target_relay},
 	{"target_kill", SP_target_kill},
@@ -397,9 +387,12 @@ spawn_t	spawns[] = {
 	{"target_cutscene", SP_target_cutscene},
 	{"target_botremove", SP_target_botremove},
 	{"target_stats", SP_target_stats},
-	{"target_music", SP_target_music},
 	
 	{"script_variable", SP_script_variable},
+	{"script_layer", SP_script_layer},
+	{"script_cmd", SP_script_cmd},
+	{"script_menu", SP_script_menu},
+	{"script_aicontrol", SP_script_aicontrol},
 
 	{"light", SP_light},
 	{"path_corner", SP_path_corner},
