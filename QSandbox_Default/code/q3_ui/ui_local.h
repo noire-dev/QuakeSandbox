@@ -17,7 +17,7 @@
 typedef void (*voidfunc_f)(void);
 
 // QSandbox version string
-#define DMOD_VERSION "v2024.03.21"
+#define DMOD_VERSION "v2024.03.24"
 
 
 // An additional font size tag for use with

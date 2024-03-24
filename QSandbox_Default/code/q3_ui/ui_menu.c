@@ -359,7 +359,7 @@ static void Main_MenuDraw( void ) {
 	   Menu_Draw( &s_main.menu );
    }
 
-	UI_DrawString( 320, 5, "QSandbox v2024.03.21", UI_CENTER|UI_SMALLFONT, color );
+	UI_DrawString( 320, 5, "QSandbox v2024.03.24", UI_CENTER|UI_SMALLFONT, color );
 }
 
 
