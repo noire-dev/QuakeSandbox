@@ -1,5 +1,4 @@
 
-*.asm
 MiLab/challenges.dat
 MiLab/games.log
 MiLab/q3config.cfg
@@ -7,3 +6,10 @@ MiLab/uieSkirmish.dat
 MiLab/q3key
 pk3cache.dat
 MiLab/q3history
+/QSandbox_Default/windows/baseoa
+/QSandbox_Default/windows/build/cgame
+/QSandbox_Default/windows/build/game
+/QSandbox_Default/windows/build/q3_ui
+/QSandbox_Default/windows/build
+/QSandbox_Default/windows/baseoa/vm
+/QSandbox_Default/windows/baseoa/vm
