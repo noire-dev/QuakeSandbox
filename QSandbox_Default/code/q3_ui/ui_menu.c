@@ -359,7 +359,7 @@ static void Main_MenuDraw( void ) {
 	   Menu_Draw( &s_main.menu );
    }
 
-	UI_DrawString( 320, 5, "QSandbox v2024.03.24", UI_CENTER|UI_SMALLFONT, color );
+	UI_DrawString( 320, 5, "QSandbox v1.0", UI_CENTER|UI_SMALLFONT, color );
 }
 
 
@@ -758,7 +758,7 @@ void UI_MainMenu( void ) {
 	trap_Key_SetCatcher( KEYCATCH_UI );
 	uis.menusp = 0;
 	UI_PushMenu ( &s_main.menu );
-		
+	trap_Cmd_ExecuteText( EXEC_NOW, "as_run mgui autoexec\n");
 }
 
 

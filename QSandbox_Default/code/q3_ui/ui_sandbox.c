@@ -2426,26 +2426,8 @@ if(uis.sb_tab == 10){
 	Q_strncpyz( s_sandboxmain.minmax.field.buffer, UI_Cvar_VariableString("sb_minmax"), sizeof(s_sandboxmain.minmax.field.buffer) );
 	Q_strncpyz( s_sandboxmain.grid.field.buffer, UI_Cvar_VariableString("sb_grid"), sizeof(s_sandboxmain.grid.field.buffer) );
 	s_sandboxmain.list.curvalue = trap_Cvar_VariableValue("sb_modelnum");
-	if(uis.sb_tab == 1){
-	s_sandboxmain.list.top = trap_Cvar_VariableValue("sb_modelnum") - (s_sandboxmain.list.height-1);
-	if(s_sandboxmain.list.top < 0){
-	s_sandboxmain.list.top = 0;	
-	}
-	}
 	s_sandboxmain.classlist.curvalue = trap_Cvar_VariableValue("sb_classnum");
-	if(uis.sb_tab == 1){
-	s_sandboxmain.classlist.top = trap_Cvar_VariableValue("sb_classnum") - (s_sandboxmain.classlist.height-1);
-	if(s_sandboxmain.classlist.top < 0){
-	s_sandboxmain.classlist.top = 0;	
-	}
-	}
 	s_sandboxmain.toolslist.curvalue = trap_Cvar_VariableValue("sb_toolnum");
-	if(uis.sb_tab == 1){
-	s_sandboxmain.toolslist.top = trap_Cvar_VariableValue("sb_toolnum") - (s_sandboxmain.toolslist.height-1);
-	if(s_sandboxmain.toolslist.top < 0){
-	s_sandboxmain.toolslist.top = 0;	
-	}
-	}
 	Q_strncpyz( s_sandboxmain.modif0.field.buffer, UI_Cvar_VariableString("sb_sf"), sizeof(s_sandboxmain.modif0.field.buffer) );
 	Q_strncpyz( s_sandboxmain.modif1.field.buffer, UI_Cvar_VariableString("oasb_modifiers"), sizeof(s_sandboxmain.modif1.field.buffer) );
 	Q_strncpyz( s_sandboxmain.modif2.field.buffer, UI_Cvar_VariableString("oasb_idi"), sizeof(s_sandboxmain.modif2.field.buffer) );
