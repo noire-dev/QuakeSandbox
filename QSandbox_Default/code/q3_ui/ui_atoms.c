@@ -1463,14 +1463,15 @@ UI_ArenaScriptAutoChar
 Return type char
 ==================
 */
-char *UI_ArenaScriptAutoChar( char *name ) {
-char finaltext[1024];
+char *UI_ArenaScriptAutoChar( const char *name ) {
+char finaltext[512];
 
-trap_Cvar_VariableStringBuffer(name, finaltext, sizeof( finaltext ));
-	if(Q_stricmp (finaltext, "") != 0){
+	trap_Cvar_VariableStringBuffer(name, finaltext, sizeof( finaltext ));
+	if(strlen(finaltext) != 0){
 		return va("%s", finaltext );
-	}
+	} else {
 		return va("%s", name );
+	}
 }
 
 /*
@@ -1545,7 +1546,38 @@ if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_h\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_str\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_cmd\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_1arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_2arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_3arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_4arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_5arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_6arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_7arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_8arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_9arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_10arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_11arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_12arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_13arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_14arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_15arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_16arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_17arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_18arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_19arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_20arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_21arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_22arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_23arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_24arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_25arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_26arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_27arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_28arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_29arg\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_30arg\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_pic\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_value\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorR\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorG\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorB\n", i));

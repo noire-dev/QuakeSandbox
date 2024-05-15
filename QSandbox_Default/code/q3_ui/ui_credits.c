@@ -2967,6 +2967,7 @@ if(s_credits.menu.number == 1){
 		uis.hideCursor = qfalse;
 		//trap_Cmd_ExecuteText( EXEC_APPEND, "music music/aumenu\n");
 		UI_PopMenu();
+		trap_Cmd_ExecuteText( EXEC_NOW, "as_run mgui autoexec\n");
 }
 	return 0;
 }
@@ -2991,6 +2992,7 @@ static void UI_CreditMenu_Draw( void ) {
 		uis.hideCursor = qfalse;
 		//trap_Cmd_ExecuteText( EXEC_APPEND, "music music/aumenu\n");
 		UI_PopMenu();
+		trap_Cmd_ExecuteText( EXEC_NOW, "as_run mgui autoexec\n");
 		}
 	}
 

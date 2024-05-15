@@ -17,7 +17,7 @@
 typedef void (*voidfunc_f)(void);
 
 // QSandbox version string
-#define DMOD_VERSION "v1.0"
+#define DMOD_VERSION "v1.1"
 
 
 // An additional font size tag for use with
@@ -478,7 +478,7 @@ extern char	*ui_medalSounds[];
 // mgui.c
 //
 extern int UI_ArenaScriptAutoInt( char *name );
-extern char *UI_ArenaScriptAutoChar( char *name );
+extern char *UI_ArenaScriptAutoChar( const char *name );
 extern float UI_ArenaScriptAutoFloat( char *name );
 
 //
