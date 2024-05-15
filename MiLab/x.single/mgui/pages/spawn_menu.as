@@ -13,9 +13,9 @@ set mitem1_y 0
 set mitem1_whtype 1
 set mitem1_w 100
 set mitem1_h 100
-set mitem1_str ""
+set mitem1_text ""
 set mitem1_cmd ""
-set mitem1_pic ""
+set mitem1_file ""
 set mitem1_colorR 0
 set mitem1_colorG 0
 set mitem1_colorB 0
@@ -35,9 +35,9 @@ set mitem2_y 2
 set mitem2_whtype 3
 set mitem2_w 150
 set mitem2_h 30
-set mitem2_str "Items"
+set mitem2_text "Items"
 set mitem2_cmd ""
-set mitem2_pic ""
+set mitem2_file ""
 set mitem2_colorR 1
 set mitem2_colorG 1
 set mitem2_colorB 1
@@ -57,9 +57,9 @@ set mitem51_y 10
 set mitem51_whtype 3
 set mitem51_w 100
 set mitem51_h 100
-set mitem51_str ""
+set mitem51_text ""
 set mitem51_cmd give Armor Shard
-set mitem51_pic "icons/iconr_shard"
+set mitem51_file "icons/iconr_shard"
 set mitem51_colorR 1
 set mitem51_colorG 1
 set mitem51_colorB 1
@@ -79,9 +79,9 @@ set mitem52_y 10
 set mitem52_whtype 3
 set mitem52_w 100
 set mitem52_h 100
-set mitem52_str ""
+set mitem52_text ""
 set mitem52_cmd give Armor 50
-set mitem52_pic "icons/iconr_yellow"
+set mitem52_file "icons/iconr_yellow"
 set mitem52_colorR 1
 set mitem52_colorG 1
 set mitem52_colorB 1
@@ -101,9 +101,9 @@ set mitem53_y 10
 set mitem53_whtype 3
 set mitem53_w 100
 set mitem53_h 100
-set mitem53_str ""
+set mitem53_text ""
 set mitem53_cmd give Heavy Armor
-set mitem53_pic "icons/iconr_red"
+set mitem53_file "icons/iconr_red"
 set mitem53_colorR 1
 set mitem53_colorG 1
 set mitem53_colorB 1
@@ -123,9 +123,9 @@ set mitem54_y 10
 set mitem54_whtype 3
 set mitem54_w 100
 set mitem54_h 100
-set mitem54_str ""
+set mitem54_text ""
 set mitem54_cmd give Health 5
-set mitem54_pic "icons/iconh_green"
+set mitem54_file "icons/iconh_green"
 set mitem54_colorR 1
 set mitem54_colorG 1
 set mitem54_colorB 1
@@ -145,9 +145,9 @@ set mitem55_y 10
 set mitem55_whtype 3
 set mitem55_w 100
 set mitem55_h 100
-set mitem55_str ""
+set mitem55_text ""
 set mitem55_cmd give Health 25
-set mitem55_pic "icons/iconh_yellow"
+set mitem55_file "icons/iconh_yellow"
 set mitem55_colorR 1
 set mitem55_colorG 1
 set mitem55_colorB 1
@@ -167,9 +167,9 @@ set mitem56_y 10
 set mitem56_whtype 3
 set mitem56_w 100
 set mitem56_h 100
-set mitem56_str ""
+set mitem56_text ""
 set mitem56_cmd give Health 50
-set mitem56_pic "icons/iconh_red"
+set mitem56_file "icons/iconh_red"
 set mitem56_colorR 1
 set mitem56_colorG 1
 set mitem56_colorB 1
@@ -189,9 +189,9 @@ set mitem57_y 10
 set mitem57_whtype 3
 set mitem57_w 100
 set mitem57_h 100
-set mitem57_str ""
+set mitem57_text ""
 set mitem57_cmd give Mega Health
-set mitem57_pic "icons/iconh_mega"
+set mitem57_file "icons/iconh_mega"
 set mitem57_colorR 1
 set mitem57_colorG 1
 set mitem57_colorB 1
@@ -211,9 +211,9 @@ set mitem58_y 10
 set mitem58_whtype 3
 set mitem58_w 100
 set mitem58_h 100
-set mitem58_str ""
+set mitem58_text ""
 set mitem58_cmd give Machinegun
-set mitem58_pic "icons/iconw_machinegun1"
+set mitem58_file "icons/iconw_machinegun1"
 set mitem58_colorR 1
 set mitem58_colorG 1
 set mitem58_colorB 1
@@ -233,9 +233,9 @@ set mitem59_y 10
 set mitem59_whtype 3
 set mitem59_w 100
 set mitem59_h 100
-set mitem59_str ""
+set mitem59_text ""
 set mitem59_cmd give Shotgun
-set mitem59_pic "icons/iconw_shotgun1"
+set mitem59_file "icons/iconw_shotgun1"
 set mitem59_colorR 1
 set mitem59_colorG 1
 set mitem59_colorB 1
@@ -255,9 +255,9 @@ set mitem60_y 10
 set mitem60_whtype 3
 set mitem60_w 100
 set mitem60_h 100
-set mitem60_str ""
+set mitem60_text ""
 set mitem60_cmd give Grenade Launcher
-set mitem60_pic "icons/iconw_grenade1"
+set mitem60_file "icons/iconw_grenade1"
 set mitem60_colorR 1
 set mitem60_colorG 1
 set mitem60_colorB 1
@@ -277,9 +277,9 @@ set mitem61_y 10
 set mitem61_whtype 3
 set mitem61_w 100
 set mitem61_h 100
-set mitem61_str ""
+set mitem61_text ""
 set mitem61_cmd give Rocket Launcher
-set mitem61_pic "icons/iconw_rocket1"
+set mitem61_file "icons/iconw_rocket1"
 set mitem61_colorR 1
 set mitem61_colorG 1
 set mitem61_colorB 1
@@ -299,9 +299,9 @@ set mitem62_y 20
 set mitem62_whtype 3
 set mitem62_w 100
 set mitem62_h 100
-set mitem62_str ""
+set mitem62_text ""
 set mitem62_cmd give Lightning Gun
-set mitem62_pic "icons/iconw_lightning1"
+set mitem62_file "icons/iconw_lightning1"
 set mitem62_colorR 1
 set mitem62_colorG 1
 set mitem62_colorB 1
@@ -321,9 +321,9 @@ set mitem63_y 20
 set mitem63_whtype 3
 set mitem63_w 100
 set mitem63_h 100
-set mitem63_str ""
+set mitem63_text ""
 set mitem63_cmd give Railgun
-set mitem63_pic "icons/iconw_railgun1"
+set mitem63_file "icons/iconw_railgun1"
 set mitem63_colorR 1
 set mitem63_colorG 1
 set mitem63_colorB 1
@@ -343,9 +343,9 @@ set mitem64_y 20
 set mitem64_whtype 3
 set mitem64_w 100
 set mitem64_h 100
-set mitem64_str ""
+set mitem64_text ""
 set mitem64_cmd give Plasma Gun
-set mitem64_pic "icons/iconw_plasma1"
+set mitem64_file "icons/iconw_plasma1"
 set mitem64_colorR 1
 set mitem64_colorG 1
 set mitem64_colorB 1
@@ -365,9 +365,9 @@ set mitem65_y 20
 set mitem65_whtype 3
 set mitem65_w 100
 set mitem65_h 100
-set mitem65_str ""
+set mitem65_text ""
 set mitem65_cmd give BFG10K
-set mitem65_pic "icons/iconw_bfg1"
+set mitem65_file "icons/iconw_bfg1"
 set mitem65_colorR 1
 set mitem65_colorG 1
 set mitem65_colorB 1
@@ -387,9 +387,9 @@ set mitem66_y 20
 set mitem66_whtype 3
 set mitem66_w 100
 set mitem66_h 100
-set mitem66_str ""
+set mitem66_text ""
 set mitem66_cmd give Grappling Hook
-set mitem66_pic "icons/iconw_grapple1"
+set mitem66_file "icons/iconw_grapple1"
 set mitem66_colorR 1
 set mitem66_colorG 1
 set mitem66_colorB 1
@@ -409,9 +409,9 @@ set mitem67_y 20
 set mitem67_whtype 3
 set mitem67_w 100
 set mitem67_h 100
-set mitem67_str ""
+set mitem67_text ""
 set mitem67_cmd give Nailgun
-set mitem67_pic "icons/iconw_nailgun1"
+set mitem67_file "icons/iconw_nailgun1"
 set mitem67_colorR 1
 set mitem67_colorG 1
 set mitem67_colorB 1
@@ -431,9 +431,9 @@ set mitem68_y 20
 set mitem68_whtype 3
 set mitem68_w 100
 set mitem68_h 100
-set mitem68_str ""
+set mitem68_text ""
 set mitem68_cmd give Prox Launcher
-set mitem68_pic "icons/iconw_proxlauncher1"
+set mitem68_file "icons/iconw_proxlauncher1"
 set mitem68_colorR 1
 set mitem68_colorG 1
 set mitem68_colorB 1
@@ -453,9 +453,9 @@ set mitem69_y 20
 set mitem69_whtype 3
 set mitem69_w 100
 set mitem69_h 100
-set mitem69_str ""
+set mitem69_text ""
 set mitem69_cmd give Chaingun
-set mitem69_pic "icons/iconw_chaingun1"
+set mitem69_file "icons/iconw_chaingun1"
 set mitem69_colorR 1
 set mitem69_colorG 1
 set mitem69_colorB 1
@@ -475,9 +475,9 @@ set mitem70_y 20
 set mitem70_whtype 3
 set mitem70_w 100
 set mitem70_h 100
-set mitem70_str ""
+set mitem70_text ""
 set mitem70_cmd give Flamethrower
-set mitem70_pic "icons/iconw_flamethrower1"
+set mitem70_file "icons/iconw_flamethrower1"
 set mitem70_colorR 1
 set mitem70_colorG 1
 set mitem70_colorB 1
@@ -497,9 +497,9 @@ set mitem71_y 20
 set mitem71_whtype 3
 set mitem71_w 100
 set mitem71_h 100
-set mitem71_str ""
+set mitem71_text ""
 set mitem71_cmd give Dark Flare
-set mitem71_pic "icons/iconw_voodoo1"
+set mitem71_file "icons/iconw_voodoo1"
 set mitem71_colorR 1
 set mitem71_colorG 1
 set mitem71_colorB 1
@@ -519,9 +519,9 @@ set mitem72_y 20
 set mitem72_whtype 3
 set mitem72_w 100
 set mitem72_h 100
-set mitem72_str ""
+set mitem72_text ""
 set mitem72_cmd give Bullets
-set mitem72_pic "icons/icona_machinegun"
+set mitem72_file "icons/icona_machinegun"
 set mitem72_colorR 1
 set mitem72_colorG 1
 set mitem72_colorB 1
@@ -541,9 +541,9 @@ set mitem73_y 30
 set mitem73_whtype 3
 set mitem73_w 100
 set mitem73_h 100
-set mitem73_str ""
+set mitem73_text ""
 set mitem73_cmd give Shells
-set mitem73_pic "icons/icona_shotgun"
+set mitem73_file "icons/icona_shotgun"
 set mitem73_colorR 1
 set mitem73_colorG 1
 set mitem73_colorB 1
@@ -563,9 +563,9 @@ set mitem74_y 30
 set mitem74_whtype 3
 set mitem74_w 100
 set mitem74_h 100
-set mitem74_str ""
+set mitem74_text ""
 set mitem74_cmd give Grenades
-set mitem74_pic "icons/icona_grenade"
+set mitem74_file "icons/icona_grenade"
 set mitem74_colorR 1
 set mitem74_colorG 1
 set mitem74_colorB 1
@@ -585,9 +585,9 @@ set mitem75_y 30
 set mitem75_whtype 3
 set mitem75_w 100
 set mitem75_h 100
-set mitem75_str ""
+set mitem75_text ""
 set mitem75_cmd give Cells
-set mitem75_pic "icons/icona_plasma"
+set mitem75_file "icons/icona_plasma"
 set mitem75_colorR 1
 set mitem75_colorG 1
 set mitem75_colorB 1
@@ -607,9 +607,9 @@ set mitem76_y 30
 set mitem76_whtype 3
 set mitem76_w 100
 set mitem76_h 100
-set mitem76_str ""
+set mitem76_text ""
 set mitem76_cmd give Lightning
-set mitem76_pic "icons/icona_lightning"
+set mitem76_file "icons/icona_lightning"
 set mitem76_colorR 1
 set mitem76_colorG 1
 set mitem76_colorB 1
@@ -629,9 +629,9 @@ set mitem77_y 30
 set mitem77_whtype 3
 set mitem77_w 100
 set mitem77_h 100
-set mitem77_str ""
+set mitem77_text ""
 set mitem77_cmd give Rockets
-set mitem77_pic "icons/icona_rocket"
+set mitem77_file "icons/icona_rocket"
 set mitem77_colorR 1
 set mitem77_colorG 1
 set mitem77_colorB 1
@@ -651,9 +651,9 @@ set mitem78_y 30
 set mitem78_whtype 3
 set mitem78_w 100
 set mitem78_h 100
-set mitem78_str ""
+set mitem78_text ""
 set mitem78_cmd give Slugs
-set mitem78_pic "icons/icona_railgun"
+set mitem78_file "icons/icona_railgun"
 set mitem78_colorR 1
 set mitem78_colorG 1
 set mitem78_colorB 1
@@ -673,9 +673,9 @@ set mitem79_y 30
 set mitem79_whtype 3
 set mitem79_w 100
 set mitem79_h 100
-set mitem79_str ""
+set mitem79_text ""
 set mitem79_cmd give Bfg Ammo
-set mitem79_pic "icons/icona_bfg"
+set mitem79_file "icons/icona_bfg"
 set mitem79_colorR 1
 set mitem79_colorG 1
 set mitem79_colorB 1
@@ -695,9 +695,9 @@ set mitem80_y 30
 set mitem80_whtype 3
 set mitem80_w 100
 set mitem80_h 100
-set mitem80_str ""
+set mitem80_text ""
 set mitem80_cmd give Nails
-set mitem80_pic "icons/icona_nailgun"
+set mitem80_file "icons/icona_nailgun"
 set mitem80_colorR 1
 set mitem80_colorG 1
 set mitem80_colorB 1
@@ -717,9 +717,9 @@ set mitem81_y 30
 set mitem81_whtype 3
 set mitem81_w 100
 set mitem81_h 100
-set mitem81_str ""
+set mitem81_text ""
 set mitem81_cmd give Proximity Mines
-set mitem81_pic "icons/icona_proxlauncher"
+set mitem81_file "icons/icona_proxlauncher"
 set mitem81_colorR 1
 set mitem81_colorG 1
 set mitem81_colorB 1
@@ -739,9 +739,9 @@ set mitem82_y 30
 set mitem82_whtype 3
 set mitem82_w 100
 set mitem82_h 100
-set mitem82_str ""
+set mitem82_text ""
 set mitem82_cmd give Chaingun Belt
-set mitem82_pic "icons/icona_chaingun"
+set mitem82_file "icons/icona_chaingun"
 set mitem82_colorR 1
 set mitem82_colorG 1
 set mitem82_colorB 1
@@ -761,9 +761,9 @@ set mitem83_y 30
 set mitem83_whtype 3
 set mitem83_w 100
 set mitem83_h 100
-set mitem83_str ""
+set mitem83_text ""
 set mitem83_cmd give Flame
-set mitem83_pic "icons/icona_flamethrower"
+set mitem83_file "icons/icona_flamethrower"
 set mitem83_colorR 1
 set mitem83_colorG 1
 set mitem83_colorB 1
@@ -783,9 +783,9 @@ set mitem84_y 40
 set mitem84_whtype 3
 set mitem84_w 100
 set mitem84_h 100
-set mitem84_str ""
+set mitem84_text ""
 set mitem84_cmd give Light Armor
-set mitem84_pic "icons/iconr_green"
+set mitem84_file "icons/iconr_green"
 set mitem84_colorR 1
 set mitem84_colorG 1
 set mitem84_colorB 1
@@ -805,9 +805,9 @@ set mitem85_y 40
 set mitem85_whtype 3
 set mitem85_w 100
 set mitem85_h 100
-set mitem85_str ""
+set mitem85_text ""
 set mitem85_cmd give Full Armor
-set mitem85_pic "icons/iconr_full"
+set mitem85_file "icons/iconr_full"
 set mitem85_colorR 1
 set mitem85_colorG 1
 set mitem85_colorB 1
@@ -827,9 +827,9 @@ set mitem86_y 40
 set mitem86_whtype 3
 set mitem86_w 100
 set mitem86_h 100
-set mitem86_str ""
+set mitem86_text ""
 set mitem86_cmd give Quad Damage
-set mitem86_pic "icons/quad"
+set mitem86_file "icons/quad"
 set mitem86_colorR 1
 set mitem86_colorG 1
 set mitem86_colorB 1
@@ -849,9 +849,9 @@ set mitem87_y 40
 set mitem87_whtype 3
 set mitem87_w 100
 set mitem87_h 100
-set mitem87_str ""
+set mitem87_text ""
 set mitem87_cmd give Battle Suit
-set mitem87_pic "icons/envirosuit"
+set mitem87_file "icons/envirosuit"
 set mitem87_colorR 1
 set mitem87_colorG 1
 set mitem87_colorB 1
@@ -871,9 +871,9 @@ set mitem88_y 40
 set mitem88_whtype 3
 set mitem88_w 100
 set mitem88_h 100
-set mitem88_str ""
+set mitem88_text ""
 set mitem88_cmd give Speed
-set mitem88_pic "icons/haste"
+set mitem88_file "icons/haste"
 set mitem88_colorR 1
 set mitem88_colorG 1
 set mitem88_colorB 1
@@ -893,9 +893,9 @@ set mitem89_y 40
 set mitem89_whtype 3
 set mitem89_w 100
 set mitem89_h 100
-set mitem89_str ""
+set mitem89_text ""
 set mitem89_cmd give Invisibility
-set mitem89_pic "icons/invis"
+set mitem89_file "icons/invis"
 set mitem89_colorR 1
 set mitem89_colorG 1
 set mitem89_colorB 1
@@ -915,9 +915,9 @@ set mitem90_y 40
 set mitem90_whtype 3
 set mitem90_w 100
 set mitem90_h 100
-set mitem90_str ""
+set mitem90_text ""
 set mitem90_cmd give Regeneration
-set mitem90_pic "icons/regen"
+set mitem90_file "icons/regen"
 set mitem90_colorR 1
 set mitem90_colorG 1
 set mitem90_colorB 1
@@ -937,9 +937,9 @@ set mitem91_y 40
 set mitem91_whtype 3
 set mitem91_w 100
 set mitem91_h 100
-set mitem91_str ""
+set mitem91_text ""
 set mitem91_cmd give Flight
-set mitem91_pic "icons/flight"
+set mitem91_file "icons/flight"
 set mitem91_colorR 1
 set mitem91_colorG 1
 set mitem91_colorB 1
@@ -959,9 +959,9 @@ set mitem92_y 40
 set mitem92_whtype 3
 set mitem92_w 100
 set mitem92_h 100
-set mitem92_str ""
+set mitem92_text ""
 set mitem92_cmd give Personal Teleporter
-set mitem92_pic "icons/teleporter"
+set mitem92_file "icons/teleporter"
 set mitem92_colorR 1
 set mitem92_colorG 1
 set mitem92_colorB 1
@@ -981,9 +981,9 @@ set mitem93_y 40
 set mitem93_whtype 3
 set mitem93_w 100
 set mitem93_h 100
-set mitem93_str ""
+set mitem93_text ""
 set mitem93_cmd give Medkit
-set mitem93_pic "icons/medkit"
+set mitem93_file "icons/medkit"
 set mitem93_colorR 1
 set mitem93_colorG 1
 set mitem93_colorB 1
@@ -1003,9 +1003,9 @@ set mitem94_y 40
 set mitem94_whtype 3
 set mitem94_w 100
 set mitem94_h 100
-set mitem94_str ""
+set mitem94_text ""
 set mitem94_cmd give Kamikaze
-set mitem94_pic "icons/kamikaze"
+set mitem94_file "icons/kamikaze"
 set mitem94_colorR 1
 set mitem94_colorG 1
 set mitem94_colorB 1
@@ -1025,9 +1025,9 @@ set mitem95_y 50
 set mitem95_whtype 3
 set mitem95_w 100
 set mitem95_h 100
-set mitem95_str ""
+set mitem95_text ""
 set mitem95_cmd give Invulnerability
-set mitem95_pic "icons/invulnerability"
+set mitem95_file "icons/invulnerability"
 set mitem95_colorR 1
 set mitem95_colorG 1
 set mitem95_colorB 1
@@ -1047,9 +1047,9 @@ set mitem96_y 50
 set mitem96_whtype 3
 set mitem96_w 100
 set mitem96_h 100
-set mitem96_str ""
+set mitem96_text ""
 set mitem96_cmd give Portal
-set mitem96_pic "icons/portal"
+set mitem96_file "icons/portal"
 set mitem96_colorR 1
 set mitem96_colorG 1
 set mitem96_colorB 1
@@ -1069,9 +1069,9 @@ set mitem97_y 50
 set mitem97_whtype 3
 set mitem97_w 100
 set mitem97_h 100
-set mitem97_str ""
+set mitem97_text ""
 set mitem97_cmd give Scout
-set mitem97_pic "icons/scout"
+set mitem97_file "icons/scout"
 set mitem97_colorR 1
 set mitem97_colorG 1
 set mitem97_colorB 1
@@ -1091,9 +1091,9 @@ set mitem98_y 50
 set mitem98_whtype 3
 set mitem98_w 100
 set mitem98_h 100
-set mitem98_str ""
+set mitem98_text ""
 set mitem98_cmd give Guard
-set mitem98_pic "icons/guard"
+set mitem98_file "icons/guard"
 set mitem98_colorR 1
 set mitem98_colorG 1
 set mitem98_colorB 1
@@ -1113,9 +1113,9 @@ set mitem99_y 50
 set mitem99_whtype 3
 set mitem99_w 100
 set mitem99_h 100
-set mitem99_str ""
+set mitem99_text ""
 set mitem99_cmd give Doubler
-set mitem99_pic "icons/doubler"
+set mitem99_file "icons/doubler"
 set mitem99_colorR 1
 set mitem99_colorG 1
 set mitem99_colorB 1
@@ -1135,9 +1135,9 @@ set mitem100_y 50
 set mitem100_whtype 3
 set mitem100_w 100
 set mitem100_h 100
-set mitem100_str ""
+set mitem100_text ""
 set mitem100_cmd give Ammo Regen
-set mitem100_pic "icons/ammo_regen"
+set mitem100_file "icons/ammo_regen"
 set mitem100_colorR 1
 set mitem100_colorG 1
 set mitem100_colorB 1
@@ -1157,9 +1157,9 @@ set mitem101_y 50
 set mitem101_whtype 3
 set mitem101_w 100
 set mitem101_h 100
-set mitem101_str ""
+set mitem101_text ""
 set mitem101_cmd give Red keycard
-set mitem101_pic "icons/key_red"
+set mitem101_file "icons/key_red"
 set mitem101_colorR 1
 set mitem101_colorG 1
 set mitem101_colorB 1
@@ -1179,9 +1179,9 @@ set mitem102_y 50
 set mitem102_whtype 3
 set mitem102_w 100
 set mitem102_h 100
-set mitem102_str ""
+set mitem102_text ""
 set mitem102_cmd give Green keycard
-set mitem102_pic "icons/key_green"
+set mitem102_file "icons/key_green"
 set mitem102_colorR 1
 set mitem102_colorG 1
 set mitem102_colorB 1
@@ -1201,9 +1201,9 @@ set mitem103_y 50
 set mitem103_whtype 3
 set mitem103_w 100
 set mitem103_h 100
-set mitem103_str ""
+set mitem103_text ""
 set mitem103_cmd give Blue keycard
-set mitem103_pic "icons/key_blue"
+set mitem103_file "icons/key_blue"
 set mitem103_colorR 1
 set mitem103_colorG 1
 set mitem103_colorB 1
@@ -1223,9 +1223,9 @@ set mitem104_y 50
 set mitem104_whtype 3
 set mitem104_w 100
 set mitem104_h 100
-set mitem104_str ""
+set mitem104_text ""
 set mitem104_cmd give Yellow keycard
-set mitem104_pic "icons/key_yellow"
+set mitem104_file "icons/key_yellow"
 set mitem104_colorR 1
 set mitem104_colorG 1
 set mitem104_colorB 1
@@ -1245,9 +1245,9 @@ set mitem105_y 50
 set mitem105_whtype 3
 set mitem105_w 100
 set mitem105_h 100
-set mitem105_str ""
+set mitem105_text ""
 set mitem105_cmd give Iron key
-set mitem105_pic "icons/key_iron"
+set mitem105_file "icons/key_iron"
 set mitem105_colorR 1
 set mitem105_colorG 1
 set mitem105_colorB 1
@@ -1267,9 +1267,9 @@ set mitem106_y 60
 set mitem106_whtype 3
 set mitem106_w 100
 set mitem106_h 100
-set mitem106_str ""
+set mitem106_text ""
 set mitem106_cmd give Silver key
-set mitem106_pic "icons/key_silver"
+set mitem106_file "icons/key_silver"
 set mitem106_colorR 1
 set mitem106_colorG 1
 set mitem106_colorB 1
@@ -1289,9 +1289,9 @@ set mitem107_y 60
 set mitem107_whtype 3
 set mitem107_w 100
 set mitem107_h 100
-set mitem107_str ""
+set mitem107_text ""
 set mitem107_cmd give Gold key
-set mitem107_pic "icons/key_gold"
+set mitem107_file "icons/key_gold"
 set mitem107_colorR 1
 set mitem107_colorG 1
 set mitem107_colorB 1
@@ -1311,9 +1311,9 @@ set mitem108_y 60
 set mitem108_whtype 3
 set mitem108_w 100
 set mitem108_h 100
-set mitem108_str ""
+set mitem108_text ""
 set mitem108_cmd give Master key
-set mitem108_pic "icons/key_master"
+set mitem108_file "icons/key_master"
 set mitem108_colorR 1
 set mitem108_colorG 1
 set mitem108_colorB 1
@@ -1333,9 +1333,9 @@ set mitem109_y 60
 set mitem109_whtype 3
 set mitem109_w 100
 set mitem109_h 100
-set mitem109_str ""
+set mitem109_text ""
 set mitem109_cmd give Bricks
-set mitem109_pic "brick"
+set mitem109_file "brick"
 set mitem109_colorR 1
 set mitem109_colorG 1
 set mitem109_colorB 1
@@ -1355,9 +1355,9 @@ set mitem110_y 60
 set mitem110_whtype 3
 set mitem110_w 100
 set mitem110_h 100
-set mitem110_str ""
+set mitem110_text ""
 set mitem110_cmd give Diamonds
-set mitem110_pic "diamond_block"
+set mitem110_file "diamond_block"
 set mitem110_colorR 1
 set mitem110_colorG 1
 set mitem110_colorB 1
@@ -1377,9 +1377,9 @@ set mitem111_y 60
 set mitem111_whtype 3
 set mitem111_w 100
 set mitem111_h 100
-set mitem111_str ""
+set mitem111_text ""
 set mitem111_cmd give Dirt
-set mitem111_pic "dirt"
+set mitem111_file "dirt"
 set mitem111_colorR 1
 set mitem111_colorG 1
 set mitem111_colorB 1
@@ -1399,9 +1399,9 @@ set mitem112_y 60
 set mitem112_whtype 3
 set mitem112_w 100
 set mitem112_h 100
-set mitem112_str ""
+set mitem112_text ""
 set mitem112_cmd give Stone
-set mitem112_pic "stone"
+set mitem112_file "stone"
 set mitem112_colorR 1
 set mitem112_colorG 1
 set mitem112_colorB 1
@@ -1421,9 +1421,9 @@ set mitem113_y 60
 set mitem113_whtype 3
 set mitem113_w 100
 set mitem113_h 100
-set mitem113_str ""
+set mitem113_text ""
 set mitem113_cmd give Bedrock
-set mitem113_pic "bedrock"
+set mitem113_file "bedrock"
 set mitem113_colorR 1
 set mitem113_colorG 1
 set mitem113_colorB 1

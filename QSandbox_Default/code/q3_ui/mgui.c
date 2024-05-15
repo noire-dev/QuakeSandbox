@@ -20,7 +20,8 @@ MGUI - QSandbox
 typedef struct {
 	menuframework_s	menu;
 	menuobject_s	item[MAX_OBJECTS];
-	
+	char* lists[MAX_OBJECTS][8192];
+	char  listnames[MAX_OBJECTS][8192];
 } mgui_t;
 
 static mgui_t s_mgui;
@@ -31,7 +32,13 @@ MGUI_Event
 =================
 */
 const char* argwork(int i, int num){
+if(s_mgui.item[UI_ArenaScriptAutoInt(va("mitem%i_%iarg", i, num))].type == 4){
 return s_mgui.item[UI_ArenaScriptAutoInt(va("mitem%i_%iarg", i, num))].field.buffer;
+}
+if(s_mgui.item[UI_ArenaScriptAutoInt(va("mitem%i_%iarg", i, num))].type == 5){
+return s_mgui.item[UI_ArenaScriptAutoInt(va("mitem%i_%iarg", i, num))].itemnames[s_mgui.item[UI_ArenaScriptAutoInt(va("mitem%i_%iarg", i, num))].curvalue];
+}
+return "Unknown type!";
 }
 
 void MGUI_Event (void* ptr, int event) {
@@ -97,6 +104,39 @@ void UI_MGUI_Clear( void ) {
 	}
 }
 
+/*
+===============
+LoadMguiList
+===============
+*/
+static void LoadMguiList( int it )
+{
+	int 	i;
+	int		len;
+	char	*configname;
+	
+	if (!s_mgui.item[it].numitems) {
+		strcpy(s_mgui.listnames[it],"No files");
+		s_mgui.item[it].numitems = 1;
+	}
+	else if (s_mgui.item[it].numitems > 65536)
+		s_mgui.item[it].numitems = 65536;
+
+	configname = s_mgui.listnames[it];
+	for ( i = 0; i < s_mgui.item[it].numitems; i++ ) {
+		s_mgui.item[it].itemnames[i] = configname;
+
+		// strip extension
+		len = strlen( configname );
+		if (!Q_stricmp(configname +  len - (strlen(s_mgui.item[it].generic.picn)+1),va(".%s", s_mgui.item[it].generic.picn)))
+			configname[len-(strlen(s_mgui.item[it].generic.picn)+1)] = '\0';
+
+		Q_strupr(configname);
+
+		configname += len + 1;
+	}
+}
+
 void UI_MGUI( void ) {
 	int i;
 	int type;
@@ -104,6 +144,7 @@ void UI_MGUI( void ) {
 	char command[256];
 	char pic[256];
 	char initvalue[256];
+	int		len;
 	vec4_t color_mgui[MAX_OBJECTS]	    = {1.00f, 0.00f, 1.00f, 1.00f};
 	vec4_t color_mgui2[MAX_OBJECTS]	    = {1.00f, 1.00f, 1.00f, 1.00f};
 
@@ -131,10 +172,10 @@ void UI_MGUI( void ) {
 
 	for ( i = 1; i < MAX_OBJECTS-1; i++ ) {
 	type = UI_ArenaScriptAutoInt(va("mitem%i_type", i));
-	if(type >= 1 && type <= 4){
-	trap_Cvar_VariableStringBuffer(va("mitem%i_str", i), text, sizeof( text ));
+	if(type >= 1 && type <= 5){
+	trap_Cvar_VariableStringBuffer(va("mitem%i_text", i), text, sizeof( text ));
 	trap_Cvar_VariableStringBuffer(va("mitem%i_cmd", i), command, sizeof( command ));
-	trap_Cvar_VariableStringBuffer(va("mitem%i_pic", i), pic, sizeof( pic ));
+	trap_Cvar_VariableStringBuffer(va("mitem%i_file", i), pic, sizeof( pic ));
 	color_mgui[i][0] = UI_ArenaScriptAutoFloat(va("mitem%i_colorR", i));
 	color_mgui[i][1] = UI_ArenaScriptAutoFloat(va("mitem%i_colorG", i));
 	color_mgui[i][2] = UI_ArenaScriptAutoFloat(va("mitem%i_colorB", i));
@@ -195,15 +236,29 @@ void UI_MGUI( void ) {
 	s_mgui.item[i].generic.text = (char *)UI_Alloc(sizeof(UI_ArenaScriptAutoChar(text)));
 	strcpy(s_mgui.item[i].generic.text, UI_ArenaScriptAutoChar(text));
 	}
+	if(type == 5){
+	if(strlen(command) >= 1){
+	s_mgui.item[i].generic.flags		= QMF_HIGHLIGHT_IF_FOCUS;
+	} else {
+	s_mgui.item[i].generic.flags		= QMF_HIGHLIGHT_IF_FOCUS|QMF_INACTIVE;
+	}
+	s_mgui.item[i].numitems			= trap_FS_GetFileList( UI_ArenaScriptAutoChar(text), UI_ArenaScriptAutoChar(pic), s_mgui.listnames[i], 8192 );
+	s_mgui.item[i].itemnames		= (const char **)s_mgui.lists[i];
+	s_mgui.item[i].columns			= UI_ArenaScriptAutoInt(va("mitem%i_col", i));
+	}
 	}
 	}
 
 	for ( i = 1; i < MAX_OBJECTS-1; i++ ) {
 		if(s_mgui.item[i].type >= 1){
+		if(s_mgui.item[i].type == 5){
+			LoadMguiList(i);
+		}
 			Menu_AddItem( &s_mgui.menu,	&s_mgui.item[i] );
 			trap_Cvar_VariableStringBuffer(va("mitem%i_value", i), initvalue, sizeof( initvalue ));
 			Q_strncpyz( s_mgui.item[i].field.buffer, UI_ArenaScriptAutoChar(initvalue), sizeof(s_mgui.item[i].field.buffer) );
 		}
+
 	}
 }
 

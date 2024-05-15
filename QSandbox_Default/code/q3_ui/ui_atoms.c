@@ -1544,7 +1544,7 @@ if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_whtype\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_w\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_h\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_str\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_text\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_cmd\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_1arg\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_2arg\n", i));
@@ -1576,7 +1576,7 @@ if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_28arg\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_29arg\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_30arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_pic\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_file\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_value\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorR\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorG\n", i));
@@ -1584,6 +1584,7 @@ if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorA\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_fontsize\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_corner\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_col\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorinnerR\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorinnerG\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorinnerB\n", i));

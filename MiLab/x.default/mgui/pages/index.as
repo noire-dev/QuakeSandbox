@@ -13,9 +13,9 @@ set mitem1_y 5
 set mitem1_whtype 1
 set mitem1_w 90
 set mitem1_h 90
-set mitem1_str ""
+set mitem1_text ""
 set mitem1_cmd ""
-set mitem1_pic ""
+set mitem1_file ""
 set mitem1_colorR 1
 set mitem1_colorG 0
 set mitem1_colorB 1
@@ -35,9 +35,9 @@ set mitem2_y 6
 set mitem2_whtype 1
 set mitem2_w 0
 set mitem2_h 0
-set mitem2_str "Hi, this is MGui!"
+set mitem2_text "Hi, this is MGui!"
 set mitem2_cmd ""
-set mitem2_pic ""
+set mitem2_file ""
 set mitem2_colorR 0
 set mitem2_colorG 0
 set mitem2_colorB 0
@@ -57,9 +57,9 @@ set mitem3_y 14
 set mitem3_whtype 1
 set mitem3_w 0
 set mitem3_h 0
-set mitem3_str "This menu is located in mgui/pages/index.as"
+set mitem3_text "This menu is located in mgui/pages/index.as"
 set mitem3_cmd ""
-set mitem3_pic ""
+set mitem3_file ""
 set mitem3_colorR 0
 set mitem3_colorG 1
 set mitem3_colorB 1
@@ -79,9 +79,9 @@ set mitem4_y 80
 set mitem4_whtype 1
 set mitem4_w 11
 set mitem4_h 5
-set mitem4_str "Close!"
+set mitem4_text "Close!"
 set mitem4_cmd "menuback"
-set mitem4_pic ""
+set mitem4_file ""
 set mitem4_colorR 0
 set mitem4_colorG 1
 set mitem4_colorB 1

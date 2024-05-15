@@ -406,6 +406,17 @@ typedef struct
 	int				corner;
 	float			fontsize;
 	mfield_t		field;
+	
+	int	oldvalue;
+	int curvalue;
+	int	numitems;
+	int	top;
+		
+	const char **itemnames;
+	const char **itemnames2;
+
+	int	columns;
+	int	seperation;
 } menuobject_s;
 
 typedef struct

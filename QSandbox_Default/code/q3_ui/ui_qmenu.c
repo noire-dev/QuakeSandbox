@@ -431,6 +431,33 @@ if(b->type == 4){
 	b->generic.right  = b->generic.x + (w*b->fontsize) + b->field.widthInChars*(w*b->fontsize);
 	b->generic.bottom = b->generic.y + (h*b->fontsize);
 }
+if(b->type == 5){
+	
+	b->oldvalue = 0;
+	b->curvalue = 0;
+	b->top      = 0;
+
+	if( !b->columns ) {
+		b->columns = 1;
+		b->seperation = 0;
+	}
+	else if( !b->seperation ) {
+		b->seperation = 3;
+	}
+
+	w = ( (b->width + b->seperation) * b->columns - b->seperation) * (SMALLCHAR_WIDTH*b->fontsize);
+
+	b->generic.left   =	b->generic.x;
+	b->generic.top    = b->generic.y;	
+	b->generic.right  =	b->generic.x + w;
+	b->generic.bottom =	b->generic.y + b->height * (SMALLCHAR_HEIGHT*b->fontsize);
+
+	if( b->generic.flags & QMF_CENTER_JUSTIFY ) {
+		b->generic.left -= w / 2;
+		b->generic.right -= w / 2;
+	}
+}
+
 }
 
 /*
@@ -447,6 +474,11 @@ void UIObject_Draw( menuobject_s *b )
 	int		style;
 	qboolean focus;
 	float	*color;
+	int			u;
+	int			i;
+	int			base;
+	int			column;
+	qboolean	hasfocus;
 	
 if(b->type >= 1 && b->type <= 3){
 
@@ -518,6 +550,54 @@ if(b->type == 4){
 
 	MField_DrawCustom( &b->field, x + w, y, style, color, b->fontsize );
 }
+
+if(b->type == 5){
+	hasfocus = (b->generic.parent->cursor == b->generic.menuPosition);
+
+	x =	b->generic.x;
+	for( column = 0; column < b->columns; column++ ) {
+		y =	b->generic.y;
+		base = b->top + column * b->height;
+		for( i = base; i < base + b->height; i++) {
+			if (i >= b->numitems)
+				break;
+
+			if (i == b->curvalue)
+			{
+				u = x - 2;
+				if( b->generic.flags & QMF_CENTER_JUSTIFY ) {
+					u -= (b->width * (SMALLCHAR_WIDTH*b->fontsize)) / 2 + 1;
+				}
+
+				UI_FillRect(u,y,(b->width*SMALLCHAR_WIDTH)*b->fontsize,(SMALLCHAR_HEIGHT)*b->fontsize,listbar_color);
+				color = text_color_highlight;
+
+				if (hasfocus)
+					style = UI_PULSE|UI_LEFT|UI_SMALLFONT;
+				else
+					style = UI_LEFT|UI_SMALLFONT;
+			}
+			else
+			{
+				color = b->color;
+				style = UI_LEFT|UI_SMALLFONT;
+			}
+			if( b->generic.flags & QMF_CENTER_JUSTIFY ) {
+				style |= UI_CENTER;
+			}
+			//if(!b->itemnames2[i]){
+			UI_DrawStringCustom(x,y,b->itemnames[i],style,color, b->fontsize );
+			//}
+			//if(b->itemnames2[i]){
+			//UI_DrawString(x,y,b->itemnames2[i],style,color);
+			//}
+
+			y += (SMALLCHAR_HEIGHT*b->fontsize);
+		}
+		x += (b->width + b->seperation) * (SMALLCHAR_WIDTH*b->fontsize);
+	}
+}
+
 }
 
 /*
@@ -525,11 +605,24 @@ if(b->type == 4){
 UIObject_Key
 ==================
 */
-sfxHandle_t UIObject_Key( menuobject_s* b, int* key )
+sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 {
+	static int clicktime = 0;
+	int	x;
+	int	y;
+	int	w;
+	int	i;
+	int	j;
+	int	c;
+	int	cursorx;
+	int	cursory;
+	int	column;
+	int	index;
+	int clickdelay;
 	int keycode;
+	if(b->type == 4){
 
-	keycode = *key;
+	keycode = key;
 
 	switch ( keycode )
 	{
@@ -540,7 +633,7 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int* key )
 		case K_JOY3:
 		case K_JOY4:
 			// have enter go to next cursor point
-			*key = K_TAB;
+			key = K_TAB;
 			break;
 
 		case K_TAB:
@@ -570,6 +663,284 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int* key )
 	}
 
 	return (0);
+	}
+	if(b->type == 5){
+	switch (key)
+	{
+		case K_MOUSE1:
+			if (b->generic.flags & QMF_HASMOUSEFOCUS)
+			{
+				// check scroll region
+				x = b->generic.x;
+				y = b->generic.y;
+				w = ( (b->width + b->seperation) * b->columns - b->seperation) * (SMALLCHAR_WIDTH*b->fontsize);
+				if( b->generic.flags & QMF_CENTER_JUSTIFY ) {
+					x -= w / 2;
+				}
+				if (UI_CursorInRect( x, y, w, b->height*(SMALLCHAR_HEIGHT*b->fontsize) ))
+				{
+					cursorx = (uis.cursorx - x)/(SMALLCHAR_WIDTH*b->fontsize);
+					column = cursorx / (b->width + b->seperation);
+					cursory = (uis.cursory - y)/(SMALLCHAR_HEIGHT*b->fontsize);
+					index = column * b->height + cursory;
+					if (b->top + index < b->numitems)
+					{
+						b->oldvalue = b->curvalue;
+						b->curvalue = b->top + index;
+
+						clickdelay = uis.realtime - clicktime;
+						clicktime = uis.realtime;
+						if (b->oldvalue != b->curvalue)
+						{
+							if (b->generic.callback) {
+								b->generic.callback( b, QM_GOTFOCUS );
+							}
+							return (menu_move_sound);
+						}
+						else {
+							// double click
+							if ((clickdelay < 350) && !(b->generic.flags & (QMF_GRAYED|QMF_INACTIVE)))
+							{
+								return (Menu_ActivateItem( b->generic.parent, &b->generic ));
+							}
+						}
+					}
+				}
+
+				// absorbed, silent sound effect
+				return (menu_null_sound);
+			}
+			break;
+
+		case K_KP_HOME:
+		case K_HOME:
+			b->oldvalue = b->curvalue;
+			b->curvalue = 0;
+			b->top      = 0;
+
+			if (b->oldvalue != b->curvalue && b->generic.callback)
+			{
+				b->generic.callback( b, QM_GOTFOCUS );
+				return (menu_move_sound);
+			}
+			return (menu_buzz_sound);
+
+		case K_KP_END:
+		case K_END:
+			b->oldvalue = b->curvalue;
+			b->curvalue = b->numitems-1;
+			if( b->columns > 1 ) {
+				c = (b->curvalue / b->height + 1) * b->height;
+				b->top = c - (b->columns * b->height);
+			}
+			else {
+				b->top = b->curvalue - (b->height - 1);
+			}
+			if (b->top < 0)
+				b->top = 0;			
+
+			if (b->oldvalue != b->curvalue && b->generic.callback)
+			{
+				b->generic.callback( b, QM_GOTFOCUS );
+				return (menu_move_sound);
+			}
+			return (menu_buzz_sound);
+
+		case K_PGUP:
+		case K_KP_PGUP:
+			if( b->columns > 1 ) {
+				return menu_null_sound;
+			}
+
+			if (b->curvalue > 0)
+			{
+				b->oldvalue = b->curvalue;
+				b->curvalue -= b->height-1;
+				if (b->curvalue < 0)
+					b->curvalue = 0;
+				b->top = b->curvalue;
+				if (b->top < 0)
+					b->top = 0;
+
+				if (b->generic.callback)
+					b->generic.callback( b, QM_GOTFOCUS );
+
+				return (menu_move_sound);
+			}
+			return (menu_buzz_sound);
+
+		case K_PGDN:
+		case K_KP_PGDN:
+			if( b->columns > 1 ) {
+				return menu_null_sound;
+			}
+
+			if (b->curvalue < b->numitems-1)
+			{
+				b->oldvalue = b->curvalue;
+				b->curvalue += b->height-1;
+				if (b->curvalue > b->numitems-1)
+					b->curvalue = b->numitems-1;
+				b->top = b->curvalue - (b->height-1);
+				if (b->top < 0)
+					b->top = 0;
+
+				if (b->generic.callback)
+					b->generic.callback( b, QM_GOTFOCUS );
+
+				return (menu_move_sound);
+			}
+			return (menu_buzz_sound);
+
+		case K_KP_UPARROW:
+		case K_UPARROW:
+		case K_MWHEELUP:
+			if( b->curvalue == 0 ) {
+				return menu_buzz_sound;
+			}
+
+			b->oldvalue = b->curvalue;
+			b->curvalue--;
+
+			if( b->curvalue < b->top ) {
+				if( b->columns == 1 ) {
+					b->top--;
+				}
+				else {
+					b->top -= b->height;
+				}
+			}
+
+			if( b->generic.callback ) {
+				b->generic.callback( b, QM_GOTFOCUS );
+			}
+
+			return (menu_move_sound);
+
+		case K_KP_DOWNARROW:
+		case K_DOWNARROW:
+		case K_MWHEELDOWN:
+			if( b->curvalue == b->numitems - 1 ) {
+				return menu_buzz_sound;
+			}
+
+			b->oldvalue = b->curvalue;
+			b->curvalue++;
+
+			if( b->curvalue >= b->top + b->columns * b->height ) {
+				if( b->columns == 1 ) {
+					b->top++;
+				}
+				else {
+					b->top += b->height;
+				}
+			}
+
+			if( b->generic.callback ) {
+				b->generic.callback( b, QM_GOTFOCUS );
+			}
+
+			return menu_move_sound;
+
+		case K_KP_LEFTARROW:
+		case K_LEFTARROW:
+			if( b->columns == 1 ) {
+				return menu_null_sound;
+			}
+
+			if( b->curvalue < b->height ) {
+				return menu_buzz_sound;
+			}
+
+			b->oldvalue = b->curvalue;
+			b->curvalue -= b->height;
+
+			if( b->curvalue < b->top ) {
+				b->top -= b->height;
+			}
+
+			if( b->generic.callback ) {
+				b->generic.callback( b, QM_GOTFOCUS );
+			}
+
+			return menu_move_sound;
+
+		case K_KP_RIGHTARROW:
+		case K_RIGHTARROW:
+			if( b->columns == 1 ) {
+				return menu_null_sound;
+			}
+
+			c = b->curvalue + b->height;
+
+			if( c >= b->numitems ) {
+				return menu_buzz_sound;
+			}
+
+			b->oldvalue = b->curvalue;
+			b->curvalue = c;
+
+			if( b->curvalue > b->top + b->columns * b->height - 1 ) {
+				b->top += b->height;
+			}
+
+			if( b->generic.callback ) {
+				b->generic.callback( b, QM_GOTFOCUS );
+			}
+
+			return menu_move_sound;
+	}
+
+	// cycle look for ascii key inside list items
+	if ( !Q_isprint( key ) )
+		return (0);
+
+	// force to lower for case insensitive compare
+	if ( Q_isupper( key ) )
+	{
+		key -= 'A' - 'a';
+	}
+
+	// iterate list items
+	for (i=1; i<=b->numitems; i++)
+	{
+		j = (b->curvalue + i) % b->numitems;
+		c = b->itemnames[j][0];
+		if ( Q_isupper( c ) )
+		{
+			c -= 'A' - 'a';
+		}
+
+		if (c == key)
+		{
+			// set current item, mimic windows listbox scroll behavior
+			if (j < b->top)
+			{
+				// behind top most item, set this as new top
+				b->top = j;
+			}
+			else if (j > b->top+b->height-1)
+			{
+				// past end of list box, do page down
+				b->top = (j+1) - b->height;
+			}
+			
+			if (b->curvalue != j)
+			{
+				b->oldvalue = b->curvalue;
+				b->curvalue = j;
+				if (b->generic.callback)
+					b->generic.callback( b, QM_GOTFOCUS );
+				return ( menu_move_sound );			
+			}
+
+			return (menu_buzz_sound);
+		}
+	}
+
+	return (menu_buzz_sound);
+	}
+	return (menu_buzz_sound);
 }
 
 /*
@@ -1473,7 +1844,7 @@ void ScrollList_Draw( menulist_s *l )
 					u -= (l->width * SMALLCHAR_WIDTH) / 2 + 1;
 				}
 
-				UI_FillRect(u,y,l->width*SMALLCHAR_WIDTH,SMALLCHAR_HEIGHT+2,listbar_color);
+				UI_FillRect(u,y,l->width*SMALLCHAR_WIDTH,SMALLCHAR_HEIGHT,listbar_color);
 				color = text_color_highlight;
 
 				if (hasfocus)
@@ -1881,8 +2252,8 @@ sfxHandle_t Menu_DefaultKey( menuframework_s *m, int key )
 				break;
 				
 			case MTYPE_UIOBJECT:
-				if(b->type == 4){
-				sound = UIObject_Key( (menuobject_s*)item, &key );
+				if(b->type == 4 || b->type == 5){
+				sound = UIObject_Key( (menuobject_s*)item, key );
 				}
 				break;
 
