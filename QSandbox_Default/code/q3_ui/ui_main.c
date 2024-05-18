@@ -441,7 +441,7 @@ void UI_RegisterCvars( void ) {
 	trap_Cvar_SetValue( "r_subdivisions", 1 );
 	//trap_Cvar_SetValue( "r_dlightMode", 1 );
 	trap_Cvar_SetValue( "r_dlightSpecPower", 6 );
-	trap_Cvar_SetValue( "r_dlightSpecColor", 0.1 );
+	trap_Cvar_SetValue( "r_dlightSpecColor", 0.5 );
 	trap_Cvar_SetValue( "r_bloom_blend_base", 1 );
 	if(trap_Cvar_VariableValue("r_bloom_intensity") >= 0.5){
 	trap_Cvar_SetValue( "r_bloom_intensity", 0.1 );

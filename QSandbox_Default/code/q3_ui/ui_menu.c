@@ -453,6 +453,7 @@ void UI_MainMenu( void ) {
 	s_main.menu.fullscreen = qtrue;
 	s_main.menu.wrapAround = qtrue;
 	s_main.menu.showlogo = qtrue;
+	s_main.menu.native = qfalse;
 
 	s_main.modloader.generic.type		= MTYPE_BITMAP;
 	s_main.modloader.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;

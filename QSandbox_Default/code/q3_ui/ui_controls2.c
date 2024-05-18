@@ -284,7 +284,7 @@ static bind_t g_bindings[] =
 	{"ui_sandbox", 	"sandbox menu",	ID_SANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr uibuildprop", 	"sandbox last spawn",	ID_SANDBOXLST,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr uitoolmode", 	"sandbox tool mode",	ID_SANDBOXMODE,		ANIM_CHAT,		-1,				-1,		-1, -1},
-	{"as_run mgui spawn_menu", 	"new sandbox menu",	ID_NEWSANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
+	{"vstr lastui", 	"addon menu",	ID_NEWSANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{(char*)NULL,		(char*)NULL,		0,				0,				-1,				-1,		-1,	-1},
 };
 
@@ -345,7 +345,7 @@ static bind_t g_bindingsrus[] =
 	{"ui_sandbox", 	"спавн меню",	ID_SANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr uibuildprop", 	"песочница спавн обьекта",	ID_SANDBOXLST,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr uitoolmode", 	"песочница режим инструмента",	ID_SANDBOXMODE,		ANIM_CHAT,		-1,				-1,		-1, -1},
-	{"as_run mgui spawn_menu", 	"новое спавн меню",	ID_NEWSANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
+	{"vstr lastui", 	"меню аддонов",	ID_NEWSANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{(char*)NULL,		(char*)NULL,		0,				0,				-1,				-1,		-1,	-1},
 };
 

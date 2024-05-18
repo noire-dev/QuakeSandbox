@@ -1585,6 +1585,7 @@ if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_fontsize\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_corner\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_col\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_mode\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorinnerR\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorinnerG\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorinnerB\n", i));
@@ -1593,12 +1594,28 @@ if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {
 	return qtrue;
 }
 
+	if ( Q_stricmp (UI_Argv(0), "remapShader") == 0 ) {
+		char shader1[MAX_QPATH];
+		char shader2[MAX_QPATH];
+		char shader3[MAX_QPATH];
+
+		Q_strncpyz(shader1, UI_Argv(1), sizeof(shader1));
+		Q_strncpyz(shader2, UI_Argv(2), sizeof(shader2));
+		Q_strncpyz(shader3, UI_Argv(3), sizeof(shader3));
+
+		trap_R_RemapShader(shader1, shader2, shader3);
+
+		return qtrue;
+	}
+
+	if ( Q_stricmp (UI_Argv(0), "mgui") == 0 ) {
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("execscript \"mgui/%s\"", UI_ConcatArgs(1)));
+		return qtrue;
+	}
+
 if ( Q_stricmp (UI_Argv(0), "as_run") == 0 ) {
 	if ( Q_stricmp (UI_Argv(1), "syscommand") == 0 ) {
 		trap_System( va("\"%s\"", UI_ConcatArgs(2)));
-	}
-	if ( Q_stricmp (UI_Argv(1), "mgui") == 0 ) {
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("execscript \"mgui/pages/%s\"", UI_ConcatArgs(2)));
 	}
 	if ( Q_stricmp (UI_Argv(1), "if") == 0 ) {
 		if(!Q_stricmp (UI_Argv(3), "=")){
@@ -1950,6 +1967,52 @@ void UI_DrawHandlePic( float x, float y, float w, float h, qhandle_t hShader ) {
 	
 	UI_AdjustFrom640( &x, &y, &w, &h );
 	trap_R_DrawStretchPic( x, y, w, h, s0, t0, s1, t1, hShader );
+}
+
+void UI_DrawHandleModel( float x, float y, float w, float h, const char* model, int scale ) {
+	refdef_t		refdef;
+	refEntity_t		ent;
+	vec3_t			origin;
+	vec3_t			angles;
+	
+	// setup the refdef
+
+	memset( &refdef, 0, sizeof( refdef ) );
+	refdef.rdflags = RDF_NOWORLDMODEL;
+	AxisClear( refdef.viewaxis );
+
+	UI_AdjustFrom640( &x, &y, &w, &h );
+	refdef.x = x;
+	refdef.y = y;
+	refdef.width = w;
+	refdef.height = h;
+
+	refdef.fov_x = 90;
+	refdef.fov_y = 90;
+
+	refdef.time = uis.realtime;
+
+	origin[0] = scale;
+	origin[1] = 0;
+	origin[2] = 0;
+
+	trap_R_ClearScene();
+
+	// add the model
+
+	memset( &ent, 0, sizeof(ent) );
+
+	VectorSet( angles, 0, 180 - 6, 0 );
+	AnglesToAxis( angles, ent.axis );
+	ent.hModel = trap_R_RegisterModel( model );
+	VectorCopy( origin, ent.origin );
+	VectorCopy( origin, ent.lightingOrigin );
+	ent.renderfx = RF_LIGHTING_ORIGIN | RF_NOSHADOW;
+	VectorCopy( ent.origin, ent.oldorigin );
+
+	trap_R_AddRefEntityToScene( &ent );
+
+	trap_R_RenderScene( &refdef );
 }
 
 void UI_DrawBackgroundPic( qhandle_t hShader ) {

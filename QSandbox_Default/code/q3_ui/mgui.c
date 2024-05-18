@@ -36,7 +36,12 @@ if(s_mgui.item[UI_ArenaScriptAutoInt(va("mitem%i_%iarg", i, num))].type == 4){
 return s_mgui.item[UI_ArenaScriptAutoInt(va("mitem%i_%iarg", i, num))].field.buffer;
 }
 if(s_mgui.item[UI_ArenaScriptAutoInt(va("mitem%i_%iarg", i, num))].type == 5){
+if(s_mgui.item[UI_ArenaScriptAutoInt(va("mitem%i_%iarg", i, num))].mode <= 0){
 return s_mgui.item[UI_ArenaScriptAutoInt(va("mitem%i_%iarg", i, num))].itemnames[s_mgui.item[UI_ArenaScriptAutoInt(va("mitem%i_%iarg", i, num))].curvalue];
+}
+if(s_mgui.item[UI_ArenaScriptAutoInt(va("mitem%i_%iarg", i, num))].mode == 1){
+return va("%i", s_mgui.item[UI_ArenaScriptAutoInt(va("mitem%i_%iarg", i, num))].curvalue);
+}
 }
 return "Unknown type!";
 }
@@ -78,13 +83,78 @@ MGUI_MenuDraw
 ===============
 */
 
+refdef_t		mguirender[MAX_OBJECTS];
+refEntity_t		mguientity[MAX_OBJECTS];
+
 static void MGUI_MenuDraw( void ) {
+	int i;
+	int type;
+	char text[256];
+	char command[512];
+	char pic[256];
+	char initvalue[256];
+	vec4_t color_mgui[MAX_OBJECTS];
+	vec4_t color_mgui2[MAX_OBJECTS];
 	vec4_t			color1 = {0.85, 0.9, 1.0, 1};
+	
+	for ( i = 1; i < MAX_OBJECTS-1; i++ ) {
+	type = UI_ArenaScriptAutoInt(va("mitem%i_type", i));
+	if(type >= 1 && type <= 3 || type == 6){
+	trap_Cvar_VariableStringBuffer(va("mitem%i_text", i), text, sizeof( text ));
+	trap_Cvar_VariableStringBuffer(va("mitem%i_cmd", i), command, sizeof( command ));
+	trap_Cvar_VariableStringBuffer(va("mitem%i_file", i), pic, sizeof( pic ));
+	color_mgui[i][0] = UI_ArenaScriptAutoFloat(va("mitem%i_colorR", i));
+	color_mgui[i][1] = UI_ArenaScriptAutoFloat(va("mitem%i_colorG", i));
+	color_mgui[i][2] = UI_ArenaScriptAutoFloat(va("mitem%i_colorB", i));
+	color_mgui[i][3] = UI_ArenaScriptAutoFloat(va("mitem%i_colorA", i));
+	color_mgui2[i][0] = UI_ArenaScriptAutoFloat(va("mitem%i_colorinnerR", i));
+	color_mgui2[i][1] = UI_ArenaScriptAutoFloat(va("mitem%i_colorinnerG", i));
+	color_mgui2[i][2] = UI_ArenaScriptAutoFloat(va("mitem%i_colorinnerB", i));
+	color_mgui2[i][3] = UI_ArenaScriptAutoFloat(va("mitem%i_colorinnerA", i));
+	s_mgui.item[i].generic.id			= i;
+    s_mgui.item[i].generic.cmd 			= (char *)UI_Alloc(sizeof(UI_ArenaScriptAutoChar(command)));
+    s_mgui.item[i].generic.picn 		= (char *)UI_Alloc(sizeof(UI_ArenaScriptAutoChar(pic)));
+    s_mgui.item[i].string 				= (char *)UI_Alloc(sizeof(UI_ArenaScriptAutoChar(text)));
+	if(UI_ArenaScriptAutoFloat(va("mitem%i_xytype", i)) <= 1){
+	s_mgui.item[i].generic.x				= vx(UI_ArenaScriptAutoFloat(va("mitem%i_x", i)));
+	s_mgui.item[i].generic.y				= vy(UI_ArenaScriptAutoFloat(va("mitem%i_y", i)));
+	}
+	if(UI_ArenaScriptAutoFloat(va("mitem%i_xytype", i)) == 2){
+	s_mgui.item[i].generic.x				= UI_ArenaScriptAutoFloat(va("mitem%i_x", i));
+	s_mgui.item[i].generic.y				= UI_ArenaScriptAutoFloat(va("mitem%i_y", i));
+	}
+	if(UI_ArenaScriptAutoFloat(va("mitem%i_xytype", i)) == 3){
+	s_mgui.item[i].generic.x				= vxcalc(UI_ArenaScriptAutoFloat(va("mitem%i_x", i)));
+	s_mgui.item[i].generic.y				= vxcalc(UI_ArenaScriptAutoFloat(va("mitem%i_y", i)));
+	}
+	if(UI_ArenaScriptAutoFloat(va("mitem%i_whtype", i)) <= 1){
+	s_mgui.item[i].width				= vx(UI_ArenaScriptAutoFloat(va("mitem%i_w", i)));
+	s_mgui.item[i].height				= vy(UI_ArenaScriptAutoFloat(va("mitem%i_h", i)));
+	}
+	if(UI_ArenaScriptAutoFloat(va("mitem%i_whtype", i)) == 2){
+	s_mgui.item[i].width				= UI_ArenaScriptAutoFloat(va("mitem%i_w", i));
+	s_mgui.item[i].height				= UI_ArenaScriptAutoFloat(va("mitem%i_h", i));
+	}
+	if(UI_ArenaScriptAutoFloat(va("mitem%i_whtype", i)) == 3){
+	s_mgui.item[i].width				= vxcalc(UI_ArenaScriptAutoFloat(va("mitem%i_w", i)));
+	s_mgui.item[i].height				= vxcalc(UI_ArenaScriptAutoFloat(va("mitem%i_h", i)));
+	}
+	s_mgui.item[i].color				= color_mgui[i];
+	s_mgui.item[i].color2				= color_mgui2[i];
+	s_mgui.item[i].corner				= UI_ArenaScriptAutoInt(va("mitem%i_corner", i));
+	s_mgui.item[i].mode					= UI_ArenaScriptAutoInt(va("mitem%i_mode", i));
+	s_mgui.item[i].fontsize				= UI_ArenaScriptAutoFloat(va("mitem%i_fontsize", i));
+	s_mgui.item[i].style		    	= UI_SMALLFONT;
+	strcpy(s_mgui.item[i].string, UI_ArenaScriptAutoChar(text));
+	strcpy(s_mgui.item[i].generic.cmd, UI_ArenaScriptAutoChar(command));
+	strcpy(s_mgui.item[i].generic.picn, UI_ArenaScriptAutoChar(pic));
+	}
+	}
 
 	Menu_Draw( &s_mgui.menu );
 
 	if (uis.debug) {
-	UI_DrawString( vx(50), vy(0.4), "MGUI v1.1 by HyperNoiRe", UI_CENTER|UI_SMALLFONT, color1 );
+	UI_DrawString( vx(50), vy(0.4), "MGUI v1.2 by HyperNoiRe", UI_CENTER|UI_SMALLFONT, color1 );
 	}
 }
 
@@ -141,10 +211,9 @@ void UI_MGUI( void ) {
 	int i;
 	int type;
 	char text[256];
-	char command[256];
+	char command[512];
 	char pic[256];
 	char initvalue[256];
-	int		len;
 	vec4_t color_mgui[MAX_OBJECTS]	    = {1.00f, 0.00f, 1.00f, 1.00f};
 	vec4_t color_mgui2[MAX_OBJECTS]	    = {1.00f, 1.00f, 1.00f, 1.00f};
 
@@ -172,7 +241,7 @@ void UI_MGUI( void ) {
 
 	for ( i = 1; i < MAX_OBJECTS-1; i++ ) {
 	type = UI_ArenaScriptAutoInt(va("mitem%i_type", i));
-	if(type >= 1 && type <= 5){
+	if(type >= 1 && type <= 6){
 	trap_Cvar_VariableStringBuffer(va("mitem%i_text", i), text, sizeof( text ));
 	trap_Cvar_VariableStringBuffer(va("mitem%i_cmd", i), command, sizeof( command ));
 	trap_Cvar_VariableStringBuffer(va("mitem%i_file", i), pic, sizeof( pic ));
@@ -196,8 +265,6 @@ void UI_MGUI( void ) {
     s_mgui.item[i].string 				= (char *)UI_Alloc(sizeof(UI_ArenaScriptAutoChar(text)));
 	s_mgui.item[i].generic.callback		= MGUI_Event;
 	s_mgui.item[i].type					= type;
-	s_mgui.item[i].generic.x			= vx(UI_ArenaScriptAutoFloat(va("mitem%i_x", i)));
-	s_mgui.item[i].generic.y			= vy(UI_ArenaScriptAutoFloat(va("mitem%i_y", i)));
 	if(UI_ArenaScriptAutoFloat(va("mitem%i_xytype", i)) <= 1){
 	s_mgui.item[i].generic.x				= vx(UI_ArenaScriptAutoFloat(va("mitem%i_x", i)));
 	s_mgui.item[i].generic.y				= vy(UI_ArenaScriptAutoFloat(va("mitem%i_y", i)));
@@ -225,6 +292,7 @@ void UI_MGUI( void ) {
 	s_mgui.item[i].color				= color_mgui[i];
 	s_mgui.item[i].color2				= color_mgui2[i];
 	s_mgui.item[i].corner				= UI_ArenaScriptAutoInt(va("mitem%i_corner", i));
+	s_mgui.item[i].mode					= UI_ArenaScriptAutoInt(va("mitem%i_mode", i));
 	s_mgui.item[i].fontsize				= UI_ArenaScriptAutoFloat(va("mitem%i_fontsize", i));
 	s_mgui.item[i].style		    	= UI_SMALLFONT;
 	strcpy(s_mgui.item[i].string, UI_ArenaScriptAutoChar(text));
@@ -250,7 +318,7 @@ void UI_MGUI( void ) {
 	}
 
 	for ( i = 1; i < MAX_OBJECTS-1; i++ ) {
-		if(s_mgui.item[i].type >= 1){
+		if(s_mgui.item[i].type >= 1 && s_mgui.item[i].type <= 6){
 		if(s_mgui.item[i].type == 5){
 			LoadMguiList(i);
 		}

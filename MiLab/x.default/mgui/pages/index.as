@@ -1,96 +1,35 @@
 //default mgui menu
-mgui_init
+mgui_init					//mgui memory alloc
 
-//
-set mgui_ingame 0
-set mgui_scroll 0
+set mgui_ingame 0				//no draw background and no pause server
+set mgui_scroll 0				//scroll menu count
 
-set mitem1_type 1
-set mitem1_acttype 1
-set mitem1_xytype 1
-set mitem1_x 5
-set mitem1_y 5
-set mitem1_whtype 1
-set mitem1_w 90
-set mitem1_h 90
-set mitem1_text ""
-set mitem1_cmd ""
-set mitem1_file ""
-set mitem1_colorR 1
-set mitem1_colorG 0
-set mitem1_colorB 1
-set mitem1_colorA 1
-set mitem1_fontsize 3
-set mitem1_corner 25
-set mitem1_colorinnerR 1
-set mitem1_colorinnerG 1
-set mitem1_colorinnerB 1
-set mitem1_colorinnerA 0.5
+set mitem1_type 1				// object type: 1-button with color rect, 2-button with picture, 3-button with rect and picture, 4-text field, 5-list, 6-3d model
+set mitem1_acttype 1			// activation type: 1-activated, 2-lost focus, 3-got focus
+set mitem1_xytype 1				// x,y type: 1-percent, 2-real pixels (not recommended), 3-virtual pixels from 1920x1800
+set mitem1_x 0					// x coord value
+set mitem1_y 0					// y coord value
+set mitem1_whtype 1				// width,height type: 1-percent, 2-real pixels (not recommended), 3-virtual pixels from 1920x1800
+set mitem1_w 10					//width value
+set mitem1_h 10					//height value
+set mitem1_text ""				//display text for type(1,2,3,4,6); folder for type(5)
+set mitem1_cmd ""				//command line with %s arguments ex: "set name %s"
+set mitem1_1arg	0				//argument for command line (integer type with item id); 30 args supported mitem1_1arg, mitem1_2arg, mitem1_3arg ... mitem1_30arg
+set mitem1_2arg	0				//argument for command line
+set mitem1_3arg	0				//argument for command line
+set mitem1_file	""				//display picture for type(2,3); folder for type(5); model location for type (6)
+set mitem1_value ""				//initial value for type (4)
+set mitem1_colorR 1.0			//text color Red from 0.0 to 1.0
+set mitem1_colorG 1.0			//text color Green from 0.0 to 1.0
+set mitem1_colorB 1.0			//text color Blue from 0.0 to 1.0
+set mitem1_colorA 1.0			//text color Alpha from 0.0 to 1.0
+set mitem1_fontsize	1			//font size
+set mitem1_corner 25			//corner angle for type (1,3)
+set mitem1_col 1				//columns count for type (5)
+set mitem1_mode	1				//argument data mode for type (5): 1-selected item name, 2-selected item number
+set mitem1_colorinnerR 1.0		//background color Red from 0.0 to 1.0
+set mitem1_colorinnerG 1.0		//background color Green from 0.0 to 1.0
+set mitem1_colorinnerB 1.0		//background color Blue from 0.0 to 1.0
+set mitem1_colorinnerA 1.0		//background color Alpha from 0.0 to 1.0
 
-set mitem2_type 1
-set mitem2_acttype 1
-set mitem2_xytype 1
-set mitem2_x 6
-set mitem2_y 6
-set mitem2_whtype 1
-set mitem2_w 0
-set mitem2_h 0
-set mitem2_text "Hi, this is MGui!"
-set mitem2_cmd ""
-set mitem2_file ""
-set mitem2_colorR 0
-set mitem2_colorG 0
-set mitem2_colorB 0
-set mitem2_colorA 1
-set mitem2_fontsize 3
-set mitem2_corner 25
-set mitem2_colorinnerR 1
-set mitem2_colorinnerG 1
-set mitem2_colorinnerB 1
-set mitem2_colorinnerA 0.5
-
-set mitem3_type 1
-set mitem3_acttype 1
-set mitem3_xytype 1
-set mitem3_x 6
-set mitem3_y 14
-set mitem3_whtype 1
-set mitem3_w 0
-set mitem3_h 0
-set mitem3_text "This menu is located in mgui/pages/index.as"
-set mitem3_cmd ""
-set mitem3_file ""
-set mitem3_colorR 0
-set mitem3_colorG 1
-set mitem3_colorB 1
-set mitem3_colorA 1
-set mitem3_fontsize 2
-set mitem3_corner 25
-set mitem3_colorinnerR 1
-set mitem3_colorinnerG 1
-set mitem3_colorinnerB 1
-set mitem3_colorinnerA 0.5
-
-set mitem4_type 1
-set mitem4_acttype 1
-set mitem4_xytype 1
-set mitem4_x 44
-set mitem4_y 80
-set mitem4_whtype 1
-set mitem4_w 11
-set mitem4_h 5
-set mitem4_text "Close!"
-set mitem4_cmd "menuback"
-set mitem4_file ""
-set mitem4_colorR 0
-set mitem4_colorG 1
-set mitem4_colorB 1
-set mitem4_colorA 1
-set mitem4_fontsize 2
-set mitem4_corner 2
-set mitem4_colorinnerR 1
-set mitem4_colorinnerG 0.5
-set mitem4_colorinnerB 0.5
-set mitem4_colorinnerA 1
-
-mgui_load
+mgui_load						//draw mgui menu

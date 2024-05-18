@@ -387,7 +387,7 @@ void UIObject_Init( menuobject_s *b )
 	int	h;
 	int	l;
 
-if(b->type >= 1 && b->type <= 3){
+if(b->type >= 1 && b->type <= 3 || b->type == 6){
 	x = b->generic.x;
 	y = b->generic.y;
 	w = b->width;
@@ -480,7 +480,7 @@ void UIObject_Draw( menuobject_s *b )
 	int			column;
 	qboolean	hasfocus;
 	
-if(b->type >= 1 && b->type <= 3){
+if(b->type >= 1 && b->type <= 3 || b->type == 6){
 
 	x = b->generic.x;
 	y = b->generic.y;
@@ -498,6 +498,9 @@ if(b->type >= 1 && b->type <= 3){
 	if(b->type == 3){
 	UI_DrawRoundedRect(x, y, w, h, b->corner, b->color2);
 	UI_DrawHandlePic( x, y, w, h, b->shader );
+	}
+	if(b->type == 6){
+	UI_DrawHandleModel( x, y, w, h, b->generic.picn, b->corner );
 	}
 	UI_DrawStringCustom( x, y, b->string, b->style, b->color, b->fontsize );
 	

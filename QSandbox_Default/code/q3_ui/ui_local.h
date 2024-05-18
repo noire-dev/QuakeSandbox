@@ -397,6 +397,7 @@ typedef struct
 	menucommon_s	generic;
 	qhandle_t		shader;
 	int				type;
+	int				mode;
 	int				width;
 	int				height;
 	char 			*string;

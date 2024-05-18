@@ -610,45 +610,6 @@ s_sandboxmain.list.numitems			= trap_FS_GetFileList( va("spawnlists/%s", s_sandb
 
 /*
 =================
-SandboxMain_SpawnListUpdate2
-=================
-*/
-static void SandboxMain_SpawnListUpdate2( void ) {
-	int		y;
-	int		gametype;
-	char	info[MAX_INFO_STRING];
-	int		i;
-	int		len;
-	char	*configname;
-	
-	
-//uis.spawnlist_folder 				= trap_Cvar_VariableValue("sb_classnum");
-s_sandboxmain.list.numitems			= trap_FS_GetFileList( va("%s", sbc_folder.string), sbc_ext.string, s_sandboxmain.names, 524288 );
-
-	if (!s_sandboxmain.list.numitems) {
-		strcpy(s_sandboxmain.names,sbc_error.string);
-		s_sandboxmain.list.numitems = 1;
-	}
-	else if (s_sandboxmain.list.numitems > 65536)
-		s_sandboxmain.list.numitems = 65536;
-
-	configname = s_sandboxmain.names;
-	for ( i = 0; i < s_sandboxmain.list.numitems; i++ ) {
-		s_sandboxmain.list.itemnames[i] = configname;
-
-		// strip extension
-		len = strlen( configname );
-		if (!Q_stricmp(configname +  len - strlen( sbc_ext.string )-1,va(".%s", sbc_ext.string)))
-			configname[len-strlen( sbc_ext.string )-1] = '\0';
-
-		Q_strupr(configname);
-
-		configname += len + 1;
-	}
-}
-
-/*
-=================
 SandboxMain_MenuKey
 =================
 */
@@ -813,8 +774,8 @@ static void SandboxMain_MenuDraw( void ) {
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*10)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	}
 	if(uis.sb_tab == 10){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+10, 160+50, 20, color2);//props
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 20, color2);//classes
+	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+10, (160*2)+50+55, 20, color2);//props
+	//UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 20, color2);//classes
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*1)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*2)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*3)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
@@ -1022,30 +983,11 @@ s_sandboxmain.modif3.generic.name          		= "Music";
 s_sandboxmain.modif4.generic.name           	= "Weapon(id)";
 }
 if(uis.sb_tab == 10){
-s_sandboxmain.modif1.generic.name           	= sbc_opt1.string;
-s_sandboxmain.modif2.generic.name          		= sbc_opt2.string;
-s_sandboxmain.modif3.generic.name          		= sbc_opt3.string;
-s_sandboxmain.modif4.generic.name           	= sbc_opt4.string;
+s_sandboxmain.modif1.generic.name           	= "---";
+s_sandboxmain.modif2.generic.name          		= "---";
+s_sandboxmain.modif3.generic.name          		= "---";
+s_sandboxmain.modif4.generic.name           	= "---";
 }
-}
-
-const char* SandboxMain_CustomReturn(int number){
-if(number == 0){
-return s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue];
-}
-if(number == 1){
-return s_sandboxmain.modif1.field.buffer;
-}
-if(number == 2){
-return s_sandboxmain.modif2.field.buffer;
-}
-if(number == 3){
-return s_sandboxmain.modif3.field.buffer;
-}
-if(number == 4){
-return s_sandboxmain.modif4.field.buffer;
-}
-return s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue];
 }
 
 /*
@@ -1088,7 +1030,8 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		trap_Cmd_ExecuteText( EXEC_APPEND, va("execscript dscripts/%s.as\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 		}
 		if(uis.sb_tab == 10){
-		trap_Cmd_ExecuteText( EXEC_APPEND, va(sbc_string.string, SandboxMain_CustomReturn(sbc_arg0.integer), SandboxMain_CustomReturn(sbc_arg1.integer), SandboxMain_CustomReturn(sbc_arg2.integer), SandboxMain_CustomReturn(sbc_arg3.integer), SandboxMain_CustomReturn(sbc_arg4.integer)) );
+		UI_PopMenu();
+		trap_Cmd_ExecuteText( EXEC_APPEND, va("mgui %s; set lastui mgui %s\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 		}
 		break;
 		
@@ -1171,7 +1114,8 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		trap_Cmd_ExecuteText( EXEC_APPEND, va("execscript dscripts/%s.as\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 		}
 		if(uis.sb_tab == 10){
-		trap_Cmd_ExecuteText( EXEC_APPEND, va(sbc_string.string, SandboxMain_CustomReturn(sbc_arg0.integer), SandboxMain_CustomReturn(sbc_arg1.integer), SandboxMain_CustomReturn(sbc_arg2.integer), SandboxMain_CustomReturn(sbc_arg3.integer), SandboxMain_CustomReturn(sbc_arg4.integer)) );
+		UI_PopMenu();
+		trap_Cmd_ExecuteText( EXEC_APPEND, va("mgui %s; set lastui mgui %s\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 		}
 		break;
 	
@@ -1186,10 +1130,6 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		if(uis.sb_tab == 6){
 		uis.spawnlist_folder = s_sandboxmain.classlist.curvalue;
 		SandboxMain_SpawnListUpdate();
-		}
-		if(uis.sb_tab == 10){
-		trap_Cmd_ExecuteText( EXEC_APPEND, va("execscript tabs/%s.as\n", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue]) );
-		SandboxMain_SpawnListUpdate2();
 		}
 		break;
 		
@@ -1247,16 +1187,16 @@ void SandboxMain_MenuInit( void ) {
 	//uis.cursorx = 319;
 	//uis.cursory = 80;
 
-s_sandboxmain.tab1.string           = "Props";
+s_sandboxmain.tab1.string           = "Create";
 s_sandboxmain.tab2.string           = "Settings";
-s_sandboxmain.tab3.string           = "NPC";
+s_sandboxmain.tab3.string           = "NPCs";
 s_sandboxmain.tab4.string           = "Items";
 s_sandboxmain.tab5.string           = "Admin";
-s_sandboxmain.tab6.string           = "Spawnlist";
+s_sandboxmain.tab6.string           = "Lists";
 s_sandboxmain.tab7.string           = "Shaders";
 s_sandboxmain.tab8.string           = "Themes";
 s_sandboxmain.tab9.string           = "Scripts";
-s_sandboxmain.tab10.string           = "Custom";
+s_sandboxmain.tab10.string          = "Addons";
 s_sandboxmain.savemap.string		= "Save map";
 s_sandboxmain.loadmap.string		= "Load map";
 s_sandboxmain.priv.generic.name			= "Private:";
@@ -1890,6 +1830,19 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.spawnobject.string          		= "Execute";
 	}
 	if(uis.sb_tab == 10){
+	s_sandboxmain.list.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
+	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
+	s_sandboxmain.list.generic.id		= ID_LIST;
+	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.list.generic.y		= 70;
+	s_sandboxmain.list.width			= 28;
+	s_sandboxmain.list.height			= 15+18;
+	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "mgui", "as", s_sandboxmain.names, 524288 );
+	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
+	s_sandboxmain.list.columns			= 1;
+	s_sandboxmain.list.color			= s_sandboxmain_color1;
+	
 	s_sandboxmain.classlist.generic.type		= MTYPE_SCROLLLIST;
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
@@ -1898,23 +1851,10 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.classlist.generic.y		= 215 + 70;
 	s_sandboxmain.classlist.width			= 28;
 	s_sandboxmain.classlist.height			= 15;
-	s_sandboxmain.classlist.numitems		= trap_FS_GetFileList( va("tabs", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue]), "as", s_sandboxmain.names2, 524288 );
-	s_sandboxmain.classlist.itemnames		= (const char **)s_sandboxmain.classeslist;
+	s_sandboxmain.classlist.numitems		= 118;
+	s_sandboxmain.classlist.itemnames		= (const char **)s_sandboxmain.botclasslist;
 	s_sandboxmain.classlist.columns			= 1;
 	s_sandboxmain.classlist.color			= s_sandboxmain_color1;
-		
-	s_sandboxmain.list.generic.type		= MTYPE_SCROLLLIST;
-	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
-	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
-	s_sandboxmain.list.generic.id		= ID_LIST;
-	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
-	s_sandboxmain.list.generic.y		= 70;
-	s_sandboxmain.list.width			= 28;
-	s_sandboxmain.list.height			= 15;
-	s_sandboxmain.list.numitems			= trap_FS_GetFileList( va("%s", sbc_folder.string), sbc_ext.string, s_sandboxmain.names, 524288 );
-	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
-	s_sandboxmain.list.columns			= 1;
-	s_sandboxmain.list.color			= s_sandboxmain_color1;
 	//y += 20;
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
@@ -1931,10 +1871,10 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.classtext.color  					= color_red;
 	s_sandboxmain.classtext.style  					= UI_BIGFONT;
 	
-	s_sandboxmain.propstext.string  				= sbc_tabname.string;
-	s_sandboxmain.classtext.string  				= "Tabs:";
+	s_sandboxmain.propstext.string  				= "Addons:";
+	s_sandboxmain.classtext.string  				= "";
 	s_sandboxmain.modif0.generic.name       		= "---";
-	s_sandboxmain.spawnobject.string           		= sbc_btn.string;
+	s_sandboxmain.spawnobject.string           		= "Open";
 	}
 	
 	s_sandboxmain.toolslist.generic.type		= MTYPE_SCROLLLIST;
@@ -2114,29 +2054,8 @@ if(uis.sb_tab == 9){
 	}
 }
 if(uis.sb_tab == 10){	
-	if (!s_sandboxmain.classlist.numitems) {
-		strcpy(s_sandboxmain.names2,"No lists");
-		s_sandboxmain.classlist.numitems = 1;
-	}
-	else if (s_sandboxmain.classlist.numitems > 65536)
-		s_sandboxmain.classlist.numitems = 65536;
-
-	configname = s_sandboxmain.names2;
-	for ( i = 0; i < s_sandboxmain.classlist.numitems; i++ ) {
-		s_sandboxmain.classlist.itemnames[i] = configname;
-
-		// strip extension
-		len = strlen( configname );
-		if (!Q_stricmp(configname +  len - 3,".as"))
-			configname[len-3] = '\0';
-
-		Q_strupr(configname);
-
-		configname += len + 1;
-	}
-	
 	if (!s_sandboxmain.list.numitems) {
-		strcpy(s_sandboxmain.names,sbc_error.string);
+		strcpy(s_sandboxmain.names,"No addons");
 		s_sandboxmain.list.numitems = 1;
 	}
 	else if (s_sandboxmain.list.numitems > 65536)
@@ -2148,8 +2067,8 @@ if(uis.sb_tab == 10){
 
 		// strip extension
 		len = strlen( configname );
-		if (!Q_stricmp(configname +  len - strlen( sbc_ext.string )-1,va(".%s", sbc_ext.string)))
-			configname[len-strlen( sbc_ext.string )-1] = '\0';
+		if (!Q_stricmp(configname +  len - 3,".as"))
+			configname[len-3] = '\0';
 
 		Q_strupr(configname);
 
@@ -2409,9 +2328,9 @@ if(uis.sb_tab == 10){
 	}
 	if(uis.sb_tab == 10){
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.propstext );
-	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.classtext );
+	//Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.classtext );
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.list );
-	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.classlist );
+	//Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.classlist );
 	}
 	
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.toolslist );
@@ -2436,9 +2355,6 @@ if(uis.sb_tab == 10){
 	
 	if(uis.sb_tab == 6){
 	SandboxMain_SpawnListUpdate();
-	}
-	if(uis.sb_tab == 10){
-	SandboxMain_SpawnListUpdate2();
 	}
 }
 
