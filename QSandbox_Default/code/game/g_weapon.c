@@ -93,7 +93,7 @@ void Laser_Think( gentity_t *self )	{
 	//Set Aiming Directions
 	AngleVectors(self->parent->client->ps.viewangles, forward, right, up);
 	CalcMuzzlePoint(self->parent, forward, right, up, start);
-	VectorMA (start, 8192, forward, end);
+	VectorMA (start, 999, forward, end);
 	VectorScale( forward, 20, forward );
 
 	//Trace Position

@@ -2686,7 +2686,7 @@ static void CG_LaserSight( centity_t *cent )  {
 		trap_R_AddRefEntityToScene( &ent );
 	}
 	else	{*/
-		trap_R_AddLightToScene(ent.origin, 700, 0.2, 0.2, 0.2);
+		trap_R_AddLightToScene(ent.origin, 700, 0.3, 0.3, 0.3);
 //	}
 
 	

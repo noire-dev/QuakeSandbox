@@ -386,6 +386,7 @@ void UIObject_Init( menuobject_s *b )
 	int	w;
 	int	h;
 	int	l;
+	int	len;
 
 if(b->type >= 1 && b->type <= 3 || b->type == 6){
 	x = b->generic.x;
@@ -441,21 +442,54 @@ if(b->type == 5){
 		b->columns = 1;
 		b->seperation = 0;
 	}
-	else if( !b->seperation ) {
-		b->seperation = 3;
-	}
-
+	if(b->styles <= 1){
 	w = ( (b->width + b->seperation) * b->columns - b->seperation) * (SMALLCHAR_WIDTH*b->fontsize);
+	}
+	if(b->styles == 2){
+	w = ( (b->width + b->seperation) * b->columns - b->seperation) * (SMALLCHAR_WIDTH);
+	}
 
 	b->generic.left   =	b->generic.x;
 	b->generic.top    = b->generic.y;	
 	b->generic.right  =	b->generic.x + w;
+	if(b->styles <= 1){
 	b->generic.bottom =	b->generic.y + b->height * (SMALLCHAR_HEIGHT*b->fontsize);
+	}
+	if(b->styles == 2){
+	b->generic.bottom =	b->generic.y + b->height * (SMALLCHAR_WIDTH*b->width);
+	}
 
 	if( b->generic.flags & QMF_CENTER_JUSTIFY ) {
 		b->generic.left -= w / 2;
 		b->generic.right -= w / 2;
 	}
+}
+
+if(b->type == 7){
+	// calculate bounds
+	if (b->generic.text)
+		len = strlenru(b->generic.text);
+	else
+		len = 0;
+	
+
+	b->generic.left   = b->generic.x - (len+1)*(SMALLCHAR_WIDTH*b->fontsize);
+	b->generic.right  = b->generic.x + 6*(SMALLCHAR_WIDTH*b->fontsize);
+	b->generic.top    = b->generic.y;
+	b->generic.bottom = b->generic.y + (SMALLCHAR_HEIGHT*b->fontsize);
+}
+
+if(b->type == 8){
+	// calculate bounds
+	if (b->generic.text)
+		len = strlenru(b->generic.text);
+	else
+		len = 0;
+
+	b->generic.left   = b->generic.x - (len+1)*(SMALLCHAR_WIDTH*b->fontsize); 
+	b->generic.right  = b->generic.x + (SLIDER_RANGE+2+1)*(SMALLCHAR_WIDTH*b->fontsize);
+	b->generic.top    = b->generic.y;
+	b->generic.bottom = b->generic.y + (SMALLCHAR_HEIGHT*b->width);
 }
 
 }
@@ -479,6 +513,8 @@ void UIObject_Draw( menuobject_s *b )
 	int			base;
 	int			column;
 	qboolean	hasfocus;
+	int			val;
+	int			button;
 	
 if(b->type >= 1 && b->type <= 3 || b->type == 6){
 
@@ -569,10 +605,19 @@ if(b->type == 5){
 			{
 				u = x - 2;
 				if( b->generic.flags & QMF_CENTER_JUSTIFY ) {
+					if(b->styles <= 1){
 					u -= (b->width * (SMALLCHAR_WIDTH*b->fontsize)) / 2 + 1;
+					}
+					if(b->styles == 2){
+					u -= (b->width * (SMALLCHAR_WIDTH)) / 2 + 1;
+					}
 				}
-
+				if(b->styles <= 1){
 				UI_FillRect(u,y,(b->width*SMALLCHAR_WIDTH)*b->fontsize,(SMALLCHAR_HEIGHT)*b->fontsize,listbar_color);
+				}
+				if(b->styles == 2){
+				UI_FillRect(u,y,(b->width*SMALLCHAR_WIDTH),(b->width*SMALLCHAR_WIDTH),listbar_color);
+				}
 				color = text_color_highlight;
 
 				if (hasfocus)
@@ -588,17 +633,152 @@ if(b->type == 5){
 			if( b->generic.flags & QMF_CENTER_JUSTIFY ) {
 				style |= UI_CENTER;
 			}
-			//if(!b->itemnames2[i]){
+			if(b->styles <= 0){
 			UI_DrawStringCustom(x,y,b->itemnames[i],style,color, b->fontsize );
-			//}
-			//if(b->itemnames2[i]){
-			//UI_DrawString(x,y,b->itemnames2[i],style,color);
-			//}
-
+			}
+			if(b->styles == 1){
+			UI_DrawStringCustom(x+SMALLCHAR_HEIGHT*b->fontsize,y,b->itemnames[i],style,color, b->fontsize );
+			b->shader = trap_R_RegisterShaderNoMip( va("%s/%s", b->string, b->itemnames[i]) );
+			if(b->shader){
+			UI_DrawHandlePic( x, y, SMALLCHAR_HEIGHT*b->fontsize, SMALLCHAR_HEIGHT*b->fontsize, trap_R_RegisterShaderNoMip( va("%s/%s", b->string, b->itemnames[i]) ) );
+			}
+			b->model = trap_R_RegisterModel( va("%s/%s", b->string, b->itemnames[i]) );
+			if(b->model){
+			UI_DrawHandleModel( x, y, SMALLCHAR_HEIGHT*b->fontsize, SMALLCHAR_HEIGHT*b->fontsize, va("%s/%s", b->string, b->itemnames[i]), b->corner );
+			}
+			if(!b->shader && !b->model){
+			UI_DrawHandlePicFile( x, y, SMALLCHAR_HEIGHT*b->fontsize, SMALLCHAR_HEIGHT*b->fontsize, va("%s/%s", b->string, b->itemnames[i]) );
+			}
+			}
+			if(b->styles == 2){
+			b->shader = trap_R_RegisterShaderNoMip( va("%s/%s", b->string, b->itemnames[i]) );
+			if(b->shader){
+			UI_DrawHandlePic( x, y, SMALLCHAR_WIDTH*b->width, SMALLCHAR_WIDTH*b->width, trap_R_RegisterShaderNoMip( va("%s/%s", b->string, b->itemnames[i]) ) );
+			}
+			b->model = trap_R_RegisterModel( va("%s/%s", b->string, b->itemnames[i]) );
+			if(b->model){
+			UI_DrawHandleModel( x, y, (float)(SMALLCHAR_WIDTH*b->width), (float)(SMALLCHAR_WIDTH*b->width), va("%s/%s", b->string, b->itemnames[i]), b->corner );
+			}
+			if(!b->shader && !b->model){
+			UI_DrawHandlePicFile( x, y, (float)(SMALLCHAR_WIDTH*b->width), (float)(SMALLCHAR_WIDTH*b->width), va("%s/%s", b->string, b->itemnames[i]) );
+			}
+			UI_DrawStringCustom(x,y,b->itemnames[i],style,color, b->fontsize );
+			}
+			if(b->styles <= 1){
 			y += (SMALLCHAR_HEIGHT*b->fontsize);
+			}
+			if(b->styles == 2){
+			y += (b->width*SMALLCHAR_WIDTH);
+			}
 		}
-		x += (b->width + b->seperation) * (SMALLCHAR_WIDTH*b->fontsize);
+		if(b->styles <= 1){
+			x += (b->width + b->seperation) * (SMALLCHAR_WIDTH*b->fontsize);
+		}
+		if(b->styles == 2){
+			x += (b->width + b->seperation) * (SMALLCHAR_WIDTH);
+		}
 	}
+}
+
+if(b->type == 7){
+	x = b->generic.x;
+	y = b->generic.y;
+
+	focus = (b->generic.parent->cursor == b->generic.menuPosition);
+
+	if ( b->generic.flags & QMF_GRAYED )
+	{
+		color = text_color_disabled;
+		style = UI_LEFT|UI_SMALLFONT;
+	}
+	else if ( focus )
+	{
+		color = text_color_highlight;
+		style = UI_LEFT|UI_PULSE|UI_SMALLFONT;
+	}
+	else
+	{
+		if(!b->color){
+		color = text_color_normal;
+		} else {
+		color = b->color;
+		}
+		style = UI_LEFT|UI_SMALLFONT;
+	}
+
+	if ( focus )
+	{
+		// draw cursor
+		//UI_FillRect( b->generic.left, b->generic.top, b->generic.right-b->generic.left+1, b->generic.bottom-b->generic.top+1, listbar_color ); 
+		UI_DrawCharCustom( x, y, 13, UI_CENTER|UI_BLINK|UI_SMALLFONT, color, b->fontsize);
+	}
+
+	if ( b->generic.text )
+		UI_DrawStringCustom( x - SMALLCHAR_WIDTH, y, b->generic.text, UI_RIGHT|UI_SMALLFONT, color, b->fontsize );
+
+	if ( !b->curvalue )
+	{
+		UI_DrawHandlePic( x + SMALLCHAR_WIDTH*b->fontsize, y + 2, 12*b->fontsize, 12*b->fontsize, uis.rb_off);
+		UI_DrawStringCustom( x + SMALLCHAR_WIDTH*b->fontsize + 12*b->fontsize, y, "off", style, color, b->fontsize );
+	}
+	else
+	{
+		UI_DrawHandlePic( x + SMALLCHAR_WIDTH*b->fontsize, y + 2, 12*b->fontsize, 12*b->fontsize, uis.rb_on );
+		UI_DrawStringCustom( x + SMALLCHAR_WIDTH*b->fontsize + 12*b->fontsize, y, "on", style, color, b->fontsize );
+	}
+}
+
+if(b->type == 8){
+	x =	b->generic.x;
+	y = b->generic.y;
+	val = b->curvalue;
+	focus = (b->generic.parent->cursor == b->generic.menuPosition);
+
+	if( b->generic.flags & QMF_GRAYED ) {
+		color = text_color_disabled;
+		style = UI_SMALLFONT;
+	}
+	else if( focus ) {
+		color  = text_color_highlight;
+		style = UI_SMALLFONT | UI_PULSE;
+	}
+	else {
+		color = b->color;
+		style = UI_SMALLFONT;
+	}
+
+	// draw label
+	UI_DrawStringCustom( x - (SMALLCHAR_WIDTH*b->fontsize), y, b->generic.text, UI_RIGHT|style, color, b->fontsize );
+	UI_DrawStringCustom( x + (SMALLCHAR_WIDTH*b->fontsize)*11, y, va(" %i", val), UI_LEFT|style, colorGreen, b->fontsize );
+
+	// draw slider
+	UI_SetColor( color );
+	UI_DrawHandlePic( x + (SMALLCHAR_WIDTH*b->fontsize), y, 93*b->fontsize, 11*b->fontsize, sliderBar );
+	UI_SetColor( NULL );
+
+	// clamp thumb
+	if( b->maxvalue > b->minvalue )	{
+		b->range = ( b->curvalue - b->minvalue ) / ( float ) ( b->maxvalue - b->minvalue );
+		if( b->range < 0 ) {
+			b->range = 0;
+		}
+		else if( b->range > 1) {
+			b->range = 1;
+		}
+	}
+	else {
+		b->range = 0;
+	}
+
+	// draw thumb
+	if( style & UI_PULSE) {
+		button = sliderButton_1;
+	}
+	else {
+		button = sliderButton_0;
+	}
+
+	UI_DrawHandlePic( (int)( x + 2*(SMALLCHAR_WIDTH*b->fontsize) + (SLIDER_RANGE-1)*(SMALLCHAR_WIDTH*b->fontsize)* b->range ) - 2, y - 2*b->fontsize, 9*b->fontsize, 16*b->fontsize, button );
 }
 
 }
@@ -623,6 +803,8 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 	int	index;
 	int clickdelay;
 	int keycode;
+	sfxHandle_t	sound;
+	int			oldvalue;
 	if(b->type == 4){
 
 	keycode = key;
@@ -676,10 +858,16 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 				// check scroll region
 				x = b->generic.x;
 				y = b->generic.y;
+				if(b->styles <= 1){
 				w = ( (b->width + b->seperation) * b->columns - b->seperation) * (SMALLCHAR_WIDTH*b->fontsize);
+				}
+				if(b->styles == 2){
+				w = ( (b->width + b->seperation) * b->columns - b->seperation) * (SMALLCHAR_WIDTH);
+				}
 				if( b->generic.flags & QMF_CENTER_JUSTIFY ) {
 					x -= w / 2;
 				}
+				if(b->styles <= 1){
 				if (UI_CursorInRect( x, y, w, b->height*(SMALLCHAR_HEIGHT*b->fontsize) ))
 				{
 					cursorx = (uis.cursorx - x)/(SMALLCHAR_WIDTH*b->fontsize);
@@ -708,6 +896,38 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 							}
 						}
 					}
+				}
+				}
+				if(b->styles == 2){
+				if (UI_CursorInRect( x, y, w, b->height * (SMALLCHAR_WIDTH*b->width) ))
+				{
+					cursorx = (uis.cursorx - x)/(SMALLCHAR_WIDTH);
+					column = cursorx / (b->width + b->seperation);
+					cursory = (uis.cursory - y)/(SMALLCHAR_WIDTH*b->width);
+					index = column * b->height + cursory;
+					if (b->top + index < b->numitems)
+					{
+						b->oldvalue = b->curvalue;
+						b->curvalue = b->top + index;
+
+						clickdelay = uis.realtime - clicktime;
+						clicktime = uis.realtime;
+						if (b->oldvalue != b->curvalue)
+						{
+							if (b->generic.callback) {
+								b->generic.callback( b, QM_GOTFOCUS );
+							}
+							return (menu_move_sound);
+						}
+						else {
+							// double click
+							if ((clickdelay < 350) && !(b->generic.flags & (QMF_GRAYED|QMF_INACTIVE)))
+							{
+								return (Menu_ActivateItem( b->generic.parent, &b->generic ));
+							}
+						}
+					}
+				}
 				}
 
 				// absorbed, silent sound effect
@@ -943,6 +1163,82 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 
 	return (menu_buzz_sound);
 	}
+if(b->type == 7){
+	switch (key)
+	{
+		case K_MOUSE1:
+			if (!(b->generic.flags & QMF_HASMOUSEFOCUS))
+				break;
+
+		case K_JOY1:
+		case K_JOY2:
+		case K_JOY3:
+		case K_JOY4:
+		case K_ENTER:
+		case K_KP_ENTER:
+		case K_KP_LEFTARROW:
+		case K_LEFTARROW:
+		case K_KP_RIGHTARROW:
+		case K_RIGHTARROW:
+			b->curvalue = !b->curvalue;
+			if ( b->generic.callback )
+				b->generic.callback( b, QM_ACTIVATED );
+
+			return (menu_move_sound);
+	}
+}
+
+if(b->type == 8){
+	switch (key)
+	{
+		case K_MOUSE1:
+			x           = uis.cursorx - b->generic.x - 2*(SMALLCHAR_WIDTH*b->fontsize);
+			oldvalue    = b->curvalue;
+			b->curvalue = (x/(float)(SLIDER_RANGE*(SMALLCHAR_WIDTH*b->fontsize))) * (b->maxvalue-b->minvalue) + b->minvalue;
+
+			if (b->curvalue < b->minvalue)
+				b->curvalue = b->minvalue;
+			else if (b->curvalue > b->maxvalue)
+				b->curvalue = b->maxvalue;
+			if (b->curvalue != oldvalue)
+				sound = menu_move_sound;
+			else
+				sound = 0;
+			break;
+
+		case K_KP_LEFTARROW:
+		case K_LEFTARROW:
+			if (b->curvalue > b->minvalue)
+			{
+				b->curvalue--;
+				sound = menu_move_sound;
+			}
+			else
+				sound = menu_buzz_sound;
+			break;			
+
+		case K_KP_RIGHTARROW:
+		case K_RIGHTARROW:
+			if (b->curvalue < b->maxvalue)
+			{
+				b->curvalue++;
+				sound = menu_move_sound;
+			}
+			else
+				sound = menu_buzz_sound;
+			break;			
+
+		default:
+			// key not handled
+			sound = 0;
+			break;
+	}
+
+	if ( sound && b->generic.callback )
+		b->generic.callback( b, QM_ACTIVATED );
+
+	return (sound);
+}
 	return (menu_buzz_sound);
 }
 
@@ -2255,7 +2551,7 @@ sfxHandle_t Menu_DefaultKey( menuframework_s *m, int key )
 				break;
 				
 			case MTYPE_UIOBJECT:
-				if(b->type == 4 || b->type == 5){
+				if(b->type == 4 || b->type == 5 || b->type == 7 || b->type == 8){
 				sound = UIObject_Key( (menuobject_s*)item, key );
 				}
 				break;

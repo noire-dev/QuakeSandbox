@@ -91,21 +91,7 @@ extern vmCvar_t	sb_classnum;
 extern vmCvar_t	sb_toolnum;
 extern vmCvar_t	sb_tab;
 
-extern vmCvar_t	sbc_opt1;
-extern vmCvar_t	sbc_opt2;
-extern vmCvar_t	sbc_opt3;
-extern vmCvar_t	sbc_opt4;
-extern vmCvar_t	sbc_string;
-extern vmCvar_t	sbc_ext;
-extern vmCvar_t	sbc_folder;
-extern vmCvar_t	sbc_tabname;
-extern vmCvar_t	sbc_btn;
-extern vmCvar_t	sbc_error;
-extern vmCvar_t	sbc_arg0;
-extern vmCvar_t	sbc_arg1;
-extern vmCvar_t	sbc_arg2;
-extern vmCvar_t	sbc_arg3;
-extern vmCvar_t	sbc_arg4;
+extern vmCvar_t	mgui_api_active;
 
 extern vmCvar_t	sbt_color0_0;
 extern vmCvar_t	sbt_color0_1;
@@ -307,6 +293,7 @@ typedef struct
 	char *text;
 	char *picn;
 	char *cmd;
+	char *cmd2;
 	int	id;
 	int x, y;
 	int xoffset, yoffset;
@@ -396,12 +383,14 @@ typedef struct
 {
 	menucommon_s	generic;
 	qhandle_t		shader;
+	qhandle_t		model;
 	int				type;
 	int				mode;
 	int				width;
 	int				height;
 	char 			*string;
 	int				style;
+	int				styles;
 	float*			color;
 	float*			color2;
 	int				corner;
@@ -412,12 +401,18 @@ typedef struct
 	int curvalue;
 	int	numitems;
 	int	top;
+	
 		
 	const char **itemnames;
 	const char **itemnames2;
 
 	int	columns;
 	int	seperation;
+	
+	int minvalue;
+	int maxvalue;
+
+	float range;
 } menuobject_s;
 
 typedef struct

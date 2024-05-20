@@ -101,21 +101,7 @@ vmCvar_t	sb_classnum;
 vmCvar_t	sb_toolnum;
 vmCvar_t	sb_tab;
 
-vmCvar_t	sbc_opt1;
-vmCvar_t	sbc_opt2;
-vmCvar_t	sbc_opt3;
-vmCvar_t	sbc_opt4;
-vmCvar_t	sbc_string;
-vmCvar_t	sbc_ext;
-vmCvar_t	sbc_folder;
-vmCvar_t	sbc_tabname;
-vmCvar_t	sbc_btn;
-vmCvar_t	sbc_error;
-vmCvar_t	sbc_arg0;
-vmCvar_t	sbc_arg1;
-vmCvar_t	sbc_arg2;
-vmCvar_t	sbc_arg3;
-vmCvar_t	sbc_arg4;
+vmCvar_t	mgui_api_active;
 
 vmCvar_t	sbt_color0_0;
 vmCvar_t	sbt_color0_1;
@@ -266,21 +252,7 @@ static cvarTable_t		cvarTable[] = {
 	{ &sb_toolnum, "sb_toolnum", "0", CVAR_ARCHIVE },
 	{ &sb_tab, "sb_tab", "1", 0 },
 	
-	{ &sbc_opt1, "sbc_opt1", "arg1", 0 },
-	{ &sbc_opt2, "sbc_opt2", "arg2", 0 },
-	{ &sbc_opt3, "sbc_opt3", "arg3", 0 },
-	{ &sbc_opt4, "sbc_opt4", "arg4", 0 },
-	{ &sbc_string, "sbc_string", "cmd %s %s %s %s %s", 0 },
-	{ &sbc_ext, "sbc_ext", "", 0 },
-	{ &sbc_folder, "sbc_folder", "", 0 },
-	{ &sbc_tabname, "sbc_tabname", "Tab:", 0 },
-	{ &sbc_btn, "sbc_btn", "Button", 0 },
-	{ &sbc_error, "sbc_error", "No text", 0 },
-	{ &sbc_arg0, "sbc_arg0", "0", 0 },
-	{ &sbc_arg1, "sbc_arg1", "1", 0 },
-	{ &sbc_arg2, "sbc_arg2", "2", 0 },
-	{ &sbc_arg3, "sbc_arg3", "3", 0 },
-	{ &sbc_arg4, "sbc_arg4", "4", 0 },
+	{ &mgui_api_active, "mgui_api_active", "0", 0 },
 	
 	{ &sbt_color0_0,  "sbt_color0_0", "1", 	 CVAR_ARCHIVE },
 	{ &sbt_color0_1,  "sbt_color0_1", "1", 	 CVAR_ARCHIVE },

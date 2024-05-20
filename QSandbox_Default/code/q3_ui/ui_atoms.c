@@ -136,7 +136,7 @@ void UI_PopMenu (void)
 	uis.menuscroll = 0;
 
 	if (uis.menusp < 0)
-		trap_Error ("UI Restarted: press any key");
+		UI_ForceMenuOff ();
 
 	if (uis.menusp) {
 		uis.activemenu = uis.stack[uis.menusp-1];
@@ -1531,6 +1531,16 @@ if ( Q_stricmp (UI_Argv(0), "mgui_load") == 0 ) {
 	return qtrue;
 }
 
+if ( Q_stricmp (UI_Argv(0), "mguicall") == 0 ) {
+	if( Q_stricmp (UI_Argv(1), "listvalue") == 0 ){
+	UI_MGUI_Edit( 1, atoi(UI_Argv(2)), atoi(UI_Argv(3)), NULL );
+	}
+	if( Q_stricmp (UI_Argv(1), "press") == 0 ){
+	UI_MGUI_Edit( 2, atoi(UI_Argv(2)), NULL, UI_Argv(3) );
+	}
+	return qtrue;
+}
+
 if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {
 	UI_MGUI_Clear();
 	trap_Cmd_ExecuteText( EXEC_NOW, "unset mgui_ingame\n");
@@ -1538,14 +1548,17 @@ if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {
 	for ( i = 1; i < 250; i++ ) {
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_type\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_acttype\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_xytype\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_xtype\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_ytype\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_x\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_y\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_whtype\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_wtype\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_htype\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_w\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_h\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_text\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_cmd\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_cmd2\n", i));	
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_1arg\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_2arg\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_3arg\n", i));
@@ -1582,14 +1595,18 @@ if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorG\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorB\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorA\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_fontsize\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_corner\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_col\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_mode\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorinnerR\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorinnerG\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorinnerB\n", i));
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorinnerA\n", i));	
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_fontsize\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_corner\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_col\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_mode\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_style\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_min\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_max\n", i));
+	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_savecvar\n", i));
 	}
 	return qtrue;
 }
@@ -1607,8 +1624,21 @@ if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {
 
 		return qtrue;
 	}
+	
+	if ( Q_stricmp (UI_Argv(0), "concat") == 0 ) {
+		
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("%s \"%s\"", UI_Argv(1), UI_ConcatArgs(2)));
+
+		return qtrue;
+	}
 
 	if ( Q_stricmp (UI_Argv(0), "mgui") == 0 ) {
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("execscript \"mgui/%s\"", UI_ConcatArgs(1)));
+		return qtrue;
+	}
+	
+	if ( Q_stricmp (UI_Argv(0), "mgui_api") == 0 ) {
+		trap_Cvar_SetValue( "mgui_api_active", 1 );
 		trap_Cmd_ExecuteText( EXEC_INSERT, va("execscript \"mgui/%s\"", UI_ConcatArgs(1)));
 		return qtrue;
 	}
@@ -1944,6 +1974,54 @@ void UI_DrawHandlePic( float x, float y, float w, float h, qhandle_t hShader ) {
 	float	s1;
 	float	t0;
 	float	t1;
+
+	if( w < 0 ) {	// flip about vertical
+		w  = -w;
+		s0 = 1;
+		s1 = 0;
+	}
+	else {
+		s0 = 0;
+		s1 = 1;
+	}
+
+	if( h < 0 ) {	// flip about horizontal
+		h  = -h;
+		t0 = 1;
+		t1 = 0;
+	}
+	else {
+		t0 = 0;
+		t1 = 1;
+	}
+	
+	UI_AdjustFrom640( &x, &y, &w, &h );
+	trap_R_DrawStretchPic( x, y, w, h, s0, t0, s1, t1, hShader );
+}
+
+void UI_DrawHandlePicFile( float x, float y, float w, float h, const char* file ) {
+	float	s0;
+	float	s1;
+	float	t0;
+	float	t1;
+	int 	file_len;
+	qhandle_t hShader;
+	
+	file_len = strlen(file);
+	
+	hShader = trap_R_RegisterShaderNoMip("mgui_e");
+	if (Q_stricmp(file + file_len - 4, ".ogg") == 0)
+	hShader = trap_R_RegisterShaderNoMip("mgui_m");
+	if (Q_stricmp(file + file_len - 4, ".wav") == 0)
+	hShader = trap_R_RegisterShaderNoMip("mgui_m");
+	if (Q_stricmp(file + file_len - 5, ".opus") == 0)
+	hShader = trap_R_RegisterShaderNoMip("mgui_m");
+	if (Q_stricmp(file + file_len - 7, ".shader") == 0)
+	hShader = trap_R_RegisterShaderNoMip("mgui_s");
+	if (Q_stricmp(file + file_len - 3, ".as") == 0)
+	hShader = trap_R_RegisterShaderNoMip("mgui_s");
+	if (Q_stricmp(file + file_len - 4, ".cfg") == 0)
+	hShader = trap_R_RegisterShaderNoMip("mgui_s");
 
 	if( w < 0 ) {	// flip about vertical
 		w  = -w;
