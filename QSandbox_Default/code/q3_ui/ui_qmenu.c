@@ -1856,6 +1856,57 @@ sfxHandle_t ScrollList_Key( menulist_s *l, int key )
 				if( l->generic.flags & QMF_CENTER_JUSTIFY ) {
 					x -= w / 2;
 				}
+				
+				if (UI_CursorInRect( l->generic.right-16, l->generic.bottom-16, 16, 16 ))
+				{
+					if( l->curvalue == l->numitems - 1 ) {
+						return menu_buzz_sound;
+					}
+
+					l->oldvalue = l->curvalue;
+					l->curvalue++;
+
+					if( l->curvalue >= l->top + l->columns * l->height ) {
+						if( l->columns == 1 ) {
+							l->top++;
+						}
+						else {
+							l->top += l->height;
+						}
+					}
+
+					if( l->generic.callback ) {
+						l->generic.callback( l, QM_GOTFOCUS );
+					}
+
+					return menu_move_sound;
+				}
+				
+				if (UI_CursorInRect( l->generic.right-16, l->generic.top, 16, 16 ))
+				{
+					if( l->curvalue == 0 ) {
+						return menu_buzz_sound;
+					}
+
+					l->oldvalue = l->curvalue;
+					l->curvalue--;
+
+					if( l->curvalue < l->top ) {
+						if( l->columns == 1 ) {
+							l->top--;
+						}
+						else {
+							l->top -= l->height;
+						}
+					}
+
+					if( l->generic.callback ) {
+						l->generic.callback( l, QM_GOTFOCUS );
+					}
+
+					return (menu_move_sound);
+				}
+				
 				if (UI_CursorInRect( x, y, w, l->height*SMALLCHAR_HEIGHT ))
 				{
 					cursorx = (uis.cursorx - x)/SMALLCHAR_WIDTH;
@@ -2136,10 +2187,14 @@ void ScrollList_Draw( menulist_s *l )
 	float*		color;
 	qboolean	hasfocus;
 	int			style;
+	vec4_t scrollbuttona        = {1.00f, 1.00f, 1.00f, 0.75f};	// transluscent orange
 
 	hasfocus = (l->generic.parent->cursor == l->generic.menuPosition);
 
 	x =	l->generic.x;
+	
+	UI_DrawRoundedRect(l->generic.right-16,l->generic.bottom-16,16,16, 100, scrollbuttona);
+	UI_DrawRoundedRect(l->generic.right-16,l->generic.top,16,16, 100, scrollbuttona);
 	for( column = 0; column < l->columns; column++ ) {
 		y =	l->generic.y;
 		base = l->top + column * l->height;

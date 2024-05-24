@@ -49,7 +49,7 @@ set mitem2_htype 3
 set mitem2_w 80
 set mitem2_h 80
 set mitem2_text "1"
-set mitem2_cmd "weapon 1"
+set mitem2_cmd "vstr weap01"
 set mitem2_cmd2 ""
 set mitem2_1arg	0
 set mitem2_2arg	0
@@ -84,7 +84,7 @@ set mitem3_htype 3
 set mitem3_w 80
 set mitem3_h 80
 set mitem3_text "2"
-set mitem3_cmd "weapon 2"
+set mitem3_cmd "vstr weap02"
 set mitem3_cmd2 ""
 set mitem3_1arg	0
 set mitem3_2arg	0
@@ -119,7 +119,7 @@ set mitem4_htype 3
 set mitem4_w 80
 set mitem4_h 80
 set mitem4_text "3"
-set mitem4_cmd "weapon 3"
+set mitem4_cmd "vstr weap03"
 set mitem4_cmd2 ""
 set mitem4_1arg	0
 set mitem4_2arg	0
@@ -154,7 +154,7 @@ set mitem5_htype 3
 set mitem5_w 80
 set mitem5_h 80
 set mitem5_text "4"
-set mitem5_cmd "weapon 4"
+set mitem5_cmd "vstr weap04"
 set mitem5_cmd2 ""
 set mitem5_1arg	0
 set mitem5_2arg	0
@@ -189,7 +189,7 @@ set mitem6_htype 3
 set mitem6_w 80
 set mitem6_h 80
 set mitem6_text "5"
-set mitem6_cmd "weapon 5"
+set mitem6_cmd "vstr weap05"
 set mitem6_cmd2 ""
 set mitem6_1arg	0
 set mitem6_2arg	0
@@ -224,7 +224,7 @@ set mitem7_htype 3
 set mitem7_w 80
 set mitem7_h 80
 set mitem7_text "6"
-set mitem7_cmd "weapon 6"
+set mitem7_cmd "vstr weap06"
 set mitem7_cmd2 ""
 set mitem7_1arg	0
 set mitem7_2arg	0
@@ -259,7 +259,7 @@ set mitem8_htype 3
 set mitem8_w 80
 set mitem8_h 80
 set mitem8_text "7"
-set mitem8_cmd "weapon 7"
+set mitem8_cmd "vstr weap07"
 set mitem8_cmd2 ""
 set mitem8_1arg	0
 set mitem8_2arg	0
@@ -294,7 +294,7 @@ set mitem9_htype 3
 set mitem9_w 80
 set mitem9_h 80
 set mitem9_text "8"
-set mitem9_cmd "weapon 8"
+set mitem9_cmd "vstr weap08"
 set mitem9_cmd2 ""
 set mitem9_1arg	0
 set mitem9_2arg	0
@@ -329,7 +329,7 @@ set mitem10_htype 3
 set mitem10_w 80
 set mitem10_h 80
 set mitem10_text "9"
-set mitem10_cmd "weapon 9"
+set mitem10_cmd "vstr weap09"
 set mitem10_cmd2 ""
 set mitem10_1arg	0
 set mitem10_2arg	0
@@ -364,7 +364,7 @@ set mitem11_htype 3
 set mitem11_w 80
 set mitem11_h 80
 set mitem11_text "10"
-set mitem11_cmd "weapon 10"
+set mitem11_cmd "vstr weap10"
 set mitem11_cmd2 ""
 set mitem11_1arg	0
 set mitem11_2arg	0
@@ -597,5 +597,110 @@ set mitem17_style 0
 set mitem17_min 0
 set mitem17_max 100
 set mitem17_savecvar ""
+
+set mitem18_type 1
+set mitem18_acttype 1
+set mitem18_xtype 1
+set mitem18_ytype 1
+set mitem18_x 1
+set mitem18_y 80
+set mitem18_wtype 3
+set mitem18_htype 3
+set mitem18_w 80
+set mitem18_h 80
+set mitem18_text "<-"
+set mitem18_cmd "weapprev"
+set mitem18_cmd2 ""
+set mitem18_1arg	0
+set mitem18_2arg	0
+set mitem18_3arg	0
+set mitem18_file	""
+set mitem18_value ""
+set mitem18_colorR 1.0
+set mitem18_colorG 1.0
+set mitem18_colorB 1.0
+set mitem18_colorA 1.0
+set mitem18_colorinnerR 0.0
+set mitem18_colorinnerG 0.0
+set mitem18_colorinnerB 0.0
+set mitem18_colorinnerA 0.80
+set mitem18_fontsize	1.5
+set mitem18_corner 4
+set mitem18_col 1
+set mitem18_mode	0
+set mitem18_style 0
+set mitem18_min 0
+set mitem18_max 100
+set mitem18_savecvar ""
+
+set mitem19_type 1
+set mitem19_acttype 1
+set mitem19_xtype 1
+set mitem19_ytype 1
+set mitem19_x 95
+set mitem19_y 80
+set mitem19_wtype 3
+set mitem19_htype 3
+set mitem19_w 80
+set mitem19_h 80
+set mitem19_text "->"
+set mitem19_cmd "weapnext"
+set mitem19_cmd2 ""
+set mitem19_1arg	0
+set mitem19_2arg	0
+set mitem19_3arg	0
+set mitem19_file	""
+set mitem19_value ""
+set mitem19_colorR 1.0
+set mitem19_colorG 1.0
+set mitem19_colorB 1.0
+set mitem19_colorA 1.0
+set mitem19_colorinnerR 0.0
+set mitem19_colorinnerG 0.0
+set mitem19_colorinnerB 0.0
+set mitem19_colorinnerA 0.80
+set mitem19_fontsize	1.5
+set mitem19_corner 4
+set mitem19_col 1
+set mitem19_mode	0
+set mitem19_style 0
+set mitem19_min 0
+set mitem19_max 100
+set mitem19_savecvar ""
+
+set mitem20_type 1
+set mitem20_acttype 1
+set mitem20_xtype 1
+set mitem20_ytype 1
+set mitem20_x 95
+set mitem20_y 5
+set mitem20_wtype 3
+set mitem20_htype 3
+set mitem20_w 80
+set mitem20_h 80
+set mitem20_text "x"
+set mitem20_cmd "menuback"
+set mitem20_cmd2 ""
+set mitem20_1arg	0
+set mitem20_2arg	0
+set mitem20_3arg	0
+set mitem20_file	""
+set mitem20_value ""
+set mitem20_colorR 1.0
+set mitem20_colorG 1.0
+set mitem20_colorB 1.0
+set mitem20_colorA 1.0
+set mitem20_colorinnerR 0.0
+set mitem20_colorinnerG 0.0
+set mitem20_colorinnerB 0.0
+set mitem20_colorinnerA 0.80
+set mitem20_fontsize	2
+set mitem20_corner 4
+set mitem20_col 1
+set mitem20_mode	0
+set mitem20_style 0
+set mitem20_min 0
+set mitem20_max 100
+set mitem20_savecvar ""
 
 mgui_load
