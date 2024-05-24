@@ -515,6 +515,7 @@ void UIObject_Draw( menuobject_s *b )
 	qboolean	hasfocus;
 	int			val;
 	int			button;
+	vec4_t scrollbuttona        = {1.00f, 1.00f, 1.00f, 0.75f};	// transluscent orange
 	
 if(b->type >= 1 && b->type <= 3 || b->type == 6){
 
@@ -594,6 +595,10 @@ if(b->type == 5){
 	hasfocus = (b->generic.parent->cursor == b->generic.menuPosition);
 
 	x =	b->generic.x;
+	
+	UI_DrawRoundedRect(b->generic.right-(16*ui_scrollbtnsize.integer*b->fontsize),b->generic.bottom-(16*ui_scrollbtnsize.integer*b->fontsize),(16*ui_scrollbtnsize.integer*b->fontsize),(16*ui_scrollbtnsize.integer*b->fontsize), 100, scrollbuttona);
+	UI_DrawRoundedRect(b->generic.right-(16*ui_scrollbtnsize.integer*b->fontsize),b->generic.top,(16*ui_scrollbtnsize.integer*b->fontsize),(16*ui_scrollbtnsize.integer)*b->fontsize, 100, scrollbuttona);
+	
 	for( column = 0; column < b->columns; column++ ) {
 		y =	b->generic.y;
 		base = b->top + column * b->height;
@@ -878,6 +883,57 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 				if( b->generic.flags & QMF_CENTER_JUSTIFY ) {
 					x -= w / 2;
 				}
+				
+				if (UI_CursorInRect( b->generic.right-(16*ui_scrollbtnsize.integer*b->fontsize), b->generic.bottom-(16*ui_scrollbtnsize.integer*b->fontsize), (16*ui_scrollbtnsize.integer*b->fontsize), (16*ui_scrollbtnsize.integer*b->fontsize) ))
+				{
+					if( b->curvalue == b->numitems - 1 ) {
+						return menu_buzz_sound;
+					}
+
+					b->oldvalue = b->curvalue;
+					b->curvalue++;
+
+					if( b->curvalue >= b->top + b->columns * b->height ) {
+						if( b->columns == 1 ) {
+							b->top++;
+						}
+						else {
+							b->top += b->height;
+						}
+					}
+
+					if( b->generic.callback ) {
+						b->generic.callback( b, QM_GOTFOCUS );
+					}
+
+					return menu_move_sound;
+				}
+				
+				if (UI_CursorInRect( b->generic.right-(16*ui_scrollbtnsize.integer*b->fontsize), b->generic.top, (16*ui_scrollbtnsize.integer*b->fontsize), (16*ui_scrollbtnsize.integer*b->fontsize) ))
+				{
+					if( b->curvalue == 0 ) {
+						return menu_buzz_sound;
+					}
+
+					b->oldvalue = b->curvalue;
+					b->curvalue--;
+
+					if( b->curvalue < b->top ) {
+						if( b->columns == 1 ) {
+							b->top--;
+						}
+						else {
+							b->top -= b->height;
+						}
+					}
+
+					if( b->generic.callback ) {
+						b->generic.callback( b, QM_GOTFOCUS );
+					}
+
+					return (menu_move_sound);
+				}
+				
 				if(b->styles <= 1){
 				if (UI_CursorInRect( x, y, w, b->height*(SMALLCHAR_HEIGHT*b->fontsize) ))
 				{
@@ -1857,7 +1913,7 @@ sfxHandle_t ScrollList_Key( menulist_s *l, int key )
 					x -= w / 2;
 				}
 				
-				if (UI_CursorInRect( l->generic.right-16, l->generic.bottom-16, 16, 16 ))
+				if (UI_CursorInRect( l->generic.right-(16*ui_scrollbtnsize.integer), l->generic.bottom-(16*ui_scrollbtnsize.integer), (16*ui_scrollbtnsize.integer), (16*ui_scrollbtnsize.integer) ))
 				{
 					if( l->curvalue == l->numitems - 1 ) {
 						return menu_buzz_sound;
@@ -1882,7 +1938,7 @@ sfxHandle_t ScrollList_Key( menulist_s *l, int key )
 					return menu_move_sound;
 				}
 				
-				if (UI_CursorInRect( l->generic.right-16, l->generic.top, 16, 16 ))
+				if (UI_CursorInRect( l->generic.right-(16*ui_scrollbtnsize.integer), l->generic.top, (16*ui_scrollbtnsize.integer), (16*ui_scrollbtnsize.integer) ))
 				{
 					if( l->curvalue == 0 ) {
 						return menu_buzz_sound;
@@ -2193,8 +2249,8 @@ void ScrollList_Draw( menulist_s *l )
 
 	x =	l->generic.x;
 	
-	UI_DrawRoundedRect(l->generic.right-16,l->generic.bottom-16,16,16, 100, scrollbuttona);
-	UI_DrawRoundedRect(l->generic.right-16,l->generic.top,16,16, 100, scrollbuttona);
+	UI_DrawRoundedRect(l->generic.right-(16*ui_scrollbtnsize.integer),l->generic.bottom-(16*ui_scrollbtnsize.integer),(16*ui_scrollbtnsize.integer),(16*ui_scrollbtnsize.integer), 100, scrollbuttona);
+	UI_DrawRoundedRect(l->generic.right-(16*ui_scrollbtnsize.integer),l->generic.top,(16*ui_scrollbtnsize.integer),(16*ui_scrollbtnsize.integer), 100, scrollbuttona);
 	for( column = 0; column < l->columns; column++ ) {
 		y =	l->generic.y;
 		base = l->top + column * l->height;

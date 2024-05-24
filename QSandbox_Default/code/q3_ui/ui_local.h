@@ -111,6 +111,8 @@ extern vmCvar_t	sbt_color3_2;
 extern vmCvar_t	sbt_color3_3;
 extern vmCvar_t	sbt_wallpaper;
 
+extern vmCvar_t	ui_scrollbtnsize;
+
 extern vmCvar_t	ui_singlemode;
 extern vmCvar_t	legsskin;
 extern vmCvar_t	sensitivitymenu;

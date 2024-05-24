@@ -121,6 +121,8 @@ vmCvar_t	sbt_color3_2;
 vmCvar_t	sbt_color3_3;
 vmCvar_t	sbt_wallpaper;
 
+vmCvar_t	ui_scrollbtnsize;
+
 vmCvar_t	ui_singlemode;
 vmCvar_t	legsskin;
 vmCvar_t	team_legsskin;
@@ -271,6 +273,8 @@ static cvarTable_t		cvarTable[] = {
 	{ &sbt_color3_2,  "sbt_color3_2", "1", 	 CVAR_ARCHIVE },
 	{ &sbt_color3_3,  "sbt_color3_3", "1", 	 CVAR_ARCHIVE },
 	{ &sbt_wallpaper, "sbt_wallpaper", "trans", 	 CVAR_ARCHIVE },
+
+	{ &ui_scrollbtnsize, "ui_scrollbtnsize", "1", 	 CVAR_ARCHIVE },
 
 	{ &ui_singlemode, "ui_singlemode", "0", CVAR_ARCHIVE },
 	{ &ui_loaded, "ui_loaded", "0", 0 },

@@ -703,4 +703,109 @@ set mitem20_min 0
 set mitem20_max 100
 set mitem20_savecvar ""
 
+set mitem21_type 8
+set mitem21_acttype 1
+set mitem21_xtype 1
+set mitem21_ytype 1
+set mitem21_x 30
+set mitem21_y 2
+set mitem21_wtype 2
+set mitem21_htype 2
+set mitem21_w 2.5
+set mitem21_h 0
+set mitem21_text "Scroll buttons"
+set mitem21_cmd "set ui_scrollbtnsize %s"
+set mitem21_cmd2 ""
+set mitem21_1arg	21
+set mitem21_2arg	0
+set mitem21_3arg	0
+set mitem21_file	""
+set mitem21_value "ui_scrollbtnsize"
+set mitem21_colorR 1.0
+set mitem21_colorG 1.0
+set mitem21_colorB 1.0
+set mitem21_colorA 1.0
+set mitem21_colorinnerR 0.0
+set mitem21_colorinnerG 0.0
+set mitem21_colorinnerB 0.0
+set mitem21_colorinnerA 0.80
+set mitem21_fontsize	2.5
+set mitem21_corner 4
+set mitem21_col 1
+set mitem21_mode	1
+set mitem21_style 0
+set mitem21_min 0
+set mitem21_max 4
+set mitem21_savecvar ""
+
+set mitem22_type 7
+set mitem22_acttype 1
+set mitem22_xtype 1
+set mitem22_ytype 1
+set mitem22_x 30
+set mitem22_y 6
+set mitem22_wtype 2
+set mitem22_htype 2
+set mitem22_w 2.5
+set mitem22_h 0
+set mitem22_text "Gyroscope"
+set mitem22_cmd "set in_gyroscope %s"
+set mitem22_cmd2 ""
+set mitem22_1arg	22
+set mitem22_2arg	0
+set mitem22_3arg	0
+set mitem22_file	""
+set mitem22_value "in_gyroscope"
+set mitem22_colorR 1.0
+set mitem22_colorG 1.0
+set mitem22_colorB 1.0
+set mitem22_colorA 1.0
+set mitem22_colorinnerR 0.0
+set mitem22_colorinnerG 0.0
+set mitem22_colorinnerB 0.0
+set mitem22_colorinnerA 0.80
+set mitem22_fontsize	2.5
+set mitem22_corner 4
+set mitem22_col 1
+set mitem22_mode	0
+set mitem22_style 0
+set mitem22_min 0
+set mitem22_max 100
+set mitem22_savecvar ""
+
+set mitem23_type 7
+set mitem23_acttype 1
+set mitem23_xtype 1
+set mitem23_ytype 1
+set mitem23_x 30
+set mitem23_y 10
+set mitem23_wtype 2
+set mitem23_htype 2
+set mitem23_w 2.5
+set mitem23_h 0
+set mitem23_text "Rail autozoom"
+set mitem23_cmd "set cg_railgunAutoZoom %s"
+set mitem23_cmd2 ""
+set mitem23_1arg	23
+set mitem23_2arg	0
+set mitem23_3arg	0
+set mitem23_file	""
+set mitem23_value "cg_railgunAutoZoom"
+set mitem23_colorR 1.0
+set mitem23_colorG 1.0
+set mitem23_colorB 1.0
+set mitem23_colorA 1.0
+set mitem23_colorinnerR 0.0
+set mitem23_colorinnerG 0.0
+set mitem23_colorinnerB 0.0
+set mitem23_colorinnerA 0.80
+set mitem23_fontsize	2.5
+set mitem23_corner 4
+set mitem23_col 1
+set mitem23_mode	0
+set mitem23_style 0
+set mitem23_min 0
+set mitem23_max 100
+set mitem23_savecvar ""
+
 mgui_load
