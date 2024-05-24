@@ -1332,7 +1332,6 @@ void UI_MouseEvent( int dx, int dy )
 	}
 	
 	if(trap_Cvar_VariableValue("cl_android")){
-	// update mouse screen position
 	if(uis.activemenu->native > 0){
 	uis.cursorx += dx + (scrx / (scry / 480)-640)/2;
 	if (uis.cursorx < 0-(scrx / (scry / 480)-640)/2)
