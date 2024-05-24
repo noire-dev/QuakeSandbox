@@ -262,7 +262,7 @@ if(cl_blackloadscreen.integer){
 	}
 
 	UI_SetColor( color_white );
-	UI_DrawHandlePic( 0-(cl_screenoffset.integer+1), 0, SCREEN_WIDTH+(cl_screenoffset.integer*2)+2, SCREEN_HEIGHT, uis.menuBackNoLogoShader );
+	UI_DrawHandlePic( 0-(cl_screenoffset.integer+1), 0, SCREEN_WIDTH+(cl_screenoffset.integer*2)+2, SCREEN_HEIGHT, uis.menuBackShader );
 	if(cl_language.integer == 0){
 	UI_DrawString( (SCREEN_WIDTH+cl_screenoffset.integer - strWidth) - 16, SCREEN_HEIGHT - 32, "Loading...", UI_SMALLFONT, color_white );
 	}

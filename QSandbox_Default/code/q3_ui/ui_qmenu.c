@@ -803,6 +803,7 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 	int	index;
 	int clickdelay;
 	int keycode;
+	static int lastKeypress = 0;
 	sfxHandle_t	sound;
 	int			oldvalue;
 	if(b->type == 4){
@@ -813,6 +814,15 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 	{
 		case K_KP_ENTER:
 		case K_ENTER:
+		case K_MOUSE1:
+			if(trap_Cvar_VariableValue("cl_android")){
+				if (uis.realtime > lastKeypress + 300 || keycode != K_ENTER) // Prevent text input window re-appearing on Ouya
+				{
+					trap_ScreenKeyboardTextInput( b->field.buffer );
+					MField_Clear( &b->field );
+				}
+			}
+			break;
 		case K_JOY1:
 		case K_JOY2:
 		case K_JOY3:
@@ -846,6 +856,7 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 				MField_KeyDownEvent( &b->field, keycode );
 			break;
 	}
+	lastKeypress = uis.realtime;
 
 	return (0);
 	}
@@ -2666,23 +2677,27 @@ Menu_Cache
 */
 void Menu_Cache( void )
 {
+	int i;
 	uis.charset			= trap_R_RegisterShaderNoMip( "gfx/2d/bigchars" );
 	uis.charsetProp		= trap_R_RegisterShaderNoMip( "menu/art/font1_prop.tga" );
 	uis.charsetPropGlow	= trap_R_RegisterShaderNoMip( "menu/art/font1_prop_glo.tga" );
 	uis.charsetPropB	= trap_R_RegisterShaderNoMip( "menu/art/font2_prop.tga" );
+	if(!trap_Cvar_VariableValue("cl_android")){
 	uis.cursor          = trap_R_RegisterShaderNoMip( "menu/art/3_cursor2" );
+	} else {
+	uis.cursor          = trap_R_RegisterShaderNoMip( "trans" );
+	}
 	uis.corner          = trap_R_RegisterShaderNoMip( "corner" );
 	uis.rb_on           = trap_R_RegisterShaderNoMip( "menu/art/switch_on" );
 	uis.rb_off          = trap_R_RegisterShaderNoMip( "menu/art/switch_off" );
 
 	uis.whiteShader = trap_R_RegisterShaderNoMip( "white" );
-	if ( uis.glconfig.hardwareType == GLHW_RAGEPRO ) {
-		// the blend effect turns to shit with the normal 
-		uis.menuBackShader	= trap_R_RegisterShaderNoMip( "menubackRagePro" );
-	} else {
-		uis.menuBackShader	= trap_R_RegisterShaderNoMip( "menuback" );
+	uis.menuBackShader	= trap_R_RegisterShaderNoMip( "menuback" );
+	uis.menuBlack		= trap_R_RegisterShaderNoMip( "menu/art/blacktrans" );
+	for( i = 1; i <= 4; i++) {
+	uis.menuWallpapers[i] = trap_R_RegisterShaderNoMip( va( "UserFiles/Mainmenu/MenuPic (%i).jpg", i ));
 	}
-	uis.menuBackNoLogoShader = trap_R_RegisterShaderNoMip( "menubacknologo" );
+	
 	uis.menuLoadingIcon = trap_R_RegisterShaderNoMip( "menu/art/loading" );
 
 	menu_in_sound	= trap_S_RegisterSound( "sound/misc/menu1.wav", qfalse );
@@ -3163,6 +3178,7 @@ MenuField_Key
 sfxHandle_t MenuField_Key( menufield_s* m, int* key )
 {
 	int keycode;
+	static int lastKeypress = 0;
 
 	keycode = *key;
 
@@ -3170,6 +3186,15 @@ sfxHandle_t MenuField_Key( menufield_s* m, int* key )
 	{
 		case K_KP_ENTER:
 		case K_ENTER:
+		case K_MOUSE1:
+			if(trap_Cvar_VariableValue("cl_android")){
+				if (uis.realtime > lastKeypress + 300 || keycode != K_ENTER) // Prevent text input window re-appearing on Ouya
+				{
+					trap_ScreenKeyboardTextInput( m->field.buffer );
+					MField_Clear( &m->field );
+				}
+			}
+			break;
 		case K_JOY1:
 		case K_JOY2:
 		case K_JOY3:
@@ -3203,6 +3228,7 @@ sfxHandle_t MenuField_Key( menufield_s* m, int* key )
 				MField_KeyDownEvent( &m->field, keycode );
 			break;
 	}
+	lastKeypress = uis.realtime;
 
 	return (0);
 }

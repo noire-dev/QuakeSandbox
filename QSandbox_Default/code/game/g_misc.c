@@ -1287,6 +1287,13 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	o[0] = ((int)(xyz[0] / (atoi(arg06)*2)) * (atoi(arg06)*2)) + (xyz[0] < 0 ? -(atoi(arg06)) : (atoi(arg06)));
 	o[1] = ((int)(xyz[1] / (atoi(arg06)*2)) * (atoi(arg06)*2)) + (xyz[1] < 0 ? -(atoi(arg06)) : (atoi(arg06)));
 	o[2] = ((int)(xyz[2] / (atoi(arg06)*2)) * (atoi(arg06)*2)) + (xyz[2] < 0 ? -(atoi(arg06)) : (atoi(arg06)));
+
+	if (trap_Cvar_VariableIntegerValue("cl_android")) {
+    o[0] -= (xyz[0] >= 0 ? (atoi(arg06)) : -(atoi(arg06)));
+    o[1] -= (xyz[1] >= 0 ? (atoi(arg06)) : -(atoi(arg06)));
+    o[2] -= (xyz[2] >= 0 ? (atoi(arg06)) : -(atoi(arg06)));
+	}
+
 	VectorCopy (o, snapped);
 	
 	// create new entity
@@ -1426,9 +1433,16 @@ void G_BuildProp( char *model, char *class, vec3_t xyz, gentity_t *player, int p
 	mix = 100;
 	}
 	
-	o[0] = ((int)(xyz[0] / (grid*2)) * (grid*2)) + (xyz[0] < 0 ? -(grid) : (grid));
-	o[1] = ((int)(xyz[1] / (grid*2)) * (grid*2)) + (xyz[1] < 0 ? -(grid) : (grid));
-	o[2] = ((int)(xyz[2] / (grid*2)) * (grid*2)) + (xyz[2] < 0 ? -(grid) : (grid));
+	o[0] = ((int)((xyz[0] + (xyz[0] < 0 ? -grid : grid)) / (grid * 2)) * (grid * 2));
+	o[1] = ((int)((xyz[1] + (xyz[1] < 0 ? -grid : grid)) / (grid * 2)) * (grid * 2));
+	o[2] = ((int)((xyz[2] + (xyz[2] < 0 ? -grid : grid)) / (grid * 2)) * (grid * 2));
+	
+	if (trap_Cvar_VariableIntegerValue("cl_android")) {
+    o[0] -= (xyz[0] >= 0 ? grid : -grid);
+    o[1] -= (xyz[1] >= 0 ? grid : -grid);
+    o[2] -= (xyz[2] >= 0 ? grid : -grid);
+	}
+	
 	VectorCopy (o, snapped);
 	
 	// create new entity

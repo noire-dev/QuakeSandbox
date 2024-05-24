@@ -888,9 +888,9 @@ typedef struct {
 	glconfig_t			glconfig;
 	qboolean			debug;
 	qhandle_t			whiteShader;
+	qhandle_t			menuBlack;
+	qhandle_t			menuWallpapers[4];
 	qhandle_t			menuBackShader;
-	qhandle_t			menuBackShaders;
-	qhandle_t			menuBackNoLogoShader;
 	qhandle_t			menuLoadingIcon;
 	qhandle_t			charset;
 	qhandle_t			charsetProp;

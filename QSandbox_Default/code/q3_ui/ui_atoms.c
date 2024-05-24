@@ -76,6 +76,10 @@ void UI_PushMenu( menuframework_s *menu )
 	
 	trap_Cvar_SetValue( "ui_backcolors", number );
 	
+	if(trap_Cvar_VariableValue("cl_android")){
+	trap_Cvar_SetValue( "in_nativetouch", 1 );
+	}
+	
 	uis.menuscroll = 0;
 	
 
@@ -1285,6 +1289,7 @@ void UI_MouseEvent( int dx, int dy )
 	scry = uis.glconfig.vidHeight;
 
 	// update mouse screen position
+	if(!trap_Cvar_VariableValue("cl_android")){
 	if(!uis.activemenu->errorui){
 	if(uis.activemenu->native > 0){
 	uis.cursorx += dx * sensitivitymenu.value;
@@ -1323,6 +1328,26 @@ void UI_MouseEvent( int dx, int dy )
 		uis.cursory = 0+uis.activemenu->uplimitscroll;
 	else if (uis.cursory > uis.glconfig.vidHeight+uis.activemenu->downlimitscroll)
 		uis.cursory = uis.glconfig.vidHeight+uis.activemenu->downlimitscroll;	
+	}
+	}
+	
+	if(trap_Cvar_VariableValue("cl_android")){
+	// update mouse screen position
+	if(uis.activemenu->native > 0){
+	uis.cursorx += dx + (scrx / (scry / 480)-640)/2;
+	if (uis.cursorx < 0-(scrx / (scry / 480)-640)/2)
+		uis.cursorx = 0-(scrx / (scry / 480)-640)/2;
+	uis.cursory += dy;
+	if (uis.cursory < 0)
+		uis.cursory = 0;
+	} else {
+	uis.cursorx += ((dx - uis.bias) / uis.scale) + (scrx / (scry / 480)-640)/2;
+	if (uis.cursorx < 0-(scrx / (scry / 480)-640)/2)
+		uis.cursorx = 0-(scrx / (scry / 480)-640)/2;
+	uis.cursory += dy / uis.scale;
+	if (uis.cursory < 0)
+		uis.cursory = 0;
+	}
 	}
 
 	// region test the active menu items
@@ -2221,13 +2246,10 @@ void UI_Refresh( int realtime )
 	{
 		if (uis.activemenu->fullscreen)
 		{
-// draw the background
-trap_R_DrawStretchPic( 0.0, 0.0, uis.glconfig.vidWidth, uis.glconfig.vidHeight, 0, 0, 1, 1, trap_R_RegisterShaderNoMip( va( "UserFiles/Mainmenu/MenuPic (%i).jpg", ui_backcolors.integer ) ) );
-trap_R_DrawStretchPic( 0.0, 0.0, uis.glconfig.vidWidth, uis.glconfig.vidHeight, 0, 0, 0.5, 1, trap_R_RegisterShaderNoMip( "menu/art/blacktrans" ) );
-			}
-//			UI_DrawBackgroundPic( uis.menuBackShaders );
-//			}
-//		}
+		// draw the background
+		trap_R_DrawStretchPic( 0.0, 0.0, uis.glconfig.vidWidth, uis.glconfig.vidHeight, 0, 0, 1, 1, uis.menuWallpapers[ui_backcolors.integer] );
+		trap_R_DrawStretchPic( 0.0, 0.0, uis.glconfig.vidWidth, uis.glconfig.vidHeight, 0, 0, 0.5, 1, trap_R_RegisterShaderNoMip( "menu/art/blacktrans" ) );
+		}
 
 		if (uis.activemenu->draw)
 			uis.activemenu->draw();
