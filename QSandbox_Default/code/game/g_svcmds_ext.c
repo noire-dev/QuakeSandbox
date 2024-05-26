@@ -142,9 +142,9 @@ If operator
 */
 void Svcmd_Condition_f( void )
 {
-	char   value01[1024];
-	char   symbol[1024];
-	char   value02[1024];
+	char   value01[256];
+	char   symbol[256];
+	char   value02[256];
 	if( trap_Argc( ) == 1 ){
     G_Printf( "usage: if <value01> <symbol> <value02> <cmd...>\n" );
 	G_Printf( "<value01> | any type\n" );
@@ -208,9 +208,9 @@ Calculate operator
 */
 void Svcmd_Operation_f( void )
 {
-	char   value01[1024];
-	char   symbol[1024];
-	char   value02[1024];
+	char   value01[256];
+	char   symbol[256];
+	char   value02[256];
 	int number01;
 	int number02;
 	if( trap_Argc( ) == 1 ){
@@ -256,11 +256,11 @@ Edit variables in qvm
 */
 void Svcmd_QvmWrite_f( void )
 {
-	char   mode[1024];
-	char   value1[1024];
-	char   value2[1024];
-	char   value3[1024];
-	char   value4[1024];
+	char   mode[256];
+	char   value1[256];
+	char   value2[256];
+	char   value3[256];
+	char   value4[256];
 	gentity_t		*entscr;
 	if( trap_Argc( ) == 1 ){
     G_Printf( "usage: qvmwrite <mode>\n" );
@@ -330,11 +330,11 @@ Read variables in qvm
 */
 void Svcmd_QvmRead_f( void )
 {
-	char   mode[1024];
-	char   value1[1024];
-	char   value2[1024];
-	char   value3[1024];
-	char   value4[1024];
+	char   mode[256];
+	char   value1[256];
+	char   value2[256];
+	char   value3[256];
+	char   value4[256];
 	gentity_t		*entscr;
 	if( trap_Argc( ) == 1 ){
     G_Printf( "usage: qvmread <mode>\n" );
@@ -404,10 +404,10 @@ Random set operator
 */
 void Svcmd_Random_f( void )
 {
-	char   value01[1024];
-	char   symbol[1024];
-	char   min[1024];
-	char   max[1024];
+	char   value01[256];
+	char   symbol[256];
+	char   min[256];
+	char   max[256];
 	float number01;
 	float number02;
 	if( trap_Argc( ) == 1 ){
@@ -456,9 +456,9 @@ Editing line with variables
 */
 void Svcmd_Editline_f( void )
 {
-	char   destcvar[1024];
-	char   mode[1024];
-	char   value[1024];
+	char   destcvar[256];
+	char   mode[256];
+	char   value[256];
 	if( trap_Argc( ) == 1 ){
     G_Printf( "usage: editline <variable> <mode> <value>\n" );
 	G_Printf( "<variable> | any type\n" );
@@ -513,9 +513,9 @@ Editing line with variables
 */
 void Svcmd_ClientCommand_f( void )
 {
-	char   num[1024];
-	char   cmdtype[1024];
-	char   cmd[1024];
+	char   num[256];
+	char   cmdtype[256];
+	char   cmd[256];
 	if( trap_Argc( ) == 1 ){
     G_Printf( "usage: clientcmd <num or name> <type> <cmd>\n" );
 	G_Printf( "<num> | clientnum (-1 for all)\n" );
@@ -551,7 +551,7 @@ Editing line with variables
 */
 void Svcmd_SystemCommand_f( void )
 {
-	char   cmd[1024];
+	char   cmd[256];
 	if( trap_Argc( ) == 1 ){
     G_Printf( "usage: syscmd <cmd>\n" );
 	G_Printf( "<cmd> | any cmd\n" );
@@ -649,9 +649,9 @@ Editing line with variables
 */
 void Svcmd_Cvar_f( void )
 {
-	char   mode[1024];
-	char   cvarname[1024];
-	char   targetcvar[1024];
+	char   mode[256];
+	char   cvarname[256];
+	char   targetcvar[256];
 	if( trap_Argc( ) == 1 ){
     G_Printf( "usage: cvar <mode> <cvarname> <targetcvar>\n" );
 	G_Printf( "<mode> | delete, save, load,\n" );
@@ -686,10 +686,10 @@ For operator
 void Svcmd_For_f( void )
 {
 	int    i;
-	char   value01[1024];
-	char   symbol[1024];
-	char   value02[1024];
-	char   value03[1024];
+	char   value01[256];
+	char   symbol[256];
+	char   value02[256];
+	char   value03[256];
   if( trap_Argc( ) == 1 ){
     G_Printf( "usage: for <initial> <symbol> <value> <increment> <cmd...>\n" );
 	G_Printf( "<initial> | int number type\n" );
@@ -882,8 +882,8 @@ Replace texture
 */
 void Svcmd_HideSandObj_f( void )
 {
-	char   oldtexture[1024];
-	char   newtexture[1024];
+	char   oldtexture[256];
+	char   newtexture[256];
   if( trap_Argc( ) == 1 ){
     G_Printf( "usage: replacetexture <oldtexture> <newtexture>\n" );
   return;}

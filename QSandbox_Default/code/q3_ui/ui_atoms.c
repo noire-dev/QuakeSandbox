@@ -1488,7 +1488,7 @@ Return type char
 ==================
 */
 char *UI_ArenaScriptAutoChar( const char *name ) {
-char finaltext[512];
+char finaltext[256];
 
 	trap_Cvar_VariableStringBuffer(name, finaltext, sizeof( finaltext ));
 	if(strlen(finaltext) != 0){

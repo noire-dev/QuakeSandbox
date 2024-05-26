@@ -778,7 +778,7 @@ set mitem23_acttype 1
 set mitem23_xtype 1
 set mitem23_ytype 1
 set mitem23_x 30
-set mitem23_y 10
+set mitem23_y 12
 set mitem23_wtype 2
 set mitem23_htype 2
 set mitem23_w 2.5
@@ -807,5 +807,40 @@ set mitem23_style 0
 set mitem23_min 0
 set mitem23_max 100
 set mitem23_savecvar ""
+
+set mitem24_type 8
+set mitem24_acttype 1
+set mitem24_xtype 1
+set mitem24_ytype 1
+set mitem24_x 30
+set mitem24_y 18
+set mitem24_wtype 2
+set mitem24_htype 2
+set mitem24_w 2.5
+set mitem24_h 0
+set mitem24_text "Draw distance"
+set mitem24_cmd "set sv_viewdistance %s"
+set mitem24_cmd2 ""
+set mitem24_1arg	21
+set mitem24_2arg	0
+set mitem24_3arg	0
+set mitem24_file	""
+set mitem24_value "sv_viewdistance"
+set mitem24_colorR 1.0
+set mitem24_colorG 1.0
+set mitem24_colorB 1.0
+set mitem24_colorA 1.0
+set mitem24_colorinnerR 0.0
+set mitem24_colorinnerG 0.0
+set mitem24_colorinnerB 0.0
+set mitem24_colorinnerA 0.80
+set mitem24_fontsize	2.5
+set mitem24_corner 4
+set mitem24_col 1
+set mitem24_mode	1
+set mitem24_style 0
+set mitem24_min 1
+set mitem24_max 16
+set mitem24_savecvar ""
 
 mgui_load

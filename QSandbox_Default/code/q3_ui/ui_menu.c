@@ -735,7 +735,9 @@ void UI_MainMenu( void ) {
 	s_main.moddb.focuspic			= MODDB;
 #endif
 
+if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &s_main.menu,	&s_main.gamemodep );
+}
 	Menu_AddItem( &s_main.menu,	&s_main.modloader );
 	Menu_AddItem( &s_main.menu,	&s_main.moddb );
 	Menu_AddItem( &s_main.menu,	&s_main.singleplayer );

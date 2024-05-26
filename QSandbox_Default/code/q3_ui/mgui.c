@@ -33,7 +33,7 @@ MGUI_Event
 */
 const char* argwork(int i, int num){
     int index = UI_ArenaScriptAutoInt(va("mitem%i_%iarg", i, num));
-	char *buffer = (char *)UI_Alloc(512);
+	char *buffer = (char *)UI_Alloc(256);
     menuobject_s *item = &s_mgui.item[index];
 
 if(index != 0){
@@ -46,7 +46,7 @@ if(index != 0){
                 return item->itemnames[item->curvalue];
             } else if (item->mode == 1) {
                 if (buffer != NULL) {
-                    Q_snprintf(buffer, 512, "%i", item->curvalue);  // Safely copy formatted string
+                    Q_snprintf(buffer, 256, "%i", item->curvalue);  // Safely copy formatted string
                     return buffer;
                 } else {
                     return "Allocation failed!";
@@ -57,7 +57,7 @@ if(index != 0){
         case 7:
 		if (item->mode <= 0) {
             if (buffer != NULL) {
-                Q_snprintf(buffer, 512, "%i", item->curvalue);  // Safely copy formatted string
+                Q_snprintf(buffer, 256, "%i", item->curvalue);  // Safely copy formatted string
                 return buffer;
             } else {
                 return "Allocation failed!";
@@ -65,7 +65,7 @@ if(index != 0){
 		}
 		if (item->mode == 1) {
             if (buffer != NULL) {
-                Q_snprintf(buffer, 512, "%i", !item->curvalue);  // Safely copy formatted string
+                Q_snprintf(buffer, 256, "%i", !item->curvalue);  // Safely copy formatted string
                 return buffer;
             } else {
                 return "Allocation failed!";
@@ -75,7 +75,7 @@ if(index != 0){
 		
         case 8:
             if (buffer != NULL) {
-                Q_snprintf(buffer, 512, "%.6f", (float)item->curvalue / (float)item->mode);  // Safely copy formatted string
+                Q_snprintf(buffer, 256, "%.6f", (float)item->curvalue / (float)item->mode);  // Safely copy formatted string
                 return buffer;
             } else {
                 return "Allocation failed!";
@@ -240,8 +240,8 @@ void UI_MGUI( void ) {
 	int i;
 	int type;
 	char text[256];
-	char command[512];
-	char command2[512];
+	char command[256];
+	char command2[256];
 	char pic[256];
 	char initvalue[256];
 	vec4_t color_mgui[MAX_OBJECTS]	    = {1.00f, 0.00f, 1.00f, 1.00f};
@@ -289,8 +289,8 @@ void UI_MGUI( void ) {
 	s_mgui.item[i].generic.flags		= QMF_CENTER_JUSTIFY|QMF_HIGHLIGHT_IF_FOCUS|QMF_INACTIVE;
 	}
 	s_mgui.item[i].generic.id			= i;
-    s_mgui.item[i].generic.cmd 			= (char *)UI_Alloc(512);
-    s_mgui.item[i].generic.cmd2 		= (char *)UI_Alloc(512);
+    s_mgui.item[i].generic.cmd 			= (char *)UI_Alloc(256);
+    s_mgui.item[i].generic.cmd2 		= (char *)UI_Alloc(256);
     s_mgui.item[i].generic.picn 		= (char *)UI_Alloc(256);
     s_mgui.item[i].string 				= (char *)UI_Alloc(256);
 	s_mgui.item[i].generic.callback		= MGUI_Event;
