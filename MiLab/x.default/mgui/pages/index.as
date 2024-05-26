@@ -37,7 +37,7 @@ set mitem1_mode	0				//argument data mode: type (5): 0-selected item name, 1-sel
 set mitem1_style 0				//style for type (5): 0-list, 1-list with icons, 2-icons grid
 set mitem1_min 0				//minimal value for type (8)
 set mitem1_max 100				//maximal value for type (8)
-set mitem1_savecvar ""			//save value to cvar
+set mitem1_savecvar "mgui_none"	//save value to cvar
 
 set mitem1_type 1
 set mitem1_acttype 1
@@ -72,6 +72,6 @@ set mitem1_mode	0
 set mitem1_style 0
 set mitem1_min 0
 set mitem1_max 100
-set mitem1_savecvar ""
+set mitem1_savecvar "mgui_none"
 
 mgui_load						//draw mgui menu

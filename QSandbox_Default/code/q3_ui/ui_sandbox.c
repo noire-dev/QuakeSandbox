@@ -26,6 +26,7 @@
 #define ID_TAB8			114
 #define ID_TAB9			115
 #define ID_TAB10		116
+#define ID_CLOSE		117
 
 typedef struct
 {
@@ -58,6 +59,7 @@ typedef struct
 	menutext_s		tab8;
 	menutext_s		tab9;
 	menutext_s		tab10;
+	menutext_s		close;
 	
 	char			names[524288];
 	char			names2[524288];
@@ -787,6 +789,8 @@ static void SandboxMain_MenuDraw( void ) {
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*9)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*10)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color3);
 	}
+	
+	UI_DrawRoundedRect((640-(110*0.5))+cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 
 	Menu_Draw( &s_sandboxmain.menu );
 
@@ -1034,7 +1038,11 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		trap_Cmd_ExecuteText( EXEC_APPEND, va("mgui %s; set lastui mgui %s\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 		}
 		break;
-		
+	
+	case ID_CLOSE:
+		trap_Cmd_ExecuteText( EXEC_INSERT, "menuback\n" );
+		break;
+	
 	case ID_TAB1:
 		uis.sb_tab = 1;
 		trap_Cmd_ExecuteText( EXEC_INSERT, "menuback; wait 0; ui_sandbox\n" );
@@ -1187,6 +1195,7 @@ void SandboxMain_MenuInit( void ) {
 	//uis.cursorx = 319;
 	//uis.cursory = 80;
 
+s_sandboxmain.close.string           = "Close";
 s_sandboxmain.tab1.string           = "Create";
 s_sandboxmain.tab2.string           = "Settings";
 s_sandboxmain.tab3.string           = "NPCs";
@@ -1203,6 +1212,16 @@ s_sandboxmain.priv.generic.name			= "Private:";
 s_sandboxmain.minmax.generic.name		= "Coll size:";
 s_sandboxmain.grid.generic.name		= "Grid size:";
 s_sandboxmain.toolstext.string  				= "Tools:";
+	
+	s_sandboxmain.close.generic.type     	= MTYPE_PTEXT;
+	s_sandboxmain.close.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_sandboxmain.close.generic.id       	= ID_CLOSE;
+	s_sandboxmain.close.generic.callback 	= SandboxMain_MenuEvent;
+	s_sandboxmain.close.generic.x        	= (640 - (110*0.25)) + cl_screenoffset.integer;
+	s_sandboxmain.close.generic.y        	= 15;
+	s_sandboxmain.close.color			    = s_sandboxmain_color1;
+	s_sandboxmain.close.style			    = UI_CENTER;
+	s_sandboxmain.close.customsize			= 0.5;
 	
 	s_sandboxmain.tab1.generic.type     	= MTYPE_PTEXT;
 	s_sandboxmain.tab1.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -2256,6 +2275,7 @@ if(uis.sb_tab == 10){
 	
 
 	//Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.frame );
+	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.close );
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.tab1 );
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.tab2 );
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.tab3 );

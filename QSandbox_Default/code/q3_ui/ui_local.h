@@ -17,7 +17,7 @@
 typedef void (*voidfunc_f)(void);
 
 // QSandbox version string
-#define DMOD_VERSION "v1.1"
+#define DMOD_VERSION "v1.2"
 
 
 // An additional font size tag for use with
@@ -92,6 +92,7 @@ extern vmCvar_t	sb_toolnum;
 extern vmCvar_t	sb_tab;
 
 extern vmCvar_t	mgui_api_active;
+extern vmCvar_t	mgui_none;
 
 extern vmCvar_t	sbt_color0_0;
 extern vmCvar_t	sbt_color0_1;

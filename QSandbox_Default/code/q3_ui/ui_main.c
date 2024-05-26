@@ -102,6 +102,7 @@ vmCvar_t	sb_toolnum;
 vmCvar_t	sb_tab;
 
 vmCvar_t	mgui_api_active;
+vmCvar_t	mgui_none;
 
 vmCvar_t	sbt_color0_0;
 vmCvar_t	sbt_color0_1;
@@ -255,6 +256,7 @@ static cvarTable_t		cvarTable[] = {
 	{ &sb_tab, "sb_tab", "1", 0 },
 	
 	{ &mgui_api_active, "mgui_api_active", "0", 0 },
+	{ &mgui_none, "mgui_none", "0", 0 },
 	
 	{ &sbt_color0_0,  "sbt_color0_0", "1", 	 CVAR_ARCHIVE },
 	{ &sbt_color0_1,  "sbt_color0_1", "1", 	 CVAR_ARCHIVE },

@@ -33,7 +33,7 @@ set mitem1_fontsize	1
 set mitem1_corner 10
 set mitem1_col 1
 set mitem1_mode	1
-set mitem1_savecvar ""
+set mitem1_savecvar "mgui_none"
 
 set mitem2_type 1
 set mitem2_acttype 1
@@ -65,7 +65,7 @@ set mitem2_fontsize	2
 set mitem2_corner 10
 set mitem2_col 1
 set mitem2_mode	1
-set mitem2_savecvar ""
+set mitem2_savecvar "mgui_none"
 
 set mitem3_type 1
 set mitem3_acttype 1
@@ -97,7 +97,7 @@ set mitem3_fontsize	2
 set mitem3_corner 10
 set mitem3_col 1
 set mitem3_mode	1
-set mitem3_savecvar ""
+set mitem3_savecvar "mgui_none"
 
 set mitem4_type 5
 set mitem4_acttype 1
@@ -161,7 +161,7 @@ set mitem5_fontsize	2
 set mitem5_corner 10
 set mitem5_col 1
 set mitem5_mode	1
-set mitem5_savecvar ""
+set mitem5_savecvar "mgui_none"
 
 set mitem6_type 1
 set mitem6_acttype 1
@@ -193,7 +193,7 @@ set mitem6_fontsize	2
 set mitem6_corner 10
 set mitem6_col 1
 set mitem6_mode	1
-set mitem6_savecvar ""
+set mitem6_savecvar "mgui_none"
 
 set mitem7_type 1
 set mitem7_acttype 1
@@ -225,7 +225,7 @@ set mitem7_fontsize	2
 set mitem7_corner 10
 set mitem7_col 1
 set mitem7_mode	1
-set mitem7_savecvar ""
+set mitem7_savecvar "mgui_none"
 
 set mitem8_type 1
 set mitem8_acttype 1
@@ -257,7 +257,7 @@ set mitem8_fontsize	2
 set mitem8_corner 10
 set mitem8_col 1
 set mitem8_mode	1
-set mitem8_savecvar ""
+set mitem8_savecvar "mgui_none"
 
 set mitem9_type 1
 set mitem9_acttype 1
@@ -289,6 +289,6 @@ set mitem9_fontsize	2
 set mitem9_corner 10
 set mitem9_col 1
 set mitem9_mode	1
-set mitem9_savecvar ""
+set mitem9_savecvar "mgui_none"
 
 mgui_load

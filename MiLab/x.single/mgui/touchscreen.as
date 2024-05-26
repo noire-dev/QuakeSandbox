@@ -36,7 +36,7 @@ set mitem1_mode	0
 set mitem1_style 0
 set mitem1_min 0
 set mitem1_max 100
-set mitem1_savecvar ""
+set mitem1_savecvar "mgui_none"
 
 set mitem2_type 3
 set mitem2_acttype 1
@@ -71,7 +71,7 @@ set mitem2_mode	0
 set mitem2_style 0
 set mitem2_min 0
 set mitem2_max 100
-set mitem2_savecvar ""
+set mitem2_savecvar "mgui_none"
 
 set mitem3_type 3
 set mitem3_acttype 1
@@ -106,7 +106,7 @@ set mitem3_mode	0
 set mitem3_style 0
 set mitem3_min 0
 set mitem3_max 100
-set mitem3_savecvar ""
+set mitem3_savecvar "mgui_none"
 
 set mitem4_type 3
 set mitem4_acttype 1
@@ -141,7 +141,7 @@ set mitem4_mode	0
 set mitem4_style 0
 set mitem4_min 0
 set mitem4_max 100
-set mitem4_savecvar ""
+set mitem4_savecvar "mgui_none"
 
 set mitem5_type 3
 set mitem5_acttype 1
@@ -176,7 +176,7 @@ set mitem5_mode	0
 set mitem5_style 0
 set mitem5_min 0
 set mitem5_max 100
-set mitem5_savecvar ""
+set mitem5_savecvar "mgui_none"
 
 set mitem6_type 3
 set mitem6_acttype 1
@@ -211,7 +211,7 @@ set mitem6_mode	0
 set mitem6_style 0
 set mitem6_min 0
 set mitem6_max 100
-set mitem6_savecvar ""
+set mitem6_savecvar "mgui_none"
 
 set mitem7_type 3
 set mitem7_acttype 1
@@ -246,7 +246,7 @@ set mitem7_mode	0
 set mitem7_style 0
 set mitem7_min 0
 set mitem7_max 100
-set mitem7_savecvar ""
+set mitem7_savecvar "mgui_none"
 
 set mitem8_type 3
 set mitem8_acttype 1
@@ -281,7 +281,7 @@ set mitem8_mode	0
 set mitem8_style 0
 set mitem8_min 0
 set mitem8_max 100
-set mitem8_savecvar ""
+set mitem8_savecvar "mgui_none"
 
 set mitem9_type 3
 set mitem9_acttype 1
@@ -316,7 +316,7 @@ set mitem9_mode	0
 set mitem9_style 0
 set mitem9_min 0
 set mitem9_max 100
-set mitem9_savecvar ""
+set mitem9_savecvar "mgui_none"
 
 set mitem10_type 3
 set mitem10_acttype 1
@@ -351,7 +351,7 @@ set mitem10_mode	0
 set mitem10_style 0
 set mitem10_min 0
 set mitem10_max 100
-set mitem10_savecvar ""
+set mitem10_savecvar "mgui_none"
 
 set mitem11_type 3
 set mitem11_acttype 1
@@ -386,7 +386,7 @@ set mitem11_mode	0
 set mitem11_style 0
 set mitem11_min 0
 set mitem11_max 100
-set mitem11_savecvar ""
+set mitem11_savecvar "mgui_none"
 
 set mitem12_type 3
 set mitem12_acttype 1
@@ -421,7 +421,7 @@ set mitem12_mode	0
 set mitem12_style 0
 set mitem12_min 0
 set mitem12_max 100
-set mitem12_savecvar ""
+set mitem12_savecvar "mgui_none"
 
 set mitem13_type 3
 set mitem13_acttype 1
@@ -456,7 +456,7 @@ set mitem13_mode	0
 set mitem13_style 0
 set mitem13_min 0
 set mitem13_max 100
-set mitem13_savecvar ""
+set mitem13_savecvar "mgui_none"
 
 set mitem14_type 3
 set mitem14_acttype 1
@@ -491,7 +491,7 @@ set mitem14_mode	0
 set mitem14_style 0
 set mitem14_min 0
 set mitem14_max 100
-set mitem14_savecvar ""
+set mitem14_savecvar "mgui_none"
 
 set mitem15_type 3
 set mitem15_acttype 1
@@ -526,7 +526,7 @@ set mitem15_mode	0
 set mitem15_style 0
 set mitem15_min 0
 set mitem15_max 100
-set mitem15_savecvar ""
+set mitem15_savecvar "mgui_none"
 
 set mitem16_type 3
 set mitem16_acttype 1
@@ -561,7 +561,7 @@ set mitem16_mode	0
 set mitem16_style 0
 set mitem16_min 0
 set mitem16_max 100
-set mitem16_savecvar ""
+set mitem16_savecvar "mgui_none"
 
 set mitem17_type 1
 set mitem17_acttype 1
@@ -596,7 +596,7 @@ set mitem17_mode	0
 set mitem17_style 0
 set mitem17_min 0
 set mitem17_max 100
-set mitem17_savecvar ""
+set mitem17_savecvar "mgui_none"
 
 set mitem18_type 1
 set mitem18_acttype 1
@@ -631,7 +631,7 @@ set mitem18_mode	0
 set mitem18_style 0
 set mitem18_min 0
 set mitem18_max 100
-set mitem18_savecvar ""
+set mitem18_savecvar "mgui_none"
 
 set mitem19_type 1
 set mitem19_acttype 1
@@ -666,7 +666,7 @@ set mitem19_mode	0
 set mitem19_style 0
 set mitem19_min 0
 set mitem19_max 100
-set mitem19_savecvar ""
+set mitem19_savecvar "mgui_none"
 
 set mitem20_type 1
 set mitem20_acttype 1
@@ -701,26 +701,26 @@ set mitem20_mode	0
 set mitem20_style 0
 set mitem20_min 0
 set mitem20_max 100
-set mitem20_savecvar ""
+set mitem20_savecvar "mgui_none"
 
-set mitem21_type 8
+set mitem21_type 1
 set mitem21_acttype 1
 set mitem21_xtype 1
 set mitem21_ytype 1
-set mitem21_x 30
-set mitem21_y 2
-set mitem21_wtype 2
-set mitem21_htype 2
-set mitem21_w 2.5
-set mitem21_h 0
-set mitem21_text "Scroll buttons"
-set mitem21_cmd "set ui_scrollbtnsize %s"
+set mitem21_x 1
+set mitem21_y 1
+set mitem21_wtype 1
+set mitem21_htype 1
+set mitem21_w 60
+set mitem21_h 60
+set mitem21_text ""
+set mitem21_cmd ""
 set mitem21_cmd2 ""
-set mitem21_1arg	21
+set mitem21_1arg	0
 set mitem21_2arg	0
 set mitem21_3arg	0
 set mitem21_file	""
-set mitem21_value "ui_scrollbtnsize"
+set mitem21_value ""
 set mitem21_colorR 1.0
 set mitem21_colorG 1.0
 set mitem21_colorB 1.0
@@ -736,26 +736,26 @@ set mitem21_mode	1
 set mitem21_style 0
 set mitem21_min 0
 set mitem21_max 4
-set mitem21_savecvar ""
+set mitem21_savecvar "mgui_none"
 
-set mitem22_type 7
+set mitem22_type 8
 set mitem22_acttype 1
 set mitem22_xtype 1
 set mitem22_ytype 1
 set mitem22_x 30
-set mitem22_y 6
+set mitem22_y 2
 set mitem22_wtype 2
 set mitem22_htype 2
 set mitem22_w 2.5
 set mitem22_h 0
-set mitem22_text "Gyroscope"
-set mitem22_cmd "set in_gyroscope %s"
+set mitem22_text "Scroll buttons"
+set mitem22_cmd "set ui_scrollbtnsize %s"
 set mitem22_cmd2 ""
 set mitem22_1arg	22
 set mitem22_2arg	0
 set mitem22_3arg	0
 set mitem22_file	""
-set mitem22_value "in_gyroscope"
+set mitem22_value "ui_scrollbtnsize"
 set mitem22_colorR 1.0
 set mitem22_colorG 1.0
 set mitem22_colorB 1.0
@@ -767,30 +767,30 @@ set mitem22_colorinnerA 0.80
 set mitem22_fontsize	2.5
 set mitem22_corner 4
 set mitem22_col 1
-set mitem22_mode	0
+set mitem22_mode	1
 set mitem22_style 0
 set mitem22_min 0
-set mitem22_max 100
-set mitem22_savecvar ""
+set mitem22_max 4
+set mitem22_savecvar "mgui_none"
 
 set mitem23_type 7
 set mitem23_acttype 1
 set mitem23_xtype 1
 set mitem23_ytype 1
 set mitem23_x 30
-set mitem23_y 12
+set mitem23_y 6
 set mitem23_wtype 2
 set mitem23_htype 2
 set mitem23_w 2.5
 set mitem23_h 0
-set mitem23_text "Rail autozoom"
-set mitem23_cmd "set cg_railgunAutoZoom %s"
+set mitem23_text "Gyroscope"
+set mitem23_cmd "set in_gyroscope %s"
 set mitem23_cmd2 ""
 set mitem23_1arg	23
 set mitem23_2arg	0
 set mitem23_3arg	0
 set mitem23_file	""
-set mitem23_value "cg_railgunAutoZoom"
+set mitem23_value "in_gyroscope"
 set mitem23_colorR 1.0
 set mitem23_colorG 1.0
 set mitem23_colorB 1.0
@@ -806,26 +806,26 @@ set mitem23_mode	0
 set mitem23_style 0
 set mitem23_min 0
 set mitem23_max 100
-set mitem23_savecvar ""
+set mitem23_savecvar "mgui_none"
 
-set mitem24_type 8
+set mitem24_type 7
 set mitem24_acttype 1
 set mitem24_xtype 1
 set mitem24_ytype 1
 set mitem24_x 30
-set mitem24_y 18
+set mitem24_y 10
 set mitem24_wtype 2
 set mitem24_htype 2
 set mitem24_w 2.5
 set mitem24_h 0
-set mitem24_text "Draw distance"
-set mitem24_cmd "set sv_viewdistance %s"
+set mitem24_text "Rail autozoom"
+set mitem24_cmd "set cg_railgunAutoZoom %s"
 set mitem24_cmd2 ""
-set mitem24_1arg	21
+set mitem24_1arg	24
 set mitem24_2arg	0
 set mitem24_3arg	0
 set mitem24_file	""
-set mitem24_value "sv_viewdistance"
+set mitem24_value "cg_railgunAutoZoom"
 set mitem24_colorR 1.0
 set mitem24_colorG 1.0
 set mitem24_colorB 1.0
@@ -837,10 +837,45 @@ set mitem24_colorinnerA 0.80
 set mitem24_fontsize	2.5
 set mitem24_corner 4
 set mitem24_col 1
-set mitem24_mode	1
+set mitem24_mode	0
 set mitem24_style 0
-set mitem24_min 1
-set mitem24_max 16
-set mitem24_savecvar ""
+set mitem24_min 0
+set mitem24_max 100
+set mitem24_savecvar "mgui_none"
+
+set mitem25_type 8
+set mitem25_acttype 1
+set mitem25_xtype 1
+set mitem25_ytype 1
+set mitem25_x 30
+set mitem25_y 14
+set mitem25_wtype 2
+set mitem25_htype 2
+set mitem25_w 2.5
+set mitem25_h 0
+set mitem25_text "Draw distance"
+set mitem25_cmd "set sv_viewdistance %s"
+set mitem25_cmd2 ""
+set mitem25_1arg	25
+set mitem25_2arg	0
+set mitem25_3arg	0
+set mitem25_file	""
+set mitem25_value "sv_viewdistance"
+set mitem25_colorR 1.0
+set mitem25_colorG 1.0
+set mitem25_colorB 1.0
+set mitem25_colorA 1.0
+set mitem25_colorinnerR 0.0
+set mitem25_colorinnerG 0.0
+set mitem25_colorinnerB 0.0
+set mitem25_colorinnerA 0.80
+set mitem25_fontsize	2.5
+set mitem25_corner 4
+set mitem25_col 1
+set mitem25_mode	1
+set mitem25_style 0
+set mitem25_min 1
+set mitem25_max 16
+set mitem25_savecvar "mgui_none"
 
 mgui_load
