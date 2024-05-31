@@ -1052,7 +1052,7 @@ Only in One Flag CTF games
 /* precache */ "",
 /* sounds */ ""
 	},
-//#endif
+
 
 	/*QUAKED item_backpack (.3 .3 1) (-16 -16 -16) (16 16 16) */
 	{

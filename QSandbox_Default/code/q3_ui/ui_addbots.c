@@ -621,5 +621,6 @@ UI_AddBotsMenu
 */
 void UI_AddBotsMenu( void ) {
 	UI_AddBotsMenu_Init();
+	uis.sb_tab = 1;
 	UI_PushMenu( &addBotsMenuInfo.menu );
 }

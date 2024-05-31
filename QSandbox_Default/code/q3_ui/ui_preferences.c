@@ -1299,7 +1299,7 @@ s_preferences.newESCmenu.generic.name	   = "Новый вид меню:";
 	Menu_AddItem( &s_preferences.menu, &s_preferences.smoothclient);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.shadows);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.newESCmenu);
-	Menu_AddItem( &s_preferences.menu, &s_preferences.drawAmmoWarning);
+	//Menu_AddItem( &s_preferences.menu, &s_preferences.drawAmmoWarning);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.drawgun);
 	//Menu_AddItem( &s_preferences.menu, &s_preferences.teamchattime);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.teamchatheight);

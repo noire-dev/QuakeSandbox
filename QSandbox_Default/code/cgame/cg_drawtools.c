@@ -63,6 +63,42 @@ void CG_FillRect( float x, float y, float width, float height, const float *colo
 	trap_R_SetColor( NULL );
 }
 
+void CG_FillRect2( float x, float y, float width, float height, const float *color ) {
+	trap_R_SetColor( color );
+
+	trap_R_DrawStretchPic( x, y, width, height, 0, 0, 0, 0, cgs.media.whiteShader );
+
+	trap_R_SetColor( NULL );
+}
+
+/*
+================
+CG_DrawRoundedRect
+
+Coordinates are 640*480 virtual values
+=================
+*/
+
+void CG_DrawRoundedRect(float x, float y, float width, float height, float radius, const float *color) {
+    
+	CG_AdjustFrom640( &x, &y, &width, &height );
+	
+	if(radius*2 > height){ radius=height*0.5; }
+	if(radius*2 > width){ radius=width*0.5; }
+	
+	// ????????? ?????
+	trap_R_SetColor( color );
+    trap_R_DrawStretchPic(x, y, radius, radius, 1, 0, 0, 1, cgs.media.corner); // ????? ??????? ????
+    trap_R_DrawStretchPic(x + width - radius, y, radius, radius, 0, 0, 1, 1, cgs.media.corner); // ?????? ??????? ????
+    trap_R_DrawStretchPic(x, y + height - radius, radius, radius, 1, 1, 0, 0, cgs.media.corner); // ????? ?????? ????
+    trap_R_DrawStretchPic(x + width - radius, y + height - radius, radius, radius, 0, 1, 1, 0, cgs.media.corner); // ?????? ?????? ????
+
+    // ????????? ??????? ??????
+    CG_FillRect2(x, y + radius, radius, height - (radius * 2), color); // ????? ???????
+    CG_FillRect2(x + width - radius, y + radius, radius, height - (radius * 2), color); // ?????? ???????
+    CG_FillRect2(x + radius, y, width - (radius * 2), height, color); // ??????? ???????
+}
+
 /*
 ================
 CG_DrawSides

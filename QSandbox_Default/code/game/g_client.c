@@ -4103,7 +4103,7 @@ void ClientDisconnect( int clientNum ) {
                 if( g_gametype.integer == GT_HARVESTER ) {
 			TossClientCubes( ent );
 		}
-//#endif
+
 
 	}*/
 

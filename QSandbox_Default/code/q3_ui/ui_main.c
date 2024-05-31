@@ -100,6 +100,7 @@ vmCvar_t	sb_modelnum;
 vmCvar_t	sb_classnum;
 vmCvar_t	sb_toolnum;
 vmCvar_t	sb_tab;
+vmCvar_t	spawn_preset;
 
 vmCvar_t	mgui_api_active;
 vmCvar_t	mgui_none;
@@ -247,13 +248,14 @@ static cvarTable_t		cvarTable[] = {
 	{ &cl_giantcharheight, "cl_giantcharheight", "32", CVAR_ARCHIVE  },
 
 //QSandbox Sandbox
-	{ &sb_private, "sb_private", "0", CVAR_ARCHIVE },
-	{ &sb_grid, "sb_grid", "25", CVAR_ARCHIVE },
-	{ &sb_minmax, "sb_minmax", "25", CVAR_ARCHIVE },
+	{ &sb_private, "sb_private", "0", 0 },
+	{ &sb_grid, "sb_grid", "25", 0 },
+	{ &sb_minmax, "sb_minmax", "25", 0 },
 	{ &sb_modelnum, "sb_modelnum", "0", CVAR_ARCHIVE },
 	{ &sb_classnum, "sb_classnum", "0", CVAR_ARCHIVE },
 	{ &sb_toolnum, "sb_toolnum", "0", CVAR_ARCHIVE },
 	{ &sb_tab, "sb_tab", "1", 0 },
+	{ &spawn_preset, "spawn_preset", "set uibuildprop sl prop %s %s %i %s %s 0 0 0 0 \"none\" 1000 0 0 0 0 1 1 1 0 0 1 10000 0 1 100 100 120 1 0 1000 0", 0 },
 	
 	{ &mgui_api_active, "mgui_api_active", "0", 0 },
 	{ &mgui_none, "mgui_none", "0", 0 },

@@ -802,6 +802,7 @@ typedef struct {
 	qhandle_t	charsetPropGlow;
 	qhandle_t	charsetPropB;
 	qhandle_t	whiteShader;
+	qhandle_t 	corner;
 
 	qhandle_t	redCubeModel;
 	qhandle_t	blueCubeModel;
@@ -970,10 +971,10 @@ typedef struct {
 	qhandle_t	lmarkbullet3;
 	qhandle_t	lmarkbullet4;
 
-//#ifdef MISSIONPACK
+
 	qhandle_t	nailPuffShader;
 	qhandle_t	blueProxMine;
-//#endif
+
 
 	qhandle_t	numberShaders[11];
 
@@ -1007,177 +1008,7 @@ typedef struct {
 	qhandle_t	redKamikazeShader;
 	qhandle_t	blueKamikazeShader;
 
-qhandle_t	ptex1Shader;
-qhandle_t	ptex2Shader;
-qhandle_t	ptex3Shader;
-qhandle_t	ptex4Shader;
-qhandle_t	ptex5Shader;
-qhandle_t	ptex6Shader;
-qhandle_t	ptex7Shader;
-qhandle_t	ptex8Shader;
-qhandle_t	ptex9Shader;
-qhandle_t	ptex10Shader;
-qhandle_t	ptex11Shader;
-qhandle_t	ptex12Shader;
-qhandle_t	ptex13Shader;
-qhandle_t	ptex14Shader;
-qhandle_t	ptex15Shader;
-qhandle_t	ptex16Shader;
-qhandle_t	ptex17Shader;
-qhandle_t	ptex18Shader;
-qhandle_t	ptex19Shader;
-qhandle_t	ptex20Shader;
-qhandle_t	ptex21Shader;
-qhandle_t	ptex22Shader;
-qhandle_t	ptex23Shader;
-qhandle_t	ptex24Shader;
-qhandle_t	ptex25Shader;
-qhandle_t	ptex26Shader;
-qhandle_t	ptex27Shader;
-qhandle_t	ptex28Shader;
-qhandle_t	ptex29Shader;
-qhandle_t	ptex30Shader;
-qhandle_t	ptex31Shader;
-qhandle_t	ptex32Shader;
-qhandle_t	ptex33Shader;
-qhandle_t	ptex34Shader;
-qhandle_t	ptex35Shader;
-qhandle_t	ptex36Shader;
-qhandle_t	ptex37Shader;
-qhandle_t	ptex38Shader;
-qhandle_t	ptex39Shader;
-qhandle_t	ptex40Shader;
-qhandle_t	ptex41Shader;
-qhandle_t	ptex42Shader;
-qhandle_t	ptex43Shader;
-qhandle_t	ptex44Shader;
-qhandle_t	ptex45Shader;
-qhandle_t	ptex46Shader;
-qhandle_t	ptex47Shader;
-qhandle_t	ptex48Shader;
-qhandle_t	ptex49Shader;
-qhandle_t	ptex50Shader;
-qhandle_t	ptex51Shader;
-qhandle_t	ptex52Shader;
-qhandle_t	ptex53Shader;
-qhandle_t	ptex54Shader;
-qhandle_t	ptex55Shader;
-qhandle_t	ptex56Shader;
-qhandle_t	ptex57Shader;
-qhandle_t	ptex58Shader;
-qhandle_t	ptex59Shader;
-qhandle_t	ptex60Shader;
-qhandle_t	ptex61Shader;
-qhandle_t	ptex62Shader;
-qhandle_t	ptex63Shader;
-qhandle_t	ptex64Shader;
-qhandle_t	ptex65Shader;
-qhandle_t	ptex66Shader;
-qhandle_t	ptex67Shader;
-qhandle_t	ptex68Shader;
-qhandle_t	ptex69Shader;
-qhandle_t	ptex70Shader;
-qhandle_t	ptex71Shader;
-qhandle_t	ptex72Shader;
-qhandle_t	ptex73Shader;
-qhandle_t	ptex74Shader;
-qhandle_t	ptex75Shader;
-qhandle_t	ptex76Shader;
-qhandle_t	ptex77Shader;
-qhandle_t	ptex78Shader;
-qhandle_t	ptex79Shader;
-qhandle_t	ptex80Shader;
-qhandle_t	ptex81Shader;
-qhandle_t	ptex82Shader;
-qhandle_t	ptex83Shader;
-qhandle_t	ptex84Shader;
-qhandle_t	ptex85Shader;
-qhandle_t	ptex86Shader;
-qhandle_t	ptex87Shader;
-qhandle_t	ptex88Shader;
-qhandle_t	ptex89Shader;
-qhandle_t	ptex90Shader;
-qhandle_t	ptex91Shader;
-qhandle_t	ptex92Shader;
-qhandle_t	ptex93Shader;
-qhandle_t	ptex94Shader;
-qhandle_t	ptex95Shader;
-qhandle_t	ptex96Shader;
-qhandle_t	ptex97Shader;
-qhandle_t	ptex98Shader;
-qhandle_t	ptex99Shader;
-qhandle_t	ptex100Shader;
-qhandle_t	ptex101Shader;
-qhandle_t	ptex102Shader;
-qhandle_t	ptex103Shader;
-qhandle_t	ptex104Shader;
-qhandle_t	ptex105Shader;
-qhandle_t	ptex106Shader;
-qhandle_t	ptex107Shader;
-qhandle_t	ptex108Shader;
-qhandle_t	ptex109Shader;
-qhandle_t	ptex110Shader;
-qhandle_t	ptex111Shader;
-qhandle_t	ptex112Shader;
-qhandle_t	ptex113Shader;
-qhandle_t	ptex114Shader;
-qhandle_t	ptex115Shader;
-qhandle_t	ptex116Shader;
-qhandle_t	ptex117Shader;
-qhandle_t	ptex118Shader;
-qhandle_t	ptex119Shader;
-qhandle_t	ptex120Shader;
-qhandle_t	ptex121Shader;
-qhandle_t	ptex122Shader;
-qhandle_t	ptex123Shader;
-qhandle_t	ptex124Shader;
-qhandle_t	ptex125Shader;
-qhandle_t	ptex126Shader;
-qhandle_t	ptex127Shader;
-qhandle_t	ptex128Shader;
-qhandle_t	ptex129Shader;
-qhandle_t	ptex130Shader;
-qhandle_t	ptex131Shader;
-qhandle_t	ptex132Shader;
-qhandle_t	ptex133Shader;
-qhandle_t	ptex134Shader;
-qhandle_t	ptex135Shader;
-qhandle_t	ptex136Shader;
-qhandle_t	ptex137Shader;
-qhandle_t	ptex138Shader;
-qhandle_t	ptex139Shader;
-qhandle_t	ptex140Shader;
-qhandle_t	ptex141Shader;
-qhandle_t	ptex142Shader;
-qhandle_t	ptex143Shader;
-qhandle_t	ptex144Shader;
-qhandle_t	ptex145Shader;
-qhandle_t	ptex146Shader;
-qhandle_t	ptex147Shader;
-qhandle_t	ptex148Shader;
-qhandle_t	ptex149Shader;
-qhandle_t	ptex150Shader;
-qhandle_t	ptex151Shader;
-qhandle_t	ptex152Shader;
-qhandle_t	ptex153Shader;
-qhandle_t	ptex154Shader;
-qhandle_t	ptex155Shader;
-qhandle_t	ptex156Shader;
-qhandle_t	ptex157Shader;
-qhandle_t	ptex158Shader;
-qhandle_t	ptex159Shader;
-qhandle_t	ptex160Shader;
-qhandle_t	ptex161Shader;
-qhandle_t	ptex162Shader;
-qhandle_t	ptex163Shader;
-qhandle_t	ptex164Shader;
-qhandle_t	ptex165Shader;
-qhandle_t	ptex166Shader;
-qhandle_t	ptex167Shader;
-qhandle_t	ptex168Shader;
-qhandle_t	ptex169Shader;
-qhandle_t	ptex255Shader;
-qhandle_t	ptex255ShaderE;
+qhandle_t	ptexShader[257];
 
 	qhandle_t   HudLineBar;           
 	qhandle_t   medalFrags;           
@@ -1214,7 +1045,7 @@ qhandle_t	ptex255ShaderE;
 	// special effects models
 	qhandle_t	teleportEffectModel;
 	qhandle_t	teleportEffectShader;
-//#ifdef MISSIONPACK
+
 	qhandle_t	kamikazeEffectModel;
 	qhandle_t	kamikazeShockWave;
 	qhandle_t	kamikazeHeadModel;
@@ -1228,7 +1059,7 @@ qhandle_t	ptex255ShaderE;
 	qhandle_t	medkitUsageModel;
 	qhandle_t	dustPuffShader;
 	qhandle_t	heartShader;
-//#endif
+
 	qhandle_t	invulnerabilityPowerupModel;
 
 	// scoreboard headers
@@ -1279,7 +1110,7 @@ qhandle_t	ptex255ShaderE;
 	sfxHandle_t	sfx_railg;
 	sfxHandle_t	sfx_rockexp;
 	sfxHandle_t	sfx_plasmaexp;
-//#ifdef MISSIONPACK
+
 	sfxHandle_t	sfx_proxexp;
 	sfxHandle_t	sfx_nghit;
 	sfxHandle_t	sfx_nghitflesh;
@@ -1302,7 +1133,7 @@ qhandle_t	ptex255ShaderE;
 	sfxHandle_t	winnerSound;
 	sfxHandle_t	loserSound;
 	sfxHandle_t	youSuckSound;
-//#endif
+
 	sfxHandle_t	gibSound;
 	sfxHandle_t	gibBounce1Sound;
 	sfxHandle_t	gibBounce2Sound;
@@ -1706,10 +1537,8 @@ extern	vmCvar_t		cg_drawFPS;
 extern	vmCvar_t		cg_drawSnapshot;
 extern	vmCvar_t		cg_draw3dIcons;
 extern	vmCvar_t		cg_drawIcons;
-extern	vmCvar_t		cg_drawAmmoWarning;
 extern	vmCvar_t		cg_drawCrosshair;
 extern	vmCvar_t		cg_drawCrosshairNames;
-extern	vmCvar_t		cg_drawRewards;
 extern	vmCvar_t		cg_drawTeamOverlay;
 extern	vmCvar_t		cg_teamOverlayUserinfo;
 extern	vmCvar_t		cg_crosshairX;
@@ -1971,6 +1800,8 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 //
 void CG_AdjustFrom640( float *x, float *y, float *w, float *h );
 void CG_FillRect( float x, float y, float width, float height, const float *color );
+void CG_FillRect2( float x, float y, float width, float height, const float *color );
+void CG_DrawRoundedRect(float x, float y, float width, float height, float radius, const float *color);
 void CG_DrawPic( float x, float y, float width, float height, qhandle_t hShader );
 void CG_DrawString( float x, float y, const char *string,
 				   float charWidth, float charHeight, const float *modulate );
@@ -2155,7 +1986,7 @@ localEntity_t *CG_SmokePuff( const vec3_t p,
 				   qhandle_t hShader );
 void CG_BubbleTrail( vec3_t start, vec3_t end, float spacing );
 void CG_SpawnEffect( vec3_t org );
-//#ifdef MISSIONPACK
+
 void CG_KamikazeEffect( vec3_t org );
 void CG_ObeliskExplode( vec3_t org, int entityNum );
 void CG_ObeliskPain( vec3_t org );

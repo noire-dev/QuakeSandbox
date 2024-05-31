@@ -17,7 +17,7 @@
 typedef void (*voidfunc_f)(void);
 
 // QSandbox version string
-#define DMOD_VERSION "v1.2"
+#define DMOD_VERSION "v1.3"
 
 
 // An additional font size tag for use with
@@ -90,6 +90,7 @@ extern vmCvar_t	sb_modelnum;
 extern vmCvar_t	sb_classnum;
 extern vmCvar_t	sb_toolnum;
 extern vmCvar_t	sb_tab;
+extern vmCvar_t	spawn_preset;
 
 extern vmCvar_t	mgui_api_active;
 extern vmCvar_t	mgui_none;
@@ -942,7 +943,7 @@ extern void			UI_DrawProportionalString( int x, int y, const char* str, int styl
 extern void			UI_DrawProportionalString_AutoWrapped( int x, int ystart, int xmax, int ystep, const char* str, int style, vec4_t color );
 extern int			UI_ProportionalStringWidth( const char* str );
 extern void			UI_DrawString( int x, int y, const char* str, int style, vec4_t color );
-extern void			UI_DrawStringCustom( int x, int y, const char* str, int style, vec4_t color, float csize );
+extern void			UI_DrawStringCustom( int x, int y, const char* str, int style, vec4_t color, float csize, float width );
 extern void			UI_DrawChar( int x, int y, int ch, int style, vec4_t color );
 extern void			UI_DrawCharCustom( int x, int y, int ch, int style, vec4_t color, float csize );
 extern qboolean 	UI_CursorInRect (int x, int y, int width, int height);

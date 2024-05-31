@@ -46,9 +46,9 @@ typedef struct
 	menufield_s		modif2;
 	menufield_s		modif3;
 	menufield_s		modif4;
-	menulist_s		list;
-	menulist_s		classlist;
-	menulist_s		toolslist;
+	menuobject_s		list;
+	menuobject_s		classlist;
+	menuobject_s		toolslist;
 	menutext_s		tab1;
 	menutext_s		tab2;
 	menutext_s		tab3;
@@ -503,7 +503,13 @@ static void SandboxMain_SaveChanges( void ) {
 	//save cvars
 	trap_Cvar_Set( "sb_classnum_view", "none" );
 	if(uis.sb_tab == 1){
-	trap_Cmd_ExecuteText( EXEC_APPEND, va("set uibuildprop buildprop %s %s %i %s %s %s\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.priv.curvalue, s_sandboxmain.minmax.field.buffer, s_sandboxmain.grid.field.buffer, s_sandboxmain.modif0.field.buffer) );
+	trap_Cmd_ExecuteText( EXEC_APPEND, va(spawn_preset.string, s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.priv.curvalue, s_sandboxmain.minmax.field.buffer, s_sandboxmain.grid.field.buffer) );
+	trap_Cvar_Set( "oasb_modelst", va("props/%s", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
+	trap_Cvar_Set( "sb_sf", s_sandboxmain.modif0.field.buffer );
+	trap_Cvar_Set( "sb_classnum_view", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue] );
+	}
+	if(uis.sb_tab == 2){
+	trap_Cmd_ExecuteText( EXEC_APPEND, va(spawn_preset.string, s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.priv.curvalue, s_sandboxmain.minmax.field.buffer, s_sandboxmain.grid.field.buffer) );
 	trap_Cvar_Set( "oasb_modelst", va("props/%s", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 	trap_Cvar_Set( "sb_sf", s_sandboxmain.modif0.field.buffer );
 	trap_Cvar_Set( "sb_classnum_view", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue] );
@@ -608,6 +614,7 @@ s_sandboxmain.list.numitems			= trap_FS_GetFileList( va("spawnlists/%s", s_sandb
 
 		configname += len + 1;
 	}
+	strcpy(s_sandboxmain.list.string, va("spawnlists/%s/icons", s_sandboxmain.classlist.itemnames[uis.spawnlist_folder]));
 }
 
 /*
@@ -644,14 +651,14 @@ static void SandboxMain_MenuDraw( void ) {
 
 	UI_DrawHandlePic( -2.0-cl_screenoffset.integer, 0.0, 644+cl_screenoffset.integer*2, 480, trap_R_RegisterShaderNoMip( va( "%s", sbt_wallpaper.string ) ) );
 
-	UI_DrawRoundedRect(20-cl_screenoffset.integer, 40, 600+cl_screenoffset.integer*2, 435, 30, color1);
-	UI_DrawRoundedRect(372-5+cl_screenoffset.integer, 70-25, 225+10, 160+50, 20, color2);//tools
-	UI_DrawRoundedRect(372-5+cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 20, color2);//settings
+	UI_DrawRoundedRect(20-cl_screenoffset.integer, 40, 600+cl_screenoffset.integer*2, 435, 10, color1);
+	UI_DrawRoundedRect(372-5+cl_screenoffset.integer, 70-25, 225+10, 160+50, 12, color2);//tools
+	UI_DrawRoundedRect(372-5+cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 12, color2);//settings
 	//UI_DrawRoundedRect(20-cl_screenoffset.integer, 480+40, 600+cl_screenoffset.integer*2, 435, 30, color1);
 	
 	if(uis.sb_tab == 1){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+10, 160+50, 20, color2);//props
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 20, color2);//classes
+	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), (160*2)+50+55, 12, color2);//props
+	//UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 12, color2);//classes
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*1)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color3);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*2)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*3)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
@@ -664,8 +671,8 @@ static void SandboxMain_MenuDraw( void ) {
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*10)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	}
 	if(uis.sb_tab == 2){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+10, (160*2)+50+55, 20, color2);//props
-	//UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 20, color2);//classes
+	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), (160*2)+50+55, 12, color2);//props
+	//UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 12, color2);//classes
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*1)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*2)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color3);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*3)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
@@ -678,8 +685,8 @@ static void SandboxMain_MenuDraw( void ) {
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*10)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	}
 	if(uis.sb_tab == 3){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+10, 160+50, 20, color2);//props
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 20, color2);//classes
+	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), 160+50, 12, color2);//props
+	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+100+(cl_screenoffset.integer*2), 160+50, 12, color2);//classes
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*1)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*2)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*3)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color3);
@@ -692,8 +699,8 @@ static void SandboxMain_MenuDraw( void ) {
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*10)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	}
 	if(uis.sb_tab == 4){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+10, (160*2)+50+55, 20, color2);//props
-	//UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 20, color2);//classes
+	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), (160*2)+50+55, 12, color2);//props
+	//UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 12, color2);//classes
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*1)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*2)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*3)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
@@ -706,8 +713,8 @@ static void SandboxMain_MenuDraw( void ) {
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*10)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	}
 	if(uis.sb_tab == 5){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+10, (160*2)+50+55, 20, color2);//props
-	//UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 20, color2);//classes
+	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), (160*2)+50+55, 12, color2);//props
+	//UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 12, color2);//classes
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*1)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*2)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*3)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
@@ -720,8 +727,8 @@ static void SandboxMain_MenuDraw( void ) {
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*10)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	}
 	if(uis.sb_tab == 6){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+10, 160+50, 20, color2);//props
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 20, color2);//classes
+	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), 160+50, 12, color2);//props
+	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+100+(cl_screenoffset.integer*2), 160+50, 12, color2);//classes
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*1)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*2)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*3)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
@@ -734,7 +741,7 @@ static void SandboxMain_MenuDraw( void ) {
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*10)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	}
 	if(uis.sb_tab == 7){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+10, (160*2)+50+55, 20, color2);//props
+	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), (160*2)+50+55, 12, color2);//props
 	//UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 20, color2);//classes
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*1)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*2)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
@@ -748,8 +755,8 @@ static void SandboxMain_MenuDraw( void ) {
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*10)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	}
 	if(uis.sb_tab == 8){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+10, (160*2)+50+55, 20, color2);//props
-	//UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 20, color2);//classes
+	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), (160*2)+50+55, 12, color2);//props
+	//UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 12, color2);//classes
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*1)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*2)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*3)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
@@ -762,8 +769,8 @@ static void SandboxMain_MenuDraw( void ) {
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*10)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	}
 	if(uis.sb_tab == 9){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+10, (160*2)+50+55, 20, color2);//props
-	//UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 20, color2);//classes
+	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), (160*2)+50+55, 12, color2);//props
+	//UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 12, color2);//classes
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*1)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*2)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*3)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
@@ -776,8 +783,8 @@ static void SandboxMain_MenuDraw( void ) {
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*10)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	}
 	if(uis.sb_tab == 10){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+10, (160*2)+50+55, 20, color2);//props
-	//UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 20, color2);//classes
+	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), (160*2)+50+55, 12, color2);//props
+	//UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 12, color2);//classes
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*1)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*2)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*3)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
@@ -1010,7 +1017,7 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		trap_Cmd_ExecuteText( EXEC_APPEND, "vstr uibuildprop\n" );
 		}
 		if(uis.sb_tab == 2){
-		trap_Cmd_ExecuteText( EXEC_APPEND, va("usecvar %s %s\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.modif0.field.buffer) );
+		trap_Cmd_ExecuteText( EXEC_APPEND, "vstr uibuildprop\n" );
 		}
 		if(uis.sb_tab == 3){
 		trap_Cmd_ExecuteText( EXEC_APPEND, "vstr uibuildprop\n" );
@@ -1025,13 +1032,13 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		trap_Cmd_ExecuteText( EXEC_APPEND, va("execscript spawnlists/%s/%s.as\n", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 		}
 		if(uis.sb_tab == 7){
-		trap_Cmd_ExecuteText( EXEC_APPEND, va("execscript postprocessing/%s.as\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
+		trap_Cmd_ExecuteText( EXEC_APPEND, va("execscript dscripts/%s.as\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 		}
 		if(uis.sb_tab == 8){
 		trap_Cmd_ExecuteText( EXEC_APPEND, va("execscript themes/%s.as\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 		}
 		if(uis.sb_tab == 9){
-		trap_Cmd_ExecuteText( EXEC_APPEND, va("execscript dscripts/%s.as\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
+		trap_Cmd_ExecuteText( EXEC_APPEND, va("usecvar %s %s\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.modif0.field.buffer) );
 		}
 		if(uis.sb_tab == 10){
 		UI_PopMenu();
@@ -1098,7 +1105,7 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		trap_Cmd_ExecuteText( EXEC_APPEND, "vstr uibuildprop\n" );
 		}
 		if(uis.sb_tab == 2){
-		trap_Cmd_ExecuteText( EXEC_APPEND, va("usecvar %s 0 1\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.modif0.field.buffer) );
+		trap_Cmd_ExecuteText( EXEC_APPEND, "vstr uibuildprop\n" );
 		}
 		if(uis.sb_tab == 3){
 		trap_Cmd_ExecuteText( EXEC_APPEND, "vstr uibuildprop\n" );
@@ -1113,13 +1120,13 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		trap_Cmd_ExecuteText( EXEC_APPEND, va("execscript spawnlists/%s/%s.as\n", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 		}
 		if(uis.sb_tab == 7){
-		trap_Cmd_ExecuteText( EXEC_APPEND, va("execscript postprocessing/%s.as\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
+		trap_Cmd_ExecuteText( EXEC_APPEND, va("execscript dscripts/%s.as\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 		}
 		if(uis.sb_tab == 8){
 		trap_Cmd_ExecuteText( EXEC_APPEND, va("execscript themes/%s.as\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 		}
 		if(uis.sb_tab == 9){
-		trap_Cmd_ExecuteText( EXEC_APPEND, va("execscript dscripts/%s.as\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
+		trap_Cmd_ExecuteText( EXEC_APPEND, va("usecvar %s 0 1\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.modif0.field.buffer) );
 		}
 		if(uis.sb_tab == 10){
 		UI_PopMenu();
@@ -1197,14 +1204,14 @@ void SandboxMain_MenuInit( void ) {
 
 s_sandboxmain.close.string           = "Close";
 s_sandboxmain.tab1.string           = "Create";
-s_sandboxmain.tab2.string           = "Settings";
+s_sandboxmain.tab2.string           = "Entities";
 s_sandboxmain.tab3.string           = "NPCs";
 s_sandboxmain.tab4.string           = "Items";
 s_sandboxmain.tab5.string           = "Admin";
 s_sandboxmain.tab6.string           = "Lists";
-s_sandboxmain.tab7.string           = "Shaders";
+s_sandboxmain.tab7.string           = "Scripts";
 s_sandboxmain.tab8.string           = "Themes";
-s_sandboxmain.tab9.string           = "Scripts";
+s_sandboxmain.tab9.string           = "Settings";
 s_sandboxmain.tab10.string          = "Addons";
 s_sandboxmain.savemap.string		= "Save map";
 s_sandboxmain.loadmap.string		= "Load map";
@@ -1424,20 +1431,28 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.spawnobject.style					= UI_CENTER;
 
 	if(uis.sb_tab == 1){
-	s_sandboxmain.list.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.list.type				= 5;
+	s_sandboxmain.list.styles			= 2;
+	s_sandboxmain.list.columns			= 6+((2*cl_screenoffset.integer)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.list.string			= "props";
+	s_sandboxmain.list.fontsize			= 0.4;
+	s_sandboxmain.list.corner			= 65;
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
 	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
 	s_sandboxmain.list.generic.y		= 70;
-	s_sandboxmain.list.width			= 28;
-	s_sandboxmain.list.height			= 15;
+	s_sandboxmain.list.width			= 39/6;
+	s_sandboxmain.list.height			= 8;
 	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "props", "md3", s_sandboxmain.names, 524288 );
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
-	s_sandboxmain.list.columns			= 1;
 	s_sandboxmain.list.color			= s_sandboxmain_color1;
 	
-	s_sandboxmain.classlist.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.classlist.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.classlist.type				= 5;
+	s_sandboxmain.classlist.styles				= 1;
+	s_sandboxmain.classlist.fontsize			= 1;
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
@@ -1471,7 +1486,10 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.spawnobject.string           		= "Spawn";
 	}
 	if(uis.sb_tab == 2){
-	s_sandboxmain.list.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.list.type				= 5;
+	s_sandboxmain.list.styles			= 1;
+	s_sandboxmain.list.fontsize			= 1;
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
@@ -1479,22 +1497,27 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.list.generic.y		= 70;
 	s_sandboxmain.list.width			= 28;
 	s_sandboxmain.list.height			= 15+18;
-	s_sandboxmain.list.numitems			= 343;
-	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.cvar_itemslist;
+	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "props", "md3", s_sandboxmain.names, 524288 );
+	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
 	s_sandboxmain.list.columns			= 1;
 	s_sandboxmain.list.color			= s_sandboxmain_color1;
 	
-	s_sandboxmain.classlist.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.classlist.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.classlist.type				= 5;
+	s_sandboxmain.classlist.styles			= 2;
+	s_sandboxmain.classlist.columns			= 6+((2*cl_screenoffset.integer)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.classlist.string			= "";
+	s_sandboxmain.classlist.fontsize		= 0.4;
+	s_sandboxmain.classlist.corner			= 40;
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
 	s_sandboxmain.classlist.generic.x		= 40 - cl_screenoffset.integer;
-	s_sandboxmain.classlist.generic.y		= 215 + 70;
-	s_sandboxmain.classlist.width			= 28;
-	s_sandboxmain.classlist.height			= 15;
-	s_sandboxmain.classlist.numitems		= 118;
+	s_sandboxmain.classlist.generic.y		= 70;
+	s_sandboxmain.classlist.width			= 39/6;
+	s_sandboxmain.classlist.height			= 8;
+	s_sandboxmain.classlist.numitems		= 121;
 	s_sandboxmain.classlist.itemnames		= (const char **)s_sandboxmain.classeslist;
-	s_sandboxmain.classlist.columns			= 1;
 	s_sandboxmain.classlist.color			= s_sandboxmain_color1;
 	//y += 20;
 	
@@ -1507,37 +1530,45 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.classtext.generic.y				= 215 + 50;
+	s_sandboxmain.classtext.generic.y				= 50;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= color_red;
 	s_sandboxmain.classtext.style  					= UI_BIGFONT;
 	
-	s_sandboxmain.propstext.string  				= "Settings:";
-	s_sandboxmain.classtext.string  				= "Class:";
-	s_sandboxmain.modif0.generic.name       		= "Value:";
-	s_sandboxmain.spawnobject.string           		= "Apply";
+	s_sandboxmain.propstext.string  				= "Props:";
+	s_sandboxmain.classtext.string  				= "Entities:";
+	s_sandboxmain.modif0.generic.name       		= "Spawnflags:";
+	s_sandboxmain.spawnobject.string           		= "Spawn";
 	}
 	if(uis.sb_tab == 3){
-	s_sandboxmain.list.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.list.type				= 5;
+	s_sandboxmain.list.styles			= 2;
+	s_sandboxmain.list.columns			= 6+((2*cl_screenoffset.integer)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.list.string			= "bots";
+	s_sandboxmain.list.fontsize			= 0.4;
+	s_sandboxmain.list.corner			= 65;
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
 	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
-	s_sandboxmain.list.generic.y		= 70;
-	s_sandboxmain.list.width			= 28;
-	s_sandboxmain.list.height			= 15;
-	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "bots", "dbot", s_sandboxmain.names, 524288 );
+	s_sandboxmain.list.generic.y		= 62;
+	s_sandboxmain.list.width			= 39/6;
+	s_sandboxmain.list.height			= 4;
+	s_sandboxmain.list.numitems			= UI_GetNumBots();
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
-	s_sandboxmain.list.columns			= 1;
 	s_sandboxmain.list.color			= s_sandboxmain_color1;
 	
-	s_sandboxmain.classlist.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.classlist.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.classlist.type				= 5;
+	s_sandboxmain.classlist.styles				= 1;
+	s_sandboxmain.classlist.fontsize			= 1;
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
 	s_sandboxmain.classlist.generic.x		= 40 - cl_screenoffset.integer;
 	s_sandboxmain.classlist.generic.y		= 215 + 70;
-	s_sandboxmain.classlist.width			= 28;
+	s_sandboxmain.classlist.width			= 39+(2*cl_screenoffset.integer/SMALLCHAR_WIDTH);
 	s_sandboxmain.classlist.height			= 15;
 	s_sandboxmain.classlist.numitems		= 4;
 	s_sandboxmain.classlist.itemnames		= (const char **)s_sandboxmain.classeslist;
@@ -1565,20 +1596,28 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.spawnobject.string           		= "Spawn";
 	}
 	if(uis.sb_tab == 4){
-	s_sandboxmain.list.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.list.type				= 5;
+	s_sandboxmain.list.styles			= 2;
+	s_sandboxmain.list.columns			= 6+((2*cl_screenoffset.integer)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.list.string			= "";
+	s_sandboxmain.list.fontsize			= 0.4;
+	s_sandboxmain.list.corner			= 65;
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
 	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
 	s_sandboxmain.list.generic.y		= 70;
-	s_sandboxmain.list.width			= 28;
-	s_sandboxmain.list.height			= 15+18;
+	s_sandboxmain.list.width			= 39/6;
+	s_sandboxmain.list.height			= 8;
 	s_sandboxmain.list.numitems			= 56;
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.item_itemslist;
-	s_sandboxmain.list.columns			= 1;
 	s_sandboxmain.list.color			= s_sandboxmain_color1;
 	
-	s_sandboxmain.classlist.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.classlist.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.classlist.type				= 5;
+	s_sandboxmain.classlist.styles				= 1;
+	s_sandboxmain.classlist.fontsize			= 1;
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
@@ -1612,20 +1651,26 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.spawnobject.string          		= "Give";
 	}
 	if(uis.sb_tab == 5){
-	s_sandboxmain.list.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.list.type				= 5;
+	s_sandboxmain.list.styles			= 0;
+	s_sandboxmain.list.fontsize			= 1;
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
 	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
 	s_sandboxmain.list.generic.y		= 70;
-	s_sandboxmain.list.width			= 28;
+	s_sandboxmain.list.width			= 39+(2*cl_screenoffset.integer/SMALLCHAR_WIDTH);
 	s_sandboxmain.list.height			= 15+18;
 	s_sandboxmain.list.numitems			= 7;
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.cvar_itemslist;
 	s_sandboxmain.list.columns			= 1;
 	s_sandboxmain.list.color			= s_sandboxmain_color1;
 	
-	s_sandboxmain.classlist.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.classlist.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.classlist.type				= 5;
+	s_sandboxmain.classlist.styles				= 1;
+	s_sandboxmain.classlist.fontsize			= 1;
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
@@ -1661,30 +1706,40 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.loadmap.string			= "Show objects";
 	}
 	if(uis.sb_tab == 6){
-	s_sandboxmain.classlist.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.classlist.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.classlist.type				= 5;
+	s_sandboxmain.classlist.styles				= 0;
+	s_sandboxmain.classlist.fontsize			= 1;
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
 	s_sandboxmain.classlist.generic.x		= 40 - cl_screenoffset.integer;
 	s_sandboxmain.classlist.generic.y		= 215 + 70;
-	s_sandboxmain.classlist.width			= 28;
+	s_sandboxmain.classlist.width			= 39+(2*cl_screenoffset.integer/SMALLCHAR_WIDTH);
 	s_sandboxmain.classlist.height			= 15;
 	s_sandboxmain.classlist.numitems		= trap_FS_GetFileList( va("spawnlists", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue]), "cfg", s_sandboxmain.names2, 524288 );
 	s_sandboxmain.classlist.itemnames		= (const char **)s_sandboxmain.classeslist;
 	s_sandboxmain.classlist.columns			= 1;
 	s_sandboxmain.classlist.color			= s_sandboxmain_color1;
 		
-	s_sandboxmain.list.generic.type		= MTYPE_SCROLLLIST;
+	UI_Free(s_sandboxmain.list.string);
+		
+	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.list.type				= 5;
+	s_sandboxmain.list.styles			= 2;
+	s_sandboxmain.list.columns			= 6+((2*cl_screenoffset.integer)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.list.string 			= (char *)UI_Alloc(256);
+	s_sandboxmain.list.fontsize			= 0.4;
+	s_sandboxmain.list.corner			= 65;
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
 	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
-	s_sandboxmain.list.generic.y		= 70;
-	s_sandboxmain.list.width			= 28;
-	s_sandboxmain.list.height			= 15;
+	s_sandboxmain.list.generic.y		= 62;
+	s_sandboxmain.list.width			= 39/6;
+	s_sandboxmain.list.height			= 4;
 	s_sandboxmain.list.numitems			= trap_FS_GetFileList( va("spawnlists/%s", s_sandboxmain.classlist.itemnames[uis.spawnlist_folder]), "as", s_sandboxmain.names, 524288 );
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
-	s_sandboxmain.list.columns			= 1;
 	s_sandboxmain.list.color			= s_sandboxmain_color1;
 	//y += 20;
 	
@@ -1708,20 +1763,26 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.spawnobject.string           		= "Spawn";
 	}
 	if(uis.sb_tab == 7){
-	s_sandboxmain.list.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.list.type				= 5;
+	s_sandboxmain.list.styles			= 0;
+	s_sandboxmain.list.fontsize			= 1;
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
 	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
 	s_sandboxmain.list.generic.y		= 70;
-	s_sandboxmain.list.width			= 28;
+	s_sandboxmain.list.width			= 39+(2*cl_screenoffset.integer/SMALLCHAR_WIDTH);
 	s_sandboxmain.list.height			= 15+18;
-	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "postprocessing", "as", s_sandboxmain.names, 524288 );
+	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "dscripts", "as", s_sandboxmain.names, 524288 );
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
 	s_sandboxmain.list.columns			= 1;
 	s_sandboxmain.list.color			= s_sandboxmain_color1;
 	
-	s_sandboxmain.classlist.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.classlist.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.classlist.type				= 5;
+	s_sandboxmain.classlist.styles				= 1;
+	s_sandboxmain.classlist.fontsize			= 1;
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
@@ -1749,26 +1810,32 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.classtext.color  					= color_red;
 	s_sandboxmain.classtext.style  					= UI_BIGFONT;
 	
-	s_sandboxmain.propstext.string  				= "Shaders:";
+	s_sandboxmain.propstext.string  				= "Scripts:";
 	s_sandboxmain.classtext.string  				= "Class:";
 	s_sandboxmain.modif0.generic.name       		= "Spawnflags:";
-	s_sandboxmain.spawnobject.string          		= "Load";
+	s_sandboxmain.spawnobject.string          		= "Execute";
 	}
 	if(uis.sb_tab == 8){
-	s_sandboxmain.list.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.list.type				= 5;
+	s_sandboxmain.list.styles			= 0;
+	s_sandboxmain.list.fontsize			= 1;
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
 	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
 	s_sandboxmain.list.generic.y		= 70;
-	s_sandboxmain.list.width			= 28;
+	s_sandboxmain.list.width			= 39+(2*cl_screenoffset.integer/SMALLCHAR_WIDTH);
 	s_sandboxmain.list.height			= 15+18;
 	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "themes", "as", s_sandboxmain.names, 524288 );
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
 	s_sandboxmain.list.columns			= 1;
 	s_sandboxmain.list.color			= s_sandboxmain_color1;
 	
-	s_sandboxmain.classlist.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.classlist.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.classlist.type				= 5;
+	s_sandboxmain.classlist.styles				= 1;
+	s_sandboxmain.classlist.fontsize			= 1;
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
@@ -1802,20 +1869,26 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.spawnobject.string          		= "Apply";
 	}
 	if(uis.sb_tab == 9){
-	s_sandboxmain.list.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.list.type				= 5;
+	s_sandboxmain.list.styles			= 0;
+	s_sandboxmain.list.fontsize			= 1;
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
 	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
 	s_sandboxmain.list.generic.y		= 70;
-	s_sandboxmain.list.width			= 28;
+	s_sandboxmain.list.width			= 39+(2*cl_screenoffset.integer/SMALLCHAR_WIDTH);
 	s_sandboxmain.list.height			= 15+18;
-	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "dscripts", "as", s_sandboxmain.names, 524288 );
-	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
+	s_sandboxmain.list.numitems			= 343;
+	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.cvar_itemslist;
 	s_sandboxmain.list.columns			= 1;
 	s_sandboxmain.list.color			= s_sandboxmain_color1;
 	
-	s_sandboxmain.classlist.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.classlist.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.classlist.type				= 5;
+	s_sandboxmain.classlist.styles				= 1;
+	s_sandboxmain.classlist.fontsize			= 1;
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
@@ -1824,7 +1897,7 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.classlist.width			= 28;
 	s_sandboxmain.classlist.height			= 15;
 	s_sandboxmain.classlist.numitems		= 118;
-	s_sandboxmain.classlist.itemnames		= (const char **)s_sandboxmain.botclasslist;
+	s_sandboxmain.classlist.itemnames		= (const char **)s_sandboxmain.classeslist;
 	s_sandboxmain.classlist.columns			= 1;
 	s_sandboxmain.classlist.color			= s_sandboxmain_color1;
 	//y += 20;
@@ -1843,26 +1916,33 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.classtext.color  					= color_red;
 	s_sandboxmain.classtext.style  					= UI_BIGFONT;
 	
-	s_sandboxmain.propstext.string  				= "Scripts:";
+	s_sandboxmain.propstext.string  				= "Settings:";
 	s_sandboxmain.classtext.string  				= "Class:";
-	s_sandboxmain.modif0.generic.name       		= "Spawnflags:";
-	s_sandboxmain.spawnobject.string          		= "Execute";
+	s_sandboxmain.modif0.generic.name       		= "Value:";
+	s_sandboxmain.spawnobject.string           		= "Apply";
 	}
 	if(uis.sb_tab == 10){
-	s_sandboxmain.list.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.list.type				= 5;
+	s_sandboxmain.list.styles			= 1;
+	s_sandboxmain.list.fontsize			= 1;
+	s_sandboxmain.list.string			= "mgui/icons";
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
 	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
 	s_sandboxmain.list.generic.y		= 70;
-	s_sandboxmain.list.width			= 28;
+	s_sandboxmain.list.width			= 39+(2*cl_screenoffset.integer/SMALLCHAR_WIDTH);
 	s_sandboxmain.list.height			= 15+18;
 	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "mgui", "as", s_sandboxmain.names, 524288 );
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
 	s_sandboxmain.list.columns			= 1;
 	s_sandboxmain.list.color			= s_sandboxmain_color1;
 	
-	s_sandboxmain.classlist.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.classlist.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.classlist.type				= 5;
+	s_sandboxmain.classlist.styles				= 1;
+	s_sandboxmain.classlist.fontsize			= 1;
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
@@ -1896,7 +1976,10 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.spawnobject.string           		= "Open";
 	}
 	
-	s_sandboxmain.toolslist.generic.type		= MTYPE_SCROLLLIST;
+	s_sandboxmain.toolslist.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.toolslist.type				= 5;
+	s_sandboxmain.toolslist.styles				= 0;
+	s_sandboxmain.toolslist.fontsize			= 1;
 	s_sandboxmain.toolslist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.toolslist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.toolslist.generic.id		= ID_TOOLSLIST;
@@ -1941,9 +2024,9 @@ if(uis.sb_tab == 1){
 		configname += len + 1;
 	}
 }
-if(uis.sb_tab == 3){
+if(uis.sb_tab == 2){
 	if (!s_sandboxmain.list.numitems) {
-		strcpy(s_sandboxmain.names,"No NPC");
+		strcpy(s_sandboxmain.names,"No scripts");
 		s_sandboxmain.list.numitems = 1;
 	}
 	else if (s_sandboxmain.list.numitems > 65536)
@@ -1955,8 +2038,27 @@ if(uis.sb_tab == 3){
 
 		// strip extension
 		len = strlen( configname );
-		if (!Q_stricmp(configname +  len - 5,".dbot"))
-			configname[len-5] = '\0';
+		if (!Q_stricmp(configname +  len - 3,".as"))
+			configname[len-3] = '\0';
+
+		Q_strupr(configname);
+
+		configname += len + 1;
+	}
+}
+if(uis.sb_tab == 3){
+	if (!s_sandboxmain.list.numitems) {
+		strcpy(s_sandboxmain.names,"No NPC");
+		s_sandboxmain.list.numitems = 1;
+	}
+	else if (s_sandboxmain.list.numitems > 65536)
+		s_sandboxmain.list.numitems = 65536;
+
+	configname = s_sandboxmain.names;
+	for ( i = 0; i < s_sandboxmain.list.numitems; i++ ) {
+		strcpy(configname, Info_ValueForKey(UI_GetBotInfoByNumber(i), "name"));
+		
+		s_sandboxmain.list.itemnames[i] = configname;
 
 		Q_strupr(configname);
 
@@ -2005,10 +2107,12 @@ if(uis.sb_tab == 6){
 
 		configname += len + 1;
 	}
+	
+	strcpy(s_sandboxmain.list.string, va("spawnlists/%s/icons", s_sandboxmain.classlist.itemnames[uis.spawnlist_folder]));
 }
 if(uis.sb_tab == 7){
 	if (!s_sandboxmain.list.numitems) {
-		strcpy(s_sandboxmain.names,"No shaders");
+		strcpy(s_sandboxmain.names,"No scripts");
 		s_sandboxmain.list.numitems = 1;
 	}
 	else if (s_sandboxmain.list.numitems > 65536)
@@ -2050,28 +2154,6 @@ if(uis.sb_tab == 8){
 		configname += len + 1;
 	}
 }
-if(uis.sb_tab == 9){
-	if (!s_sandboxmain.list.numitems) {
-		strcpy(s_sandboxmain.names,"No scripts");
-		s_sandboxmain.list.numitems = 1;
-	}
-	else if (s_sandboxmain.list.numitems > 65536)
-		s_sandboxmain.list.numitems = 65536;
-
-	configname = s_sandboxmain.names;
-	for ( i = 0; i < s_sandboxmain.list.numitems; i++ ) {
-		s_sandboxmain.list.itemnames[i] = configname;
-
-		// strip extension
-		len = strlen( configname );
-		if (!Q_stricmp(configname +  len - 3,".as"))
-			configname[len-3] = '\0';
-
-		Q_strupr(configname);
-
-		configname += len + 1;
-	}
-}
 if(uis.sb_tab == 10){	
 	if (!s_sandboxmain.list.numitems) {
 		strcpy(s_sandboxmain.names,"No addons");
@@ -2094,12 +2176,7 @@ if(uis.sb_tab == 10){
 		configname += len + 1;
 	}
 }
-	
-	if(uis.sb_tab == 2){
-	for (i = 0; i < 343; i++) {
-	s_sandboxmain.list.itemnames[i] = cvar_items[i];
-	}
-	}
+
 	if(uis.sb_tab == 4){
 	for (i = 0; i < 56; i++) {
 	s_sandboxmain.list.itemnames[i] = item_items[i];
@@ -2110,7 +2187,12 @@ if(uis.sb_tab == 10){
 	s_sandboxmain.list.itemnames[i] = admcvar_items[i];
 	}
 	}
-	if(uis.sb_tab == 1){
+	if(uis.sb_tab == 9){
+	for (i = 0; i < 343; i++) {
+	s_sandboxmain.list.itemnames[i] = cvar_items[i];
+	}
+	}
+	if(uis.sb_tab == 2){
 	s_sandboxmain.classlist.itemnames[0] = "none";
 	s_sandboxmain.classlist.itemnames[1] = "weapon_machinegun";
 	s_sandboxmain.classlist.itemnames[2] = "weapon_shotgun";
@@ -2294,15 +2376,15 @@ if(uis.sb_tab == 10){
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.loadmap );
 	if(uis.sb_tab == 1){
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.propstext );
-	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.classtext );
-	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.list );
-	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.classlist );
-	}
-	if(uis.sb_tab == 2){
-	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.propstext );
 	//Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.classtext );
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.list );
 	//Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.classlist );
+	}
+	if(uis.sb_tab == 2){
+	//Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.propstext );
+	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.classtext );
+	//Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.list );
+	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.classlist );
 	}
 	if(uis.sb_tab == 3){
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.propstext );

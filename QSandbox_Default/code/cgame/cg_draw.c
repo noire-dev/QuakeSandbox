@@ -153,8 +153,6 @@ void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char *text
 		count = 0;
 		while (s && *s && count < len) {
 			glyph = &font->glyphs[(int)*s]; // TTimo: FIXME: getting nasty warnings without the cast, hopefully this doesn't break the VM build
-      //int yadj = Assets.textFont.glyphs[text[i]].bottom + Assets.textFont.glyphs[text[i]].top;
-      //float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
 			if ( Q_IsColorString( s ) ) {
 				memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
 				newColor[3] = color[3];
@@ -201,15 +199,7 @@ void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char *text
 
 #endif
 
-/*
-==============
-CG_DrawField
-
-Draws large numbers for status bar and powerups
-==============
-*/
-//#ifndef MISSIONPACK
-static void CG_DrawField (int x, int y, int width, int value) {
+static void CG_DrawField (int x, int y, int width, int value, float size) {
 	char	num[16], *ptr;
 	int		l;
 	int		frame;
@@ -250,7 +240,7 @@ static void CG_DrawField (int x, int y, int width, int value) {
 	l = strlen(num);
 	if (l > width)
 		l = width;
-	x += 2 + CHAR_WIDTH*(width - l);
+	x += 2 + CHAR_WIDTH*(width - l)*size;
 
 	ptr = num;
 	while (*ptr && l)
@@ -260,13 +250,12 @@ static void CG_DrawField (int x, int y, int width, int value) {
 		else
 			frame = *ptr -'0';
 
-		CG_DrawPic( x,y, CHAR_WIDTH, CHAR_HEIGHT, cgs.media.numberShaders[frame] );
-		x += CHAR_WIDTH;
+		CG_DrawPic( x,y, CHAR_WIDTH*size, CHAR_HEIGHT*size, cgs.media.numberShaders[frame] );
+		x += CHAR_WIDTH*size;
 		ptr++;
 		l--;
 	}
 }
-//#endif // MISSIONPACK
 
 /*
 ================
@@ -347,518 +336,14 @@ void CG_Draw3DModelCopy( float x, float y, float w, float h, qhandle_t model, qh
 	refdef.fov_y = 90;
 if(oasb_tool.integer == 1){
 ent.hModel = trap_R_RegisterModel_MiTech( "props/25brick" );
-if(oasb_modifiers.integer == 1	){			
-ent.customShader = cgs.media.ptex1Shader;	
+if(oasb_modifiers.integer > 0){			
+ent.customShader = cgs.media.ptexShader[oasb_modifiers.integer];
 }					
-if(oasb_modifiers.integer == 2	){			
-ent.customShader = cgs.media.ptex2Shader;	
-}					
-if(oasb_modifiers.integer == 3	){			
-ent.customShader = cgs.media.ptex3Shader;	
-}					
-if(oasb_modifiers.integer == 4	){			
-ent.customShader = cgs.media.ptex4Shader;	
-}					
-if(oasb_modifiers.integer == 5	){			
-ent.customShader = cgs.media.ptex5Shader;	
-}					
-if(oasb_modifiers.integer == 6	){			
-ent.customShader = cgs.media.ptex6Shader;	
-}					
-if(oasb_modifiers.integer == 7	){			
-ent.customShader = cgs.media.ptex7Shader;	
-}					
-if(oasb_modifiers.integer == 8	){			
-ent.customShader = cgs.media.ptex8Shader;	
-}					
-if(oasb_modifiers.integer == 9	){			
-ent.customShader = cgs.media.ptex9Shader;	
-}					
-if(oasb_modifiers.integer == 10	){			
-ent.customShader = cgs.media.ptex10Shader;	
-}					
-if(oasb_modifiers.integer == 11	){			
-ent.customShader = cgs.media.ptex11Shader;	
-}					
-if(oasb_modifiers.integer == 12	){			
-ent.customShader = cgs.media.ptex12Shader;	
-}					
-if(oasb_modifiers.integer == 13	){			
-ent.customShader = cgs.media.ptex13Shader;	
-}					
-if(oasb_modifiers.integer == 14	){			
-ent.customShader = cgs.media.ptex14Shader;	
-}					
-if(oasb_modifiers.integer == 15	){			
-ent.customShader = cgs.media.ptex15Shader;	
-}					
-if(oasb_modifiers.integer == 16	){			
-ent.customShader = cgs.media.ptex16Shader;	
-}					
-if(oasb_modifiers.integer == 17	){			
-ent.customShader = cgs.media.ptex17Shader;	
-}					
-if(oasb_modifiers.integer == 18	){			
-ent.customShader = cgs.media.ptex18Shader;	
-}					
-if(oasb_modifiers.integer == 19	){			
-ent.customShader = cgs.media.ptex19Shader;	
-}					
-if(oasb_modifiers.integer == 20	){			
-ent.customShader = cgs.media.ptex20Shader;	
-}					
-if(oasb_modifiers.integer == 21	){			
-ent.customShader = cgs.media.ptex21Shader;	
-}					
-if(oasb_modifiers.integer == 22	){			
-ent.customShader = cgs.media.ptex22Shader;	
-}					
-if(oasb_modifiers.integer == 23	){			
-ent.customShader = cgs.media.ptex23Shader;	
-}					
-if(oasb_modifiers.integer == 24	){			
-ent.customShader = cgs.media.ptex24Shader;	
-}					
-if(oasb_modifiers.integer == 25	){			
-ent.customShader = cgs.media.ptex25Shader;	
-}					
-if(oasb_modifiers.integer == 26	){			
-ent.customShader = cgs.media.ptex26Shader;	
-}					
-if(oasb_modifiers.integer == 27	){			
-ent.customShader = cgs.media.ptex27Shader;	
-}					
-if(oasb_modifiers.integer == 28	){			
-ent.customShader = cgs.media.ptex28Shader;	
-}					
-if(oasb_modifiers.integer == 29	){			
-ent.customShader = cgs.media.ptex29Shader;	
-}					
-if(oasb_modifiers.integer == 30	){			
-ent.customShader = cgs.media.ptex30Shader;	
-}					
-if(oasb_modifiers.integer == 31	){			
-ent.customShader = cgs.media.ptex31Shader;	
-}					
-if(oasb_modifiers.integer == 32	){			
-ent.customShader = cgs.media.ptex32Shader;	
-}					
-if(oasb_modifiers.integer == 33	){			
-ent.customShader = cgs.media.ptex33Shader;	
-}					
-if(oasb_modifiers.integer == 34	){			
-ent.customShader = cgs.media.ptex34Shader;	
-}					
-if(oasb_modifiers.integer == 35	){			
-ent.customShader = cgs.media.ptex35Shader;	
-}					
-if(oasb_modifiers.integer == 36	){			
-ent.customShader = cgs.media.ptex36Shader;	
-}					
-if(oasb_modifiers.integer == 37	){			
-ent.customShader = cgs.media.ptex37Shader;	
-}					
-if(oasb_modifiers.integer == 38	){			
-ent.customShader = cgs.media.ptex38Shader;	
-}					
-if(oasb_modifiers.integer == 39	){			
-ent.customShader = cgs.media.ptex39Shader;	
-}					
-if(oasb_modifiers.integer == 40	){			
-ent.customShader = cgs.media.ptex40Shader;	
-}					
-if(oasb_modifiers.integer == 41	){			
-ent.customShader = cgs.media.ptex41Shader;	
-}					
-if(oasb_modifiers.integer == 42	){			
-ent.customShader = cgs.media.ptex42Shader;	
-}					
-if(oasb_modifiers.integer == 43	){			
-ent.customShader = cgs.media.ptex43Shader;	
-}					
-if(oasb_modifiers.integer == 44	){			
-ent.customShader = cgs.media.ptex44Shader;	
-}					
-if(oasb_modifiers.integer == 45	){			
-ent.customShader = cgs.media.ptex45Shader;	
-}					
-if(oasb_modifiers.integer == 46	){			
-ent.customShader = cgs.media.ptex46Shader;	
-}					
-if(oasb_modifiers.integer == 47	){			
-ent.customShader = cgs.media.ptex47Shader;	
-}					
-if(oasb_modifiers.integer == 48	){			
-ent.customShader = cgs.media.ptex48Shader;	
-}					
-if(oasb_modifiers.integer == 49	){			
-ent.customShader = cgs.media.ptex49Shader;	
-}					
-if(oasb_modifiers.integer == 50	){			
-ent.customShader = cgs.media.ptex50Shader;	
-}					
-if(oasb_modifiers.integer == 51	){			
-ent.customShader = cgs.media.ptex51Shader;	
-}					
-if(oasb_modifiers.integer == 52	){			
-ent.customShader = cgs.media.ptex52Shader;	
-}					
-if(oasb_modifiers.integer == 53	){			
-ent.customShader = cgs.media.ptex53Shader;	
-}					
-if(oasb_modifiers.integer == 54	){			
-ent.customShader = cgs.media.ptex54Shader;	
-}					
-if(oasb_modifiers.integer == 55	){			
-ent.customShader = cgs.media.ptex55Shader;	
-}					
-if(oasb_modifiers.integer == 56	){			
-ent.customShader = cgs.media.ptex56Shader;	
-}					
-if(oasb_modifiers.integer == 57	){			
-ent.customShader = cgs.media.ptex57Shader;	
-}					
-if(oasb_modifiers.integer == 58	){			
-ent.customShader = cgs.media.ptex58Shader;	
-}					
-if(oasb_modifiers.integer == 59	){			
-ent.customShader = cgs.media.ptex59Shader;	
-}					
-if(oasb_modifiers.integer == 60	){			
-ent.customShader = cgs.media.ptex60Shader;	
-}					
-if(oasb_modifiers.integer == 61	){			
-ent.customShader = cgs.media.ptex61Shader;	
-}					
-if(oasb_modifiers.integer == 62	){			
-ent.customShader = cgs.media.ptex62Shader;	
-}					
-if(oasb_modifiers.integer == 63	){			
-ent.customShader = cgs.media.ptex63Shader;	
-}					
-if(oasb_modifiers.integer == 64	){			
-ent.customShader = cgs.media.ptex64Shader;	
-}					
-if(oasb_modifiers.integer == 65	){			
-ent.customShader = cgs.media.ptex65Shader;	
-}					
-if(oasb_modifiers.integer == 66	){			
-ent.customShader = cgs.media.ptex66Shader;	
-}					
-if(oasb_modifiers.integer == 67	){			
-ent.customShader = cgs.media.ptex67Shader;	
-}					
-if(oasb_modifiers.integer == 68	){			
-ent.customShader = cgs.media.ptex68Shader;	
-}					
-if(oasb_modifiers.integer == 69	){			
-ent.customShader = cgs.media.ptex69Shader;	
-}					
-if(oasb_modifiers.integer == 70	){			
-ent.customShader = cgs.media.ptex70Shader;	
-}					
-if(oasb_modifiers.integer == 71	){			
-ent.customShader = cgs.media.ptex71Shader;	
-}					
-if(oasb_modifiers.integer == 72	){			
-ent.customShader = cgs.media.ptex72Shader;	
-}					
-if(oasb_modifiers.integer == 73	){			
-ent.customShader = cgs.media.ptex73Shader;	
-}					
-if(oasb_modifiers.integer == 74	){			
-ent.customShader = cgs.media.ptex74Shader;	
-}					
-if(oasb_modifiers.integer == 75	){			
-ent.customShader = cgs.media.ptex75Shader;	
-}					
-if(oasb_modifiers.integer == 76	){			
-ent.customShader = cgs.media.ptex76Shader;	
-}					
-if(oasb_modifiers.integer == 77	){			
-ent.customShader = cgs.media.ptex77Shader;	
-}					
-if(oasb_modifiers.integer == 78	){			
-ent.customShader = cgs.media.ptex78Shader;	
-}					
-if(oasb_modifiers.integer == 79	){			
-ent.customShader = cgs.media.ptex79Shader;	
-}					
-if(oasb_modifiers.integer == 80	){			
-ent.customShader = cgs.media.ptex80Shader;	
-}					
-if(oasb_modifiers.integer == 81	){			
-ent.customShader = cgs.media.ptex81Shader;	
-}					
-if(oasb_modifiers.integer == 82	){			
-ent.customShader = cgs.media.ptex82Shader;	
-}					
-if(oasb_modifiers.integer == 83	){			
-ent.customShader = cgs.media.ptex83Shader;	
-}					
-if(oasb_modifiers.integer == 84	){			
-ent.customShader = cgs.media.ptex84Shader;	
-}					
-if(oasb_modifiers.integer == 85	){			
-ent.customShader = cgs.media.ptex85Shader;	
-}					
-if(oasb_modifiers.integer == 86	){			
-ent.customShader = cgs.media.ptex86Shader;	
-}					
-if(oasb_modifiers.integer == 87	){			
-ent.customShader = cgs.media.ptex87Shader;	
-}					
-if(oasb_modifiers.integer == 88	){			
-ent.customShader = cgs.media.ptex88Shader;	
-}					
-if(oasb_modifiers.integer == 89	){			
-ent.customShader = cgs.media.ptex89Shader;	
-}					
-if(oasb_modifiers.integer == 90	){			
-ent.customShader = cgs.media.ptex90Shader;	
-}					
-if(oasb_modifiers.integer == 91	){			
-ent.customShader = cgs.media.ptex91Shader;	
-}					
-if(oasb_modifiers.integer == 92	){			
-ent.customShader = cgs.media.ptex92Shader;	
-}					
-if(oasb_modifiers.integer == 93	){			
-ent.customShader = cgs.media.ptex93Shader;	
-}					
-if(oasb_modifiers.integer == 94	){			
-ent.customShader = cgs.media.ptex94Shader;	
-}					
-if(oasb_modifiers.integer == 95	){			
-ent.customShader = cgs.media.ptex95Shader;	
-}					
-if(oasb_modifiers.integer == 96	){			
-ent.customShader = cgs.media.ptex96Shader;	
-}					
-if(oasb_modifiers.integer == 97	){			
-ent.customShader = cgs.media.ptex97Shader;	
-}					
-if(oasb_modifiers.integer == 98	){			
-ent.customShader = cgs.media.ptex98Shader;	
-}					
-if(oasb_modifiers.integer == 99	){			
-ent.customShader = cgs.media.ptex99Shader;	
-}					
-if(oasb_modifiers.integer == 100	){			
-ent.customShader = cgs.media.ptex100Shader;	
-}					
-if(oasb_modifiers.integer == 101	){			
-ent.customShader = cgs.media.ptex101Shader;	
-}					
-if(oasb_modifiers.integer == 102	){			
-ent.customShader = cgs.media.ptex102Shader;	
-}					
-if(oasb_modifiers.integer == 103	){			
-ent.customShader = cgs.media.ptex103Shader;	
-}					
-if(oasb_modifiers.integer == 104	){			
-ent.customShader = cgs.media.ptex104Shader;	
-}					
-if(oasb_modifiers.integer == 105	){			
-ent.customShader = cgs.media.ptex105Shader;	
-}					
-if(oasb_modifiers.integer == 106	){			
-ent.customShader = cgs.media.ptex106Shader;	
-}					
-if(oasb_modifiers.integer == 107	){			
-ent.customShader = cgs.media.ptex107Shader;	
-}					
-if(oasb_modifiers.integer == 108	){			
-ent.customShader = cgs.media.ptex108Shader;	
-}					
-if(oasb_modifiers.integer == 109	){			
-ent.customShader = cgs.media.ptex109Shader;	
-}					
-if(oasb_modifiers.integer == 110	){			
-ent.customShader = cgs.media.ptex110Shader;	
-}					
-if(oasb_modifiers.integer == 111	){			
-ent.customShader = cgs.media.ptex111Shader;	
-}					
-if(oasb_modifiers.integer == 112	){			
-ent.customShader = cgs.media.ptex112Shader;	
-}					
-if(oasb_modifiers.integer == 113	){			
-ent.customShader = cgs.media.ptex113Shader;	
-}					
-if(oasb_modifiers.integer == 114	){			
-ent.customShader = cgs.media.ptex114Shader;	
-}					
-if(oasb_modifiers.integer == 115	){			
-ent.customShader = cgs.media.ptex115Shader;	
-}					
-if(oasb_modifiers.integer == 116	){			
-ent.customShader = cgs.media.ptex116Shader;	
-}					
-if(oasb_modifiers.integer == 117	){			
-ent.customShader = cgs.media.ptex117Shader;	
-}					
-if(oasb_modifiers.integer == 118	){			
-ent.customShader = cgs.media.ptex118Shader;	
-}					
-if(oasb_modifiers.integer == 119	){			
-ent.customShader = cgs.media.ptex119Shader;	
-}					
-if(oasb_modifiers.integer == 120	){			
-ent.customShader = cgs.media.ptex120Shader;	
-}					
-if(oasb_modifiers.integer == 121	){			
-ent.customShader = cgs.media.ptex121Shader;	
-}					
-if(oasb_modifiers.integer == 122	){			
-ent.customShader = cgs.media.ptex122Shader;	
-}					
-if(oasb_modifiers.integer == 123	){			
-ent.customShader = cgs.media.ptex123Shader;	
-}					
-if(oasb_modifiers.integer == 124	){			
-ent.customShader = cgs.media.ptex124Shader;	
-}					
-if(oasb_modifiers.integer == 125	){			
-ent.customShader = cgs.media.ptex125Shader;	
-}					
-if(oasb_modifiers.integer == 126	){			
-ent.customShader = cgs.media.ptex126Shader;	
-}					
-if(oasb_modifiers.integer == 127	){			
-ent.customShader = cgs.media.ptex127Shader;	
-}					
-if(oasb_modifiers.integer == 128	){			
-ent.customShader = cgs.media.ptex128Shader;	
-}					
-if(oasb_modifiers.integer == 129	){			
-ent.customShader = cgs.media.ptex129Shader;	
-}					
-if(oasb_modifiers.integer == 130	){			
-ent.customShader = cgs.media.ptex130Shader;	
-}					
-if(oasb_modifiers.integer == 131	){			
-ent.customShader = cgs.media.ptex131Shader;	
-}					
-if(oasb_modifiers.integer == 132	){			
-ent.customShader = cgs.media.ptex132Shader;	
-}					
-if(oasb_modifiers.integer == 133	){			
-ent.customShader = cgs.media.ptex133Shader;	
-}					
-if(oasb_modifiers.integer == 134	){			
-ent.customShader = cgs.media.ptex134Shader;	
-}					
-if(oasb_modifiers.integer == 135	){			
-ent.customShader = cgs.media.ptex135Shader;	
-}					
-if(oasb_modifiers.integer == 136	){			
-ent.customShader = cgs.media.ptex136Shader;	
-}					
-if(oasb_modifiers.integer == 137	){			
-ent.customShader = cgs.media.ptex137Shader;	
-}					
-if(oasb_modifiers.integer == 138	){			
-ent.customShader = cgs.media.ptex138Shader;	
-}					
-if(oasb_modifiers.integer == 139	){			
-ent.customShader = cgs.media.ptex139Shader;	
-}					
-if(oasb_modifiers.integer == 140	){			
-ent.customShader = cgs.media.ptex140Shader;	
-}					
-if(oasb_modifiers.integer == 141	){			
-ent.customShader = cgs.media.ptex141Shader;	
-}					
-if(oasb_modifiers.integer == 142	){			
-ent.customShader = cgs.media.ptex142Shader;	
-}					
-if(oasb_modifiers.integer == 143	){			
-ent.customShader = cgs.media.ptex143Shader;	
-}					
-if(oasb_modifiers.integer == 144	){			
-ent.customShader = cgs.media.ptex144Shader;	
-}					
-if(oasb_modifiers.integer == 145	){			
-ent.customShader = cgs.media.ptex145Shader;	
-}					
-if(oasb_modifiers.integer == 146	){			
-ent.customShader = cgs.media.ptex146Shader;	
-}					
-if(oasb_modifiers.integer == 147	){			
-ent.customShader = cgs.media.ptex147Shader;	
-}					
-if(oasb_modifiers.integer == 148	){			
-ent.customShader = cgs.media.ptex148Shader;	
-}					
-if(oasb_modifiers.integer == 149	){			
-ent.customShader = cgs.media.ptex149Shader;	
-}					
-if(oasb_modifiers.integer == 150	){			
-ent.customShader = cgs.media.ptex150Shader;	
-}					
-if(oasb_modifiers.integer == 151	){			
-ent.customShader = cgs.media.ptex151Shader;	
-}					
-if(oasb_modifiers.integer == 152	){			
-ent.customShader = cgs.media.ptex152Shader;	
-}					
-if(oasb_modifiers.integer == 153	){			
-ent.customShader = cgs.media.ptex153Shader;	
-}	
-if(oasb_modifiers.integer == 154	){			
-ent.customShader = cgs.media.ptex154Shader;	
-}	
-if(oasb_modifiers.integer == 155	){			
-ent.customShader = cgs.media.ptex155Shader;	
-}	
-if(oasb_modifiers.integer == 156	){			
-ent.customShader = cgs.media.ptex156Shader;	
-}	
-if(oasb_modifiers.integer == 157	){			
-ent.customShader = cgs.media.ptex157Shader;	
-}	
-if(oasb_modifiers.integer == 158	){			
-ent.customShader = cgs.media.ptex158Shader;	
-}	
-if(oasb_modifiers.integer == 159	){			
-ent.customShader = cgs.media.ptex159Shader;	
-}	
-if(oasb_modifiers.integer == 160	){			
-ent.customShader = cgs.media.ptex160Shader;	
-}	
-if(oasb_modifiers.integer == 161	){			
-ent.customShader = cgs.media.ptex161Shader;	
-}	
-if(oasb_modifiers.integer == 162	){			
-ent.customShader = cgs.media.ptex162Shader;	
-}	
-if(oasb_modifiers.integer == 163	){			
-ent.customShader = cgs.media.ptex163Shader;	
-}	
-if(oasb_modifiers.integer == 164	){			
-ent.customShader = cgs.media.ptex164Shader;	
-}	
-if(oasb_modifiers.integer == 165	){			
-ent.customShader = cgs.media.ptex165Shader;	
-}	
-if(oasb_modifiers.integer == 166	){			
-ent.customShader = cgs.media.ptex166Shader;	
-}	
-if(oasb_modifiers.integer == 167	){			
-ent.customShader = cgs.media.ptex167Shader;	
-}	
-if(oasb_modifiers.integer == 168	){			
-ent.customShader = cgs.media.ptex168Shader;	
-}	
-if(oasb_modifiers.integer == 169	){			
-ent.customShader = cgs.media.ptex169Shader;	
-}
-if(oasb_modifiers.integer == 255	){	
+if(oasb_modifiers.integer == 255){	
 if(cg_hide255.integer){		
-ent.customShader = cgs.media.ptex255Shader;
+ent.customShader = cgs.media.ptexShader[oasb_modifiers.integer];
 } else {
-ent.customShader = cgs.media.ptex255ShaderE;
+ent.customShader = cgs.media.ptexShader[oasb_modifiers.integer+1];
 }
 }
 }
@@ -1001,75 +486,17 @@ void CG_DrawFlagModel( float x, float y, float w, float h, int team, qboolean fo
 
 /*
 ================
-CG_DrawStatusBarHead
-
-================
-*/
-//#ifndef MISSIONPACK
-
-static void CG_DrawStatusBarHead( float x ) {
-	vec3_t		angles;
-	float		size, stretch;
-	float		frac;
-
-	VectorClear( angles );
-
-	if ( cg.damageTime && cg.time - cg.damageTime < DAMAGE_TIME ) {
-		frac = (float)(cg.time - cg.damageTime ) / DAMAGE_TIME;
-		size = ICON_SIZE * 2.5 * ( 1.5 - frac * 0.5 );
-
-		stretch = size - ICON_SIZE * 2.5;
-		// kick in the direction of damage
-		x -= stretch * 0.5 + cg.damageX * stretch * 0.5;
-
-		cg.headStartYaw = 180 + cg.damageX * 45;
-
-		cg.headEndYaw = 180 + 20 * cos( crandom()*M_PI );
-		cg.headEndPitch = 5 * cos( crandom()*M_PI );
-
-		cg.headStartTime = cg.time;
-		cg.headEndTime = cg.time + 100 + random() * 2000;
-	} else {
-		if ( cg.time >= cg.headEndTime ) {
-			// select a new head angle
-			cg.headStartYaw = cg.headEndYaw;
-			cg.headStartPitch = cg.headEndPitch;
-			cg.headStartTime = cg.headEndTime;
-			cg.headEndTime = cg.time + 100 + random() * 2000;
-
-			cg.headEndYaw = 180 + 20 * cos( crandom()*M_PI );
-			cg.headEndPitch = 5 * cos( crandom()*M_PI );
-		}
-
-		size = ICON_SIZE * 2.5;
-	}
-
-	// if the server was frozen for a while we may have a bad head start time
-	if ( cg.headStartTime > cg.time ) {
-		cg.headStartTime = cg.time;
-	}
-
-	frac = ( cg.time - cg.headStartTime ) / (float)( cg.headEndTime - cg.headStartTime );
-	frac = frac * frac * ( 3 - 2 * frac );
-	angles[YAW] = cg.headStartYaw + ( cg.headEndYaw - cg.headStartYaw ) * frac;
-	angles[PITCH] = cg.headStartPitch + ( cg.headEndPitch - cg.headStartPitch ) * frac;
-
-	CG_DrawHead( 0 - cl_screenoffset.integer, 480 - size, size, size,
-				cg.snap->ps.clientNum, angles );
-}
-//#endif // MISSIONPACK
-
-/*
-================
 CG_DrawStatusBarFlag
 
 ================
 */
-//#ifndef MISSIONPACK
-static void CG_DrawStatusBarFlag( float x, int team ) {
-	CG_DrawFlagModel( 0 - cl_screenoffset.integer, 480 - ICON_SIZE, ICON_SIZE, ICON_SIZE, team, qfalse );
+static void CG_DrawStatusBarFlag( int team, int show ) {
+	if(show >= 1){
+	CG_DrawFlagModel( 0 - cl_screenoffset.integer, 480 - ICON_SIZE - 35, ICON_SIZE, ICON_SIZE, team, qfalse );
+	} else {
+	CG_DrawFlagModel( -10000 - cl_screenoffset.integer, -10000, ICON_SIZE, ICON_SIZE, team, qfalse );	
+		}
 }
-//#endif // MISSIONPACK
 
 /*
 ================
@@ -1098,76 +525,12 @@ void CG_DrawTeamBackground( int x, int y, int w, int h, float alpha, int team )
 	trap_R_SetColor( NULL );
 }
 
-/*
-================
-CG_DrawStatusBar
-
-================
-*/
-//#ifndef MISSIONPACK
-static void CG_DrawStatusBar( void ) {
-	int			color;
-	int			y;
-	centity_t	*cent;
-	playerState_t	*ps;
-	int			value;
-	vec4_t		hcolor;
+static void CG_DrawToolgun() {
+	float y;
 	vec3_t		angles;
 	vec3_t		origin;
-    qhandle_t	handle;
-	vec4_t         colornorm;
-	vec4_t         colorlow;
-	clientInfo_t	*ci;
-	int				weaphack;
 	gitem_t	*it;
 		
-		colornorm[0]=cg_crosshairColorRed.value;
-		colornorm[1]=cg_crosshairColorGreen.value;
-		colornorm[2]=cg_crosshairColorBlue.value;
-		colornorm[3]=1.0f;
-		
-		colorlow[0]=cg_crosshairColorRed.value*0.5;
-		colorlow[1]=cg_crosshairColorGreen.value*0.5;
-		colorlow[2]=cg_crosshairColorBlue.value*0.5;
-		colorlow[3]=1.0f;
-
-	if ( cg_drawStatus.integer == 0 ) {
-		return;
-	}
-
-	// draw the team background
-	if ( !(cg.snap->ps.pm_flags & PMF_FOLLOW) ) //If not following anybody:
-		CG_DrawTeamBackground( 0, 420, 640, 60, 0.33f, cg.snap->ps.persistant[PERS_TEAM] );
-	else //Sago: If we follow find the teamcolor of the guy we follow. It might not be our own team!
-		CG_DrawTeamBackground( 0, 420, 640, 60, 0.33f, cgs.clientinfo[ cg.snap->ps.clientNum ].team );
-
-	cent = &cg_entities[cg.snap->ps.clientNum];
-	ps = &cg.snap->ps;
-	
-	ci = &cgs.clientinfo[ cent->currentState.clientNum ];
-	
-	if(ci->swepid >= 1){
-	weaphack = ci->swepid;
-	} else {
-	weaphack = cent->currentState.weapon;
-	}
-
-	VectorClear( angles );
-
-	// draw any 3D icons first, so the changes back to 2D are minimized
-	if (weaphack) {
-		if(cg_weapons[ cent->currentState.weapon ].ammoModel){
-		origin[0] = 70;
-		origin[1] = 0;
-		origin[2] = 0;
-		angles[YAW] = 90 + 20 * sin( cg.time / 1000.0 );
-		CG_Draw3DModel( 640 + cl_screenoffset.integer - TEXT_ICON_SPACE - ICON_SIZE, 432 + 20, ICON_SIZE, ICON_SIZE,
-					   cg_weapons[ cent->currentState.weapon ].ammoModel, 0, origin, angles );
-		} else
-		if(weaphack == WP_GAUNTLET){
-		if(oasb_tool.integer){
-			
-	
 		if(oasb_tool.integer == 1){
 			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Material Tool", 1.0F);
 		}
@@ -1443,10 +806,7 @@ static void CG_DrawStatusBar( void ) {
 			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2. Y", 1.0F);
 			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "3. Z", 1.0F);
 		}
-		
-		
-		
-		
+
 		origin[0] = 70;
 		origin[1] = 0;
 		origin[2] = 0;
@@ -1460,43 +820,75 @@ static void CG_DrawStatusBar( void ) {
 				CG_Draw3DModelCopy( 640 + cl_screenoffset.integer - TEXT_ICON_SPACE  - 160, 1 + 12, 160, 160,
 					   trap_R_RegisterModel_MiTech( it->world_model[0] ), 0, origin, angles );	
 		}
+	}	
+}
+
+static void CG_DrawStatusElement( float x, float y, int value, const char *text ) {
+	vec4_t         colornorm;
+	vec4_t         colorlow;
+	vec4_t         colorblk;
+	
+	colornorm[0]=cg_crosshairColorRed.value;
+	colornorm[1]=cg_crosshairColorGreen.value;
+	colornorm[2]=cg_crosshairColorBlue.value;
+	colornorm[3]=1.0f;
+	
+	colorblk[0]=0.0f;
+	colorblk[1]=0.0f;
+	colorblk[2]=0.0f;
+	colorblk[3]=0.20f;
+	
+	CG_DrawRoundedRect(x, y, 110, 32, 6, colorblk);
+	CG_DrawStringExt( x+3, y+20, text, colornorm, qfalse, qfalse, 6, 7, 0 );
+	trap_R_SetColor( colornorm );
+	CG_DrawField ( x+43, y+9, 4, value, 0.80);
+}
+
+/*
+================
+CG_DrawStatusBar
+
+================
+*/
+static void CG_DrawStatusBar( void ) {
+	centity_t	*cent;
+	playerState_t	*ps;
+	int			value;
+	clientInfo_t	*ci;
+	int				weaphack;
+
+	if ( cg_drawStatus.integer == 0 ) {
+		return;
+	}
+
+	cent = &cg_entities[cg.snap->ps.clientNum];
+	ps = &cg.snap->ps;
+	
+	ci = &cgs.clientinfo[ cent->currentState.clientNum ];
+	
+	if(ci->swepid >= 1){
+	weaphack = ci->swepid;
+	} else {
+	weaphack = cent->currentState.weapon;
 		}
+
+	// draw any 3D icons first, so the changes back to 2D are minimized
+	if (weaphack) {
+		if(weaphack == WP_GAUNTLET){
+			if(oasb_tool.integer){
+				CG_DrawToolgun();
 		}
 		}
 	}
 
-	CG_DrawStatusBarHead( 185 + CHAR_WIDTH*3 + TEXT_ICON_SPACE );
 
 	if( cg.predictedPlayerState.powerups[PW_REDFLAG] ) {
-		CG_DrawStatusBarFlag( 185 + CHAR_WIDTH*3 + TEXT_ICON_SPACE + ICON_SIZE, TEAM_RED );
+		CG_DrawStatusBarFlag( TEAM_RED, 1 );
 	} else if( cg.predictedPlayerState.powerups[PW_BLUEFLAG] ) {
-		CG_DrawStatusBarFlag( 185 + CHAR_WIDTH*3 + TEXT_ICON_SPACE + ICON_SIZE, TEAM_BLUE );
+		CG_DrawStatusBarFlag( TEAM_BLUE, 1 );
 	} else if( cg.predictedPlayerState.powerups[PW_NEUTRALFLAG] ) {
-		CG_DrawStatusBarFlag( 185 + CHAR_WIDTH*3 + TEXT_ICON_SPACE + ICON_SIZE, TEAM_FREE );
+		CG_DrawStatusBarFlag( TEAM_FREE, 1 ); 
 	}
-
-	if ( ps->stats[ STAT_ARMOR ] ) {
-		origin[0] = 90;
-		origin[1] = 0;
-		origin[2] = -10;
-		angles[YAW] = ( cg.time & 2047 ) * 360 / 2048.0;
-//		CG_Draw3DModel( 370 + CHAR_WIDTH*3 + TEXT_ICON_SPACE, 432, ICON_SIZE, ICON_SIZE,
-//					   cgs.media.armorModel, 0, origin, angles );
-	}
-
-        if( cgs.gametype == GT_HARVESTER ) {
-		origin[0] = 90;
-		origin[1] = 0;
-		origin[2] = -10;
-		angles[YAW] = ( cg.time & 2047 ) * 360 / 2048.0;
-		if( cg.snap->ps.persistant[PERS_TEAM] == TEAM_BLUE ) {
-			handle = cgs.media.redCubeModel;
-		} else {
-			handle = cgs.media.blueCubeModel;
-		}
-		CG_Draw3DModel( 470 + CHAR_WIDTH*3 + TEXT_ICON_SPACE, 432 + 12, ICON_SIZE, ICON_SIZE, handle, 0, origin, angles );
-	}
-
 
 	//
 	// ammo
@@ -1513,95 +905,54 @@ static void CG_DrawStatusBar( void ) {
 		}
 		}
 		if ( value > -1 ) {
-			if ( cg.predictedPlayerState.weaponstate == WEAPON_FIRING
-				&& cg.predictedPlayerState.weaponTime > 100 ) {
-				// draw as dark grey when reloading
-				color = 2;	// dark grey
-			} else {
-				if ( value >= 0 ) {
-					color = 0;	// green
-				} else {
-					color = 1;	// red
-				}
-			}
-				if ( color == 0 ) {
-					trap_R_SetColor( colornorm );
-				} else {
-					trap_R_SetColor( colorlow );
-				}
-
-			CG_DrawField (640 + cl_screenoffset.integer - CHAR_WIDTH*4 - TEXT_ICON_SPACE - ICON_SIZE, 432 + 20, 4, value);
-			trap_R_SetColor( NULL );
-
-			// if we didn't draw a 3D icon, draw a 2D icon for ammo
-			if ( !cg_draw3dIcons.integer && cg_drawIcons.integer ) {
-				qhandle_t	icon;
-
-				icon = cg_weapons[ cg.predictedPlayerState.weapon ].ammoIcon;
-				if ( icon ) {
-					CG_DrawPic( 640 + cl_screenoffset.integer - TEXT_ICON_SPACE - ICON_SIZE, 432 + 20, ICON_SIZE, ICON_SIZE, icon );
-				}
-			}
+		if(cl_language.integer == 0){
+		CG_DrawStatusElement(628+cl_screenoffset.integer-110, 440, value, "AMMO");
+		}
+		if(cl_language.integer == 1){
+		CG_DrawStatusElement(628+cl_screenoffset.integer-110, 440, value, "ПАТРОНЫ");
+		}
 		}
 	}
+	
+	CG_DrawStatusBarFlag( TEAM_FREE, 0 );		//android buttons fix
 
 	//
 	// health
 	//
 	value = ps->stats[STAT_HEALTH];
-	if ( value > 100 ) {
-		trap_R_SetColor( colornorm );		// white
-	} else if (value > 25) {
-		trap_R_SetColor( colornorm );	// green
-	} else if (value > 0) {
-		color = (cg.time >> 8) & 1;	// flash
-		trap_R_SetColor( colorlow );
-	} else {
-		trap_R_SetColor( colornorm );	// red
+	if(cl_language.integer == 0){
+	CG_DrawStatusElement(12-cl_screenoffset.integer, 440, value, "HEALTH");
 	}
-
-	// stretch the health up when taking damage
-	CG_DrawField ( 74 - cl_screenoffset.integer, 432 + 20, 4, value);
-	CG_ColorForHealth( hcolor );
-	trap_R_SetColor( hcolor );
+	if(cl_language.integer == 1){
+	CG_DrawStatusElement(12-cl_screenoffset.integer, 440, value, "ЖИЗНИ");
+	}
 		
 	//
 	// armor
 	//
 	value = ps->stats[STAT_ARMOR];
 	if (value > 0 ) {
-		trap_R_SetColor( colornorm );
-		CG_DrawField (74 - cl_screenoffset.integer + CHAR_WIDTH, 408 + 15, 3, value);
-		trap_R_SetColor( NULL );
-		// if we didn't draw a 3D icon, draw a 2D icon for armor
-		if ( !cg_draw3dIcons.integer && cg_drawIcons.integer ) {
-		//	CG_DrawPic( 370 + CHAR_WIDTH*3 + TEXT_ICON_SPACE, 432 + 12, ICON_SIZE, ICON_SIZE, cgs.media.armorIcon );
+		if(cl_language.integer == 0){
+		CG_DrawStatusElement(22-cl_screenoffset.integer+110, 440, value, "ARMOR");
 		}
-
+		if(cl_language.integer == 1){
+		CG_DrawStatusElement(22-cl_screenoffset.integer+110, 440, value, "БРОНЯ");
+		}
 	}
 
         //Skulls!
-        if(cgs.gametype == GT_HARVESTER)
-        {
+	if(cgs.gametype == GT_HARVESTER) {
             value = ps->generic1;
             if (value > 0 ) {
-                    trap_R_SetColor( colornorm );
-                    CG_DrawField (470, 432 + 12, 3, value);
-                    trap_R_SetColor( NULL );
-                    // if we didn't draw a 3D icon, draw a 2D icon for skull
-                    if ( !cg_draw3dIcons.integer && cg_drawIcons.integer ) {
-                            if( cg.snap->ps.persistant[PERS_TEAM] == TEAM_BLUE ) {
-                                    handle = cgs.media.redCubeIcon;
-                            } else {
-                                    handle = cgs.media.blueCubeIcon;
-                            }
-                            CG_DrawPic( 470 + CHAR_WIDTH*3 + TEXT_ICON_SPACE, 432 + 20, ICON_SIZE, ICON_SIZE, handle );
-                    }
-
+				if(cl_language.integer == 0){
+				CG_DrawStatusElement(32-cl_screenoffset.integer+220, 440, value, "SKULLS");
+				}
+				if(cl_language.integer == 1){
+				CG_DrawStatusElement(32-cl_screenoffset.integer+220, 440, value, "ЧЕРЕПА");
+				}
             }
         }
 }
-//#endif
 
 /*
 ===========================================================================================
@@ -1610,54 +961,6 @@ static void CG_DrawStatusBar( void ) {
 
 ===========================================================================================
 */
-
-/*
-================
-CG_DrawAttacker
-
-================
-*/
-static float CG_DrawAttacker( float y ) {
-	int			t;
-	float		size;
-	vec3_t		angles;
-	const char	*info;
-	const char	*name;
-	int			clientNum;
-
-	if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 ) {
-		return y;
-	}
-
-	if ( !cg.attackerTime ) {
-		return y;
-	}
-
-	clientNum = cg.predictedPlayerState.persistant[PERS_ATTACKER];
-	if ( clientNum < 0 || clientNum >= MAX_CLIENTS || clientNum == cg.snap->ps.clientNum ) {
-		return y;
-	}
-
-	t = cg.time - cg.attackerTime;
-	if ( t > ATTACKER_HEAD_TIME ) {
-		cg.attackerTime = 0;
-		return y;
-	}
-
-	size = ICON_SIZE * 1.25;
-
-	angles[PITCH] = 0;
-	angles[YAW] = 180;
-	angles[ROLL] = 0;
-	CG_DrawHead( 640 + cl_screenoffset.integer - size, y, size, size, clientNum, angles );
-
-	info = CG_ConfigString( CS_PLAYERS + clientNum );
-	name = Info_ValueForKey(  info, "n" );
-	y += size;
-	CG_DrawBigString( 640 + cl_screenoffset.integer - ( Q_PrintStrlen( name ) * BIGCHAR_WIDTH), y, name, 0.5 );
-
-	return y + BIGCHAR_HEIGHT + 2;
-}
 
 /*
 ================
@@ -1843,63 +1146,6 @@ if(cl_language.integer == 1){
 }
 
 /*
-CG_DrawDoubleDominationThings
- *
- *Sago: Might be relevant for debugging missionpack.
-*/
-
-/*static float CG_DrawDoubleDominationThings( float y ) {
-	char		*s;
-	int			w;
-	int 		statusA, statusB;
-	statusA = cgs.redflag;
-	statusB = cgs.blueflag;
-
-	if(statusA == TEAM_NONE) {
-		s = va("Point A not spawned");
-	} else
-	if(statusA == TEAM_FREE) {
-		s = va("Point A is not controlled");
-	} else
-	if(statusA == TEAM_RED) {
-		s = va("Point A is controlled by RED");
-	} else
-	if(statusA == TEAM_BLUE) {
-		s = va("Point A is controlled by BLUE");
-	} else
-		s = va("Point A has an error");
-	w = CG_DrawStrlen( s ) * SMALLCHAR_WIDTH;
-	CG_DrawSmallString( 635 - w, y + 2, s, 1.0F);
-	y+=SMALLCHAR_HEIGHT+4;
-
-	if(statusB == TEAM_NONE) {
-		s = va("Point B not spawned");
-	} else
-	if(statusB == TEAM_FREE) {
-		s = va("Point B is not controlled");
-	} else
-	if(statusB == TEAM_RED) {
-		s = va("Point B is controlled by RED");
-	} else
-	if(statusB == TEAM_BLUE) {
-		s = va("Point B is controlled by BLUE");
-	} else
-		s = va("Point B has an error");
-	w = CG_DrawStrlen( s ) * SMALLCHAR_WIDTH;
-	CG_DrawSmallString( 635 - w, y + 2, s, 1.0F);
-
-	if( ( ( statusB == statusA ) && ( statusA == TEAM_RED ) ) ||
-		( ( statusB == statusA ) && ( statusA == TEAM_BLUE ) ) ) {
-		s = va("Capture in: %i",(cgs.timetaken+10*1000-cg.time)/1000+1);
-		w = CG_DrawStrlen( s ) * SMALLCHAR_WIDTH;
-		y+=SMALLCHAR_HEIGHT+4;
-		CG_DrawSmallString( 635 - w, y + 2, s, 1.0F);
-	}
-
-	return y + SMALLCHAR_HEIGHT+4;
-}*/
-
-/*
 =================
 CG_DrawLMSmode
 =================
@@ -1963,23 +1209,6 @@ static float CG_DrawCTFoneway( float y ) {
 
 	return y + SMALLCHAR_HEIGHT+4;
 }
-
-/*
-=================
-CG_DrawEliminationDeathMessage
-=================
-*/
-
-/*static float CG_DrawEliminationDeathMessage( float y ) {
-	char		*s;
-	int			w;
-
-	s = va("You are waiting for a new round");
-	w = CG_DrawStrlen( s ) * SMALLCHAR_WIDTH;
-	CG_DrawSmallString( 635 - w, y + 2, s, 1.0F);
-
-	return y + SMALLCHAR_HEIGHT+4;
-}*/
 
 /*
 =================
@@ -2215,7 +1444,7 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 		hcolor[1] = 0.0f;
 		hcolor[2] = 0.0f;
 		hcolor[3] = 0.33f;
-	} else { // if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_BLUE )
+	} else {
 		hcolor[0] = 0.0f;
 		hcolor[1] = 0.0f;
 		hcolor[2] = 1.0f;
@@ -2245,8 +1474,6 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 				if (len > lwidth)
 					len = lwidth;
 
-//				xx = x + TINYCHAR_WIDTH * 2 + TINYCHAR_WIDTH * pwidth +
-//					((lwidth/2 - len/2) * TINYCHAR_WIDTH);
 				xx = x + TINYCHAR_WIDTH * 2 + TINYCHAR_WIDTH * pwidth;
 				CG_DrawStringExt( xx, y,
 					p, hcolor, qfalse, qfalse, TINYCHAR_WIDTH, TINYCHAR_HEIGHT,
@@ -2303,7 +1530,6 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 	}
 
 	return ret_y;
-//#endif
 }
 
 static float CG_DrawFollowMessage( float y ) {
@@ -2337,10 +1563,6 @@ static void CG_DrawUpperRight(stereoFrame_t stereoFrame)
 	if ( cgs.gametype >= GT_TEAM && cgs.ffa_gt!=1 && cg_drawTeamOverlay.integer == 1 ) {
 		y = CG_DrawTeamOverlay( y, qtrue, qtrue );
 	}
-	/*if ( cgs.gametype == GT_DOUBLE_D ) {
-		y = CG_DrawDoubleDominationThings(y);
-	}
-	else*/
 	if ( cgs.gametype == GT_LMS && cg.showScores ) {
 		y = CG_DrawLMSmode(y);
 	}
@@ -2361,8 +1583,6 @@ static void CG_DrawUpperRight(stereoFrame_t stereoFrame)
 	}
 	if (cgs.gametype==GT_ELIMINATION || cgs.gametype == GT_CTF_ELIMINATION || cgs.gametype==GT_LMS) {
 		y = CG_DrawEliminationTimer( y );
-		/*if (cgs.clientinfo[ cg.clientNum ].isDead)
-			y = CG_DrawEliminationDeathMessage( y);*/
 	}
 
 	y = CG_DrawFollowMessage( y );
@@ -2372,9 +1592,6 @@ if(mod_roundmode == 1){
 
 	if ( cg_drawTimer.integer) {
 		y = CG_DrawTimer( y );
-	}
-	if ( cg_drawAttacker.integer ) {
-		y = CG_DrawAttacker( y );
 	}
 	if ( cg_drawSpeed.integer ) {
 		y = CG_DrawSpeedMeter( y );
@@ -2397,7 +1614,6 @@ CG_DrawScores
 Draw the small two score display
 =================
 */
-//#ifndef MISSIONPACK
 static float CG_DrawScores( float y ) {
 	const char	*s;
 	int			s1, s2, score;
@@ -2585,14 +1801,12 @@ static float CG_DrawScores( float y ) {
 
 	return y1 - 8;
 }
-//#endif // MISSIONPACK
 
 /*
 ================
 CG_DrawPowerups
 ================
 */
-//#ifndef MISSIONPACK
 static float CG_DrawPowerups( float y ) {
 	int		sorted[MAX_POWERUPS];
 	int		sortedTime[MAX_POWERUPS];
@@ -2660,7 +1874,7 @@ static float CG_DrawPowerups( float y ) {
 		  y -= ICON_SIZE;
 
 		  trap_R_SetColor( colors[color] );
-		  CG_DrawField( x + 16, y, 5, sortedTime[ i ] / 1000 );
+		  CG_DrawField( x + 16, y, 5, sortedTime[ i ] / 1000, 1 );
 
 		  t = ps->powerups[ sorted[i] ];
 		  if ( t - cg.time >= POWERUP_BLINKS * POWERUP_BLINK_TIME ) {
@@ -2690,7 +1904,6 @@ static float CG_DrawPowerups( float y ) {
 
 	return y;
 }
-//#endif // MISSIONPACK
 
 /*
 =====================
@@ -2698,27 +1911,26 @@ CG_DrawLowerRight
 
 =====================
 */
-//#ifndef MISSIONPACK
 static void CG_DrawLowerRight( void ) {
 	float	y;
 
-	y = 480 - ICON_SIZE;
+	y = 480 - ICON_SIZE*1.5;
 
 	if ( cgs.gametype >= GT_TEAM && cgs.ffa_gt!=1 && cg_drawTeamOverlay.integer == 2 ) {
 		y = CG_DrawTeamOverlay( y, qtrue, qfalse );
 	}
 
+	if(cg.scoreBoardShowing){
 	y = CG_DrawScores( y );
+	}
 	y = CG_DrawPowerups( y );
 }
-//#endif // MISSIONPACK
 
 /*
 ===================
 CG_DrawPickupItem
 ===================
 */
-//#ifndef MISSIONPACK
 static int CG_DrawPickupItem( int y ) {
 	int		value;
 	float	*fadeColor;
@@ -2748,7 +1960,6 @@ static int CG_DrawPickupItem( int y ) {
 
 	return y;
 }
-//#endif // MISSIONPACK
 
 /*
 =====================
@@ -2756,7 +1967,6 @@ CG_DrawLowerLeft
 
 =====================
 */
-//#ifndef MISSIONPACK
 static void CG_DrawLowerLeft( void ) {
 	float	y;
 
@@ -2769,8 +1979,6 @@ static void CG_DrawLowerLeft( void ) {
 
 	y = CG_DrawPickupItem( y );
 }
-//#endif // MISSIONPACK
-
 
 //===========================================================================================
 
@@ -2833,11 +2041,6 @@ static void CG_DrawTeamInfo( void ) {
 			hcolor[2] = 0.0f;
 			hcolor[3] = 0.33f;
 		}
-
-		// don't draw blue background
-		//trap_R_SetColor( hcolor );
-		//CG_DrawPic( CHATLOC_X, cg_teamChatY.integer - h, 640, h, cgs.media.teamStatusBar );
-		//trap_R_SetColor( NULL );
 
 		hcolor[0] = hcolor[1] = hcolor[2] = 1.0f;
 		hcolor[3] = 1.0f;
@@ -2992,7 +2195,6 @@ void CG_AddToGenericConsole( const char *str, console_t *console ) {
 CG_DrawHoldableItem
 ===================
 */
-//#ifndef MISSIONPACK
 static void CG_DrawHoldableItem( void ) { 
 	int		value;
 	float	yoffset;
@@ -3097,7 +2299,6 @@ static void CG_DrawHoldableItem( void ) {
 	}
 
 }
-//#endif // MISSIONPACK
 
 static void CG_DrawObjectivesNotification( void ) {
 	qboolean draw = qfalse;
@@ -3122,13 +2323,11 @@ static void CG_DrawObjectivesNotification( void ) {
 		CG_DrawPic( 8-cl_screenoffset.integer, 8, ICON_SIZE, ICON_SIZE, cgs.media.objectivesUpdated );
 	}
 }
-//#ifndef MISSIONPACK
 /*
 ===================
 CG_DrawPersistantPowerup
 ===================
 */
-#if 1 // sos001208 - DEAD // sago - ALIVE
 static void CG_DrawPersistantPowerup( void ) {
 	int		value;
 
@@ -3138,85 +2337,6 @@ static void CG_DrawPersistantPowerup( void ) {
 		CG_DrawPic( 0 - cl_screenoffset.integer, (0+SCREEN_HEIGHT / 2) - ICON_SIZE, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
 	}
 }
-#endif
-//#endif // MISSIONPACK
-
-
-/*
-===================
-CG_DrawReward
-===================
-*/
-static void CG_DrawReward( void ) {
-	float	*color;
-	int		i, count;
-	float	x, y;
-	char	buf[32];
-
-	if ( !cg_drawRewards.integer ) {
-		return;
-	}
-
-	color = CG_FadeColor( cg.rewardTime, REWARD_TIME );
-	if ( !color ) {
-		if (cg.rewardStack > 0) {
-			for(i = 0; i < cg.rewardStack; i++) {
-				cg.rewardSound[i] = cg.rewardSound[i+1];
-
-				cg.rewardShader[i] = cg.rewardShader[i+1];
-				cg.rewardCount[i] = cg.rewardCount[i+1];
-			}
-			cg.rewardTime = cg.time;
-			cg.rewardStack--;
-			color = CG_FadeColor( cg.rewardTime, REWARD_TIME );
-
-			trap_S_StartLocalSound(cg.rewardSound[0], CHAN_ANNOUNCER);
-
-		} else {
-			return;
-		}
-	}
-
-	trap_R_SetColor( color );
-
-	/*
-	count = cg.rewardCount[0]/10;				// number of big rewards to draw
-
-	if (count) {
-		y = 4;
-		x = 320 - count * ICON_SIZE;
-		for ( i = 0 ; i < count ; i++ ) {
-			CG_DrawPic( x, y, (ICON_SIZE*2)-4, (ICON_SIZE*2)-4, cg.rewardShader[0] );
-			x += (ICON_SIZE*2);
-		}
-	}
-
-	count = cg.rewardCount[0] - count*10;		// number of small rewards to draw
-	*/
-
-	if ( cg.rewardCount[0] >= 10 ) {
-		y = 56;
-		x = 320 - ICON_SIZE/2;
-		CG_DrawPic( x, y, ICON_SIZE-4, ICON_SIZE-4, cg.rewardShader[0] );
-		Com_sprintf(buf, sizeof(buf), "%d", cg.rewardCount[0]);
-		x = ( SCREEN_WIDTH - SMALLCHAR_WIDTH * CG_DrawStrlen( buf ) ) / 2;
-		CG_DrawStringExt( x, y+ICON_SIZE, buf, color, qfalse, qtrue,
-								SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 0 );
-	}
-	else {
-
-		count = cg.rewardCount[0];
-
-		y = 56;
-		x = 320 - count * ICON_SIZE/2;
-		for ( i = 0 ; i < count ; i++ ) {
-			CG_DrawPic( x, y, ICON_SIZE-4, ICON_SIZE-4, cg.rewardShader[0] );
-			x += ICON_SIZE;
-		}
-	}
-	trap_R_SetColor( NULL );
-}
-
 
 /*
 ===============================================================================
@@ -3292,10 +2412,6 @@ static void CG_DrawDisconnect( void ) {
 	const char		*s;
 	int			w;  // bk010215 - FIXME char message[1024];
 
-	if (1 == 1) {
-		return;
-	}
-
 	// draw the phone jack if we are completely past our buffers
 	cmdNum = trap_GetCurrentCmdNumber() - CMD_BACKUP + 1;
 	trap_GetUserCmd( cmdNum, &cmd );
@@ -3304,20 +2420,15 @@ static void CG_DrawDisconnect( void ) {
 		return;
 	}
 
-	// also add text in center of screen
-	s = "Connection Interrupted"; // bk 010215 - FIXME
-	//w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
-	//CG_DrawBigString( 320 - w/2, 100, s, 1.0F);
-
 	// blink the icon
 	if ( ( cg.time >> 9 ) & 1 ) {
 		return;
 	}
 
-	x = 640 - 48;
-	y = 480 - 48;
+	x = 0;
+	y = 0;
 
-	//CG_DrawPic( x, y, 48, 48, trap_R_RegisterShader("gfx/2d/net.tga" ) );
+	CG_DrawPic( x-cl_screenoffset.integer, y, 16, 16, trap_R_RegisterShader("gfx/2d/net.tga" ) );
 }
 
 
@@ -3582,7 +2693,6 @@ CG_DrawCenter1FctfString
 =====================
 */
 static void CG_DrawCenter1FctfString( void ) {
-//    #ifndef MISSIONPACK
     int		x, y, w;
     float       *color;
     char        *line;
@@ -3636,9 +2746,6 @@ static void CG_DrawCenter1FctfString( void ) {
 
     CG_DrawStringExt( x, y, line, color, qfalse, qtrue,
 		cg.centerPrintCharWidth, (int)(cg.centerPrintCharWidth * 1.5), 0 );
-
-
-//   #endif
 }
 
 
@@ -3649,7 +2756,6 @@ CG_DrawCenterDDString
 =====================
 */
 static void CG_DrawCenterDDString( void ) {
-//    #ifndef MISSIONPACK
     int		x, y, w;
     float       *color;
     char        *line;
@@ -3722,8 +2828,6 @@ static void CG_DrawCenterDDString( void ) {
 
     CG_DrawStringExt( x, y, line, color, qfalse, qtrue,
 		cg.centerPrintCharWidth, (int)(cg.centerPrintCharWidth * 1.5), 0 );
-
-//    #endif
 }
 
 
@@ -3896,10 +3000,6 @@ static void CG_DrawCrosshair3D(void)
 		return;
 	}
 
-//	if ( cg.renderingThirdPerson ) {
-//		return;
-//	}
-
 	w = h = cg_crosshairSize.value;
 
 	// pulse the size of the crosshair when picking up items
@@ -3986,15 +3086,6 @@ static void CG_ScanForCrosshairEntity( void ) {
 	cg.crosshairClientNum = trace.entityNum;
 	cg.androidtarget = trace.entityNum;
 	cg.crosshairClientTime = cg.time;
-}
-
-/*
-=====================
-CG_AndroidAIM
-=====================
-*/
-static void CG_AndroidAIM( void ) {
-
 }
 
 /*
@@ -4177,7 +3268,7 @@ static qboolean CG_DrawScoreboard( void ) {
 		fade = 1.0;
 		fadeColor = colorWhite;
 	} else {
-		fadeColor = CG_FadeColor( cg.scoreFadeTime, FADE_TIME );
+		fadeColor = CG_FadeColor( cg.scoreFadeTime, FADE_TIME*0.25 );
 		if ( !fadeColor ) {
 			// next time scoreboard comes up, don't print killer
 			cg.deferredPlayerLoading = 0;
@@ -4226,67 +3317,12 @@ static qboolean CG_DrawScoreboard( void ) {
 #endif
 }
 
-#define ACCBOARD_XPOS 500
-#define ACCBOARD_YPOS 150
-#define ACCBOARD_HEIGHT 20
-#define ACCBOARD_WIDTH 75
-#define ACCITEM_SIZE 16
-
-qboolean CG_DrawAccboard( void ) {
-        int counter, i;
-
-        i = 0;
-
-        if( !cg.showAcc ){
-                return qfalse;
-        }
-        trap_R_SetColor( colorWhite );
-
-        for( counter = 0; counter < WP_NUM_WEAPONS ; counter++ ){
-                if( cg_weapons[counter+2].weaponIcon && counter != WP_PROX_LAUNCHER && counter != WP_GRAPPLING_HOOK )
-                        i++;
-        }
-
-        CG_DrawTeamBackground( ACCBOARD_XPOS, ACCBOARD_YPOS, ACCBOARD_WIDTH, ACCBOARD_HEIGHT*(i + 1), 0.33f, TEAM_BLUE );
-
-        i = 0;
-
-        for( counter = 0 ; counter < WP_NUM_WEAPONS ; counter++ ){
-                if( cg_weapons[counter+2].weaponIcon && counter != WP_PROX_LAUNCHER && counter != WP_GRAPPLING_HOOK ){
-                        CG_DrawPic( ACCBOARD_XPOS + 10, ACCBOARD_YPOS + 10 +i*ACCBOARD_HEIGHT, ACCITEM_SIZE, ACCITEM_SIZE, cg_weapons[counter+2].weaponIcon );
-                        if( cg.accuracys[counter][0] > 0 )
-                                CG_DrawSmallStringColor(ACCBOARD_XPOS + 10 + ACCITEM_SIZE + 10, ACCBOARD_YPOS + 10 +i*ACCBOARD_HEIGHT + ACCITEM_SIZE/2 - SMALLCHAR_HEIGHT/2 ,
-                                         va("%i%s",(int)(((float)cg.accuracys[counter][1]*100)/((float)(cg.accuracys[counter][0]))),"%"), colorWhite);
-                        else
-                                CG_DrawSmallStringColor(ACCBOARD_XPOS + 10 + ACCITEM_SIZE + 10, ACCBOARD_YPOS + 10 +i*ACCBOARD_HEIGHT + ACCITEM_SIZE/2 - SMALLCHAR_HEIGHT/2 , "-%", colorWhite);
-                        i++;
-                }
-        }
-
-        trap_R_SetColor(NULL);
-        return qtrue;
-}
-
-
-
 /*
 =================
 CG_DrawIntermission
 =================
 */
 static void CG_DrawIntermission( void ) {
-//	int key;
-#ifdef MISSIONPACK
-	//if (cg_singlePlayer.integer) {
-	//	CG_DrawCenterString();
-	//	return;
-	//}
-#else
-	if ( cgs.gametype == GT_SINGLE_PLAYER ) {
-		CG_DrawCenterString();
-		return;
-	}
-#endif
 	cg.scoreFadeTime = cg.time;
 
 if(cl_drawobjective.integer == 0){
@@ -4319,9 +3355,6 @@ static qboolean CG_DrawFollow( void ) {
 	color[2] = 1;
 	color[3] = 1;
 
-
-//	CG_DrawBigString( 320 - 9 * 8, 24, "following", 1.0F );
-
 	name = cgs.clientinfo[ cg.snap->ps.clientNum ].name;
 
 	x = 0.5 * ( 640 - 10 * CG_DrawStrlen( name ) );
@@ -4331,48 +3364,6 @@ static qboolean CG_DrawFollow( void ) {
 	return qtrue;
 }
 
-
-
-/*
-=================
-CG_DrawAmmoWarning
-=================
-*/
-static void CG_DrawAmmoWarning( void ) {
-	const char	*s;
-	int			w;
-
-	//Don't report in instant gib same with RA
-	if(cgs.nopickup)
-		return;
-
-	if ( cg_drawAmmoWarning.integer == 0 ) {
-		return;
-	}
-
-	if ( !cg.lowAmmoWarning ) {
-		return;
-	}
-if(cl_language.integer == 0){
-	if ( cg.lowAmmoWarning == 2 ) {
-		s = "OUT OF AMMO";
-	} else {
-		s = "LOW AMMO WARNING";
-	}
-}
-if(cl_language.integer == 1){
-	if ( cg.lowAmmoWarning == 2 ) {
-		s = "НЕТ ОРУЖИЯ";
-	} else {
-		s = "МАЛО ПАТРОН";
-	}
-}
-	w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
-	CG_DrawBigString(320 - w / 2, 64, s, 1.0F);
-}
-
-
-//#ifdef MISSIONPACK
 /*
 =================
 CG_DrawProxWarning
@@ -4418,7 +3409,6 @@ if(cl_language.integer == 1){
 	w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
 	CG_DrawBigStringColor( 320 - w / 2, 64 + BIGCHAR_HEIGHT, s, g_color_table[ColorIndex(COLOR_RED)] );
 }
-//#endif
 
 
 /*
@@ -4608,7 +3598,6 @@ static void CG_DrawDeathMessage( void ) {
 	if(cl_language.integer == 1){
 	CG_DrawSmallString((640 - (SMALLCHAR_WIDTH * strlen( "Нажмите кнопку стрельбы для респавна" )*0.5)) / 2, 480 - (BIGCHAR_HEIGHT * 2), "Нажмите кнопку стрельбы для респавна", 1.0);
 	}
-	//CG_DrawPic( 256, 170, 128, 128, cgs.media.deathImage );
 }
 
 /*
@@ -4910,18 +3899,9 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 					teamChatSizeY
 				       	);
 			}
-
-
-
-
 	}
 
-/*
-	if (cg.cameraMode) {
-		return;
-	}
-*/
-	if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR /*|| cg.snap->ps.pm_type == PM_SPECTATOR*/ ) {
+	if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR ) {
 		CG_DrawSpectator();
 
 		if(stereoFrame == STEREO_CENTER)
@@ -4933,15 +3913,6 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 		// don't draw any status if dead or the scoreboard is being explicitly shown
 		if ( !cg.showScores && cg.snap->ps.stats[STAT_HEALTH] > 0 ) {
 
-
-//			}else{
-
-
-//			}
-//#endif
-
-			CG_DrawAmmoWarning();
-
 			CG_DrawProxWarning();
 			if(stereoFrame == STEREO_CENTER)
 				CG_DrawCrosshair();
@@ -4949,38 +3920,21 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 			CG_DrawCrosshairNames();
 			}
 
-//                        #ifndef MISSIONPACK
 			CG_DrawPersistantPowerup();
-//			#endif
-						if(!cg_singlemode.integer){
-                        CG_DrawReward();
-						}
 		}
 
 		if ( cgs.gametype >= GT_TEAM && cgs.ffa_gt!=1) {
-//#ifndef MISSIONPACK
 			CG_DrawTeamInfo();
-//#endif
 		}
 	}
 
 	CG_DrawVote();
 	CG_DrawTeamVote();
 
-	CG_AndroidAIM();
-
-//#ifdef MISSIONPACK
-//	if (!cg_paused.integer) {
-//		CG_DrawUpperRight(stereoFrame);
-//	}
-//#else
 	CG_DrawUpperRight(stereoFrame);
-//#endif
 
-//#ifndef MISSIONPACK
 	CG_DrawLowerRight();
 	CG_DrawLowerLeft();
-//#endif
 
 	if ( !CG_DrawFollow() ) {
 		CG_DrawWarmup();
@@ -4990,8 +3944,6 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
                 CG_DrawCenterDDString();
                 CG_DrawCenter1FctfString();
 	}
-
-        cg.accBoardShowing = CG_DrawAccboard();
 }
 
 
@@ -5034,11 +3986,6 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 
 	// draw 3D view
 	trap_R_RenderScene( &cg.refdef );
-
-	/*// restore original viewpoint if running stereo
-	if ( separation != 0 ) {
-		VectorCopy( baseOrg, cg.refdef.vieworg );
-	}*/
 
 	// draw overlay for target_effect
 	CG_DrawOverlay();
@@ -5092,9 +4039,6 @@ if(cg_oldscoreboard.integer == 1){
 	CG_DrawCenterString();
 	}
 
-	// draw subtitles. This is done here so they appear on top of any letterboxes, fades and overlays.
-	//CG_DrawSubtitleString();
-
 	// play objectives notification sound if necessary
 	if ( cg.objectivesTime != 0 && cg.time >= cg.objectivesTime ) {
 		if ( !cg.objectivesSoundPlayed ) {
@@ -5118,3 +4062,4 @@ if(cg_oldscoreboard.integer == 1){
 	//draw objectives notification
 	CG_DrawObjectivesNotification();
 }
+

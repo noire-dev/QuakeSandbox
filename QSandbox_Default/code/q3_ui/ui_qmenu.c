@@ -98,6 +98,34 @@ static void BText_Init( menutext_s *b );
 static void BText_Draw( menutext_s *b );
 
 /*
+===============
+UI_FindItem
+
+===============
+*/
+gitem_t	*UI_FindItem( const char *pickupName ) {
+	gitem_t	*it;
+	
+	for ( it = bg_itemlist + 1 ; it->classname ; it++ ) {
+		if ( !Q_stricmp( it->pickup_name, pickupName ) )
+			return it;
+	}
+
+	return NULL;
+}
+
+gitem_t	*UI_FindItemClassname( const char *classname ) {
+	gitem_t	*it;
+	
+	for ( it = bg_itemlist + 1 ; it->classname ; it++ ) {
+		if ( !Q_stricmp( it->classname, classname ) )
+			return it;
+	}
+
+	return NULL;
+}
+
+/*
 =================
 Text_Init
 =================
@@ -246,7 +274,7 @@ static void PText_Draw( menutext_s *t )
 		}
 	}
 
-	UI_DrawStringCustom( x+xofs, y, t->string, style, color, t->customsize );
+	UI_DrawStringCustom( x+xofs, y, t->string, style, color, t->customsize, 512 );
 }
 
 /*
@@ -516,6 +544,9 @@ void UIObject_Draw( menuobject_s *b )
 	int			val;
 	int			button;
 	vec4_t scrollbuttona        = {1.00f, 1.00f, 1.00f, 0.75f};	// transluscent orange
+	gitem_t	*it;
+	const char	*info;
+	char	pic[MAX_QPATH];
 	
 if(b->type >= 1 && b->type <= 3 || b->type == 6){
 
@@ -539,7 +570,7 @@ if(b->type >= 1 && b->type <= 3 || b->type == 6){
 	if(b->type == 6){
 	UI_DrawHandleModel( x, y, w, h, b->generic.picn, b->corner );
 	}
-	UI_DrawStringCustom( x, y, b->string, b->style, b->color, b->fontsize );
+	UI_DrawStringCustom( x, y, b->string, b->style, b->color, b->fontsize, 512 );
 	
 }
 if(b->type == 4){
@@ -585,7 +616,7 @@ if(b->type == 4){
 	}
 
 	if ( b->generic.text ) {
-		UI_DrawStringCustom( x - w, y, b->generic.text, style|UI_RIGHT, color, b->fontsize );
+		UI_DrawStringCustom( x - w, y, b->generic.text, style|UI_RIGHT, color, b->fontsize, 512 );
 	}
 
 	MField_DrawCustom( &b->field, x + w, y, style, color, b->fontsize );
@@ -595,9 +626,6 @@ if(b->type == 5){
 	hasfocus = (b->generic.parent->cursor == b->generic.menuPosition);
 
 	x =	b->generic.x;
-	
-	UI_DrawRoundedRect(b->generic.right-(16*ui_scrollbtnsize.integer*b->fontsize),b->generic.bottom-(16*ui_scrollbtnsize.integer*b->fontsize),(16*ui_scrollbtnsize.integer*b->fontsize),(16*ui_scrollbtnsize.integer*b->fontsize), 100, scrollbuttona);
-	UI_DrawRoundedRect(b->generic.right-(16*ui_scrollbtnsize.integer*b->fontsize),b->generic.top,(16*ui_scrollbtnsize.integer*b->fontsize),(16*ui_scrollbtnsize.integer)*b->fontsize, 100, scrollbuttona);
 	
 	for( column = 0; column < b->columns; column++ ) {
 		y =	b->generic.y;
@@ -639,10 +667,10 @@ if(b->type == 5){
 				style |= UI_CENTER;
 			}
 			if(b->styles <= 0){
-			UI_DrawStringCustom(x,y,b->itemnames[i],style,color, b->fontsize );
+			UI_DrawStringCustom(x,y,b->itemnames[i],style,color, b->fontsize, 512 );
 			}
 			if(b->styles == 1){
-			UI_DrawStringCustom(x+SMALLCHAR_HEIGHT*b->fontsize,y,b->itemnames[i],style,color, b->fontsize );
+			UI_DrawStringCustom(x+SMALLCHAR_HEIGHT*b->fontsize,y,b->itemnames[i],style,color, b->fontsize, 512 );
 			b->shader = trap_R_RegisterShaderNoMip( va("%s/%s", b->string, b->itemnames[i]) );
 			if(b->shader){
 			UI_DrawHandlePic( x, y, SMALLCHAR_HEIGHT*b->fontsize, SMALLCHAR_HEIGHT*b->fontsize, trap_R_RegisterShaderNoMip( va("%s/%s", b->string, b->itemnames[i]) ) );
@@ -652,6 +680,27 @@ if(b->type == 5){
 			UI_DrawHandleModel( x, y, SMALLCHAR_HEIGHT*b->fontsize, SMALLCHAR_HEIGHT*b->fontsize, va("%s/%s", b->string, b->itemnames[i]), b->corner );
 			}
 			if(!b->shader && !b->model){
+			info = UI_GetBotInfoByName( b->itemnames[i] );
+			UI_ServerPlayerIcon( Info_ValueForKey( info, "model" ), pic, MAX_QPATH );
+			b->shader = trap_R_RegisterShaderNoMip( pic );
+			if(b->shader){
+			UI_DrawHandlePic( x, y, SMALLCHAR_HEIGHT*b->fontsize, SMALLCHAR_HEIGHT*b->fontsize, trap_R_RegisterShaderNoMip( pic ));
+			}
+			}
+			it = UI_FindItem(b->itemnames[i]);
+			if(it->classname && it->icon && !b->model && !b->shader){
+			UI_DrawHandlePic( x, y, SMALLCHAR_HEIGHT*b->fontsize, SMALLCHAR_HEIGHT*b->fontsize, trap_R_RegisterShaderNoMip( it->icon ) );
+			}
+			if(!it->classname){
+			it = UI_FindItemClassname(b->itemnames[i]);
+			if(it->classname && !b->model && !b->shader){
+			b->model = trap_R_RegisterModel( it->world_model[0] );
+			if(b->model){
+			UI_DrawHandleModel( x, y, SMALLCHAR_HEIGHT*b->fontsize, SMALLCHAR_HEIGHT*b->fontsize, it->world_model[0], b->corner );
+			}
+			}
+			}
+			if(!b->shader && !b->model && !it){
 			UI_DrawHandlePicFile( x, y, SMALLCHAR_HEIGHT*b->fontsize, SMALLCHAR_HEIGHT*b->fontsize, va("%s/%s", b->string, b->itemnames[i]) );
 			}
 			}
@@ -665,9 +714,31 @@ if(b->type == 5){
 			UI_DrawHandleModel( x, y, (float)(SMALLCHAR_WIDTH*b->width), (float)(SMALLCHAR_WIDTH*b->width), va("%s/%s", b->string, b->itemnames[i]), b->corner );
 			}
 			if(!b->shader && !b->model){
+			info = UI_GetBotInfoByName( b->itemnames[i] );
+			UI_ServerPlayerIcon( Info_ValueForKey( info, "model" ), pic, MAX_QPATH );
+			b->shader = trap_R_RegisterShaderNoMip( pic );
+			if(b->shader){
+			UI_DrawHandlePic( x, y, SMALLCHAR_WIDTH*b->width, SMALLCHAR_WIDTH*b->width, trap_R_RegisterShaderNoMip( pic ));
+			}
+			}
+			it = UI_FindItem(b->itemnames[i]);
+			if(it->classname && it->icon && !b->model && !b->shader){
+			UI_DrawHandlePic( x, y, SMALLCHAR_WIDTH*b->width, SMALLCHAR_WIDTH*b->width, trap_R_RegisterShaderNoMip( it->icon ) );
+			}
+			if(!it->classname){
+			it = UI_FindItemClassname(b->itemnames[i]);
+			if(it->classname && !b->model && !b->shader){
+			b->model = trap_R_RegisterModel( it->world_model[0] );
+			if(b->model){
+			UI_DrawHandleModel( x, y, (float)(SMALLCHAR_WIDTH*b->width), (float)(SMALLCHAR_WIDTH*b->width), it->world_model[0], b->corner );
+			}
+			}
+			}
+			if(!b->shader && !b->model && !it){
+			trap_Print(b->string);
 			UI_DrawHandlePicFile( x, y, (float)(SMALLCHAR_WIDTH*b->width), (float)(SMALLCHAR_WIDTH*b->width), va("%s/%s", b->string, b->itemnames[i]) );
 			}
-			UI_DrawStringCustom(x,y,b->itemnames[i],style,color, b->fontsize );
+			UI_DrawStringCustom(x,y,b->itemnames[i],style,color, b->fontsize, ((SMALLCHAR_WIDTH*b->width)/(SMALLCHAR_WIDTH*b->fontsize))-4 );
 			}
 			if(b->styles <= 1){
 			y += (SMALLCHAR_HEIGHT*b->fontsize);
@@ -683,6 +754,9 @@ if(b->type == 5){
 			x += (b->width + b->seperation) * (SMALLCHAR_WIDTH);
 		}
 	}
+	
+	UI_DrawRoundedRect(b->generic.right-(16*ui_scrollbtnsize.integer),b->generic.bottom-(16*ui_scrollbtnsize.integer),(16*ui_scrollbtnsize.integer),(16*ui_scrollbtnsize.integer), 100, scrollbuttona);
+	UI_DrawRoundedRect(b->generic.right-(16*ui_scrollbtnsize.integer),b->generic.top,(16*ui_scrollbtnsize.integer),(16*ui_scrollbtnsize.integer), 100, scrollbuttona);
 }
 
 if(b->type == 7){
@@ -719,17 +793,17 @@ if(b->type == 7){
 	}
 
 	if ( b->generic.text )
-		UI_DrawStringCustom( x - SMALLCHAR_WIDTH, y, b->generic.text, UI_RIGHT|UI_SMALLFONT, color, b->fontsize );
+		UI_DrawStringCustom( x - SMALLCHAR_WIDTH, y, b->generic.text, UI_RIGHT|UI_SMALLFONT, color, b->fontsize, 512 );
 
 	if ( !b->curvalue )
 	{
 		UI_DrawHandlePic( x + SMALLCHAR_WIDTH*b->fontsize, y + 2, 12*b->fontsize, 12*b->fontsize, uis.rb_off);
-		UI_DrawStringCustom( x + SMALLCHAR_WIDTH*b->fontsize + 12*b->fontsize, y, "off", style, color, b->fontsize );
+		UI_DrawStringCustom( x + SMALLCHAR_WIDTH*b->fontsize + 12*b->fontsize, y, "off", style, color, b->fontsize, 512 );
 	}
 	else
 	{
 		UI_DrawHandlePic( x + SMALLCHAR_WIDTH*b->fontsize, y + 2, 12*b->fontsize, 12*b->fontsize, uis.rb_on );
-		UI_DrawStringCustom( x + SMALLCHAR_WIDTH*b->fontsize + 12*b->fontsize, y, "on", style, color, b->fontsize );
+		UI_DrawStringCustom( x + SMALLCHAR_WIDTH*b->fontsize + 12*b->fontsize, y, "on", style, color, b->fontsize, 512 );
 	}
 }
 
@@ -753,8 +827,8 @@ if(b->type == 8){
 	}
 
 	// draw label
-	UI_DrawStringCustom( x - (SMALLCHAR_WIDTH*b->fontsize), y, b->generic.text, UI_RIGHT|style, color, b->fontsize );
-	UI_DrawStringCustom( x + (SMALLCHAR_WIDTH*b->fontsize)*11, y, va(" %i", val), UI_LEFT|style, colorGreen, b->fontsize );
+	UI_DrawStringCustom( x - (SMALLCHAR_WIDTH*b->fontsize), y, b->generic.text, UI_RIGHT|style, color, b->fontsize, 512 );
+	UI_DrawStringCustom( x + (SMALLCHAR_WIDTH*b->fontsize)*11, y, va(" %i", val), UI_LEFT|style, colorGreen, b->fontsize, 512 );
 
 	// draw slider
 	UI_SetColor( color );
@@ -884,7 +958,7 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 					x -= w / 2;
 				}
 				
-				if (UI_CursorInRect( b->generic.right-(16*ui_scrollbtnsize.integer*b->fontsize), b->generic.bottom-(16*ui_scrollbtnsize.integer*b->fontsize), (16*ui_scrollbtnsize.integer*b->fontsize), (16*ui_scrollbtnsize.integer*b->fontsize) ))
+				if (UI_CursorInRect( b->generic.right-(16*ui_scrollbtnsize.integer), b->generic.bottom-(16*ui_scrollbtnsize.integer), (16*ui_scrollbtnsize.integer), (16*ui_scrollbtnsize.integer) ))
 				{
 					if( b->curvalue == b->numitems - 1 ) {
 						return menu_buzz_sound;
@@ -909,7 +983,7 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 					return menu_move_sound;
 				}
 				
-				if (UI_CursorInRect( b->generic.right-(16*ui_scrollbtnsize.integer*b->fontsize), b->generic.top, (16*ui_scrollbtnsize.integer*b->fontsize), (16*ui_scrollbtnsize.integer*b->fontsize) ))
+				if (UI_CursorInRect( b->generic.right-(16*ui_scrollbtnsize.integer), b->generic.top, (16*ui_scrollbtnsize.integer), (16*ui_scrollbtnsize.integer) ))
 				{
 					if( b->curvalue == 0 ) {
 						return menu_buzz_sound;
@@ -2958,7 +3032,7 @@ void MField_DrawCustom( mfield_t *edit, int x, int y, int style, vec4_t color, f
 	memcpy( str, edit->buffer + prestep, drawLen );
 	str[ drawLen ] = 0;
 
-	UI_DrawStringCustom( x, y, str, style, color, csize );
+	UI_DrawStringCustom( x, y, str, style, color, csize, 512 );
 
 	// draw the cursor
 	if (!(style & UI_PULSE)) {

@@ -1710,6 +1710,7 @@ UI_InGameMenu
 */
 void UI_InGameMenu( void )
 {
+	uis.sb_tab = 1;
 	if (uie_ingame_dynamicmenu.integer) {
 		UI_InGameDynamic();
 	}

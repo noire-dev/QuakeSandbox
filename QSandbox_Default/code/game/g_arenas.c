@@ -69,11 +69,11 @@ void UpdateTournamentInfo( void ) {
 	CalculateRanks();
 
 	if ( level.clients[playerClientNum].sess.sessionTeam == TEAM_SPECTATOR ) {
-//#ifdef MISSIONPACK
+
 //		Com_sprintf( msg, sizeof(msg), "postgame %i %i 0 0 0 0 0 0 0 0 0 0 0", level.numNonSpectatorClients, playerClientNum );
 //#else
 		Com_sprintf( msg, sizeof(msg), "postgame %i %i 0 0 0 0 0 0", level.numNonSpectatorClients, playerClientNum );
-//#endif
+
 	}
 	else {
 		if( player->client->accuracy_shots ) {
@@ -82,7 +82,7 @@ void UpdateTournamentInfo( void ) {
 		else {
 			accuracy = 0;
 		}
-//#ifdef MISSIONPACK
+
 //		won = qfalse;
 //		if (g_gametype.integer >= GT_CTF && g_ffa_gt==0) {
 //			score1 = level.teamScores[TEAM_RED];
@@ -118,7 +118,7 @@ void UpdateTournamentInfo( void ) {
 			player->client->ps.persistant[PERS_IMPRESSIVE_COUNT], player->client->ps.persistant[PERS_EXCELLENT_COUNT],
 			player->client->ps.persistant[PERS_GAUNTLET_FRAG_COUNT], player->client->ps.persistant[PERS_SCORE],
 			perfect );
-//#endif
+
 	}
 
 	msglen = strlen( msg );

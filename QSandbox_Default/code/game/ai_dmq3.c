@@ -363,7 +363,7 @@ int BotHarvesterCarryingCubes(bot_state_t *bs) {
 	if (bs->inventory[INVENTORY_BLUECUBE] > 0) return qtrue;
 	return qfalse;
 }
-//#endif
+
 
 /*
 ==================
@@ -1427,7 +1427,7 @@ void BotHarvesterRetreatGoals(bot_state_t *bs) {
 		return;
 	}
 }
-//#endif
+
 
 /*
 ==================
@@ -1854,7 +1854,7 @@ if(!NpcFactionProp(bs, NP_GOAL, 0)){
 			bs->teamtaskpreference &= ~TEAMTP_ATTACKER;
 		}
 	}
-//#endif
+
 }
 
 /*
@@ -3444,7 +3444,7 @@ int BotEnemyCubeCarrierVisible(bot_state_t *bs) {
 	}
 	return -1;
 }
-//#endif
+
 
 /*
 ==================

@@ -1284,9 +1284,9 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	spawn_t	*s;
 	gitem_t	*item;
 	
-	o[0] = ((int)(xyz[0] / (atoi(arg06)*2)) * (atoi(arg06)*2)) + (xyz[0] < 0 ? -(atoi(arg06)) : (atoi(arg06)));
-	o[1] = ((int)(xyz[1] / (atoi(arg06)*2)) * (atoi(arg06)*2)) + (xyz[1] < 0 ? -(atoi(arg06)) : (atoi(arg06)));
-	o[2] = ((int)(xyz[2] / (atoi(arg06)*2)) * (atoi(arg06)*2)) + (xyz[2] < 0 ? -(atoi(arg06)) : (atoi(arg06)));
+	o[0] = ((int)((xyz[0] + (xyz[0] < 0 ? -atoi(arg06) : atoi(arg06))) / (atoi(arg06) * 2)) * (atoi(arg06) * 2));
+	o[1] = ((int)((xyz[1] + (xyz[1] < 0 ? -atoi(arg06) : atoi(arg06))) / (atoi(arg06) * 2)) * (atoi(arg06) * 2));
+	o[2] = ((int)((xyz[2] + (xyz[2] < 0 ? -atoi(arg06) : atoi(arg06))) / (atoi(arg06) * 2)) * (atoi(arg06) * 2));
 
 	if (trap_Cvar_VariableIntegerValue("cl_android")) {
     o[0] -= (xyz[0] >= 0 ? (atoi(arg06)) : -(atoi(arg06)));
@@ -1350,8 +1350,12 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent->s.scales[2] = atof(arg19);
 	ent->sb_colscale2 = atof(arg19);
 	
+	if ( strcmp(arg20, "0") ) {
 	CopyAlloc(ent->target, arg20);
+	}
+	if ( strcmp(arg21, "0") ) {
 	CopyAlloc(ent->targetname, arg21);
+	}
 	
 	ent->mtype = atoi(arg22);
 	ent->mtimeout = atoi(arg23);

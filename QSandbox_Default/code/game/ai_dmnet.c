@@ -1139,7 +1139,7 @@ int BotGetLongTermGoal(bot_state_t *bs, int tfl, int retreat, bot_goal_t *goal) 
 			return qtrue;
 		}
 	}
-//#endif
+
 	//normal goal stuff
 	return BotGetItemLongTermGoal(bs, tfl, goal);
 }

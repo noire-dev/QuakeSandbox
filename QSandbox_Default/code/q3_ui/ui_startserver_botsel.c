@@ -360,6 +360,30 @@ void UI_ServerPlayerIcon( const char *modelAndSkin, char *iconName, int iconName
 }
 
 
+/*
+=================
+UI_ServerPlayerIcon
+=================
+*/
+void UI_ServerNpcIcon( const char *modelAndSkin, char *iconName, int iconNameMaxSize ) {
+	char	*skin;
+	char	model[MAX_QPATH];
+
+	Q_strncpyz( model, modelAndSkin, sizeof(model));
+	skin = strrchr( model, '/' );
+	if ( skin ) {
+		*skin++ = '\0';
+	}
+	else {
+		skin = "default";
+	}
+
+	Com_sprintf(iconName, iconNameMaxSize, "models/players/%s/icon_%s.tga", model, skin );
+
+	if( !trap_R_RegisterShaderNoMip( iconName ) && Q_stricmp( skin, "default" ) != 0 ) {
+		Com_sprintf(iconName, iconNameMaxSize, "models/players/%s/icon_default.tga", model );
+	}
+}
 
 
 /*

@@ -791,36 +791,35 @@ void UI_DrawProportionalString_AutoWrapped( int x, int y, int xmax, int ystep, c
 UI_DrawString2
 =================
 */
-static void UI_DrawString2( int x, int y, const char* str, vec4_t color, int charw, int charh )
+static void UI_DrawString2(int x, int y, const char* str, vec4_t color, int charw, int charh, float width)
 {
 	const char* s;
-	char	ch;
+	char ch;
 	int forceColor = qfalse; //APSFIXME;
-        int prev_unicode = 0;
-	vec4_t	tempcolor;
-	float	ax;
-	float	ay;
-	float	aw;
-	float	ah;
-	float	frow;
-	float	fcol;
+	int prev_unicode = 0;
+	vec4_t tempcolor;
+	float ax;
+	float ay;
+	float aw;
+	float ah;
+	float frow;
+	float fcol;
+	float alignstate = 0;
+	int char_count = 0;
 
-	//if (y < -charh)
-		// offscreen
-		//return;
-        float alignstate = 0;
-        if (charw < 0) {
-           charw = -charw;
-           alignstate = 0.5; //center_align
-        }
-        if (charh < 0) {
-           charh = -charh;
-           alignstate = 1; //right_align
-        }
+	// Align states for center and right alignment
+	if (charw < 0) {
+		charw = -charw;
+		alignstate = 0.5; // center_align
+	}
+	if (charh < 0) {
+		charh = -charh;
+		alignstate = 1; // right_align
+	}
 
-	// draw the colored text
-	trap_R_SetColor( color );
-	
+	// Set color for the text
+	trap_R_SetColor(color);
+
 	ax = x * uis.scale + uis.bias;
 	ay = y * uis.scale;
 	ay += uis.menuscroll;
@@ -828,63 +827,70 @@ static void UI_DrawString2( int x, int y, const char* str, vec4_t color, int cha
 	ah = charh * uis.scale;
 
 	s = str;
-	while ( *s )
+	while (*s)
 	{
-           if ((*s == -48) || (*s == -47)) {
-              ax = ax+aw*alignstate;
-           }
-           s++;
-        }
-        s = str;
-	while ( *s )
-	{
-		if ( Q_IsColorString( s ) )
-		{
+		if ((*s == -48) || (*s == -47)) {
+			ax = ax + aw * alignstate;
+		}
+		s++;
+	}
 
-				memcpy( tempcolor, g_color_table[ColorIndex(s[1])], sizeof( tempcolor ) );
-				tempcolor[3] = color[3];
-				trap_R_SetColor( tempcolor );
+	s = str;
+	while (*s)
+	{
+		if (Q_IsColorString(s))
+		{
+			memcpy(tempcolor, g_color_table[ColorIndex(s[1])], sizeof(tempcolor));
+			tempcolor[3] = color[3];
+			trap_R_SetColor(tempcolor);
 			s += 2;
 			continue;
 		}
 
-
-
 		if (*s != ' ')
 		{
-		ch = *s & 255;
-                        // unicode russian stuff support
-                        //Com_Printf("UI_letter: is %d\n", *s);
-                        if (ch < 0) {
-                           if ((ch == -48) || (ch == -47)) {
-                              prev_unicode = ch;
-                              s++;
-                              continue;
-                           }
-                           if (ch >= -112) {
-                              if ((ch == -111) && (prev_unicode == -47)) {
-                                 ch = ch - 13;
-                              } else {
-                                 ch = ch + 48;
-                              }
-                           } else {
-                              if ((ch == -127) && (prev_unicode == -48)) {
-                                 // ch = ch +
-                              } else {
-                                 ch = ch + 112; // +64 offset of damn unicode
-                              }
-                           }
-                        }
-			frow = (ch>>4)*0.0625;
-			fcol = (ch&15)*0.0625;
-			trap_R_DrawStretchPic( ax, ay, aw, ah, fcol, frow, fcol + 0.0625, frow + 0.0625, uis.charset );
+			ch = *s & 255;
+
+			// Unicode Russian support
+			if (ch < 0) {
+				if ((ch == -48) || (ch == -47)) {
+					prev_unicode = ch;
+					s++;
+					continue;
+				}
+				if (ch >= -112) {
+					if ((ch == -111) && (prev_unicode == -47)) {
+						ch = ch - 13;
+					} else {
+						ch = ch + 48;
+					}
+				} else {
+					if ((ch == -127) && (prev_unicode == -48)) {
+						// ch = ch +
+					} else {
+						ch = ch + 112; // +64 offset of damn unicode
+					}
+				}
+			}
+
+			frow = (ch >> 4) * 0.0625;
+			fcol = (ch & 15) * 0.0625;
+			trap_R_DrawStretchPic(ax, ay, aw, ah, fcol, frow, fcol + 0.0625, frow + 0.0625, uis.charset);
 		}
 
 		ax += aw;
+		char_count++;
+
+		if (char_count >= width) {
+			ax = x * uis.scale + uis.bias;
+			ay += ah + 2;
+			char_count = 0;
+		}
+
 		s++;
 	}
 
-	trap_R_SetColor( NULL );
+	trap_R_SetColor(NULL);
 }
 
 int UI_RusString(const char* str)
@@ -1059,10 +1065,10 @@ void UI_DrawString( int x, int y, const char* str, int style, vec4_t color )
 	{
 		dropcolor[0] = dropcolor[1] = dropcolor[2] = 0;
 		dropcolor[3] = drawcolor[3];
-		UI_DrawString2(x+2,y+2,str,dropcolor,charw,charh);
+		UI_DrawString2(x+2,y+2,str,dropcolor,charw,charh,512);
 	}
 
-	UI_DrawString2(x,y,str,drawcolor,charw,charh);
+	UI_DrawString2(x,y,str,drawcolor,charw,charh,512);
 }
 
 /*
@@ -1070,7 +1076,7 @@ void UI_DrawString( int x, int y, const char* str, int style, vec4_t color )
 UI_DrawStringCustom
 =================
 */
-void UI_DrawStringCustom( int x, int y, const char* str, int style, vec4_t color, float csize )
+void UI_DrawStringCustom( int x, int y, const char* str, int style, vec4_t color, float csize, float width )
 {
 	int		len;
 	int		charw;
@@ -1146,10 +1152,10 @@ if(csize == 0){
 	{
 		dropcolor[0] = dropcolor[1] = dropcolor[2] = 0;
 		dropcolor[3] = drawcolor[3];
-		UI_DrawString2(x+2,y+2,str,dropcolor,charw,charh);
+		UI_DrawString2(x+2,y+2,str,dropcolor,charw,charh,width);
 	}
 
-	UI_DrawString2(x,y,str,drawcolor,charw,charh);
+	UI_DrawString2(x,y,str,drawcolor,charw,charh,width);
 }
 
 /*
@@ -1179,7 +1185,7 @@ void UI_DrawCharCustom( int x, int y, int ch, int style, vec4_t color, float csi
 	buff[0] = ch;
 	buff[1] = '\0';
 
-	UI_DrawStringCustom( x, y, buff, style, color, csize );
+	UI_DrawStringCustom( x, y, buff, style, color, csize, 512 );
 }
 
 qboolean UI_IsFullscreen( void ) {
@@ -2104,7 +2110,7 @@ void UI_DrawHandleModel( float x, float y, float w, float h, const char* model, 
 
 	memset( &ent, 0, sizeof(ent) );
 
-	VectorSet( angles, 0, 180 - 6, 0 );
+	VectorSet( angles, 0, 180 - 15, 0 );
 	AnglesToAxis( angles, ent.axis );
 	ent.hModel = trap_R_RegisterModel( model );
 	VectorCopy( origin, ent.origin );

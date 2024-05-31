@@ -1540,7 +1540,7 @@ void BotMatch_WhatAreYouDoing(bot_state_t *bs, bot_match_t *match) {
 			BotAI_BotInitialChat(bs, "harvesting", NULL);
 			break;
 		}
-//#endif
+
 		case LTG_POINTA:
 		{
 			BotAI_BotInitialChat(bs, "dd_pointa", NULL);

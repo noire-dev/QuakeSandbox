@@ -289,7 +289,7 @@ if(mod_accelerate == 1) {
 
 	VectorMA( pm->ps->velocity, canPush, pushDir, pm->ps->velocity );
 }
-//#endif
+
 }
 
 
