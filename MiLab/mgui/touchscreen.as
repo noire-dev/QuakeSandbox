@@ -574,7 +574,7 @@ set mitem17_htype 3
 set mitem17_w 180
 set mitem17_h 90
 set mitem17_text "use item"
-set mitem17_cmd "execscript dscripts/useitem"
+set mitem17_cmd "execscript dscripts/script.useitem.as"
 set mitem17_cmd2 "-button2"
 set mitem17_1arg	0
 set mitem17_2arg	0
@@ -877,5 +877,75 @@ set mitem25_style 0
 set mitem25_min 1
 set mitem25_max 16
 set mitem25_savecvar "mgui_none"
+
+set mitem26_type 1
+set mitem26_acttype 1
+set mitem26_xtype 1
+set mitem26_ytype 1
+set mitem26_x 15
+set mitem26_y 65
+set mitem26_wtype 3
+set mitem26_htype 3
+set mitem26_w 180
+set mitem26_h 90
+set mitem26_text "gesture"
+set mitem26_cmd "execscript dscripts/script.gesture.as"
+set mitem26_cmd2 "-button3"
+set mitem26_1arg	0
+set mitem26_2arg	0
+set mitem26_3arg	0
+set mitem26_file	""
+set mitem26_value ""
+set mitem26_colorR 1.0
+set mitem26_colorG 1.0
+set mitem26_colorB 1.0
+set mitem26_colorA 1.0
+set mitem26_colorinnerR 0.1
+set mitem26_colorinnerG 0.1
+set mitem26_colorinnerB 0.1
+set mitem26_colorinnerA 0.80
+set mitem26_fontsize	1.25
+set mitem26_corner 5
+set mitem26_col 1
+set mitem26_mode	0
+set mitem26_style 0
+set mitem26_min 0
+set mitem26_max 100
+set mitem26_savecvar "mgui_none"
+
+set mitem27_type 1
+set mitem27_acttype 1
+set mitem27_xtype 1
+set mitem27_ytype 1
+set mitem27_x 25
+set mitem27_y 65
+set mitem27_wtype 3
+set mitem27_htype 3
+set mitem27_w 180
+set mitem27_h 90
+set mitem27_text "flashlight"
+set mitem27_cmd "flashlight"
+set mitem27_cmd2 ""
+set mitem27_1arg	0
+set mitem27_2arg	0
+set mitem27_3arg	0
+set mitem27_file	""
+set mitem27_value ""
+set mitem27_colorR 1.0
+set mitem27_colorG 1.0
+set mitem27_colorB 1.0
+set mitem27_colorA 1.0
+set mitem27_colorinnerR 0.1
+set mitem27_colorinnerG 0.1
+set mitem27_colorinnerB 0.1
+set mitem27_colorinnerA 0.80
+set mitem27_fontsize	1.25
+set mitem27_corner 5
+set mitem27_col 1
+set mitem27_mode	0
+set mitem27_style 0
+set mitem27_min 0
+set mitem27_max 100
+set mitem27_savecvar "mgui_none"
 
 mgui_load
