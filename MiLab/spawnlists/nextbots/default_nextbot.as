@@ -3,9 +3,11 @@
 //type 
 //model 
 //class
-	//NPC_Enemy
 	//NPC_Citizen
+	//NPC_Enemy
 	//NPC_Guard
+	//NPC_Partner
+	//NPC_PartnerEnemy
 //skill 
 //health 
 //name 

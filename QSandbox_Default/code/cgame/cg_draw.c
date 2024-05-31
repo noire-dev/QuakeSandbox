@@ -484,6 +484,35 @@ void CG_DrawFlagModel( float x, float y, float w, float h, int team, qboolean fo
 	}
 }
 
+void CG_DrawEmptyModel( float x, float y, float w, float h, int team, qboolean force2D ) {
+	qhandle_t		cm;
+	float			len;
+	vec3_t			origin, angles;
+	vec3_t			mins, maxs;
+	qhandle_t		handle;
+
+	VectorClear( angles );
+
+	cm = cgs.media.redFlagModel;
+
+	// offset the origin y and z to center the flag
+	trap_R_ModelBounds( cm, mins, maxs );
+
+	origin[2] = -0.5 * ( mins[2] + maxs[2] );
+	origin[1] = 0.5 * ( mins[1] + maxs[1] );
+
+	// calculate distance so the flag nearly fills the box
+	// assume heads are taller than wide
+	len = 0.5 * ( maxs[2] - mins[2] );
+	origin[0] = len / 0.268;	// len / tan( fov/2 )
+
+	angles[YAW] = 60 * sin( cg.time / 2000.0 );;
+
+	handle = trap_R_RegisterModel_MiTech( "models/weapons2/gauntlet/gauntlet.md3" );
+	
+	CG_Draw3DModel( x, y, w, h, handle, 0, origin, angles );
+}
+
 /*
 ================
 CG_DrawStatusBarFlag
@@ -494,8 +523,9 @@ static void CG_DrawStatusBarFlag( int team, int show ) {
 	if(show >= 1){
 	CG_DrawFlagModel( 0 - cl_screenoffset.integer, 480 - ICON_SIZE - 35, ICON_SIZE, ICON_SIZE, team, qfalse );
 	} else {
-	CG_DrawFlagModel( -10000 - cl_screenoffset.integer, -10000, ICON_SIZE, ICON_SIZE, team, qfalse );	
-		}
+	CG_DrawEmptyModel( 0 - cl_screenoffset.integer, 480 - ICON_SIZE - 35, ICON_SIZE, ICON_SIZE, team, qfalse );
+	CG_DrawEmptyModel( 640 + cl_screenoffset.integer - ICON_SIZE - 35, 480 - ICON_SIZE - 35, ICON_SIZE, ICON_SIZE, team, qfalse );
+	}
 }
 
 /*

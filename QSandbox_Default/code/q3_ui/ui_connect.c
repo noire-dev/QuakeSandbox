@@ -168,7 +168,7 @@ if(!cl_blackloadscreen.integer){
 	if ( !overlay ) {
 		// draw the dialog background
 		UI_SetColor( color_white );
-		UI_DrawHandlePic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, uis.menuBackShader );
+		UI_DrawHandlePic( 0-cl_screenoffset.integer, 0, SCREEN_WIDTH+cl_screenoffset.integer*2, SCREEN_HEIGHT, uis.menuBackShader );
 	}
 
 	// see what information we should display

@@ -76,6 +76,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define NPC_CITIZEN					2
 #define NPC_GUARD					3
 #define NPC_PARTNER					4
+#define NPC_PARTNERENEMY			5
 
 //
 // config strings are a general means of communicating variable length strings

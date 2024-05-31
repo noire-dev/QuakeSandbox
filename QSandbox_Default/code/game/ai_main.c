@@ -140,6 +140,7 @@ switch(prop) {
 			case NPC_CITIZEN: 	return qtrue;
 			case NPC_GUARD: 	return qtrue;
 			case NPC_PARTNER: 	return qtrue;
+			case NPC_PARTNERENEMY: 	return qtrue;
 		}
 	break;}
 	
@@ -150,6 +151,7 @@ switch(prop) {
 			case NPC_CITIZEN: 	return qtrue;
 			case NPC_GUARD: 	return qtrue;
 			case NPC_PARTNER: 	return qtrue;
+			case NPC_PARTNERENEMY: 	return qtrue;
 		}
 	break;}
 		
@@ -162,6 +164,7 @@ switch(prop) {
 			case NPC_CITIZEN: 	return qtrue;
 			case NPC_GUARD: 	return qtrue;
 			case NPC_PARTNER: 	return qtrue;
+			case NPC_PARTNERENEMY: 	return qfalse;
 			}
 			case NPC_CITIZEN: 	switch(ent->singlebot) 
 			{
@@ -170,6 +173,7 @@ switch(prop) {
 			case NPC_CITIZEN: 	return qfalse;
 			case NPC_GUARD: 	return qfalse;
 			case NPC_PARTNER: 	return qfalse;
+			case NPC_PARTNERENEMY: 	return qfalse;
 			}
 			case NPC_GUARD: 	switch(ent->singlebot) 
 			{
@@ -177,7 +181,8 @@ switch(prop) {
 			case NPC_ENEMY: 	return qtrue;
 			case NPC_CITIZEN: 	return qfalse;
 			case NPC_GUARD: 	return qfalse;
-			case NPC_PARTNER: 	return qfalse;			
+			case NPC_PARTNER: 	return qfalse;		
+			case NPC_PARTNERENEMY: 	return qtrue;			
 			}
 			case NPC_PARTNER: 	switch(ent->singlebot) 
 			{
@@ -185,7 +190,17 @@ switch(prop) {
 			case NPC_ENEMY: 	return qtrue;
 			case NPC_CITIZEN: 	return qfalse;
 			case NPC_GUARD: 	return qfalse;
-			case NPC_PARTNER: 	return qfalse;			
+			case NPC_PARTNER: 	return qfalse;	
+			case NPC_PARTNERENEMY: 	return qtrue;			
+			}
+			case NPC_PARTNERENEMY: 	switch(ent->singlebot) 
+			{
+			case NPC_PLAYER: 	return qtrue;
+			case NPC_ENEMY: 	return qfalse;
+			case NPC_CITIZEN: 	return qtrue;
+			case NPC_GUARD: 	return qtrue;
+			case NPC_PARTNER: 	return qtrue;	
+			case NPC_PARTNERENEMY: 	return qfalse;			
 			}
 		}	
 	break;}
@@ -197,6 +212,7 @@ switch(prop) {
 			case NPC_CITIZEN: 	return qtrue;
 			case NPC_GUARD: 	return qtrue;
 			case NPC_PARTNER: 	return qtrue;
+			case NPC_PARTNERENEMY: 	return qtrue;
 		}	
 	break;}
 
@@ -207,6 +223,7 @@ switch(prop) {
 			case NPC_CITIZEN: 	return qfalse;
 			case NPC_GUARD: 	return qfalse;
 			case NPC_PARTNER: 	return qfalse;
+			case NPC_PARTNERENEMY: 	return qfalse;
 		}
 	break;}
 		
@@ -217,6 +234,7 @@ switch(prop) {
 			case NPC_CITIZEN: 	return qfalse;
 			case NPC_GUARD: 	return qfalse;
 			case NPC_PARTNER: 	return qtrue;
+			case NPC_PARTNERENEMY: 	return qtrue;
 		}	
 	break;}
 	
@@ -227,6 +245,7 @@ switch(prop) {
 			case NPC_CITIZEN: 	return qtrue;
 			case NPC_GUARD: 	return qtrue;
 			case NPC_PARTNER: 	return qtrue;
+			case NPC_PARTNERENEMY: 	return qtrue;
 		}	
 	break;}
 	

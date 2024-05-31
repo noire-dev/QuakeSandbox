@@ -1750,6 +1750,9 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	if(!Q_stricmp (arg03, "NPC_Partner")){
 	G_AddBot(tent->clientname, atof(arg04), "Blue", 0, arg06, tent->s.number, tent->target, NPC_PARTNER );
 	}
+	if(!Q_stricmp (arg03, "NPC_PartnerEnemy")){
+	G_AddBot(tent->clientname, atof(arg04), "Blue", 0, arg06, tent->s.number, tent->target, NPC_PARTNERENEMY );
+	}
 	
 	trap_Cvar_Set("g_spSkill", arg04);
 
@@ -1908,6 +1911,9 @@ static void Cmd_PropNpc_AS_f( gentity_t *ent ){
 	if(!Q_stricmp (arg03, "NPC_Partner")){
 	G_AddBot(tent->clientname, atof(arg04), "Blue", 0, arg06, tent->s.number, tent->target, NPC_PARTNER );
 	}
+	if(!Q_stricmp (arg03, "NPC_PartnerEnemy")){
+	G_AddBot(tent->clientname, atof(arg04), "Blue", 0, arg06, tent->s.number, tent->target, NPC_PARTNERENEMY );
+	}
 	
 	trap_Cvar_Set("g_spSkill", arg04);
 
@@ -1984,6 +1990,9 @@ static void Cmd_SpawnBot_f( gentity_t *ent ){
 	}
 	if(!Q_stricmp (class, "NPC_Partner")){
 	G_AddBot(tent->clientname, atof(skill), "Blue", 0, name, tent->s.number, tent->target, NPC_PARTNER );
+	}
+	if(!Q_stricmp (class, "NPC_PartnerEnemy")){
+	G_AddBot(tent->clientname, atof(skill), "Blue", 0, name, tent->s.number, tent->target, NPC_PARTNERENEMY );
 	}
 	
 	trap_Cvar_Set("g_spSkill", skill);

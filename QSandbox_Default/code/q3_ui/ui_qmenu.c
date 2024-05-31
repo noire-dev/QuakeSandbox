@@ -735,7 +735,6 @@ if(b->type == 5){
 			}
 			}
 			if(!b->shader && !b->model && !it){
-			trap_Print(b->string);
 			UI_DrawHandlePicFile( x, y, (float)(SMALLCHAR_WIDTH*b->width), (float)(SMALLCHAR_WIDTH*b->width), va("%s/%s", b->string, b->itemnames[i]) );
 			}
 			UI_DrawStringCustom(x,y,b->itemnames[i],style,color, b->fontsize, ((SMALLCHAR_WIDTH*b->width)/(SMALLCHAR_WIDTH*b->fontsize))-4 );
