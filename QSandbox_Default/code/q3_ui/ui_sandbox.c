@@ -1180,6 +1180,8 @@ void SandboxMain_MenuInit( void ) {
 	int		len;
 	char	*configname;
 	vec4_t	s_sandboxmain_color1 = {1.00f, 1.00f, 1.00f, 1.00f};
+    int name_length;
+    const char *bot_name;
 
 	memset( &s_sandboxmain, 0, sizeof(s_sandboxmain) );
 	
@@ -2042,25 +2044,34 @@ if(uis.sb_tab == 2){
 		configname += len + 1;
 	}
 }
-if(uis.sb_tab == 3){
-	if (!s_sandboxmain.list.numitems) {
-		strcpy(s_sandboxmain.names,"No NPC");
-		s_sandboxmain.list.numitems = 1;
-	}
-	else if (s_sandboxmain.list.numitems > 65536)
-		s_sandboxmain.list.numitems = 65536;
+if (uis.sb_tab == 3) {
+    if (!s_sandboxmain.list.numitems) {
+        strcpy(s_sandboxmain.names, "No NPC");
+        s_sandboxmain.list.numitems = 1;
+    } else if (s_sandboxmain.list.numitems > 65536) {
+        s_sandboxmain.list.numitems = 65536;
+    }
 
-	configname = s_sandboxmain.names;
-	for ( i = 0; i < s_sandboxmain.list.numitems; i++ ) {
-		strcpy(configname, Info_ValueForKey(UI_GetBotInfoByNumber(i), "name"));
-		
-		s_sandboxmain.list.itemnames[i] = configname;
+    configname = s_sandboxmain.names;
+    
+    for (i = 0; i < s_sandboxmain.list.numitems; i++) {
+        // Получение имени из информации о боте
+        bot_name = Info_ValueForKey(UI_GetBotInfoByNumber(i), "name");
 
-		//Q_strupr(configname);
+        // Проверка длины строки, чтобы избежать переполнения буфера
+        name_length = strlen(bot_name);
 
-		configname += len + 1;
-	}
+        // Копирование имени в массив имен
+        strcpy(configname, bot_name);
+
+        // Установка имени в массив itemnames
+        s_sandboxmain.list.itemnames[i] = configname;
+
+        // Переход к следующему элементу
+        configname += name_length + 1;
+    }
 }
+
 if(uis.sb_tab == 6){	
 	if (!s_sandboxmain.classlist.numitems) {
 		strcpy(s_sandboxmain.names2,"No lists");
