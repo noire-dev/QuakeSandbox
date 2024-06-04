@@ -403,12 +403,12 @@ if(cl_language.integer == 1){
 #ifndef MISSIONPACK
 	if(!cg_singlemode.integer){
 		if (!(cg_singlePlayerActive.integer && cg_cameraOrbit.integer)) {
-			CG_CenterPrint( s, SCREEN_HEIGHT * 0.30, (int)(BIGCHAR_WIDTH * 0.6) );
+			//CG_CenterPrint( s, SCREEN_HEIGHT * 0.30, (int)(BIGCHAR_WIDTH * 0.6) );
 		} 
 	}
 #else
 	if(!cg_singlemode.integer){
-		CG_CenterPrint( s, SCREEN_HEIGHT * 0.30, (int)(BIGCHAR_WIDTH * 0.6) );
+		//CG_CenterPrint( s, SCREEN_HEIGHT * 0.30, (int)(BIGCHAR_WIDTH * 0.6) );
 	}
 #endif
 

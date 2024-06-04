@@ -320,12 +320,11 @@ static menucommon_s** g_control_list[] = {
 
 static void Preferences_SetMenuItems( void ) {
 	s_preferences.crosshair.curvalue		= (int)trap_Cvar_VariableValue( "cg_drawCrosshair" ) % NUM_CROSSHAIRS;
-        s_preferences.crosshairHealth.curvalue          = trap_Cvar_VariableValue( "cg_crosshairHealth") != 0;
-        s_preferences.crosshairColorRed.curvalue        = trap_Cvar_VariableValue( "cg_crosshairColorRed")*255.0f;
-        s_preferences.crosshairColorGreen.curvalue      = trap_Cvar_VariableValue( "cg_crosshairColorGreen")*255.0f;
-        s_preferences.crosshairColorBlue.curvalue       = trap_Cvar_VariableValue( "cg_crosshairColorBlue")*255.0f;
+    s_preferences.crosshairColorRed.curvalue        = trap_Cvar_VariableValue( "cg_crosshairColorRed")*255.0f;
+    s_preferences.crosshairColorGreen.curvalue      = trap_Cvar_VariableValue( "cg_crosshairColorGreen")*255.0f;
+    s_preferences.crosshairColorBlue.curvalue       = trap_Cvar_VariableValue( "cg_crosshairColorBlue")*255.0f;
 	s_preferences.simpleitems.curvalue		= trap_Cvar_VariableValue( "cg_simpleItems" ) != 0;
-        s_preferences.alwaysweaponbar.curvalue		= trap_Cvar_VariableValue( "cg_alwaysWeaponBar" ) != 0;
+    s_preferences.alwaysweaponbar.curvalue		= trap_Cvar_VariableValue( "cg_alwaysWeaponBar" ) != 0;
 	s_preferences.brass.curvalue			= trap_Cvar_VariableValue( "cg_brassTime" ) != 0;
 	s_preferences.wallmarks.curvalue		= trap_Cvar_VariableValue( "cg_marks" ) != 0;
 	s_preferences.identifytarget.curvalue	= trap_Cvar_VariableValue( "cg_drawCrosshairNames" ) != 0;
@@ -525,20 +524,11 @@ static void Preferences_Event( void* ptr, int notification ) {
 		Control_Update();
 		break;
 
-        case ID_CROSSHAIRHEALTH:
-                trap_Cvar_SetValue( "cg_crosshairHealth", s_preferences.crosshairHealth.curvalue );
-                if(s_preferences.crosshairHealth.curvalue) {
-                    //If crosshairHealth is on: Don't allow color selection
-                    s_preferences.crosshairColorRed.generic.flags       |= QMF_INACTIVE;
-                    s_preferences.crosshairColorGreen.generic.flags     |= QMF_INACTIVE;
-                    s_preferences.crosshairColorBlue.generic.flags      |= QMF_INACTIVE;
-                } else {
-                    //If crosshairHealth is off: Allow color selection
-                    s_preferences.crosshairColorRed.generic.flags       &= ~QMF_INACTIVE;
-                    s_preferences.crosshairColorGreen.generic.flags     &= ~QMF_INACTIVE;
-                    s_preferences.crosshairColorBlue.generic.flags      &= ~QMF_INACTIVE;
-                }
-                break;
+    case ID_CROSSHAIRHEALTH:
+        s_preferences.crosshairColorRed.generic.flags       &= ~QMF_INACTIVE;
+        s_preferences.crosshairColorGreen.generic.flags     &= ~QMF_INACTIVE;
+        s_preferences.crosshairColorBlue.generic.flags      &= ~QMF_INACTIVE;
+		break;
 
 	case ID_RENDER:
 		s_preferences.section = C_RENDER;
@@ -854,11 +844,9 @@ if(cl_language.integer == 1){
 
 static void Preferences_MenuInit( void )
 {
-
-        UI_SetDefaultCvar("cg_crosshairHealth","1");
-        UI_SetDefaultCvar("cg_crosshairColorRed","1");
-        UI_SetDefaultCvar("cg_crosshairColorBlue","1");
-        UI_SetDefaultCvar("cg_crosshairColorGreen","1");
+    UI_SetDefaultCvar("cg_crosshairColorRed","1");
+    UI_SetDefaultCvar("cg_crosshairColorBlue","1");
+    UI_SetDefaultCvar("cg_crosshairColorGreen","1");
 
 	memset( &s_preferences, 0 ,sizeof(preferences_t) );
 

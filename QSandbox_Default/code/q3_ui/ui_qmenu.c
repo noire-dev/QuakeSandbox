@@ -2783,6 +2783,10 @@ sfxHandle_t Menu_DefaultKey( menuframework_s *m, int key )
 			uis.menuscroll = uis.activemenu->uplimitscroll;
 		}
 			break;
+			
+		case K_F10:
+			trap_Cmd_ExecuteText( EXEC_NOW, "toggle cl_rusinput\n");
+			break;
 		case K_F11:
 			uis.debug ^= 1;
 			break;
@@ -3215,8 +3219,12 @@ void MField_CharEvent( mfield_t *edit, int ch ) {
 	//
 	// ignore any other non printable chars
 	//
-	if ( ch < 32 ) {
+	if ( ch == -48 ) {
 		return;
+	}
+	
+	if(trap_Cvar_VariableValue("cl_rusinput")){
+	ch -= 128;
 	}
 
 	if ( !trap_Key_GetOverstrikeMode() ) {	
@@ -3387,6 +3395,9 @@ sfxHandle_t MenuField_Key( menufield_s* m, int* key )
 			*key = K_TAB;
 			break;
 
+		case K_F10:
+			trap_Cmd_ExecuteText( EXEC_NOW, "toggle cl_rusinput\n");
+			break;
 		case K_TAB:
 		case K_KP_DOWNARROW:
 		case K_DOWNARROW:

@@ -50,7 +50,7 @@ set mitem2_w 80
 set mitem2_h 80
 set mitem2_text "1"
 set mitem2_cmd "vstr weap01"
-set mitem2_cmd2 ""
+set mitem2_cmd2 "menuback"
 set mitem2_1arg	0
 set mitem2_2arg	0
 set mitem2_3arg	0
@@ -85,7 +85,7 @@ set mitem3_w 80
 set mitem3_h 80
 set mitem3_text "2"
 set mitem3_cmd "vstr weap02"
-set mitem3_cmd2 ""
+set mitem3_cmd2 "menuback"
 set mitem3_1arg	0
 set mitem3_2arg	0
 set mitem3_3arg	0
@@ -120,7 +120,7 @@ set mitem4_w 80
 set mitem4_h 80
 set mitem4_text "3"
 set mitem4_cmd "vstr weap03"
-set mitem4_cmd2 ""
+set mitem4_cmd2 "menuback"
 set mitem4_1arg	0
 set mitem4_2arg	0
 set mitem4_3arg	0
@@ -155,7 +155,7 @@ set mitem5_w 80
 set mitem5_h 80
 set mitem5_text "4"
 set mitem5_cmd "vstr weap04"
-set mitem5_cmd2 ""
+set mitem5_cmd2 "menuback"
 set mitem5_1arg	0
 set mitem5_2arg	0
 set mitem5_3arg	0
@@ -190,7 +190,7 @@ set mitem6_w 80
 set mitem6_h 80
 set mitem6_text "5"
 set mitem6_cmd "vstr weap05"
-set mitem6_cmd2 ""
+set mitem6_cmd2 "menuback"
 set mitem6_1arg	0
 set mitem6_2arg	0
 set mitem6_3arg	0
@@ -225,7 +225,7 @@ set mitem7_w 80
 set mitem7_h 80
 set mitem7_text "6"
 set mitem7_cmd "vstr weap06"
-set mitem7_cmd2 ""
+set mitem7_cmd2 "menuback"
 set mitem7_1arg	0
 set mitem7_2arg	0
 set mitem7_3arg	0
@@ -260,7 +260,7 @@ set mitem8_w 80
 set mitem8_h 80
 set mitem8_text "7"
 set mitem8_cmd "vstr weap07"
-set mitem8_cmd2 ""
+set mitem8_cmd2 "menuback"
 set mitem8_1arg	0
 set mitem8_2arg	0
 set mitem8_3arg	0
@@ -295,7 +295,7 @@ set mitem9_w 80
 set mitem9_h 80
 set mitem9_text "8"
 set mitem9_cmd "vstr weap08"
-set mitem9_cmd2 ""
+set mitem9_cmd2 "menuback"
 set mitem9_1arg	0
 set mitem9_2arg	0
 set mitem9_3arg	0
@@ -330,7 +330,7 @@ set mitem10_w 80
 set mitem10_h 80
 set mitem10_text "9"
 set mitem10_cmd "vstr weap09"
-set mitem10_cmd2 ""
+set mitem10_cmd2 "menuback"
 set mitem10_1arg	0
 set mitem10_2arg	0
 set mitem10_3arg	0
@@ -365,7 +365,7 @@ set mitem11_w 80
 set mitem11_h 80
 set mitem11_text "10"
 set mitem11_cmd "vstr weap10"
-set mitem11_cmd2 ""
+set mitem11_cmd2 "menuback"
 set mitem11_1arg	0
 set mitem11_2arg	0
 set mitem11_3arg	0
@@ -400,7 +400,7 @@ set mitem12_w 80
 set mitem12_h 80
 set mitem12_text "11"
 set mitem12_cmd "weapon 11"
-set mitem12_cmd2 ""
+set mitem12_cmd2 "menuback"
 set mitem12_1arg	0
 set mitem12_2arg	0
 set mitem12_3arg	0
@@ -435,7 +435,7 @@ set mitem13_w 80
 set mitem13_h 80
 set mitem13_text "12"
 set mitem13_cmd "weapon 12"
-set mitem13_cmd2 ""
+set mitem13_cmd2 "menuback"
 set mitem13_1arg	0
 set mitem13_2arg	0
 set mitem13_3arg	0
@@ -470,7 +470,7 @@ set mitem14_w 80
 set mitem14_h 80
 set mitem14_text "13"
 set mitem14_cmd "weapon 13"
-set mitem14_cmd2 ""
+set mitem14_cmd2 "menuback"
 set mitem14_1arg	0
 set mitem14_2arg	0
 set mitem14_3arg	0
@@ -505,7 +505,7 @@ set mitem15_w 80
 set mitem15_h 80
 set mitem15_text "14"
 set mitem15_cmd "weapon 14"
-set mitem15_cmd2 ""
+set mitem15_cmd2 "menuback"
 set mitem15_1arg	0
 set mitem15_2arg	0
 set mitem15_3arg	0
@@ -540,7 +540,7 @@ set mitem16_w 80
 set mitem16_h 80
 set mitem16_text "15"
 set mitem16_cmd "weapon 15"
-set mitem16_cmd2 ""
+set mitem16_cmd2 "menuback"
 set mitem16_1arg	0
 set mitem16_2arg	0
 set mitem16_3arg	0

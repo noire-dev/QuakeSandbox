@@ -343,7 +343,7 @@ static void UI_DrawBannerString2( int x, int y, const char* str, vec4_t color )
 {
 	const char* s;
 	char	ch;
-        int prev_unicode = 0;
+    int prev_unicode = 0;
 	vec4_t	tempcolor;
 	float	ax;
 	float	ay;
@@ -354,18 +354,10 @@ static void UI_DrawBannerString2( int x, int y, const char* str, vec4_t color )
 	float	fwidth;
 	float	fheight;
 
-        int charw = 20;
-        int charh = 20;
+    int charw = 20;
+    int charh = 20;
 
-        float alignstate = 0;
-       /* if (x < 0) {
-           x = -x;
-           alignstate = 0.5; //center_align
-        }
-        if (y < 0) {
-           y = -y;
-           alignstate = 1; //right_align
-        }*/
+    float alignstate = 0;
 
 	// draw the colored text
 	trap_R_SetColor( color );
@@ -387,38 +379,38 @@ static void UI_DrawBannerString2( int x, int y, const char* str, vec4_t color )
 	s = str;
 	while ( *s )
 	{
-                if ( Q_IsColorString( s ) )
+        if ( Q_IsColorString( s ) )
 		{
-		        memcpy( tempcolor, g_color_table[ColorIndex(s[1])], sizeof( tempcolor ) );
-	               	tempcolor[3] = color[3];
-	                trap_R_SetColor( tempcolor );
+		    memcpy( tempcolor, g_color_table[ColorIndex(s[1])], sizeof( tempcolor ) );
+	        tempcolor[3] = color[3];
+	        trap_R_SetColor( tempcolor );
 			s += 2;
 			continue;
 		}
 		if (*s != ' ')
 		{
-                        ch = *s & 255;
-                        // unicode russian stuff support
-                        //Com_Printf("UI_letter: is %d\n", *s);
-                        if (ch < 0) {
-                           if ((ch == -48) || (ch == -47)) {
-                              prev_unicode = ch;
-                              s++;
-                              continue;
-                           }
-                           if (ch >= -112) {
-                              if ((ch == -111) && (prev_unicode == -47)) {
-                                 ch = ch - 13;
-                              } else {
-                                 ch = ch + 48;
-                              }
-                           } else {
-                              if ((ch == -127) && (prev_unicode == -48)) {
-                                 // ch = ch +
-                              } else {
-                                 ch = ch + 112; // +64 offset of damn unicode
-                              }
-                           }
+            ch = *s & 255;
+            // unicode russian stuff support
+            //Com_Printf("UI_letter: is %d\n", *s);
+            if (ch < 0) {
+               if ((ch == -48) || (ch == -47)) {
+                  prev_unicode = ch;
+                  s++;
+                  continue;
+               }
+               if (ch >= -112) {
+                  if ((ch == -111) && (prev_unicode == -47)) {
+                     ch = ch - 13;
+                  } else {
+                     ch = ch + 48;
+                  }
+               } else {
+                  if ((ch == -127) && (prev_unicode == -48)) {
+                     // ch = ch +
+                  } else {
+                     ch = ch + 112; // +64 offset of damn unicode
+                  }
+               }
 		}
 			frow = (ch>>4)*0.0625;
 			fcol = (ch&15)*0.0625;
@@ -430,7 +422,6 @@ static void UI_DrawBannerString2( int x, int y, const char* str, vec4_t color )
 	}
 
 	trap_R_SetColor( NULL );
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 void UI_DrawBannerString( int x, int y, const char* str, int style, vec4_t color ) {
@@ -528,10 +519,9 @@ behaviour
 */
 static void UI_DrawProportionalString2( float x, float y, const char* str, vec4_t color, float sizeScale, qhandle_t charset )
 {
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const char* s;
 	char	ch;
-        int prev_unicode = 0;
+    int prev_unicode = 0;
 	vec4_t	tempcolor;
 	float	ax;
 	float	ay;
@@ -542,18 +532,10 @@ static void UI_DrawProportionalString2( float x, float y, const char* str, vec4_
 	float	fwidth;
 	float	fheight;
 
-        int charw = 16;
-        int charh = 16;
+    int charw = 16;
+    int charh = 16;
 
-        float alignstate = 0;
-        /*if (x < 0) {
-           x = -x;
-           alignstate = 0.5; //center_align
-        }
-        if (y < 0) {
-           y = -y;
-           alignstate = 1; //right_align
-        }*/
+    float alignstate = 0;
 
 	// draw the colored text
 	trap_R_SetColor( color );
@@ -575,38 +557,38 @@ static void UI_DrawProportionalString2( float x, float y, const char* str, vec4_
         s = str;
 	while ( *s )
 	{
-                if ( Q_IsColorString( s ) )
+         if ( Q_IsColorString( s ) )
 		{
-		        memcpy( tempcolor, g_color_table[ColorIndex(s[1])], sizeof( tempcolor ) );
-	               	tempcolor[3] = color[3];
-	                trap_R_SetColor( tempcolor );
-			s += 2;
-			continue;
+		memcpy( tempcolor, g_color_table[ColorIndex(s[1])], sizeof( tempcolor ) );
+	    tempcolor[3] = color[3];
+	    trap_R_SetColor( tempcolor );
+		s += 2;
+		continue;
 		}
 		if (*s != ' ')
 		{
-                        ch = *s & 255;
-                        // unicode russian stuff support
-                        //Com_Printf("UI_letter: is %d\n", *s);
-                        if (ch < 0) {
-                           if ((ch == -48) || (ch == -47)) {
-                              prev_unicode = ch;
-                              s++;
-                              continue;
-                           }
-                           if (ch >= -112) {
-                              if ((ch == -111) && (prev_unicode == -47)) {
-                                 ch = ch - 13;
-                              } else {
-                                 ch = ch + 48;
-                              }
-                           } else {
-                              if ((ch == -127) && (prev_unicode == -48)) {
-                                 // ch = ch +
-                              } else {
-                                 ch = ch + 112; // +64 offset of damn unicode
-                              }
-                           }
+            ch = *s & 255;
+            // unicode russian stuff support
+            //Com_Printf("UI_letter: is %d\n", *s);
+            if (ch < 0) {
+               if ((ch == -48) || (ch == -47)) {
+                  prev_unicode = ch;
+                  s++;
+                  continue;
+               }
+               if (ch >= -112) {
+                  if ((ch == -111) && (prev_unicode == -47)) {
+                     ch = ch - 13;
+                  } else {
+                     ch = ch + 48;
+                  }
+               } else {
+                  if ((ch == -127) && (prev_unicode == -48)) {
+                     // ch = ch +
+                  } else {
+                     ch = ch + 112; // +64 offset of damn unicode
+                  }
+               }
 		}
 			frow = (ch>>4)*0.0625;
 			fcol = (ch&15)*0.0625;
@@ -618,7 +600,6 @@ static void UI_DrawProportionalString2( float x, float y, const char* str, vec4_
 	}
 
 	trap_R_SetColor( NULL );
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /*
@@ -898,7 +879,7 @@ int UI_RusString(const char* str)
 	const char* s;
 	char	ch;
 	int forceColor = qfalse; //APSFIXME;
-        int prev_unicode = 0;
+    int prev_unicode = 0;
 	vec4_t	tempcolor;
 	float	ax;
 	float	ay;
@@ -913,18 +894,16 @@ int UI_RusString(const char* str)
 	int charh;
 	int rucount = 0;
 
-	//if (y < -charh)
-		// offscreen
-		//return;
-        float alignstate = 0;
-        if (charw < 0) {
-           charw = -charw;
-           alignstate = 0.5; //center_align
-        }
-        if (charh < 0) {
-           charh = -charh;
-           alignstate = 1; //right_align
-        }
+    float alignstate = 0;
+	
+    if (charw < 0) {
+       charw = -charw;
+       alignstate = 0.5; //center_align
+    }
+    if (charh < 0) {
+       charh = -charh;
+       alignstate = 1; //right_align
+    }
 	
 	ax = x * uis.scale + uis.bias;
 	ay = y * uis.scale;
@@ -945,10 +924,9 @@ int UI_RusString(const char* str)
 	{
 		if ( Q_IsColorString( s ) )
 		{
-
-				memcpy( tempcolor, g_color_table[ColorIndex(s[1])], sizeof( tempcolor ) );
-				tempcolor[3] = color[3];
-			s += 2;
+		memcpy( tempcolor, g_color_table[ColorIndex(s[1])], sizeof( tempcolor ) );
+		tempcolor[3] = color[3];
+		s += 2;
 		}
 
 
@@ -956,29 +934,29 @@ int UI_RusString(const char* str)
 		if (*s != ' ')
 		{
 		ch = *s & 255;
-                        // unicode russian stuff support
-                        //Com_Printf("UI_letter: is %d\n", *s);
-                        if (ch < 0) {
-                           if ((ch == -48) || (ch == -47)) {
-                              prev_unicode = ch;
-                              s++;
-                              continue;
-                           }
-                           if (ch >= -112) {
-                              if ((ch == -111) && (prev_unicode == -47)) {
-                                 ch = ch - 13;
-                              } else {
-                                 ch = ch + 48;
-                              }
-                           } else {
-                              if ((ch == -127) && (prev_unicode == -48)) {
-                                 // ch = ch +
-                              } else {
-                                 ch = ch + 112; // +64 offset of damn unicode
-								 rucount += 1;
-                              }
-                           }
-                        }
+            // unicode russian stuff support
+            //Com_Printf("UI_letter: is %d\n", *s);
+            if (ch < 0) {
+               if ((ch == -48) || (ch == -47)) {
+                  prev_unicode = ch;
+                  s++;
+                  continue;
+               }
+               if (ch >= -112) {
+                  if ((ch == -111) && (prev_unicode == -47)) {
+                     ch = ch - 13;
+                  } else {
+                     ch = ch + 48;
+                  }
+               } else {
+                  if ((ch == -127) && (prev_unicode == -48)) {
+                     // ch = ch +
+                  } else {
+                     ch = ch + 112; // +64 offset of damn unicode
+					 rucount += 1;
+                  }
+               }
+            }
 			frow = (ch>>4)*0.0625;
 			fcol = (ch&15)*0.0625;
 		}
@@ -1569,6 +1547,114 @@ if ( Q_stricmp (UI_Argv(0), "mguicall") == 0 ) {
 	UI_MGUI_Edit( 2, atoi(UI_Argv(2)), NULL, UI_Argv(3) );
 	}
 	return qtrue;
+}
+
+if ( Q_stricmp (UI_Argv(0), "openui") == 0 ) {
+	if( Q_stricmp (UI_Argv(1), "ui_addbots") == 0 ){
+	UI_AddBotsMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_advanced") == 0 ){
+	UI_AdvancedMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_cdkey") == 0 ){
+	UI_CDKeyMenu_f();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_savegame") == 0 ){
+	UI_CinematicsMenu(0);
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_loadgame") == 0 ){
+	UI_CinematicsMenu(1);
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_controls2") == 0 ){
+	UI_ControlsMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_credits0") == 0 ){
+	UI_CreditMenu(0);
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_credits1") == 0 ){
+	UI_CreditMenu(1);
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_demo2") == 0 ){
+	UI_DemosMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_display") == 0 ){
+	UI_DisplayOptionsMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_ingame_bots") == 0 ){
+	UI_BotCommandMenu_f();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_ingame") == 0 ){
+	UI_InGameMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_ingame_mapvote") == 0 ){
+	UI_MapCallVote();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_menu") == 0 ){
+	UI_MainMenu();
+	}	
+	if( Q_stricmp (UI_Argv(1), "ui_mods") == 0 ){
+	UI_ModsMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_network") == 0 ){
+	UI_NetworkOptionsMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_options") == 0 ){
+	UI_SystemConfigMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_playermodel") == 0 ){
+	UI_PlayerModelMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_playersettings") == 0 ){
+	UI_PlayerSettingsMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_preferences") == 0 ){
+	UI_PreferencesMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_removebots0") == 0 ){
+	UI_RemoveBotsMenu(0);
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_removebots1") == 0 ){
+	UI_RemoveBotsMenu(1);
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_removebots2") == 0 ){
+	UI_RemoveBotsMenu(2);
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_sandbox") == 0 ){
+	UI_SandboxMainMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_saveconfig") == 0 ){
+	UI_SaveConfigMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_saveconfiged") == 0 ){
+	UI_saveMapEdMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_serverinfo") == 0 ){
+	UI_ServerInfoMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_servers2") == 0 ){
+	UI_ArenaServersMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_setup") == 0 ){
+	UI_SetupMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_sound") == 0 ){
+	UI_SoundOptionsMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_specifyserver") == 0 ){
+	UI_SpecifyServerMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_team") == 0 ){
+	UI_TeamMainMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_teamorders") == 0 ){
+	UI_TeamOrdersMenu_f();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_video") == 0 ){
+	UI_GraphicsOptionsMenu();
+	}
+	if( Q_stricmp (UI_Argv(1), "ui_workshop") == 0 ){
+	UI_WorkshopMenu();
+	}
 }
 
 if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {

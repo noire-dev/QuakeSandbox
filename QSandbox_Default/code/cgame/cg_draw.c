@@ -2883,6 +2883,7 @@ static void CG_DrawCrosshair(void)
 	float		x, y;
 	int			ca = 0; //only to get rid of the warning(not useful)
 	int 		currentWeapon;
+	vec4_t         color;
 
 	currentWeapon = cg.predictedPlayerState.weapon;
 
@@ -2894,20 +2895,11 @@ static void CG_DrawCrosshair(void)
 		return;
 	}
 
-	// set color based on health
-	if ( cg_crosshairHealth.integer ) {
-		vec4_t		hcolor;
-
-		CG_ColorForHealth( hcolor );
-		trap_R_SetColor( hcolor );
-	} else {
-                vec4_t         color;
-                color[0]=cg_crosshairColorRed.value;
-                color[1]=cg_crosshairColorGreen.value;
-                color[2]=cg_crosshairColorBlue.value;
-                color[3]=1.0f;
-		trap_R_SetColor( color );
-	}
+    color[0]=cg_crosshairColorRed.value;
+    color[1]=cg_crosshairColorGreen.value;
+    color[2]=cg_crosshairColorBlue.value;
+    color[3]=1.0f;
+	trap_R_SetColor( color );
 
 	if( cg_differentCrosshairs.integer == 1 ){
 		switch( currentWeapon ){
