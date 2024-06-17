@@ -875,7 +875,7 @@ set mitem25_col 1
 set mitem25_mode	1
 set mitem25_style 0
 set mitem25_min 1
-set mitem25_max 16
+set mitem25_max 90
 set mitem25_savecvar "mgui_none"
 
 set mitem26_type 1

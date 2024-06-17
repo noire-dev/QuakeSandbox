@@ -1209,6 +1209,9 @@ void SP_func_prop( gentity_t *ent ) {
 			ent->s.scales[0] = ent->sb_colscale0;
 			ent->s.scales[1] = ent->sb_colscale1;
 			ent->s.scales[2] = ent->sb_colscale2;
+			ent->s.apos.trBase[0] = ent->sb_rotate0;
+			ent->s.apos.trBase[1] = ent->sb_rotate1;
+			ent->s.apos.trBase[2] = ent->sb_rotate2;
 			VectorSet( ent->r.mins, -ent->sb_coltype*ent->sb_colscale0, -ent->sb_coltype*ent->sb_colscale1, -ent->sb_coltype*ent->sb_colscale2);
 			VectorSet( ent->r.maxs, ent->sb_coltype*ent->sb_colscale0, ent->sb_coltype*ent->sb_colscale1, ent->sb_coltype*ent->sb_colscale2 );
 			ent->s.pos.trTime = level.time;
@@ -1272,12 +1275,15 @@ void SP_func_prop( gentity_t *ent ) {
 	ent->s.scales[0] = ent->sb_colscale0;
 	ent->s.scales[1] = ent->sb_colscale1;
 	ent->s.scales[2] = ent->sb_colscale2;
+	ent->s.apos.trBase[0] = ent->sb_rotate0;
+	ent->s.apos.trBase[1] = ent->sb_rotate1;
+	ent->s.apos.trBase[2] = ent->sb_rotate2;	
 	VectorSet( ent->r.mins, -ent->sb_coltype*ent->sb_colscale0, -ent->sb_coltype*ent->sb_colscale1, -ent->sb_coltype*ent->sb_colscale2);
 	VectorSet( ent->r.maxs, ent->sb_coltype*ent->sb_colscale0, ent->sb_coltype*ent->sb_colscale1, ent->sb_coltype*ent->sb_colscale2 );
 	trap_LinkEntity( ent );
 }
 
-void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, char *arg04, char *arg05, char *arg06, char *arg07, char *arg08, char *arg09, char *arg10, char *arg11, char *arg12, char *arg13, char *arg14, char *arg15, char *arg16, char *arg17, char *arg18, char *arg19, char *arg20, char *arg21, char *arg22, char *arg23, char *arg24, char *arg25, char *arg26, char *arg27, char *arg28, char *arg29, char *arg30, char *arg31, char *arg32, char *arg33, char *arg34, char *arg35, char *arg36, char *arg37, char *arg38, char *arg39, char *arg40 ) {
+void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, char *arg04, char *arg05, char *arg06, char *arg07, char *arg08, char *arg09, char *arg10, char *arg11, char *arg12, char *arg13, char *arg14, char *arg15, char *arg16, char *arg17, char *arg18, char *arg19, char *arg20, char *arg21, char *arg22, char *arg23, char *arg24, char *arg25, char *arg26, char *arg27, char *arg28, char *arg29, char *arg30, char *arg31, char *arg32, char *arg33, char *arg34, char *arg35, char *arg36, char *arg37, char *arg38, char *arg39, char *arg40, char *arg41, char *arg42, char *arg43, char *arg44, char *arg45, char *arg46, char *arg47, char *arg48, char *arg49, char *arg50, char *arg51, char *arg52, char *arg53, char *arg54, char *arg55, char *arg56, char *arg57, char *arg58, char *arg59 ) {
 	gentity_t	*ent;
 	vec3_t		snapped;
 	vec3_t		o;
@@ -1369,6 +1375,87 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent->mspeed = atoi(arg31);
 	
 	ent->allowuse = atoi(arg32);
+	if ( strcmp(arg33, "0") ) {
+	ent->speed = atoi(arg33);
+	}
+	if ( strcmp(arg34, "0") ) {
+	CopyAlloc(ent->message, arg34);
+	}
+	if ( strcmp(arg35, "0") ) {
+	CopyAlloc(ent->messageru, arg35);
+	}
+	if ( strcmp(arg36, "0") ) {
+	CopyAlloc(ent->team, arg36);
+	}
+	if ( strcmp(arg37, "0") ) {
+	ent->wait = atoi(arg37);
+	}
+	if ( strcmp(arg38, "0") ) {
+	ent->random = atoi(arg38);
+	}
+	if ( strcmp(arg39, "0") ) {
+	ent->playerangle = atoi(arg39);
+	}
+	if ( strcmp(arg40, "0") ) {
+	ent->price = atoi(arg40);
+	}
+	if ( strcmp(arg41, "0") ) {
+	ent->damage = atoi(arg41);
+	}
+	if ( strcmp(arg42, "0") ) {
+	CopyAlloc(ent->targetShaderName, arg42);
+	}
+	if ( strcmp(arg43, "0") ) {
+	CopyAlloc(ent->targetShaderNewName, arg43);
+	}
+	if ( strcmp(arg44, "0") ) {
+	CopyAlloc(ent->mapname, arg44);
+	}
+	if ( strcmp(arg45, "0") ) {
+	CopyAlloc(ent->clientname, arg45);
+	}
+	if ( strcmp(arg46, "0") ) {
+	CopyAlloc(ent->teleporterTarget, arg46);
+	}
+	if ( strcmp(arg47, "0") ) {
+	CopyAlloc(ent->deathTarget, arg47);
+	}
+	if ( strcmp(arg48, "0") ) {
+	CopyAlloc(ent->lootTarget, arg48);
+	}
+	if ( strcmp(arg49, "0") ) {
+	ent->skill = atoi(arg49);
+	}
+	if ( strcmp(arg50, "0") ) {
+	CopyAlloc(ent->overlay, arg50);
+	}
+	if ( strcmp(arg51, "0") ) {
+	CopyAlloc(ent->target2, arg51);
+	}
+	if ( strcmp(arg52, "0") ) {
+	CopyAlloc(ent->damagetarget, arg52);
+	}
+	if ( strcmp(arg53, "0") ) {
+	CopyAlloc(ent->targetname2, arg53);
+	}
+	if ( strcmp(arg54, "0") ) {
+	CopyAlloc(ent->key, arg54);
+	}
+	if ( strcmp(arg55, "0") ) {
+	CopyAlloc(ent->value, arg55);
+	}
+	if ( strcmp(arg56, "0") ) {
+	ent->armor = atoi(arg56);
+	}
+	if ( strcmp(arg57, "0") ) {
+	CopyAlloc(ent->music, arg57);
+	}
+	if ( strcmp(arg58, "0") ) {
+	ent->distance = atoi(arg58);
+	}
+	if ( strcmp(arg59, "0") ) {
+	ent->type = atoi(arg59);
+	}
 
 	// check item spawn functions
 	for ( item=bg_itemlist+1 ; item->classname ; item++ ) {
@@ -1497,6 +1584,12 @@ void G_BuildProp( char *model, char *class, vec3_t xyz, gentity_t *player, int p
 			ent->sb_colscale0 = 1.0;
 			ent->sb_colscale1 = 1.0;
 			ent->sb_colscale2 = 1.0;
+			ent->s.apos.trBase[0] = 0;
+			ent->s.apos.trBase[1] = 0;
+			ent->s.apos.trBase[2] = 0;
+			ent->sb_rotate0 = 0;
+			ent->sb_rotate1 = 0;
+			ent->sb_rotate2 = 0;
 			ent->sb_coltype = mix;
 			VectorSet( ent->r.mins, -mix, -mix, -mix );
 			VectorSet( ent->r.maxs, mix, mix, mix );
@@ -1525,6 +1618,12 @@ void G_BuildProp( char *model, char *class, vec3_t xyz, gentity_t *player, int p
 	ent->sb_colscale0 = 1.0;
 	ent->sb_colscale1 = 1.0;
 	ent->sb_colscale2 = 1.0;
+	ent->s.apos.trBase[0] = 0;
+	ent->s.apos.trBase[1] = 0;
+	ent->s.apos.trBase[2] = 0;
+	ent->sb_rotate0 = 0;
+	ent->sb_rotate1 = 0;
+	ent->sb_rotate2 = 0;
 	ent->sb_coltype = mix;
 	VectorSet( ent->r.mins, -mix, -mix, -mix );
 	VectorSet( ent->r.maxs, mix, mix, mix );
@@ -1628,32 +1727,6 @@ if(attacker->gmodtool == 5){
 }
 if(attacker->gmodtool == 6){
 	if(attacker->gmodtoolmode == 0){
-	CopyAlloc(targ->target, attacker->gmodmodifiers);
-	}
-	if(attacker->gmodtoolmode == 1){
-	CopyAlloc(targ->target2, attacker->gmodmodifiers);
-	}
-	if(attacker->gmodtoolmode == 2){
-	CopyAlloc(targ->targetname, attacker->gmodmodifiers);
-	}
-	if(attacker->gmodtoolmode == 3){
-	CopyAlloc(targ->targetname2, attacker->gmodmodifiers);
-	}
-	if(attacker->gmodtoolmode == 4){
-	CopyAlloc(attacker->targetname, attacker->gmodmodifiers);
-	}
-	if(attacker->gmodtoolmode == 5){
-	CopyAlloc(attacker->targetname2, attacker->gmodmodifiers);
-	}
-	if(attacker->gmodtoolmode == 6){
-	CopyAlloc(targ->damagetarget, attacker->gmodmodifiers);
-	}
-	if(attacker->gmodtoolmode == 7){
-	CopyAlloc(attacker->damagetarget, attacker->gmodmodifiers);
-	}
-}
-if(attacker->gmodtool == 7){
-	if(attacker->gmodtoolmode == 0){
 	targ->r.contents = CONTENTS_SOLID;
 	targ->sb_coll = 0;
 	}
@@ -1664,44 +1737,7 @@ if(attacker->gmodtool == 7){
 trap_UnlinkEntity( targ );
 trap_LinkEntity( targ );
 }
-if(attacker->gmodtool == 8){
-	SP_func_prop(targ);
-}
-if(attacker->gmodtool == 9){
-	targ->s.loopSound = G_SoundIndex(attacker->gmodmodifiers);
-	CopyAlloc(targ->sb_sound, attacker->gmodmodifiers);
-}
-if(attacker->gmodtool == 10){
-	if(attacker->gmodtoolmode == 0){
-	targ->locked = 0;
-	trap_SendServerCommand( attacker->s.clientNum, va( "cp %s\n", "Unlocked" ));
-	}
-	if(attacker->gmodtoolmode == 1){
-	targ->locked = 1;
-	trap_SendServerCommand( attacker->s.clientNum, va( "cp %s\n", "Locked" ));
-	}
-}
-if(attacker->gmodtool == 11){
-	targ->speed = atoi(attacker->gmodmodifiers);
-}
-if(attacker->gmodtool == 12){
-	if(attacker->gmodtoolmode == 0){
-	CopyAlloc(targ->message, attacker->gmodmodifiers);
-	}
-	if(attacker->gmodtoolmode == 1){
-	CopyAlloc(targ->messageru, attacker->gmodmodifiers);
-	}
-}
-if(attacker->gmodtool == 13){
-	CopyAlloc(targ->team, attacker->gmodmodifiers);
-}
-if(attacker->gmodtool == 14){
-	targ->wait = atof(attacker->gmodmodifiers);
-}
-if(attacker->gmodtool == 15){
-	targ->count = atoi(attacker->gmodmodifiers);
-}
-if(attacker->gmodtool == 16){
+if(attacker->gmodtool == 7){
 	if(attacker->gmodtoolmode == 0){
 	targ->health = atoi(attacker->gmodmodifiers);
 	}
@@ -1722,10 +1758,7 @@ if(attacker->gmodtool == 16){
 	targ->sb_takedamage2 = 1;
 	}
 }
-if(attacker->gmodtool == 17){
-	targ->price = atoi(attacker->gmodmodifiers);
-}
-if(attacker->gmodtool == 18){
+if(attacker->gmodtool == 8){
 	targ->s.constantLight = atoi(attacker->gmodmodifiers) | ( attacker->gmodmod_one << 8 ) | ( attacker->gmodmod_two << 16 ) | ( attacker->gmodtoolmode << 24 );
 	targ->sb_red = atoi(attacker->gmodmodifiers);
 	targ->sb_green = attacker->gmodmod_one;
@@ -1734,90 +1767,23 @@ if(attacker->gmodtool == 18){
 	trap_UnlinkEntity( targ );
 	trap_LinkEntity( targ );
 }
-if(attacker->gmodtool == 19){
-	targ->damage = atoi(attacker->gmodmodifiers);
-}
-if(attacker->gmodtool == 20){
+if(attacker->gmodtool == 9){
 if(attacker->gmodtoolmode == 0){
-	targ->mtype = atoi(attacker->gmodmodifiers);
+	targ->s.apos.trBase[0] = atof(attacker->gmodmodifiers);
+	targ->sb_rotate0 = atof(attacker->gmodmodifiers);
 }
 if(attacker->gmodtoolmode == 1){
-	targ->mtimeout = atoi(attacker->gmodmodifiers);
+	targ->s.apos.trBase[1] = atof(attacker->gmodmodifiers);
+	targ->sb_rotate1 = atof(attacker->gmodmodifiers);
 }
 if(attacker->gmodtoolmode == 2){
-	targ->mhoming = atoi(attacker->gmodmodifiers);
+	targ->s.apos.trBase[2] = atof(attacker->gmodmodifiers);
+	targ->sb_rotate2 = atof(attacker->gmodmodifiers);
 }
-if(attacker->gmodtoolmode == 3){
-	targ->mbounce = atoi(attacker->gmodmodifiers);
-}
-if(attacker->gmodtoolmode == 4){
-	targ->mdamage = atoi(attacker->gmodmodifiers);
-}
-if(attacker->gmodtoolmode == 5){
-	targ->msdamage = atoi(attacker->gmodmodifiers);
-}
-if(attacker->gmodtoolmode == 6){
-	targ->msradius = atoi(attacker->gmodmodifiers);
-}
-if(attacker->gmodtoolmode == 7){
-	targ->mgravity = atoi(attacker->gmodmodifiers);
-}
-if(attacker->gmodtoolmode == 8){
-	targ->mnoclip = atoi(attacker->gmodmodifiers);
-}
-if(attacker->gmodtoolmode == 9){
-	targ->mspeed = atoi(attacker->gmodmodifiers);
-}
-}
-if(attacker->gmodtool == 21){
-	targ->allowuse = atoi(attacker->gmodmodifiers);
-}
-if(attacker->gmodtool == 22){
-	if(attacker->gmodtoolmode == 0){
-	targ->s.angles[0] = atoi(attacker->gmodmodifiers);
-	targ->s.angles[1] = attacker->gmodmod_one;
-	targ->s.angles[2] = attacker->gmodmod_two;
-	}
-	if(attacker->gmodtoolmode == 1){
-	targ->s.angles[0] += atoi(attacker->gmodmodifiers);
-	targ->s.angles[1] += attacker->gmodmod_one;
-	targ->s.angles[2] += attacker->gmodmod_two;
-	}
-	if(attacker->gmodtoolmode == 2){
-	trap_SendServerCommand( attacker->s.clientNum, va( "cp \"Angles is %f %f %f\n\"", targ->s.angles[0], targ->s.angles[1], targ->s.angles[2] ));
-	}
 	trap_UnlinkEntity( targ );
 	trap_LinkEntity( targ );
 }
-if(attacker->gmodtool == 23){
-	if(attacker->gmodtoolmode == 0){
-	CopyAlloc(targ->targetShaderName, attacker->gmodmodifiers);
-	}
-	if(attacker->gmodtoolmode == 1){
-	CopyAlloc(targ->targetShaderNewName, attacker->gmodmodifiers);
-	}
-}
-if(attacker->gmodtool == 24){
-	CopyAlloc(targ->teleporterTarget, attacker->gmodmodifiers);
-}
-if(attacker->gmodtool == 25){
-	if(attacker->gmodtoolmode == 0){
-	CopyAlloc(targ->key, attacker->gmodmodifiers);
-	}
-	if(attacker->gmodtoolmode == 1){
-	CopyAlloc(targ->value, attacker->gmodmodifiers);
-	}
-}
-if(attacker->gmodtool == 26){
-	CopyAlloc(targ->music, attacker->gmodmodifiers);
-}
-if(attacker->gmodtool == 27){
-	targ->distance = atoi(attacker->gmodmodifiers);
-}
-if(attacker->gmodtool == 28){
-	targ->type = atoi(attacker->gmodmodifiers);
-}
-if(attacker->gmodtool == 29){
+if(attacker->gmodtool == 10){
 	if(attacker->gmodtoolmode == 0){
 	if(!targ->sandboxInteract){
 	targ->parent = attacker;
@@ -1850,7 +1816,7 @@ if(attacker->gmodtool == 29){
 	}
 	}
 }
-if(attacker->gmodtool == 30){
+if(attacker->gmodtool == 11){
 if(attacker->gmodtoolmode == 0){
 	targ->s.scales[0] = atof(attacker->gmodmodifiers);
 	targ->sb_colscale0 = atof(attacker->gmodmodifiers);

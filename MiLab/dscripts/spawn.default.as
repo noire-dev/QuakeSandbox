@@ -32,7 +32,34 @@
 //missile noclip
 //missile speed
 //allowuse
+//speed
+//message
+//messageru
+//team
+//wait
+//random
+//playerangle
+//price
+//damage
+//targetShaderName
+//targetShaderNewName
+//mapname
+//clientname
+//teleporterTarget
+//deathTarget
+//lootTarget
+//skill
+//overlay
+//target2
+//damagetarget
+//targetname2
+//key
+//value
+//armor
+//music
+//distance
+//type
 
 //NOTE: If allowuse is enabled then you can use "bind <key> <targetname>" to use this entity
 
-set spawn_preset set uibuildprop sl prop %s %s %i %s %s 0 0 0 0 "none" 1000 0 0 0 0 1 1 1 0 0 1 10000 0 1 100 100 120 1 0 1000 0
+set spawn_preset set uibuildprop sl prop %s %s %i 25 %s 0 %s 0 0 "none" 1000 0 0 0 0 1 1 1 0 0 1 10000 0 1 100 100 120 1 0 1000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0

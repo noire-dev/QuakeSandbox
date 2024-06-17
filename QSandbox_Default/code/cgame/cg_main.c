@@ -120,6 +120,8 @@ vmCvar_t	oasb_modifier;
 vmCvar_t	oasb_modifiers;
 vmCvar_t	oasb_modelst;
 vmCvar_t	sb_classnum_view;
+vmCvar_t	sb_texture;
+vmCvar_t	sb_texturename;
 vmCvar_t	cg_hide255;
 
 vmCvar_t	cg_postprocess;
@@ -455,6 +457,8 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &oasb_modifiers, "oasb_modifiers", "0", CVAR_USERINFO},
 	{ &oasb_modelst, "oasb_modelst", "0", CVAR_USERINFO},
 	{ &sb_classnum_view, "sb_classnum_view", "0", CVAR_ARCHIVE},
+	{ &sb_texture, "sb_texture", "0", CVAR_ARCHIVE},
+	{ &sb_texturename, "sb_texturename", "0", CVAR_ARCHIVE},
 	{ &cg_hide255, "cg_hide255", "0", 0},
 
 	{ &cg_postprocess, "cg_postprocess", "", 0 },
@@ -1452,12 +1456,9 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.invisShader = trap_R_RegisterShader("powerups/invisibility" );
 	cgs.media.regenShader = trap_R_RegisterShader("powerups/regen" );
 	cgs.media.hastePuffShader = trap_R_RegisterShader("hasteSmokePuff" );
-
-for (i = 1; i < 151; i++ ) {
-cgs.media.ptexShader[i] = trap_R_RegisterShader(va("ptex%i", i));
-}
-cgs.media.ptexShader[255]	= trap_R_RegisterShader( "trans" );
-cgs.media.ptexShader[256]	= trap_R_RegisterShader( "powerups/quad" );
+	
+	cgs.media.ptexShader[0]	= trap_R_RegisterShader( "trans" );
+	cgs.media.ptexShader[1]	= trap_R_RegisterShader( "powerups/quad" );
 
 	if ( cgs.gametype == GT_CTF || cgs.gametype == GT_CTF_ELIMINATION|| cgs.gametype == GT_1FCTF || cgs.gametype == GT_HARVESTER || cg_buildScript.integer ) {
 		cgs.media.redCubeModel = trap_R_RegisterModel_MiTech( "models/powerups/orb/r_orb.md3" );
@@ -2755,9 +2756,6 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	challenges_init();
 
 	addChallenge(GENERAL_TEST);
-
-
-
 
 	trap_S_ClearLoopingSounds( qtrue );
 }

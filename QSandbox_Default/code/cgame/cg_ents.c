@@ -189,14 +189,14 @@ static void CG_General( centity_t *cent ) {
 
 	ent.hModel = cgs.gameModels[s1->modelindex];
 	
-if(s1->generic2 > 0){			
-ent.customShader = cgs.media.ptexShader[s1->generic2];
+if(s1->generic2 > 0){
+ent.customShader = trap_R_RegisterShader(va("ptex/%s/%i", CG_ConfigString( CS_MODELS+s1->modelindex ), s1->generic2));
 }					
 if(s1->generic2 == 255){	
 if(cg_hide255.integer){		
-ent.customShader = cgs.media.ptexShader[s1->generic2];
+ent.customShader = cgs.media.ptexShader[0];
 } else {
-ent.customShader = cgs.media.ptexShader[s1->generic2+1];
+ent.customShader = cgs.media.ptexShader[1];
 }
 }
 
@@ -323,13 +323,13 @@ if(cg_itemstyle.integer == 3){
 	ent.hModel = cg_items[es->modelindex].models[0];
 	
 if(es->generic2 > 0){			
-ent.customShader = cgs.media.ptexShader[es->generic2];
+ent.customShader = trap_R_RegisterShader(va("ptex/%s/%i", CG_ConfigString( CS_MODELS+es->modelindex ), es->generic2));
 }					
 if(es->generic2 == 255){	
 if(cg_hide255.integer){		
-ent.customShader = cgs.media.ptexShader[es->generic2];
+ent.customShader = cgs.media.ptexShader[0];
 } else {
-ent.customShader = cgs.media.ptexShader[es->generic2+1];
+ent.customShader = cgs.media.ptexShader[1];
 }
 }
 
@@ -656,13 +656,13 @@ static void CG_Mover( centity_t *cent ) {
 	}
 
 if(s1->generic2 > 0){	
-ent.customShader = cgs.media.ptexShader[s1->generic2];
+ent.customShader = trap_R_RegisterShader(va("ptex/%s/%i", CG_ConfigString( CS_MODELS+s1->modelindex ), s1->generic2));
 }					
 if(s1->generic2 == 255){	
 if(cg_hide255.integer){		
-ent.customShader = cgs.media.ptexShader[s1->generic2];
+ent.customShader = cgs.media.ptexShader[0];
 } else {
-ent.customShader = cgs.media.ptexShader[s1->generic2+1];
+ent.customShader = cgs.media.ptexShader[1];
 }
 }
 

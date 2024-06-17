@@ -63,7 +63,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define AREACONTENTS_MAXMODELNUM		0xFF
 #define AREACONTENTS_MODELNUM			(AREACONTENTS_MAXMODELNUM << AREACONTENTS_MODELNUMSHIFT)
 
-#define IDEAL_ATTACKDIST			1
+#define IDEAL_ATTACKDIST			140
 
 #define MAX_WAYPOINTS		128
 
@@ -2868,18 +2868,14 @@ if(!NpcFactionProp(bs, NP_JUMP, 0)){
 			bs->attackjump_time = FloatTime() + 1;
 		}
 	}
-/*	if (bs->cur_ps.weapon == WP_GAUNTLET) {
+	if (bs->cur_ps.weapon == WP_GAUNTLET) {
 		attack_dist = 0;
 		attack_range = 0;
 	}
-	if (bs->cur_ps.weapon == WP_LIGHTNING) {
-		attack_dist = 0;
-		attack_range = 0;
-	}*/
-//	else {
+	else {
 		attack_dist = IDEAL_ATTACKDIST;
-		attack_range = 0;
-//	}
+		attack_range = 40;
+	}
 	//if the bot is stupid
 	if (attack_skill <= 0.4) {
 		//just walk to or away from the enemy

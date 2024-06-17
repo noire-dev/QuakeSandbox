@@ -168,7 +168,8 @@ if(!cl_blackloadscreen.integer){
 	if ( !overlay ) {
 		// draw the dialog background
 		UI_SetColor( color_white );
-		UI_DrawHandlePic( 0-cl_screenoffset.integer, 0, SCREEN_WIDTH+cl_screenoffset.integer*2, SCREEN_HEIGHT, uis.menuBackShader );
+		UI_DrawHandlePic( 0-cl_screenoffset.integer, 0, SCREEN_WIDTH+cl_screenoffset.integer*2, SCREEN_HEIGHT, uis.menuWallpapers );
+		UI_DrawHandlePic( 0-cl_screenoffset.integer, 0, SCREEN_WIDTH+cl_screenoffset.integer*2, SCREEN_HEIGHT, trap_R_RegisterShaderNoMip( "menu/art/blacktrans" ) );
 	}
 
 	// see what information we should display
@@ -262,7 +263,7 @@ if(cl_blackloadscreen.integer){
 	}
 
 	UI_SetColor( color_white );
-	UI_DrawHandlePic( 0-(cl_screenoffset.integer+1), 0, SCREEN_WIDTH+(cl_screenoffset.integer*2)+2, SCREEN_HEIGHT, uis.menuBackShader );
+	UI_DrawHandlePic( 0-(cl_screenoffset.integer+1), 0, SCREEN_WIDTH+(cl_screenoffset.integer*2)+2, SCREEN_HEIGHT, trap_R_RegisterShaderNoMip( "gfx/colors/black" ) );
 	if(cl_language.integer == 0){
 	UI_DrawString( (SCREEN_WIDTH+cl_screenoffset.integer - strWidth) - 16, SCREEN_HEIGHT - 32, "Loading...", UI_SMALLFONT, color_white );
 	}

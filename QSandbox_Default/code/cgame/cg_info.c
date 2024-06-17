@@ -156,9 +156,9 @@ void CG_DrawInformation( void ) {
 	qhandle_t	detail;
 	char		buf[1024];
 
-        if(cl_blackloadscreen.integer){
-        return;
-        }
+    if(cl_blackloadscreen.integer){
+		return;
+    }
 
 	info = CG_ConfigString( CS_SERVERINFO );
 	sysInfo = CG_ConfigString( CS_SYSTEMINFO );
@@ -171,7 +171,7 @@ void CG_DrawInformation( void ) {
 	trap_R_SetColor( NULL );
 
 	// blend a detail texture over it
-	detail	= trap_R_RegisterShaderNoMip( va( "UserFiles/Mainmenu/MenuPic (%i).tga", ui_backcolors.integer ) );
+	detail	= trap_R_RegisterShaderNoMip( "menu/animbg" );
 	CG_DrawPic( -1 - cl_screenoffset.integer, 0, 642 + cl_screenoffset.integer*2, 480, detail );
 	CG_DrawPic( -1 - cl_screenoffset.integer, 0, 642 + cl_screenoffset.integer*2, 480, trap_R_RegisterShaderNoMip( "menu/art/blacktrans" ) );
 	CG_DrawPic( 30, 180-58, 280, 200, levelshot );

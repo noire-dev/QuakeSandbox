@@ -1008,7 +1008,7 @@ typedef struct {
 	qhandle_t	redKamikazeShader;
 	qhandle_t	blueKamikazeShader;
 
-qhandle_t	ptexShader[257];
+	qhandle_t	ptexShader[2];
 
 	qhandle_t   HudLineBar;           
 	qhandle_t   medalFrags;           
@@ -1488,6 +1488,8 @@ extern	vmCvar_t	oasb_modifier;
 extern	vmCvar_t	oasb_modifiers;
 extern	vmCvar_t	oasb_modelst;
 extern	vmCvar_t	sb_classnum_view;
+extern	vmCvar_t	sb_texture;
+extern	vmCvar_t	sb_texturename;
 extern	vmCvar_t	cg_hide255;
 
 extern	vmCvar_t	cg_postprocess;

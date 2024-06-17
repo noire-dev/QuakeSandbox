@@ -17,7 +17,7 @@
 typedef void (*voidfunc_f)(void);
 
 // QSandbox version string
-#define DMOD_VERSION "v1.4"
+#define DMOD_VERSION "MiTech"
 
 
 // An additional font size tag for use with
@@ -84,11 +84,13 @@ extern vmCvar_t test9;
 
 //QSandbox Sandbox
 extern vmCvar_t	sb_private;
-extern vmCvar_t	sb_minmax;
+extern vmCvar_t	sb_texture;
+extern vmCvar_t	sb_texturename;
 extern vmCvar_t	sb_grid;
 extern vmCvar_t	sb_modelnum;
 extern vmCvar_t	sb_classnum;
 extern vmCvar_t	sb_toolnum;
+extern vmCvar_t	sb_texturenum;
 extern vmCvar_t	sb_tab;
 extern vmCvar_t	spawn_preset;
 
@@ -893,8 +895,7 @@ typedef struct {
 	qboolean			debug;
 	qhandle_t			whiteShader;
 	qhandle_t			menuBlack;
-	qhandle_t			menuWallpapers[4];
-	qhandle_t			menuBackShader;
+	qhandle_t			menuWallpapers;
 	qhandle_t			menuLoadingIcon;
 	qhandle_t			charset;
 	qhandle_t			charsetProp;
@@ -914,6 +915,7 @@ typedef struct {
 	int					sb_tab;
 	char				theme;
 	int					spawnlist_folder;
+	int					texturelist_folder;
 	qboolean			demoversion;
 	qboolean			firstdraw;
 	qboolean       		punkbuster;
@@ -930,6 +932,8 @@ extern void			UI_DrawNamedPic( float x, float y, float width, float height, cons
 extern void			UI_DrawHandlePic( float x, float y, float w, float h, qhandle_t hShader );
 extern int 			vx(float cord);
 extern int 			vy(float cord);
+extern int 			vxcalc(float cord_percent);
+extern int 			vycalc(float cord_percent);
 extern void 		UI_DrawRoundedRect(float x, float y, float width, float height, float radius, const float *color);
 extern void			UI_FillRect( float x, float y, float width, float height, const float *color );
 extern void			UI_DrawRect( float x, float y, float width, float height, const float *color );

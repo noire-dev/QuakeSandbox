@@ -20,8 +20,8 @@ MGUI - QSandbox
 typedef struct {
 	menuframework_s	menu;
 	menuobject_s	item[MAX_OBJECTS];
-	char* lists[MAX_OBJECTS][524288];
-	char  listnames[MAX_OBJECTS][524288];
+	char* lists[MAX_OBJECTS][65536];
+	char  listnames[MAX_OBJECTS][65536];
 } mgui_t;
 
 static mgui_t s_mgui;
@@ -354,7 +354,7 @@ void UI_MGUI( void ) {
 	} else {
 	s_mgui.item[i].generic.flags		= QMF_HIGHLIGHT_IF_FOCUS|QMF_INACTIVE;
 	}
-	s_mgui.item[i].numitems			= trap_FS_GetFileList( UI_ArenaScriptAutoChar(text), UI_ArenaScriptAutoChar(pic), s_mgui.listnames[i], 524288 );
+	s_mgui.item[i].numitems			= trap_FS_GetFileList( UI_ArenaScriptAutoChar(text), UI_ArenaScriptAutoChar(pic), s_mgui.listnames[i], 65536 );
 	s_mgui.item[i].itemnames		= (const char **)s_mgui.lists[i];
 	s_mgui.item[i].columns			= UI_ArenaScriptAutoInt(va("mitem%i_col", i));
 	s_mgui.item[i].seperation		= 0;

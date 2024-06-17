@@ -358,8 +358,7 @@ static void Main_MenuDraw( void ) {
 	   // standard menu drawing
 	   Menu_Draw( &s_main.menu );
    }
-
-	UI_DrawString( 320, 5, "QSandbox v1.4", UI_CENTER|UI_SMALLFONT, color );
+	UI_DrawString( 635+cl_screenoffset.integer, 465, "v1.5", UI_RIGHT|UI_SMALLFONT, color );
 }
 
 
@@ -752,11 +751,11 @@ if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &s_main.menu,	&s_main.mods );
 	Menu_AddItem( &s_main.menu,	&s_main.exit );
 	Menu_AddItem( &s_main.menu,	&s_main.name );
-	Menu_AddItem( &s_main.menu,	&s_main.modeltype );
-	Menu_AddItem( &s_main.menu,	&s_main.model.bitmap);
+	//Menu_AddItem( &s_main.menu,	&s_main.modeltype );
+	//Menu_AddItem( &s_main.menu,	&s_main.model.bitmap);
 
 	// prepare the player model
-	UIE_PlayerInfo_InitModel(&s_main.model);
+	//UIE_PlayerInfo_InitModel(&s_main.model);
 
 	trap_Key_SetCatcher( KEYCATCH_UI );
 	uis.menusp = 0;

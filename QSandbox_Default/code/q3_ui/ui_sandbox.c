@@ -12,21 +12,22 @@
 #define ID_LIST			100
 #define ID_CLASSLIST	101
 #define ID_TOOLSLIST	102
-#define ID_SPAWNOBJECT	103
-#define ID_PRIV			104
-#define ID_SAVEMAP		105
-#define ID_LOADMAP		106
-#define ID_TAB1			107
-#define ID_TAB2			108
-#define ID_TAB3			109
-#define ID_TAB4			110
-#define ID_TAB5			111
-#define ID_TAB6			112
-#define ID_TAB7			113
-#define ID_TAB8			114
-#define ID_TAB9			115
-#define ID_TAB10		116
-#define ID_CLOSE		117
+#define ID_TEXTURESLIST	103
+#define ID_SPAWNOBJECT	104
+#define ID_PRIV			105
+#define ID_SAVEMAP		106
+#define ID_LOADMAP		107
+#define ID_TAB1			108
+#define ID_TAB2			109
+#define ID_TAB3			110
+#define ID_TAB4			111
+#define ID_TAB5			112
+#define ID_TAB6			113
+#define ID_TAB7			114
+#define ID_TAB8			115
+#define ID_TAB9			116
+#define ID_TAB10		117
+#define ID_CLOSE		118
 
 typedef struct
 {
@@ -34,7 +35,6 @@ typedef struct
 	menubitmap_s	frame;
 	menutext_s		spawnobject;
 	menuradiobutton_s		priv;
-	menufield_s		minmax;
 	menufield_s		grid;
 	menutext_s		savemap;
 	menutext_s		loadmap;
@@ -49,6 +49,7 @@ typedef struct
 	menuobject_s		list;
 	menuobject_s		classlist;
 	menuobject_s		toolslist;
+	menuobject_s		texturelist;
 	menutext_s		tab1;
 	menutext_s		tab2;
 	menutext_s		tab3;
@@ -65,10 +66,10 @@ typedef struct
 	char			names2[524288];
 	char*			configlist[524288];
 	char*			classeslist[65536];
+	char*			textureslist[65536];
 	char*			botclasslist[65536];
 	char*			toollist[65536];
 	char*			cvar_itemslist[524288];
-	char*			admcvar_itemslist[524288];
 	char*			item_itemslist[524288];
 } sandboxmain_t;
 
@@ -503,13 +504,14 @@ static void SandboxMain_SaveChanges( void ) {
 	//save cvars
 	trap_Cvar_Set( "sb_classnum_view", "none" );
 	if(uis.sb_tab == 1){
-	trap_Cmd_ExecuteText( EXEC_APPEND, va(spawn_preset.string, s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.priv.curvalue, s_sandboxmain.minmax.field.buffer, s_sandboxmain.grid.field.buffer) );
+	trap_Cmd_ExecuteText( EXEC_APPEND, va(spawn_preset.string, s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], "0", s_sandboxmain.priv.curvalue, s_sandboxmain.grid.field.buffer, s_sandboxmain.texturelist.itemnames[s_sandboxmain.texturelist.curvalue]) );
 	trap_Cvar_Set( "oasb_modelst", va("props/%s", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 	trap_Cvar_Set( "sb_sf", s_sandboxmain.modif0.field.buffer );
 	trap_Cvar_Set( "sb_classnum_view", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue] );
+	trap_Cvar_Set( "sb_texturename", s_sandboxmain.texturelist.itemnames[s_sandboxmain.texturelist.curvalue] );
 	}
 	if(uis.sb_tab == 2){
-	trap_Cmd_ExecuteText( EXEC_APPEND, va(spawn_preset.string, s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.priv.curvalue, s_sandboxmain.minmax.field.buffer, s_sandboxmain.grid.field.buffer) );
+	trap_Cmd_ExecuteText( EXEC_APPEND, va(spawn_preset.string, s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.priv.curvalue, s_sandboxmain.grid.field.buffer, "0") );
 	trap_Cvar_Set( "oasb_modelst", va("props/%s", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 	trap_Cvar_Set( "sb_sf", s_sandboxmain.modif0.field.buffer );
 	trap_Cvar_Set( "sb_classnum_view", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue] );
@@ -525,11 +527,11 @@ static void SandboxMain_SaveChanges( void ) {
 	trap_Cmd_ExecuteText( EXEC_APPEND, "set uitoolmode oasb_modifier 0\n" );
 	trap_Cvar_SetValue( "oasb_tool", s_sandboxmain.toolslist.curvalue );
 	trap_Cvar_SetValue( "sb_private", s_sandboxmain.priv.curvalue );
-	trap_Cvar_Set( "sb_minmax", s_sandboxmain.minmax.field.buffer );
 	trap_Cvar_Set( "sb_grid", s_sandboxmain.grid.field.buffer );
 	trap_Cvar_SetValue( "sb_modelnum", s_sandboxmain.list.curvalue );
 	trap_Cvar_SetValue( "sb_classnum", s_sandboxmain.classlist.curvalue );
 	trap_Cvar_SetValue( "sb_toolnum", s_sandboxmain.toolslist.curvalue );
+	trap_Cvar_SetValue( "sb_texturenum", s_sandboxmain.texturelist.curvalue );
 	trap_Cvar_Set( "oasb_modifiers", s_sandboxmain.modif1.field.buffer );
 	trap_Cvar_Set( "oasb_idi", s_sandboxmain.modif2.field.buffer );
 	trap_Cvar_Set( "oasb_height", s_sandboxmain.modif3.field.buffer );
@@ -539,6 +541,11 @@ static void SandboxMain_SaveChanges( void ) {
 	trap_Cvar_Set( "oasb_modifiers", va("%s", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]));
 	}
 	}
+	if(trap_Cvar_VariableValue("oasb_tool") == 1){
+	if(uis.sb_tab == 1){
+	trap_Cvar_Set( "oasb_modifiers", va("%s", s_sandboxmain.texturelist.itemnames[s_sandboxmain.texturelist.curvalue]));
+	}
+	}
 	if(trap_Cvar_VariableValue("oasb_tool") == 4){
 	trap_Cmd_ExecuteText( EXEC_APPEND, "set uitoolmode toggle oasb_modifier 0 1\n" );
 	}
@@ -546,33 +553,18 @@ static void SandboxMain_SaveChanges( void ) {
 	trap_Cmd_ExecuteText( EXEC_APPEND, "set uitoolmode toggle oasb_modifier 0 1 2\n" );
 	}
 	if(trap_Cvar_VariableValue("oasb_tool") == 6){
-	trap_Cmd_ExecuteText( EXEC_APPEND, "set uitoolmode toggle oasb_modifier 0 1 2 3 4 5 6 7\n" );
+	trap_Cmd_ExecuteText( EXEC_APPEND, "set uitoolmode toggle oasb_modifier 0 1\n" );
 	}
 	if(trap_Cvar_VariableValue("oasb_tool") == 7){
-	trap_Cmd_ExecuteText( EXEC_APPEND, "set uitoolmode toggle oasb_modifier 0 1\n" );
+	trap_Cmd_ExecuteText( EXEC_APPEND, "set uitoolmode toggle oasb_modifier 0 1 2 3 4\n" );
+	}
+	if(trap_Cvar_VariableValue("oasb_tool") == 9){
+	trap_Cmd_ExecuteText( EXEC_APPEND, "set uitoolmode toggle oasb_modifier 0 1 2\n" );
 	}
 	if(trap_Cvar_VariableValue("oasb_tool") == 10){
 	trap_Cmd_ExecuteText( EXEC_APPEND, "set uitoolmode toggle oasb_modifier 0 1\n" );
 	}
-	if(trap_Cvar_VariableValue("oasb_tool") == 16){
-	trap_Cmd_ExecuteText( EXEC_APPEND, "set uitoolmode toggle oasb_modifier 0 1 2 3 4\n" );
-	}
-	if(trap_Cvar_VariableValue("oasb_tool") == 20){
-	trap_Cmd_ExecuteText( EXEC_APPEND, "set uitoolmode toggle oasb_modifier 0 1 2 3 4 5 6 7 8 9\n" );
-	}
-	if(trap_Cvar_VariableValue("oasb_tool") == 22){
-	trap_Cmd_ExecuteText( EXEC_APPEND, "set uitoolmode toggle oasb_modifier 0 1 2\n" );
-	}
-	if(trap_Cvar_VariableValue("oasb_tool") == 23){
-	trap_Cmd_ExecuteText( EXEC_APPEND, "set uitoolmode toggle oasb_modifier 0 1\n" );
-	}
-	if(trap_Cvar_VariableValue("oasb_tool") == 26){
-	trap_Cmd_ExecuteText( EXEC_APPEND, "set uitoolmode toggle oasb_modifier 0 1\n" );
-	}
-	if(trap_Cvar_VariableValue("oasb_tool") == 29){
-	trap_Cmd_ExecuteText( EXEC_APPEND, "set uitoolmode toggle oasb_modifier 0 1\n" );
-	}
-	if(trap_Cvar_VariableValue("oasb_tool") == 30){
+	if(trap_Cvar_VariableValue("oasb_tool") == 11){
 	trap_Cmd_ExecuteText( EXEC_APPEND, "set uitoolmode toggle oasb_modifier 0 1 2\n" );
 	}
 }
@@ -648,6 +640,10 @@ static void SandboxMain_MenuDraw( void ) {
 	color3[1] = sbt_color2_1.value;
 	color3[2] = sbt_color2_2.value;
 	color3[3] = sbt_color2_3.value;
+	s_sandboxmain_color1[0] = sbt_color3_0.value;
+	s_sandboxmain_color1[1] = sbt_color3_1.value;
+	s_sandboxmain_color1[2] = sbt_color3_2.value;
+	s_sandboxmain_color1[3] = sbt_color3_3.value;
 
 	UI_DrawHandlePic( -2.0-cl_screenoffset.integer, 0.0, 644+cl_screenoffset.integer*2, 480, trap_R_RegisterShaderNoMip( va( "%s", sbt_wallpaper.string ) ) );
 
@@ -657,8 +653,8 @@ static void SandboxMain_MenuDraw( void ) {
 	//UI_DrawRoundedRect(20-cl_screenoffset.integer, 480+40, 600+cl_screenoffset.integer*2, 435, 30, color1);
 	
 	if(uis.sb_tab == 1){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), (160*2)+50+55, 12, color2);//props
-	//UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+10, 160+50, 12, color2);//classes
+	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), 160+50, 12, color2);//props
+	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+100+(cl_screenoffset.integer*2), 160+50, 12, color2);//classes
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*1)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color3);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*2)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 	UI_DrawRoundedRect(((-53*0.5)+(110*0.5)*3)-cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
@@ -800,7 +796,7 @@ static void SandboxMain_MenuDraw( void ) {
 	UI_DrawRoundedRect((640-(110*0.5))+cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, color2);
 
 	Menu_Draw( &s_sandboxmain.menu );
-
+	
 if(trap_Cvar_VariableValue("oasb_tool") == 0){
 s_sandboxmain.modif1.generic.name           	= "---";
 s_sandboxmain.modif2.generic.name          		= "---";
@@ -808,7 +804,7 @@ s_sandboxmain.modif3.generic.name          		= "---";
 s_sandboxmain.modif4.generic.name           	= "---";
 }
 if(trap_Cvar_VariableValue("oasb_tool") == 1){
-s_sandboxmain.modif1.generic.name           	= "Material 169x";
+s_sandboxmain.modif1.generic.name           	= "Material 0-255";
 s_sandboxmain.modif2.generic.name          		= "---";
 s_sandboxmain.modif3.generic.name          		= "---";
 s_sandboxmain.modif4.generic.name           	= "---";
@@ -838,28 +834,28 @@ s_sandboxmain.modif3.generic.name          		= "---";
 s_sandboxmain.modif4.generic.name           	= "Type(0-1)";
 }
 if(trap_Cvar_VariableValue("oasb_tool") == 6){
-s_sandboxmain.modif1.generic.name           	= "Target";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "Type(0-7)";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 7){
 s_sandboxmain.modif1.generic.name           	= "---";
 s_sandboxmain.modif2.generic.name          		= "---";
 s_sandboxmain.modif3.generic.name          		= "---";
 s_sandboxmain.modif4.generic.name           	= "Type(0-1)";
 }
-if(trap_Cvar_VariableValue("oasb_tool") == 8){
-s_sandboxmain.modif1.generic.name           	= "---";
+if(trap_Cvar_VariableValue("oasb_tool") == 7){
+s_sandboxmain.modif1.generic.name           	= "Value";
 s_sandboxmain.modif2.generic.name          		= "---";
 s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "---";
+s_sandboxmain.modif4.generic.name           	= "Type(0-4)";
+}
+if(trap_Cvar_VariableValue("oasb_tool") == 8){
+s_sandboxmain.modif1.generic.name           	= "Red";
+s_sandboxmain.modif2.generic.name          		= "Green";
+s_sandboxmain.modif3.generic.name          		= "Blue";
+s_sandboxmain.modif4.generic.name           	= "Radius";
 }
 if(trap_Cvar_VariableValue("oasb_tool") == 9){
-s_sandboxmain.modif1.generic.name           	= "Sound";
+s_sandboxmain.modif1.generic.name           	= "Value";
 s_sandboxmain.modif2.generic.name          		= "---";
 s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "---";
+s_sandboxmain.modif4.generic.name           	= "Type(0-2)";
 }
 if(trap_Cvar_VariableValue("oasb_tool") == 10){
 s_sandboxmain.modif1.generic.name           	= "---";
@@ -871,120 +867,6 @@ if(trap_Cvar_VariableValue("oasb_tool") == 11){
 s_sandboxmain.modif1.generic.name           	= "Value";
 s_sandboxmain.modif2.generic.name          		= "---";
 s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "---";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 12){
-s_sandboxmain.modif1.generic.name           	= "Value";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "Type(0-1)";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 13){
-s_sandboxmain.modif1.generic.name           	= "Value";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "---";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 14){
-s_sandboxmain.modif1.generic.name           	= "Value";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "---";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 15){
-s_sandboxmain.modif1.generic.name           	= "Value";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "---";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 16){
-s_sandboxmain.modif1.generic.name           	= "Value";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "Type(0-4)";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 17){
-s_sandboxmain.modif1.generic.name           	= "Value";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "---";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 18){
-s_sandboxmain.modif1.generic.name           	= "Red";
-s_sandboxmain.modif2.generic.name          		= "Green";
-s_sandboxmain.modif3.generic.name          		= "Blue";
-s_sandboxmain.modif4.generic.name           	= "Radius";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 19){
-s_sandboxmain.modif1.generic.name           	= "Value";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "---";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 20){
-s_sandboxmain.modif1.generic.name           	= "Value";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "Type(0-9)";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 21){
-s_sandboxmain.modif1.generic.name           	= "Value";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "---";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 22){
-s_sandboxmain.modif1.generic.name           	= "X";
-s_sandboxmain.modif2.generic.name          		= "Y";
-s_sandboxmain.modif3.generic.name          		= "Z";
-s_sandboxmain.modif4.generic.name           	= "Type(0-2)";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 23){
-s_sandboxmain.modif1.generic.name           	= "OldTexture";
-s_sandboxmain.modif2.generic.name          		= "NewTexture";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "Type(0-1)";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 24){
-s_sandboxmain.modif1.generic.name           	= "Value";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "---";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 25){
-s_sandboxmain.modif1.generic.name           	= "Value";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "Type(0-1)";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 26){
-s_sandboxmain.modif1.generic.name           	= "Value";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "---";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 27){
-s_sandboxmain.modif1.generic.name           	= "Value";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "---";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 28){
-s_sandboxmain.modif1.generic.name           	= "Value";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "---";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 29){
-s_sandboxmain.modif1.generic.name           	= "---";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "Type(0-1)";
-}
-if(trap_Cvar_VariableValue("oasb_tool") == 30){
-s_sandboxmain.modif1.generic.name           	= "Value";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
 s_sandboxmain.modif4.generic.name           	= "Type(0-2)";
 }
 if(uis.sb_tab == 3){
@@ -992,12 +874,6 @@ s_sandboxmain.modif1.generic.name           	= "Health";
 s_sandboxmain.modif2.generic.name          		= "Name";
 s_sandboxmain.modif3.generic.name          		= "Music";
 s_sandboxmain.modif4.generic.name           	= "Weapon(id)";
-}
-if(uis.sb_tab == 10){
-s_sandboxmain.modif1.generic.name           	= "---";
-s_sandboxmain.modif2.generic.name          		= "---";
-s_sandboxmain.modif3.generic.name          		= "---";
-s_sandboxmain.modif4.generic.name           	= "---";
 }
 }
 
@@ -1102,7 +978,8 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 	
 	case ID_LIST:
 		if(uis.sb_tab == 1){
-		trap_Cmd_ExecuteText( EXEC_APPEND, "vstr uibuildprop\n" );
+		uis.texturelist_folder = s_sandboxmain.list.curvalue;
+		trap_Cmd_ExecuteText( EXEC_INSERT, "menuback; wait 0; ui_sandbox\n" );
 		}
 		if(uis.sb_tab == 3){
 		trap_Cmd_ExecuteText( EXEC_APPEND, "vstr uibuildprop\n" );
@@ -1133,6 +1010,10 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 	
 	case ID_TOOLSLIST:
 		trap_Cmd_ExecuteText( EXEC_APPEND, "weapon 1\n" );
+		break;
+
+	case ID_TEXTURESLIST:
+		trap_Cmd_ExecuteText( EXEC_APPEND, "vstr uibuildprop\n" );
 		break;
 		
 	case ID_CLASSLIST:
@@ -1167,6 +1048,8 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 	}
 }
 
+vec4_t	s_sandboxmain_color1 = {1.00f, 1.00f, 1.00f, 1.00f};
+
 /*
 ===============
 SandboxMain_MenuInit
@@ -1179,19 +1062,12 @@ void SandboxMain_MenuInit( void ) {
 	int		i;
 	int		len;
 	char	*configname;
-	vec4_t	s_sandboxmain_color1 = {1.00f, 1.00f, 1.00f, 1.00f};
     int name_length;
     const char *bot_name;
 
 	memset( &s_sandboxmain, 0, sizeof(s_sandboxmain) );
 	
-	s_sandboxmain_color1[0] = sbt_color3_0.value;
-	s_sandboxmain_color1[1] = sbt_color3_1.value;
-	s_sandboxmain_color1[2] = sbt_color3_2.value;
-	s_sandboxmain_color1[3] = sbt_color3_3.value;
-
 	SandboxMain_Cache();
-	
 
 	s_sandboxmain.menu.draw = SandboxMain_MenuDraw;
 	s_sandboxmain.menu.wrapAround = qtrue;
@@ -1215,7 +1091,6 @@ s_sandboxmain.tab10.string          = "Addons";
 s_sandboxmain.savemap.string		= "Save map";
 s_sandboxmain.loadmap.string		= "Load map";
 s_sandboxmain.priv.generic.name			= "Private:";
-s_sandboxmain.minmax.generic.name		= "Coll size:";
 s_sandboxmain.grid.generic.name		= "Grid size:";
 s_sandboxmain.toolstext.string  				= "Tools:";
 	
@@ -1357,15 +1232,6 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.priv.color				= s_sandboxmain_color1;
 	y += 18;
 
-	s_sandboxmain.minmax.generic.type		= MTYPE_FIELD;
-	s_sandboxmain.minmax.generic.flags		= QMF_PULSEIFFOCUS|QMF_SMALLFONT|QMF_NUMBERSONLY;
-	s_sandboxmain.minmax.field.widthInChars	= 4;
-	s_sandboxmain.minmax.field.maxchars		= 4;
-	s_sandboxmain.minmax.generic.x			= 480 + cl_screenoffset.integer;
-	s_sandboxmain.minmax.generic.y			= y;
-	s_sandboxmain.minmax.color				= s_sandboxmain_color1;
-	y += 18;
-
 	s_sandboxmain.grid.generic.type			= MTYPE_FIELD;
 	s_sandboxmain.grid.generic.flags		= QMF_PULSEIFFOCUS|QMF_SMALLFONT|QMF_NUMBERSONLY;
 	s_sandboxmain.grid.field.widthInChars	= 4;
@@ -1441,28 +1307,28 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
 	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
-	s_sandboxmain.list.generic.y		= 70;
+	s_sandboxmain.list.generic.y		= 62;
 	s_sandboxmain.list.width			= 39/6;
-	s_sandboxmain.list.height			= 8;
+	s_sandboxmain.list.height			= 4;
 	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "props", "md3", s_sandboxmain.names, 524288 );
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
 	s_sandboxmain.list.color			= s_sandboxmain_color1;
 	
-	s_sandboxmain.classlist.generic.type		= MTYPE_UIOBJECT;
-	s_sandboxmain.classlist.type				= 5;
-	s_sandboxmain.classlist.styles				= 1;
-	s_sandboxmain.classlist.fontsize			= 1;
-	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
-	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
-	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
-	s_sandboxmain.classlist.generic.x		= 40 - cl_screenoffset.integer;
-	s_sandboxmain.classlist.generic.y		= 215 + 70;
-	s_sandboxmain.classlist.width			= 28;
-	s_sandboxmain.classlist.height			= 15;
-	s_sandboxmain.classlist.numitems		= 121;
-	s_sandboxmain.classlist.itemnames		= (const char **)s_sandboxmain.classeslist;
-	s_sandboxmain.classlist.columns			= 1;
-	s_sandboxmain.classlist.color			= s_sandboxmain_color1;
+	s_sandboxmain.texturelist.generic.type		= MTYPE_UIOBJECT;
+	s_sandboxmain.texturelist.type				= 5;
+	s_sandboxmain.texturelist.styles			= 2;
+	s_sandboxmain.texturelist.columns			= 6+((2*cl_screenoffset.integer)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.texturelist.fontsize			= 0.4;
+	s_sandboxmain.texturelist.corner			= 65;
+	s_sandboxmain.texturelist.generic.flags		= QMF_PULSEIFFOCUS;
+	s_sandboxmain.texturelist.generic.callback	= SandboxMain_MenuEvent;
+	s_sandboxmain.texturelist.generic.id		= ID_TEXTURESLIST;
+	s_sandboxmain.texturelist.generic.x			= 40 - cl_screenoffset.integer;
+	s_sandboxmain.texturelist.generic.y			= 215 + 62;
+	s_sandboxmain.texturelist.width				= 39/6;
+	s_sandboxmain.texturelist.height			= 4;
+	s_sandboxmain.texturelist.itemnames			= (const char **)s_sandboxmain.textureslist;
+	s_sandboxmain.texturelist.color				= s_sandboxmain_color1;
 	//y += 20;
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
@@ -1480,7 +1346,7 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.classtext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.propstext.string  				= "Props:";
-	s_sandboxmain.classtext.string  				= "Class:";
+	s_sandboxmain.classtext.string  				= "Textures:";
 	s_sandboxmain.modif0.generic.name       		= "Spawnflags:";
 	s_sandboxmain.spawnobject.string           		= "Spawn";
 	}
@@ -1985,7 +1851,7 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	s_sandboxmain.toolslist.generic.y		= 70;
 	s_sandboxmain.toolslist.width			= 28;
 	s_sandboxmain.toolslist.height			= 15;
-	s_sandboxmain.toolslist.numitems		= 31;
+	s_sandboxmain.toolslist.numitems		= 12;
 	s_sandboxmain.toolslist.itemnames		= (const char **)s_sandboxmain.toollist;
 	s_sandboxmain.toolslist.columns			= 1;
 	s_sandboxmain.toolslist.color			= s_sandboxmain_color1;
@@ -2015,6 +1881,30 @@ if(uis.sb_tab == 1){
 		// strip extension
 		len = strlen( configname );
 		if (!Q_stricmp(configname +  len - 4,".md3"))
+			configname[len-4] = '\0';
+
+		//Q_strupr(configname);
+
+		configname += len + 1;
+	}
+	
+	s_sandboxmain.texturelist.string			= sb_texture.string;
+	s_sandboxmain.texturelist.numitems			= trap_FS_GetFileList( va("ptex/%s", s_sandboxmain.list.itemnames[uis.texturelist_folder]), "png", s_sandboxmain.names2, 524288 );
+	
+	if (!s_sandboxmain.texturelist.numitems) {
+		strcpy(s_sandboxmain.names2,"0");
+		s_sandboxmain.texturelist.numitems = 1;
+	}
+	else if (s_sandboxmain.texturelist.numitems > 65536)
+		s_sandboxmain.texturelist.numitems = 65536;
+
+	configname = s_sandboxmain.names2;
+	for ( i = 0; i < s_sandboxmain.texturelist.numitems; i++ ) {
+		s_sandboxmain.texturelist.itemnames[i] = configname;
+
+		// strip extension
+		len = strlen( configname );
+		if (!Q_stricmp(configname +  len - 4,".png"))
 			configname[len-4] = '\0';
 
 		//Q_strupr(configname);
@@ -2334,36 +2224,17 @@ if(uis.sb_tab == 10){
 	
 	
 	s_sandboxmain.toolslist.itemnames[0] = "None";
-	s_sandboxmain.toolslist.itemnames[1] = "Set Material";
+	s_sandboxmain.toolslist.itemnames[1] = "Material";
 	s_sandboxmain.toolslist.itemnames[2] = "Delete";
-	s_sandboxmain.toolslist.itemnames[3] = "Set Model";
-	s_sandboxmain.toolslist.itemnames[4] = "Set Physics";
-	s_sandboxmain.toolslist.itemnames[5] = "Set Permission";
-	s_sandboxmain.toolslist.itemnames[6] = "Targeting";
-	s_sandboxmain.toolslist.itemnames[7] = "Set Collision";
-	s_sandboxmain.toolslist.itemnames[8] = "Reload";
-	s_sandboxmain.toolslist.itemnames[9] = "Set Sound";
-	s_sandboxmain.toolslist.itemnames[10] = "Locker";
-	s_sandboxmain.toolslist.itemnames[11] = "Set Speed";
-	s_sandboxmain.toolslist.itemnames[12] = "Set Message";
-	s_sandboxmain.toolslist.itemnames[13] = "Set Team";
-	s_sandboxmain.toolslist.itemnames[14] = "Set Wait";
-	s_sandboxmain.toolslist.itemnames[15] = "Set Count";
-	s_sandboxmain.toolslist.itemnames[16] = "Set Health";
-	s_sandboxmain.toolslist.itemnames[17] = "Set Price";
-	s_sandboxmain.toolslist.itemnames[18] = "Set Color";
-	s_sandboxmain.toolslist.itemnames[19] = "Set Damage";
-	s_sandboxmain.toolslist.itemnames[20] = "Setup Missile";
-	s_sandboxmain.toolslist.itemnames[21] = "Set Allowuse";
-	s_sandboxmain.toolslist.itemnames[22] = "Set Angles";
-	s_sandboxmain.toolslist.itemnames[23] = "Set TargetShaderName";
-	s_sandboxmain.toolslist.itemnames[24] = "Set TeleporterTarget";
-	s_sandboxmain.toolslist.itemnames[25] = "Set Modify";
-	s_sandboxmain.toolslist.itemnames[26] = "Set Music";
-	s_sandboxmain.toolslist.itemnames[27] = "Set Distance";
-	s_sandboxmain.toolslist.itemnames[28] = "Set Type";
-	s_sandboxmain.toolslist.itemnames[29] = "Physgun";
-	s_sandboxmain.toolslist.itemnames[30] = "Scale Tool";
+	s_sandboxmain.toolslist.itemnames[3] = "Model";
+	s_sandboxmain.toolslist.itemnames[4] = "Physics";
+	s_sandboxmain.toolslist.itemnames[5] = "Permission";
+	s_sandboxmain.toolslist.itemnames[6] = "Collision";
+	s_sandboxmain.toolslist.itemnames[7] = "Health";
+	s_sandboxmain.toolslist.itemnames[8] = "Color";
+	s_sandboxmain.toolslist.itemnames[9] = "Angles";
+	s_sandboxmain.toolslist.itemnames[10] = "Physgun";
+	s_sandboxmain.toolslist.itemnames[11] = "Scale";
 	
 
 	//Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.frame );
@@ -2380,15 +2251,14 @@ if(uis.sb_tab == 10){
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.tab10 );
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.spawnobject );
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.priv );
-	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.minmax );
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.grid );
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.savemap );
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.loadmap );
 	if(uis.sb_tab == 1){
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.propstext );
-	//Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.classtext );
+	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.classtext );
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.list );
-	//Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.classlist );
+	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.texturelist );
 	}
 	if(uis.sb_tab == 2){
 	//Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.propstext );
@@ -2454,19 +2324,26 @@ if(uis.sb_tab == 10){
 	Menu_AddItem( &s_sandboxmain.menu, (void*) &s_sandboxmain.modif4 );
 	
 	s_sandboxmain.priv.curvalue = trap_Cvar_VariableValue("sb_private");
-	Q_strncpyz( s_sandboxmain.minmax.field.buffer, UI_Cvar_VariableString("sb_minmax"), sizeof(s_sandboxmain.minmax.field.buffer) );
 	Q_strncpyz( s_sandboxmain.grid.field.buffer, UI_Cvar_VariableString("sb_grid"), sizeof(s_sandboxmain.grid.field.buffer) );
 	s_sandboxmain.list.curvalue = trap_Cvar_VariableValue("sb_modelnum");
 	s_sandboxmain.classlist.curvalue = trap_Cvar_VariableValue("sb_classnum");
 	s_sandboxmain.toolslist.curvalue = trap_Cvar_VariableValue("sb_toolnum");
+	s_sandboxmain.texturelist.curvalue = trap_Cvar_VariableValue("sb_texturenum");
 	Q_strncpyz( s_sandboxmain.modif0.field.buffer, UI_Cvar_VariableString("sb_sf"), sizeof(s_sandboxmain.modif0.field.buffer) );
 	Q_strncpyz( s_sandboxmain.modif1.field.buffer, UI_Cvar_VariableString("oasb_modifiers"), sizeof(s_sandboxmain.modif1.field.buffer) );
 	Q_strncpyz( s_sandboxmain.modif2.field.buffer, UI_Cvar_VariableString("oasb_idi"), sizeof(s_sandboxmain.modif2.field.buffer) );
 	Q_strncpyz( s_sandboxmain.modif3.field.buffer, UI_Cvar_VariableString("oasb_height"), sizeof(s_sandboxmain.modif3.field.buffer) );
 	Q_strncpyz( s_sandboxmain.modif4.field.buffer, UI_Cvar_VariableString("oasb_modifier"), sizeof(s_sandboxmain.modif4.field.buffer) );
+	trap_Cvar_Set( "sb_texture", va("ptex/%s", s_sandboxmain.list.itemnames[uis.texturelist_folder]) );
 	
 	if(uis.sb_tab == 6){
 	SandboxMain_SpawnListUpdate();
+	}
+	
+	if(uis.sb_tab == 1){
+	s_sandboxmain.classlist.curvalue = 0;
+	} else {
+	s_sandboxmain.texturelist.curvalue = 0;
 	}
 }
 

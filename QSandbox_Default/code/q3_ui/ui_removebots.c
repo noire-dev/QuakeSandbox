@@ -533,6 +533,5 @@ and maintaining separate modules
 */
 void UI_RemoveBotsMenu( int type) {
 	UI_RemoveBotsMenu_Init( type );
-	uis.sb_tab = 1;
 	UI_PushMenu( &removeBotsMenuInfo.menu );
 }

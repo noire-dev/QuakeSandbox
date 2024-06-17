@@ -206,6 +206,9 @@ struct gentity_s {
 	float		sb_colscale0;
 	float		sb_colscale1;
 	float		sb_colscale2;
+	float		sb_rotate0;
+	float		sb_rotate1;
+	float		sb_rotate2;
 	char		*sb_class;
 	char		*sb_model;
 	char		*sb_sound;

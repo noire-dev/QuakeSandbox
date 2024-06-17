@@ -335,15 +335,14 @@ void CG_Draw3DModelCopy( float x, float y, float w, float h, qhandle_t model, qh
 	refdef.fov_x = 90;
 	refdef.fov_y = 90;
 if(oasb_tool.integer == 1){
-ent.hModel = trap_R_RegisterModel_MiTech( "props/25brick" );
 if(oasb_modifiers.integer > 0){			
-ent.customShader = cgs.media.ptexShader[oasb_modifiers.integer];
+ent.customShader = trap_R_RegisterShader(va("%s/%s.png", sb_texture.string, sb_texturename.string));
 }					
-if(oasb_modifiers.integer == 255){	
+if(sb_texturename.integer == 255){	
 if(cg_hide255.integer){		
-ent.customShader = cgs.media.ptexShader[oasb_modifiers.integer];
+ent.customShader = cgs.media.ptexShader[0];
 } else {
-ent.customShader = cgs.media.ptexShader[oasb_modifiers.integer+1];
+ent.customShader = cgs.media.ptexShader[1];
 }
 }
 }
@@ -561,17 +560,19 @@ static void CG_DrawToolgun() {
 	vec3_t		origin;
 	gitem_t	*it;
 		
+		CG_DrawPic( -1 - cl_screenoffset.integer, 0+cg_toolguninfo.integer, 300, 125, trap_R_RegisterShaderNoMip( "menu/art/blacktrans" ) );
+		
 		if(oasb_tool.integer == 1){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Material Tool", 1.0F);
+			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Material", 1.0F);
 		}
 		if(oasb_tool.integer == 2){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Delete Tool", 1.0F);
+			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Delete", 1.0F);
 		}
 		if(oasb_tool.integer == 3){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Model Tool", 1.0F);
+			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Model", 1.0F);
 		}
 		if(oasb_tool.integer == 4){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Physics Tool", 1.0F);
+			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Physics", 1.0F);
 			if(oasb_modifier.integer == 0){
 			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Stationary", 1.0F);
 			}
@@ -582,7 +583,7 @@ static void CG_DrawToolgun() {
 			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2.Gravity", 1.0F);
 		}
 		if(oasb_tool.integer == 5){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Permission Tool", 1.0F);
+			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Permission", 1.0F);
 			if(oasb_modifier.integer == 0){
 			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Public", 1.0F);
 			}
@@ -597,42 +598,7 @@ static void CG_DrawToolgun() {
 			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "3.Get", 1.0F);
 		}
 		if(oasb_tool.integer == 6){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Targeting Tool", 1.0F);
-			if(oasb_modifier.integer == 0){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Set Target", 1.0F);
-			}
-			if(oasb_modifier.integer == 1){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Set Target2", 1.0F);
-			}
-			if(oasb_modifier.integer == 2){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Set Targetname", 1.0F);
-			}
-			if(oasb_modifier.integer == 3){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Set Targetname2", 1.0F);
-			}
-			if(oasb_modifier.integer == 4){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Set my Targetname", 1.0F);
-			}
-			if(oasb_modifier.integer == 5){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Set my Targetname2", 1.0F);
-			}
-			if(oasb_modifier.integer == 6){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Set Damage Target", 1.0F);
-			}
-			if(oasb_modifier.integer == 7){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Set my Damage Target", 1.0F);
-			}
-			y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, "1.Set Target", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2.Set Target2", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "3.Set Targetname", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "4.Set Targetname2", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "5.Set my Targetname", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "6.Set my Targetname2", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "7.Set Damage Target", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "8.Set my Damage Target", 1.0F);
-		}
-		if(oasb_tool.integer == 7){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Collision Tool", 1.0F);
+			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Collision", 1.0F);
 			if(oasb_modifier.integer == 0){
 			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "On", 1.0F);
 			}
@@ -642,48 +608,8 @@ static void CG_DrawToolgun() {
 			y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, "1.On", 1.0F);
 			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2.Off", 1.0F);
 		}
-		if(oasb_tool.integer == 8){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Reload Tool", 1.0F);
-		}
-		if(oasb_tool.integer == 9){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Sound Tool", 1.0F);
-		}
-		if(oasb_tool.integer == 10){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Locker Tool", 1.0F);
-			if(oasb_modifier.integer == 0){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Lock", 1.0F);
-			}
-			if(oasb_modifier.integer == 1){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Unlock", 1.0F);
-			}
-			y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, "1.Lock", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2.Unlock", 1.0F);
-		}
-		if(oasb_tool.integer == 11){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Set Speed Tool", 1.0F);
-		}
-		if(oasb_tool.integer == 12){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Set Message Tool", 1.0F);
-			if(oasb_modifier.integer == 0){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "English", 1.0F);
-			}
-			if(oasb_modifier.integer == 1){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Russian", 1.0F);
-			}
-			y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, "1.English", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2.Russian", 1.0F);
-		}
-		if(oasb_tool.integer == 13){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Set Team Tool", 1.0F);
-		}
-		if(oasb_tool.integer == 14){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Set Wait Tool", 1.0F);
-		}
-		if(oasb_tool.integer == 15){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Set Count Tool", 1.0F);
-		}
-		if(oasb_tool.integer == 16){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Set Health Tool", 1.0F);
+		if(oasb_tool.integer == 7){
+			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Health", 1.0F);
 			if(oasb_modifier.integer == 0){
 			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Set", 1.0F);
 			}
@@ -705,111 +631,25 @@ static void CG_DrawToolgun() {
 			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "4.Not allow prop damage", 1.0F);
 			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "5.Allow prop damage", 1.0F);
 		}
-		if(oasb_tool.integer == 17){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Set Price Tool", 1.0F);
+		if(oasb_tool.integer == 8){
+			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Color", 1.0F);
 		}
-		if(oasb_tool.integer == 18){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Set Color Tool", 1.0F);
-		}
-		if(oasb_tool.integer == 19){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Set Damage Tool", 1.0F);
-		}
-		if(oasb_tool.integer == 20){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Setup Missile Tool", 1.0F);
+		if(oasb_tool.integer == 9){
+			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Angles", 1.0F);
 			if(oasb_modifier.integer == 0){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "mtype", 1.0F);
+			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "X", 1.0F);
 			}
 			if(oasb_modifier.integer == 1){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "mtimeout", 1.0F);
+			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Y", 1.0F);
 			}
 			if(oasb_modifier.integer == 2){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "mhoming", 1.0F);
+			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Z", 1.0F);
 			}
-			if(oasb_modifier.integer == 3){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "mbounce", 1.0F);
-			}
-			if(oasb_modifier.integer == 4){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "mdamage", 1.0F);
-			}
-			if(oasb_modifier.integer == 5){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "msdamage", 1.0F);
-			}
-			if(oasb_modifier.integer == 6){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "msradius", 1.0F);
-			}
-			if(oasb_modifier.integer == 7){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "mgravity", 1.0F);
-			}
-			if(oasb_modifier.integer == 8){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "mnoclip", 1.0F);
-			}
-			if(oasb_modifier.integer == 9){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "mspeed", 1.0F);
-			}
-			y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, "1.mtype", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2.mtimeout", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "3.mhoming", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "4.mbounce", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "5.mdamage", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "6.msdamage", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "7.msradius", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "8.mgravity", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "9.mnoclip", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "0.mspeed", 1.0F);
+			y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, "1.X", 1.0F);
+			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2.Y", 1.0F);
+			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "3.Z", 1.0F);
 		}
-		if(oasb_tool.integer == 21){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Set Allowuse Tool", 1.0F);
-		}
-		if(oasb_tool.integer == 22){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Set Angles Tool", 1.0F);
-			if(oasb_modifier.integer == 0){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Set", 1.0F);
-			}
-			if(oasb_modifier.integer == 1){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Add", 1.0F);
-			}
-			if(oasb_modifier.integer == 2){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Get", 1.0F);
-			}
-			y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, "1.Set", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2.Add", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "3.Get", 1.0F);
-		}
-		if(oasb_tool.integer == 23){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Set TargetShaderName Tool", 1.0F);
-			if(oasb_modifier.integer == 0){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "TargetShaderName", 1.0F);
-			}
-			if(oasb_modifier.integer == 1){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "TargetShaderNewName", 1.0F);
-			}
-			y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, "1.TargetShaderName", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2.TargetShaderNewName", 1.0F);
-		}
-		if(oasb_tool.integer == 24){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Set TeleporterTarget Tool", 1.0F);
-		}
-		if(oasb_tool.integer == 25){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Set Modify Tool", 1.0F);
-			if(oasb_modifier.integer == 0){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "key", 1.0F);
-			}
-			if(oasb_modifier.integer == 1){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "value", 1.0F);
-			}
-			y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, "1.key", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2.value", 1.0F);
-		}
-		if(oasb_tool.integer == 26){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Set Music Tool", 1.0F);
-		}	
-		if(oasb_tool.integer == 27){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Set Distance Tool", 1.0F);
-		}
-		if(oasb_tool.integer == 28){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Set Type Tool", 1.0F);
-		}
-		if(oasb_tool.integer == 29){
+		if(oasb_tool.integer == 10){
 			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Physgun", 1.0F);
 			if(oasb_modifier.integer == 0){
 			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Stationary", 1.0F);
@@ -821,8 +661,8 @@ static void CG_DrawToolgun() {
 			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2.Gravity", 1.0F);
 		}
 		
-		if(oasb_tool.integer == 30){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Scale Tool", 1.0F);
+		if(oasb_tool.integer == 11){
+			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Scale", 1.0F);
 			if(oasb_modifier.integer == 0){
 			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "X", 1.0F);
 			}

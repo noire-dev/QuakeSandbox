@@ -1652,6 +1652,25 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	char		arg38[64];
 	char		arg39[64];
 	char		arg40[64];
+	char		arg41[64];
+	char		arg42[64];
+	char		arg43[64];
+	char		arg44[64];
+	char		arg45[64];
+	char		arg46[64];
+	char		arg47[64];
+	char		arg48[64];
+	char		arg49[64];
+	char		arg50[64];
+	char		arg51[64];
+	char		arg52[64];
+	char		arg53[64];
+	char		arg54[64];
+	char		arg55[64];
+	char		arg56[64];
+	char		arg57[64];
+	char		arg58[64];
+	char		arg59[64];
 	
 	if(!g_building.integer){ return; }
 		
@@ -1696,6 +1715,25 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	trap_Argv( 38, arg38, sizeof( arg38 ) );
 	trap_Argv( 39, arg39, sizeof( arg39 ) );
 	trap_Argv( 40, arg40, sizeof( arg40 ) );
+	trap_Argv( 41, arg41, sizeof( arg41 ) );
+	trap_Argv( 42, arg42, sizeof( arg42 ) );
+	trap_Argv( 43, arg43, sizeof( arg43 ) );
+	trap_Argv( 44, arg44, sizeof( arg44 ) );
+	trap_Argv( 45, arg45, sizeof( arg45 ) );
+	trap_Argv( 46, arg46, sizeof( arg46 ) );
+	trap_Argv( 47, arg47, sizeof( arg47 ) );
+	trap_Argv( 48, arg48, sizeof( arg48 ) );
+	trap_Argv( 49, arg49, sizeof( arg49 ) );
+	trap_Argv( 50, arg50, sizeof( arg50 ) );
+	trap_Argv( 51, arg51, sizeof( arg51 ) );
+	trap_Argv( 52, arg52, sizeof( arg52 ) );
+	trap_Argv( 53, arg53, sizeof( arg53 ) );
+	trap_Argv( 54, arg54, sizeof( arg54 ) );
+	trap_Argv( 55, arg55, sizeof( arg55 ) );
+	trap_Argv( 56, arg56, sizeof( arg56 ) );
+	trap_Argv( 57, arg57, sizeof( arg57 ) );
+	trap_Argv( 58, arg58, sizeof( arg58 ) );
+	trap_Argv( 59, arg59, sizeof( arg59 ) );
 	
 	//Set Aiming Directions
 	AngleVectors(ent->client->ps.viewangles, forward, right, up);
@@ -1717,7 +1755,7 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	return;
 	}
 	}
-	G_BuildPropSL( arg02, arg03, tr.endpos, ent, arg04, arg05, arg06, arg07, arg08, arg09, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30, arg31, arg32, arg33, arg34, arg35, arg36, arg37, arg38, arg39, arg40);
+	G_BuildPropSL( arg02, arg03, tr.endpos, ent, arg04, arg05, arg06, arg07, arg08, arg09, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30, arg31, arg32, arg33, arg34, arg35, arg36, arg37, arg38, arg39, arg40, arg41, arg42, arg43, arg44, arg45, arg46, arg47, arg48, arg49, arg50, arg51, arg52, arg53, arg54, arg55, arg56, arg57, arg58, arg59);
 	
 	
 	return;
@@ -1815,6 +1853,25 @@ static void Cmd_PropNpc_AS_f( gentity_t *ent ){
 	char		arg38[64];
 	char		arg39[64];
 	char		arg40[64];
+	char		arg41[64];
+	char		arg42[64];
+	char		arg43[64];
+	char		arg44[64];
+	char		arg45[64];
+	char		arg46[64];
+	char		arg47[64];
+	char		arg48[64];
+	char		arg49[64];
+	char		arg50[64];
+	char		arg51[64];
+	char		arg52[64];
+	char		arg53[64];
+	char		arg54[64];
+	char		arg55[64];
+	char		arg56[64];
+	char		arg57[64];
+	char		arg58[64];
+	char		arg59[64];
 	
 	if(!g_building.integer){ return; }
 		
@@ -1862,6 +1919,25 @@ static void Cmd_PropNpc_AS_f( gentity_t *ent ){
 	trap_Argv( 41, arg38, sizeof( arg38 ) );
 	trap_Argv( 42, arg39, sizeof( arg39 ) );
 	trap_Argv( 43, arg40, sizeof( arg40 ) );
+	trap_Argv( 44, arg41, sizeof( arg41 ) );
+	trap_Argv( 45, arg42, sizeof( arg42 ) );
+	trap_Argv( 46, arg43, sizeof( arg43 ) );
+	trap_Argv( 47, arg44, sizeof( arg44 ) );
+	trap_Argv( 48, arg45, sizeof( arg45 ) );
+	trap_Argv( 49, arg46, sizeof( arg46 ) );
+	trap_Argv( 50, arg47, sizeof( arg47 ) );
+	trap_Argv( 51, arg48, sizeof( arg48 ) );
+	trap_Argv( 52, arg49, sizeof( arg49 ) );
+	trap_Argv( 53, arg50, sizeof( arg50 ) );
+	trap_Argv( 54, arg51, sizeof( arg51 ) );
+	trap_Argv( 55, arg52, sizeof( arg52 ) );
+	trap_Argv( 56, arg53, sizeof( arg53 ) );
+	trap_Argv( 57, arg54, sizeof( arg54 ) );
+	trap_Argv( 58, arg55, sizeof( arg55 ) );
+	trap_Argv( 59, arg56, sizeof( arg56 ) );
+	trap_Argv( 60, arg57, sizeof( arg57 ) );
+	trap_Argv( 61, arg58, sizeof( arg58 ) );
+	trap_Argv( 62, arg59, sizeof( arg59 ) );
 	
 	end[0] = atof(cord_x);
 	end[1] = atof(cord_y);
@@ -1878,7 +1954,7 @@ static void Cmd_PropNpc_AS_f( gentity_t *ent ){
 	return;
 	}
 	}
-	G_BuildPropSL( arg02, arg03, end, ent, arg04, arg05, arg06, arg07, arg08, arg09, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30, arg31, arg32, arg33, arg34, arg35, arg36, arg37, arg38, arg39, arg40);
+	G_BuildPropSL( arg02, arg03, end, ent, arg04, arg05, arg06, arg07, arg08, arg09, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30, arg31, arg32, arg33, arg34, arg35, arg36, arg37, arg38, arg39, arg40, arg41, arg42, arg43, arg44, arg45, arg46, arg47, arg48, arg49, arg50, arg51, arg52, arg53, arg54, arg55, arg56, arg57, arg58, arg59);
 	
 	
 	return;

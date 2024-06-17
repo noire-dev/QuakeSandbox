@@ -2880,11 +2880,8 @@ void Menu_Cache( void )
 	uis.rb_off          = trap_R_RegisterShaderNoMip( "menu/art/switch_off" );
 
 	uis.whiteShader = trap_R_RegisterShaderNoMip( "white" );
-	uis.menuBackShader	= trap_R_RegisterShaderNoMip( "menuback" );
 	uis.menuBlack		= trap_R_RegisterShaderNoMip( "menu/art/blacktrans" );
-	for( i = 1; i <= 4; i++) {
-	uis.menuWallpapers[i] = trap_R_RegisterShaderNoMip( va( "UserFiles/Mainmenu/MenuPic (%i).jpg", i ));
-	}
+	uis.menuWallpapers = trap_R_RegisterShaderNoMip( "menu/animbg" );
 	
 	uis.menuLoadingIcon = trap_R_RegisterShaderNoMip( "menu/art/loading" );
 
