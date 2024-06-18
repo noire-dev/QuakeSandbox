@@ -321,10 +321,10 @@ void CG_Draw3DModelCopy( float x, float y, float w, float h, qhandle_t model, qh
 	AnglesToAxis( angles, ent.axis );
 	VectorCopy( origin, ent.origin );
 	ent.hModel = model;
-	ent.customSkin = skin;
-	ent.shaderRGBA[0] = cg_helightred.integer;
-	ent.shaderRGBA[1] = cg_helightgreen.integer;
-	ent.shaderRGBA[2] = cg_helightblue.integer;
+	//ent.customSkin = skin;
+	ent.shaderRGBA[0] = 0;
+	ent.shaderRGBA[1] = 0;
+	ent.shaderRGBA[2] = 0;
 	ent.shaderRGBA[3] = 255;
 	ent.renderfx = RF_NOSHADOW;		// no stencil shadows
 
@@ -334,17 +334,14 @@ void CG_Draw3DModelCopy( float x, float y, float w, float h, qhandle_t model, qh
 
 	refdef.fov_x = 90;
 	refdef.fov_y = 90;
-if(oasb_tool.integer == 1){
-if(oasb_modifiers.integer > 0){			
-ent.customShader = trap_R_RegisterShader(va("%s/%s.png", sb_texture.string, sb_texturename.string));
+
+ent.reType = RT_MODEL;
+ent.customSkin = trap_R_RegisterSkin(va("%s/%s.skin", sb_texture_view.string, sb_texturename.string));
+if(sb_texturename.integer > 0){		
+ent.customShader = trap_R_RegisterShader(va("%s/%s", sb_texture_view.string, sb_texturename.string));
 }					
 if(sb_texturename.integer == 255){	
-if(cg_hide255.integer){		
-ent.customShader = cgs.media.ptexShader[0];
-} else {
 ent.customShader = cgs.media.ptexShader[1];
-}
-}
 }
 
 	refdef.x = x;

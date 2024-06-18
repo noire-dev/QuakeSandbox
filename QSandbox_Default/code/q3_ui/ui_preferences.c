@@ -1260,12 +1260,12 @@ s_preferences.newESCmenu.generic.name	   = "Новый вид меню:";
 	Menu_AddItem( &s_preferences.menu, &s_preferences.misc);
 
 	Menu_AddItem( &s_preferences.menu, &s_preferences.crosshair );
-        Menu_AddItem( &s_preferences.menu, &s_preferences.crosshairHealth );
-        Menu_AddItem( &s_preferences.menu, &s_preferences.crosshairColorRed );
-        Menu_AddItem( &s_preferences.menu, &s_preferences.crosshairColorGreen );
-        Menu_AddItem( &s_preferences.menu, &s_preferences.crosshairColorBlue );
+    //Menu_AddItem( &s_preferences.menu, &s_preferences.crosshairHealth );
+    Menu_AddItem( &s_preferences.menu, &s_preferences.crosshairColorRed );
+    Menu_AddItem( &s_preferences.menu, &s_preferences.crosshairColorGreen );
+    Menu_AddItem( &s_preferences.menu, &s_preferences.crosshairColorBlue );
 	Menu_AddItem( &s_preferences.menu, &s_preferences.simpleitems );
-        Menu_AddItem( &s_preferences.menu, &s_preferences.alwaysweaponbar );
+    Menu_AddItem( &s_preferences.menu, &s_preferences.alwaysweaponbar );
 	Menu_AddItem( &s_preferences.menu, &s_preferences.wallmarks );
 	Menu_AddItem( &s_preferences.menu, &s_preferences.brass );
 	Menu_AddItem( &s_preferences.menu, &s_preferences.dynamiclights );

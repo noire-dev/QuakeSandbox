@@ -189,16 +189,18 @@ static void CG_General( centity_t *cent ) {
 
 	ent.hModel = cgs.gameModels[s1->modelindex];
 	
-if(s1->generic2 > 0){
-ent.customShader = trap_R_RegisterShader(va("ptex/%s/%i", CG_ConfigString( CS_MODELS+s1->modelindex ), s1->generic2));
-}					
-if(s1->generic2 == 255){	
-if(cg_hide255.integer){		
-ent.customShader = cgs.media.ptexShader[0];
-} else {
-ent.customShader = cgs.media.ptexShader[1];
-}
-}
+	ent.reType = RT_MODEL;
+	ent.customSkin = trap_R_RegisterSkin(va("ptex/%s/%i.skin", CG_ConfigString( CS_MODELS+s1->modelindex ), s1->generic2));
+	if(s1->generic2 > 0){
+	ent.customShader = trap_R_RegisterShader(va("ptex/%s/%i", CG_ConfigString( CS_MODELS+s1->modelindex ), s1->generic2));
+	}					
+	if(s1->generic2 == 255){	
+	if(cg_hide255.integer){		
+	ent.customShader = cgs.media.ptexShader[0];
+	} else {
+	ent.customShader = cgs.media.ptexShader[1];
+	}
+	}
 
 	// player model
 	if (s1->number == cg.snap->ps.clientNum) {
@@ -322,16 +324,18 @@ if(cg_itemstyle.integer == 3){
 
 	ent.hModel = cg_items[es->modelindex].models[0];
 	
-if(es->generic2 > 0){			
-ent.customShader = trap_R_RegisterShader(va("ptex/%s/%i", CG_ConfigString( CS_MODELS+es->modelindex ), es->generic2));
-}					
-if(es->generic2 == 255){	
-if(cg_hide255.integer){		
-ent.customShader = cgs.media.ptexShader[0];
-} else {
-ent.customShader = cgs.media.ptexShader[1];
-}
-}
+	ent.reType = RT_MODEL;
+	ent.customSkin = trap_R_RegisterSkin(va("ptex/%s/%i.skin", CG_ConfigString( CS_MODELS+es->modelindex ), es->generic2));
+	if(es->generic2 > 0){			
+	ent.customShader = trap_R_RegisterShader(va("ptex/%s/%i", CG_ConfigString( CS_MODELS+es->modelindex ), es->generic2));
+	}					
+	if(es->generic2 == 255){	
+	if(cg_hide255.integer){		
+	ent.customShader = cgs.media.ptexShader[0];
+	} else {
+	ent.customShader = cgs.media.ptexShader[1];
+	}
+	}
 
 	VectorCopy( cent->lerpOrigin, ent.origin);
 	VectorCopy( cent->lerpOrigin, ent.oldorigin);
@@ -655,17 +659,18 @@ static void CG_Mover( centity_t *cent ) {
 		ent.hModel = cgs.gameModels[s1->modelindex];
 	}
 
-if(s1->generic2 > 0){	
-ent.customShader = trap_R_RegisterShader(va("ptex/%s/%i", CG_ConfigString( CS_MODELS+s1->modelindex ), s1->generic2));
-}					
-if(s1->generic2 == 255){	
-if(cg_hide255.integer){		
-ent.customShader = cgs.media.ptexShader[0];
-} else {
-ent.customShader = cgs.media.ptexShader[1];
-}
-}
-
+	ent.reType = RT_MODEL;
+	ent.customSkin = trap_R_RegisterSkin(va("ptex/%s/%i.skin", CG_ConfigString( CS_MODELS+s1->modelindex ), s1->generic2));
+	if(s1->generic2 > 0){	
+	ent.customShader = trap_R_RegisterShader(va("ptex/%s/%i", CG_ConfigString( CS_MODELS+s1->modelindex ), s1->generic2));
+	}					
+	if(s1->generic2 == 255){	
+	if(cg_hide255.integer){		
+	ent.customShader = cgs.media.ptexShader[0];
+	} else {
+	ent.customShader = cgs.media.ptexShader[1];
+	}
+	}
 
 	// add to refresh list
 	trap_R_AddRefEntityToScene(&ent);

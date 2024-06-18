@@ -1333,14 +1333,14 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.propstext.generic.y				= 50;
+	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= color_red;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.classtext.generic.y				= 215 + 50;
+	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= color_red;
 	s_sandboxmain.classtext.style  					= UI_BIGFONT;
@@ -1388,14 +1388,14 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.propstext.generic.y				= 50;
+	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= color_red;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.classtext.generic.y				= 50;
+	s_sandboxmain.classtext.generic.y				= 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= color_red;
 	s_sandboxmain.classtext.style  					= UI_BIGFONT;
@@ -1443,14 +1443,14 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.propstext.generic.y				= 50;
+	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= color_red;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.classtext.generic.y				= 215 + 50;
+	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= color_red;
 	s_sandboxmain.classtext.style  					= UI_BIGFONT;
@@ -1498,14 +1498,14 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.propstext.generic.y				= 50;
+	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= color_red;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.classtext.generic.y				= 215 + 50;
+	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= color_red;
 	s_sandboxmain.classtext.style  					= UI_BIGFONT;
@@ -1551,14 +1551,14 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.propstext.generic.y				= 50;
+	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= color_red;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.classtext.generic.y				= 215 + 50;
+	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= color_red;
 	s_sandboxmain.classtext.style  					= UI_BIGFONT;
@@ -1609,14 +1609,14 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.propstext.generic.y				= 50;
+	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= color_red;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.classtext.generic.y				= 215 + 50;
+	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= color_red;
 	s_sandboxmain.classtext.style  					= UI_BIGFONT;
@@ -1662,14 +1662,14 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.propstext.generic.y				= 50;
+	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= color_red;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.classtext.generic.y				= 215 + 50;
+	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= color_red;
 	s_sandboxmain.classtext.style  					= UI_BIGFONT;
@@ -1715,14 +1715,14 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.propstext.generic.y				= 50;
+	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= color_red;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.classtext.generic.y				= 215 + 50;
+	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= color_red;
 	s_sandboxmain.classtext.style  					= UI_BIGFONT;
@@ -1768,14 +1768,14 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.propstext.generic.y				= 50;
+	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= color_red;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.classtext.generic.y				= 215 + 50;
+	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= color_red;
 	s_sandboxmain.classtext.style  					= UI_BIGFONT;
@@ -1822,14 +1822,14 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.propstext.generic.y				= 50;
+	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= color_red;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
-	s_sandboxmain.classtext.generic.y				= 215 + 50;
+	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= color_red;
 	s_sandboxmain.classtext.style  					= UI_BIGFONT;
@@ -1859,7 +1859,7 @@ s_sandboxmain.toolstext.string  				= "Tools:";
 	
 	s_sandboxmain.toolstext.generic.type			= MTYPE_PTEXT;
 	s_sandboxmain.toolstext.generic.x				= 372 + cl_screenoffset.integer;
-	s_sandboxmain.toolstext.generic.y				= 50;
+	s_sandboxmain.toolstext.generic.y				= 48;
 	s_sandboxmain.toolstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.toolstext.color  					= color_red;
 	s_sandboxmain.toolstext.style  					= UI_BIGFONT;
@@ -2335,6 +2335,7 @@ if(uis.sb_tab == 10){
 	Q_strncpyz( s_sandboxmain.modif3.field.buffer, UI_Cvar_VariableString("oasb_height"), sizeof(s_sandboxmain.modif3.field.buffer) );
 	Q_strncpyz( s_sandboxmain.modif4.field.buffer, UI_Cvar_VariableString("oasb_modifier"), sizeof(s_sandboxmain.modif4.field.buffer) );
 	trap_Cvar_Set( "sb_texture", va("ptex/%s", s_sandboxmain.list.itemnames[uis.texturelist_folder]) );
+	trap_Cvar_Set( "sb_texture_view", va("ptex/props/%s", s_sandboxmain.list.itemnames[uis.texturelist_folder]) );
 	
 	if(uis.sb_tab == 6){
 	SandboxMain_SpawnListUpdate();

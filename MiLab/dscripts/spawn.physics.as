@@ -62,4 +62,4 @@
 
 //NOTE: If allowuse is enabled then you can use "bind <key> <targetname>" to use this entity
 
-set spawn_preset set uibuildprop sl prop %s %s %i %s %s 0 0 1 0 "none" 100000 0 0 0 0 1 1 1 0 0 1 10000 0 1 100 100 120 1 0 1000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+set spawn_preset set uibuildprop sl prop %s %s %i 25 %s 0 %s 1 0 "none" 100000 0 0 0 0 1 1 1 0 0 1 10000 0 1 100 100 120 1 0 1000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0

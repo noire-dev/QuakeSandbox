@@ -17,8 +17,8 @@ DEMOS MENU
 
 #define ART_BACK0			"menu/art/back_0"
 #define ART_BACK1			"menu/art/back_1"	
-#define ART_GO0				"menu/art/play_0"
-#define ART_GO1				"menu/art/play_1"
+#define ART_GO0				"menu/art/fight_0"
+#define ART_GO1				"menu/art/fight_1"
 #define ART_FRAMEL			"menu/art/frame2_l"
 #define ART_FRAMER			"menu/art/frame1_r"
 #define ART_ARROWS			"menu/art/arrows_horz_0"

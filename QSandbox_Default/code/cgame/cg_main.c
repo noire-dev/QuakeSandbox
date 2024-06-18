@@ -120,7 +120,7 @@ vmCvar_t	oasb_modifier;
 vmCvar_t	oasb_modifiers;
 vmCvar_t	oasb_modelst;
 vmCvar_t	sb_classnum_view;
-vmCvar_t	sb_texture;
+vmCvar_t	sb_texture_view;
 vmCvar_t	sb_texturename;
 vmCvar_t	cg_hide255;
 
@@ -457,7 +457,7 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &oasb_modifiers, "oasb_modifiers", "0", CVAR_USERINFO},
 	{ &oasb_modelst, "oasb_modelst", "0", CVAR_USERINFO},
 	{ &sb_classnum_view, "sb_classnum_view", "0", CVAR_ARCHIVE},
-	{ &sb_texture, "sb_texture", "0", CVAR_ARCHIVE},
+	{ &sb_texture_view, "sb_texture_view", "0", CVAR_ARCHIVE},
 	{ &sb_texturename, "sb_texturename", "0", CVAR_ARCHIVE},
 	{ &cg_hide255, "cg_hide255", "0", 0},
 

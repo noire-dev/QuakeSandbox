@@ -2203,6 +2203,7 @@ void UI_DrawHandleModel( float x, float y, float w, float h, const char* model, 
 	VectorCopy( origin, ent.lightingOrigin );
 	ent.renderfx = RF_LIGHTING_ORIGIN | RF_NOSHADOW;
 	VectorCopy( ent.origin, ent.oldorigin );
+	ent.customSkin = trap_R_RegisterSkin(va("ptex/%s/%i.skin", model, 0));
 
 	trap_R_AddRefEntityToScene( &ent );
 

@@ -1488,7 +1488,7 @@ extern	vmCvar_t	oasb_modifier;
 extern	vmCvar_t	oasb_modifiers;
 extern	vmCvar_t	oasb_modelst;
 extern	vmCvar_t	sb_classnum_view;
-extern	vmCvar_t	sb_texture;
+extern	vmCvar_t	sb_texture_view;
 extern	vmCvar_t	sb_texturename;
 extern	vmCvar_t	cg_hide255;
 
