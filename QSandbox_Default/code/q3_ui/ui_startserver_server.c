@@ -610,7 +610,7 @@ static controlinit_t srv_general[] = {
 		"Mod folder name:", NULL, 0, 0, s_scriptdata.server.selectedmod, 20, 20, NULL },
 		
 	{ SRVCTRL_NUMFIELD, 0, ID_SERVER_MAXENTITIES, ITEM_ALWAYSON,
-		"Max Entities:", &s_scriptdata.server.maxEntities, 256, 4096, NULL, 9, 9, NULL },
+		"Max Entities:", &s_scriptdata.server.maxEntities, 256, 16384, NULL, 9, 9, NULL },
 		
 	{ SRVCTRL_NUMFIELD, 0, ID_SERVER_SINGLESKILL, ITEM_ALWAYSON,
 		"Singleplayer skill:", &s_scriptdata.server.singleskill, 1, 14, NULL, 9, 9, NULL },

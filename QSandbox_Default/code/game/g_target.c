@@ -1734,7 +1734,9 @@ void target_cutscene_use (gentity_t *self, gentity_t *other, gentity_t *activato
 	level.player->client->ps.velocity[2] = 0;
 
 	//set player's orgOrigin so we can move the player back to its original location when the cutscene ends
+	if (level.player->client->ps.pm_type != PM_CUTSCENE) {
 	VectorCopy(level.player->client->ps.origin, level.player->orgOrigin);
+	}
 
 	//disable synchronousClients to prevent "CVAR_Update: handle out of range" error. See issue 162.
 	if (g_allowSyncCutscene.integer == 0) {

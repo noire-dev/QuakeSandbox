@@ -66,6 +66,7 @@ static void SpecifyServer_Event( void* ptr, int event )
 				for( i = 1; i < MAX_FAVORITESERVERS; i++){
 				if(!trap_Cvar_VariableValue(va("server%i", i))){
 				trap_Cmd_ExecuteText( EXEC_APPEND, va("seta server%i %s\n", i, buff));
+				trap_Cmd_ExecuteText( EXEC_APPEND, va("connect %s\n", buff));
 				UI_PopMenu();
 				UI_PopMenu();
 				return;

@@ -272,13 +272,7 @@ typedef struct {
 static creditEntry_t uie_credits[] = {
 //	{ CMODE_TEXT, "", { "", 0, 0, 0 } },
 	{ CMODE_TEXT, "Quake Sandbox", {"MiLab", 0, 0, 0  } },
-	{ CMODE_TEXT, "Programming", {"HyperNoiRe", 0, 0, 0} },
-	{ CMODE_TEXT, "UI design", {"HyperNoiRe", 0, 0, 0} },
-	{ CMODE_TEXT, "Game design", {"HyperNoiRe", "JustNatsuki", "Shen", 0} },
-	{ CMODE_TEXT, "Art", { "JustNatsuki", "HyperNoiRe", 0, 0 } },
-	{ CMODE_TEXT, "Logo", { "HyperNoiRe", 0, 0, 0 } },
-	{ CMODE_TEXT, "Other", { "HyperNoiRe", "JustNatsuki", "Teapxt", "Shen" } },
-	{ CMODE_TEXT, "Promotion", { "HyperNoiRe", 0, 0, 0 } },
+	{ CMODE_TEXT, "Game", {"HyperNoiRe", "JustNatsuki", 0, 0} },
 	{ CMODE_QUOTE, 0, {0, 0, 0, 0} }
 };
 
@@ -357,40 +351,40 @@ static const int numEndCredits = ARRAY_SIZEOF(endCredits);
 // replacement title messages
 // only used with a body of text
 static char* sillyTitles[] = {
-	"Ministry of Silly Walks",
-	"Looking on the Bright Side",
-	"Demands a Shrubbery",
+"404: Cast Not Found",
+    "Hello World Coders",
+    "Variable Name Ninjas",
 
-	"Phantom Raspberry Blower",
+    "Bug Squashers United",
 
-	"Disciple Breeder",
-	"Will do that more often...",
+    "Agile Sprint Runners",
+    "Syntax Error Detectives",
 
-	"Just Big Boned",
-	"Killed by Kenny",
+    "Infinite Loop Survivors",
+    "Null Pointer Defenders",
 
-	"TimeLords",
+    "Version Control Heroes",
 
-	"Spoon thefts",
-	"Spoon bending",
-	"Spoon hiding",
+    "Stack Overflow Rescuers",
+    "Hackathon Champions",
+    "Unit Test Warriors",
 
-	"Have a nice day!",
-	"Lost Attachments",
-	"Trouble",
-	"Wild Wild Webbers",
-	"Tickets for DevNull",
-	"Prime Number Generators?",
-	"Electron Counting",
-	"Punched a Chad",
-	"90 percent done",
-	"Getting a Life",
-	"Kipper Smoking",
-	"Aborted, Retried... Failed",
-	"!%@$&*?",
-	"Can Spell Potatoe?",
-	"Testosterone poisoning",
-	"Enigma decoders"
+    "Happy Debugging!",
+    "Missing Semicolons",
+    "Recursive Thinkers",
+    "Open Source Crusaders",
+    "Server Sidekick",
+    "Prime Number Enthusiasts",
+    "Bitwise Operators",
+    "Binary Tree Navigators",
+    "95% Done (Again)",
+    "Refactoring Experts",
+    "Cloud Architects",
+    "Kernel Panic Survivors",
+    "Coffee Script Addicts",
+    "Ctrl+C/Ctrl+V Masters",
+    "Algorithm Optimizers",
+    "Regex Magicians"
 };
 
 static const int sillyTitlesCount = ARRAY_SIZEOF(sillyTitles);
@@ -399,30 +393,30 @@ static const int sillyTitlesCount = ARRAY_SIZEOF(sillyTitles);
 
 // messages that make "sense" on their own
 static char* sillyMessages[] = {
-	"Albatross for Sale",
-	"'Tis But a Scratch",
-	"Throwing Villagers is Fun",
-	"Pthbbbttthhh!",
-	"Timmy!",
-	"Regnagleppod",
-	"One ring to rule them all",
-	"1:4:9",
-	"Unit AE-35 is failing",
-	"Thunderbirds are Go!",
-	"The voice of the Mysterons",
-	"Bring back the Goodies!",
-	"Oops!",
-	"Conserving Runtime",
-	"Keyboard Error, press F1",
-	"ETAOIN SHRDLU",
-	"70's retro titles suck!",
-	"Use the source, fluke",
-	"MU",
-	"That bored, huh?",
-	"I do not understand myself",
-	"Contracrostipunctus",
-	"All our bases will be yours",
-	"My god, it's full of stars!"
+	"Server for Sale",
+    "'Tis But a Segfault",
+    "Throwing Exceptions is Fun",
+    "print('Pthbbbttthhh!')",
+    "try: except: Timmy!",
+    "Regnagleppod: Undefined Variable",
+    "One Script to Rule Them All",
+    "127.0.0.1",
+    "Unit Test AE-35 is Failing",
+    "printf('Thunderbirds are Go!')",
+    "The Voice of the Sysadmin",
+    "Bring Back the Debugger!",
+    "Oops! Bug Detected",
+    "Conserving CPU Cycles",
+    "Keyboard Error, Press Ctrl+Alt+Del",
+    "printf('ETAOIN SHRDLU')",
+    "70's Retro Code Sucks!",
+    "Use the Source, Luke",
+    "null",
+    "That Bored, Running Lint?",
+    "I Do Not Understand My Own Code",
+    "Contracrostipunctus: Code Obfuscation",
+    "All Your Base Are Belong to Us",
+    "System.out.println('My god, it\'s full of stars!')"
 };
 
 static const int sillyMessagesCount = ARRAY_SIZEOF(sillyMessages);
@@ -442,18 +436,18 @@ typedef struct {
 
 
 static quoteData_t quoteList[] = {
-	{ 10, { CMODE_HARDTEXT, NULL, {"\"Truth and Beauty are", "less common than strangeness\"", 0, 0 } } },
-	{ 10, { CMODE_HARDTEXT, NULL, {"\"And so it begins", "You have forgotten something\"", "Kosh Naranek - Chrysalis", 0 } } },
-	{ 10, { CMODE_HARDTEXT, NULL, {"\"The Universe is run by the complex", "interweaving of three elements: energy,", "matter and enlightened self-interest\"", "G'Kar - Survivors" } } },
-	{ 10, { CMODE_HARDTEXT, NULL, {"\"You should never hand someone", "a gun unless you're sure", "where they'll point it\"", "Sinclair - By Any Means Necessary" } } },
-	{ 10, { CMODE_HARDTEXT, NULL, {"\"Do not try the patience of wizards", "for they are subtle and quick to anger\"", 0, 0 } } },
-	{ 10, { CMODE_HARDTEXT, NULL, {"\"Never try to outstubborn a cat\"", 0, 0, 0 } } },
-	{ 5, { CMODE_HARDTEXT, NULL, {"\"Never eat yellow snow\"", 0, 0, 0 } } },
-	{ 10, { CMODE_HARDTEXT, NULL, {"\"Never underestimate the power", "of human stupidity\"", 0, 0 } } },
-	{ 10, { CMODE_HARDTEXT, NULL, {"\"How you behave towards cats herebelow", "determines your status in heaven\"", 0, 0 } } },
-	{ 10, { CMODE_HARDTEXT, NULL, {"\"LART: Luser Attitude Readjustment Tool.", "Baseball bats are popular.\"", 0, 0 } } },
-	{ 10, { CMODE_HARDTEXT, NULL, {"\"You can have peace.", "Or you can have freedom.", "Don't ever count on having both at once.\"", 0 } } },
-	{ 10, { CMODE_HARDTEXT, NULL, {"\"Incoming message\"", 0, 0, 0 } } }
+	{ 10, { CMODE_HARDTEXT, NULL, {"\"Truth and Beauty are", "less common than semicolons\"", 0, 0 } } },
+    { 10, { CMODE_HARDTEXT, NULL, {"\"And so it begins", "You have forgotten to close a bracket\"", "Coder's Nightmare", 0 } } },
+    { 10, { CMODE_HARDTEXT, NULL, {"\"The Universe is run by the complex", "interweaving of three elements: energy,", "matter, and clean code\"", "Programmer's Philosophy" } } },
+    { 10, { CMODE_HARDTEXT, NULL, {"\"You should never hand someone", "a debugger unless you're sure", "they know how to use it\"", "Senior Dev Advice" } } },
+    { 10, { CMODE_HARDTEXT, NULL, {"\"Do not try the patience of programmers", "for they are subtle and quick to debug\"", 0, 0 } } },
+    { 10, { CMODE_HARDTEXT, NULL, {"\"Never try to outstubborn a legacy system\"", 0, 0, 0 } } },
+    { 5, { CMODE_HARDTEXT, NULL, {"\"Never eat yellow snow\"", "And never trust user input", 0, 0 } } },
+    { 10, { CMODE_HARDTEXT, NULL, {"\"Never underestimate the power", "of infinite loops\"", 0, 0 } } },
+    { 10, { CMODE_HARDTEXT, NULL, {"\"How you behave towards documentation", "determines your success as a coder\"", 0, 0 } } },
+    { 10, { CMODE_HARDTEXT, NULL, {"\"LART: Luser Attitude Readjustment Tool.", "Rubber ducks are popular.\"", 0, 0 } } },
+    { 10, { CMODE_HARDTEXT, NULL, {"\"You can have performance.", "Or you can have readability.", "Don't ever count on having both at once.\"", 0 } } },
+    { 10, { CMODE_HARDTEXT, NULL, {"\"Incoming message\"", "from the exception handler", 0, 0 } } }
 //	{ 10, { CMODE_HARDTEXT, NULL, {"\"\"", 0, 0, 0 } } },
 //	{ 10, { CMODE_HARDTEXT, NULL, {"\"\"", 0, 0, 0 } } }
 //	{ 10, { CMODE_HARDTEXT, NULL, {0, 0, 0, 0 } } }

@@ -2821,15 +2821,15 @@ void StartServer_ValidateBotSlotCount(int bots, int open)
 	if (open < 0)
 		open = 0;
 
-	if (bots > 400)
-		bots = 400;
+	if (bots > MAX_CLIENTS)
+		bots = MAX_CLIENTS;
 
-	if (open > 400)
-		open = 400;
+	if (open > MAX_CLIENTS)
+		open = MAX_CLIENTS;
 
 	// sacrifice open slots for bots
-	if (bots + open > 400)
-		open = 400 - bots;
+	if (bots + open > MAX_CLIENTS)
+		open = MAX_CLIENTS - bots;
 
 	s_scriptdata.bot.numberBots = bots;
 	s_scriptdata.bot.numberOpen = open;	

@@ -1174,8 +1174,8 @@ AddScript(va("set g_amguided %i\n", s_scriptdata.server.g_amguided));
 	if (s_scriptdata.bot.joinAs == 1 || open == 0)
 		value++;	// spectator on, allow one more slot
 
-	if (value > 400)
-		value = 400;
+	if (value > MAX_CLIENTS)
+		value = MAX_CLIENTS;
 
 	s_serverexec.player_client = botcount;
 

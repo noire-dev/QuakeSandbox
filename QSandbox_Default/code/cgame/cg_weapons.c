@@ -1562,9 +1562,9 @@ if ( cg.snap->ps.pm_type == PM_CUTSCENE ) {
 	if (!gun.hModel) {
 		return;
 	}
-	if ( cent->currentState.eFlags & EF_TALK ) {
-		gun.hModel = trap_R_RegisterModel_MiTech( "smartphone.md3" );
-	}
+	//if ( cent->currentState.eFlags & EF_TALK ) {
+	//	gun.hModel = trap_R_RegisterModel_MiTech( "smartphone.md3" );
+	//}
 
 	if ( !ps ) {
 		// add weapon ready sound
@@ -1602,9 +1602,9 @@ if ( cg.snap->ps.pm_type == PM_CUTSCENE ) {
 	CG_AddWeaponWithPowerups( &gun, cent->currentState.powerups );
 
 	// add the spinning barrel
-	if ( cent->currentState.eFlags & EF_TALK ) {
-		return;
-	}
+	//if ( cent->currentState.eFlags & EF_TALK ) {
+	//	return;
+	//}
 	if ( weapon->barrelModel ) {
 		memset( &barrel, 0, sizeof( barrel ) );
 		VectorCopy( parent->lightingOrigin, barrel.lightingOrigin );

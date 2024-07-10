@@ -1168,7 +1168,11 @@ void UI_DrawCharCustom( int x, int y, int ch, int style, vec4_t color, float csi
 
 qboolean UI_IsFullscreen( void ) {
 	if ( uis.activemenu && ( trap_Key_GetCatcher() & KEYCATCH_UI ) ) {
+		//if(trap_Cvar_VariableValue("sv_running") <= 0){
 		return uis.activemenu->fullscreen;
+		//} else {
+		//return 0;
+		//}
 	}
 
 	return qfalse;
