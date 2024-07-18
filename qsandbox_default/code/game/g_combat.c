@@ -1817,9 +1817,9 @@ void G_CollDamage (int targNum, int attackerNum, int speed, int mod, vec3_t velo
 	velocitynew[2] = speed*0.20;
 
 	if (speed >= 200){
-	G_Damage( G_FindEntityForEntityNum(targNum), G_FindEntityForClientNum(attackerNum), G_FindEntityForClientNum(attackerNum), velocitynew, NULL, speed*0.20, 0, mod );
+	G_Damage( G_FindEntityForEntityNum(targNum), NULL, G_FindEntityForClientNum(attackerNum), velocitynew, NULL, speed*0.20, 0, mod );
 	} else {
-	G_Damage( G_FindEntityForEntityNum(targNum), G_FindEntityForClientNum(attackerNum), G_FindEntityForClientNum(attackerNum), velocitynew, NULL, 0, 0, mod );
+	G_Damage( G_FindEntityForEntityNum(targNum), NULL, G_FindEntityForClientNum(attackerNum), velocitynew, NULL, 0, 0, mod );
 	}
 }
 

@@ -93,7 +93,7 @@ void PM_AddTouchEnt( int entityNum ) {
 	
 	if(BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE]) == VCLASS_CAR){ //VEHICLE-SYSTEM: turn vehicle damage
 	#ifdef QAGAME
-	G_CollDamage( entityNum, pm->ps->clientNum, sqrt(pm->ps->velocity[0] * pm->ps->velocity[0] + pm->ps->velocity[1] * pm->ps->velocity[1]), MOD_CAR, pm->ps->velocity );
+	G_CollDamage( entityNum, 0, sqrt(pm->ps->velocity[0] * pm->ps->velocity[0] + pm->ps->velocity[1] * pm->ps->velocity[1]), MOD_CAR, pm->ps->velocity );
 	#endif
 	}
 }
@@ -410,13 +410,13 @@ static void PM_SetMovementDir( void ) {
 		} else if ( pm->cmd.rightmove < 0 ) {
 		#ifdef QAGAME
 			if (!trap_Cvar_VariableIntegerValue("cl_android")) {
-			pm->ps->delta_angles[1] += ANGLE2SHORT(0.75);
+			//pm->ps->delta_angles[1] += ANGLE2SHORT(0.75);
 			}
 		#endif
 		#ifdef CGAME
 			trap_Cvar_VariableStringBuffer( "cl_android", var, sizeof( var ) );
 			if (!atoi(var)) {
-			pm->ps->delta_angles[1] += ANGLE2SHORT(0.75);
+			//pm->ps->delta_angles[1] += ANGLE2SHORT(0.75);
 			}
 		#endif
 		} else if ( pm->cmd.rightmove == 0 && pm->cmd.forwardmove < 0 ) {
@@ -424,13 +424,13 @@ static void PM_SetMovementDir( void ) {
 		} else if ( pm->cmd.rightmove > 0 ) {
 		#ifdef QAGAME
 			if (!trap_Cvar_VariableIntegerValue("cl_android")) {
-			pm->ps->delta_angles[1] -= ANGLE2SHORT(0.75);
+			//pm->ps->delta_angles[1] -= ANGLE2SHORT(0.75);
 			}
 		#endif
 		#ifdef CGAME
 			trap_Cvar_VariableStringBuffer( "cl_android", var, sizeof( var ) );
 			if (!atoi(var)) {
-			pm->ps->delta_angles[1] -= ANGLE2SHORT(0.75);
+			//pm->ps->delta_angles[1] -= ANGLE2SHORT(0.75);
 			}
 		#endif
 		}
@@ -1426,7 +1426,7 @@ static void PM_CheckDuck (void)
 		pm->ps->pm_flags |= PMF_DUCKED;
 	} else {
 		#ifdef QAGAME
-		G_ExitVehicle(pm->ps->clientNum);
+		//G_ExitVehicle(pm->ps->clientNum);
 		#endif
 	}
 	}
