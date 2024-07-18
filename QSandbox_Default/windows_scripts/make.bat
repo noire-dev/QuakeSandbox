@@ -1,4 +1,8 @@
 echo off
+echo ---------------------------------------
+echo MiTech QVM Compiler (Quake Sandbox)
+echo Compile: game.qvm, cgame.qvm, q3_ui.qvm
+echo ---------------------------------------
 cd ..
 mkdir windows
 mkdir windows\build
@@ -73,6 +77,10 @@ copy  ..\..\..\code\game\g_syscalls.asm ..
 :: End of compilation files, add yours here
 :: ########################################
 
+echo -----------------
+echo game.qvm compiled
+echo -----------------
+
 
 q3asm -f ../game
 cd ..\..\..
@@ -138,6 +146,10 @@ copy  ..\..\..\code\cgame\cg_syscalls.asm ..
 :: ########################################
 :: End of compilation files, add yours here
 :: ########################################
+
+echo -----------------
+echo cgame.qvm compiled
+echo -----------------
 
 
 q3asm -f ../cgame
@@ -243,6 +255,10 @@ copy  ..\..\..\code\ui\ui_syscalls.asm ..
 :: End of compilation files, add yours here
 :: ########################################
 
+echo -----------------
+echo q3_ui.qvm compiled
+echo -----------------
+
 
 q3asm -f ../q3_ui
 cd ..\..\..
@@ -250,21 +266,18 @@ cd windows_scripts
 cd ..\..
 
 :: ##############################################################
-:: Replace "Default" and "default" here with the name of your mod
+:: Replace "default" here with the name of your mod
 :: ##############################################################
-copy QSandbox_Default\windows\baseoa\vm\qagame.qvm MiLab\x.default\vm\qagame.qvm
-copy QSandbox_Default\windows\baseoa\vm\cgame.qvm MiLab\x.default\vm\cgame.qvm
-copy QSandbox_Default\windows\baseoa\vm\ui.qvm MiLab\x.default\vm\ui.qvm
+copy qsandbox_default\windows\baseoa\vm\qagame.qvm milab\x.default\vm\qagame.qvm
+copy qsandbox_default\windows\baseoa\vm\cgame.qvm milab\x.default\vm\cgame.qvm
+copy qsandbox_default\windows\baseoa\vm\ui.qvm milab\x.default\vm\ui.qvm
 
-:: Replace "Default" and "default" here with the name of your mod SINGLE
-copy QSandbox_Default\windows\baseoa\vm\qagame.qvm MiLab\x.single\vm\qagame.qvm
-copy QSandbox_Default\windows\baseoa\vm\cgame.qvm MiLab\x.single\vm\cgame.qvm
-copy QSandbox_Default\windows\baseoa\vm\ui.qvm MiLab\x.single\vm\ui.qvm
+:: Replace "default" here with the name of your mod SINGLE
+copy qsandbox_default\windows\baseoa\vm\qagame.qvm milab\x.single\vm\qagame.qvm
+copy qsandbox_default\windows\baseoa\vm\cgame.qvm milab\x.single\vm\cgame.qvm
+copy qsandbox_default\windows\baseoa\vm\ui.qvm milab\x.single\vm\ui.qvm
 
 color 0A
-echo #################
-echo Compilation Done!
-echo #################
 pause
 
 
