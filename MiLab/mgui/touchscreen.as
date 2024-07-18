@@ -785,7 +785,7 @@ set mitem23_w 180
 set mitem23_h 90
 set mitem23_text "exit vehicle"
 set mitem23_cmd "exitvehicle"
-set mitem23_cmd2 ""
+set mitem23_cmd2 "menuback"
 set mitem23_1arg	0
 set mitem23_2arg	0
 set mitem23_3arg	0

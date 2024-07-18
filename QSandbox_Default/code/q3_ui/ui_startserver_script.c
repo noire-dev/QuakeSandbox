@@ -729,7 +729,7 @@ static qboolean StartServer_WriteServerParams( void )
 	}
 
 	AddScript(va("set g_forcerespawn %i\n", s_scriptdata.server.forceRespawn));
-	//HyperNoiRe
+	//Noire.dev
 AddScript(va("set g_maxEntities %i\n", s_scriptdata.server.maxEntities));
 AddScript(va("set g_spSkill %i\n", s_scriptdata.server.singleskill));
 AddScript(va("set g_kill %i\n", s_scriptdata.server.kill));

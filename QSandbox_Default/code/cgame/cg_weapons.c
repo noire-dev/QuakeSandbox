@@ -1847,7 +1847,7 @@ void CG_DrawWeaponSelect( void ) {
 
 	color = CG_FadeColor( cg.weaponSelectTime, WEAPON_SELECT_TIME );
 	
-//HyperNoiRe MAX_WEAPONS=16 HACK FOR MANY WEAPONS :) -> MAX_WEAPONS=512 YEAH
+//Noire.dev MAX_WEAPONS=16 HACK FOR MANY WEAPONS :) -> MAX_WEAPONS=512 YEAH
 
 	//Elimination: Always show weapon bar
 	if(cg_alwaysWeaponBar.integer) {

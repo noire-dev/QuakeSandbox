@@ -1282,7 +1282,7 @@ void VehicleTouchBot( gentity_t *self, gentity_t *other, trace_t *trace ) {
 	if( other->client->vehiclenum ) {
 		return;
 	}
-	if( self->parent ) {
+	if( self->parent && self->parent->client->vehiclenum ) {
 		return;
 	}
 	other->client->vehiclenum = self->s.number;
@@ -1961,6 +1961,10 @@ void G_CollDamage (int targNum, int attackerNum, int speed, int mod, vec3_t velo
 	} else {
 	G_Damage( G_FindEntityForEntityNum(targNum), G_FindEntityForClientNum(attackerNum), G_FindEntityForClientNum(attackerNum), velocitynew, NULL, 0, 0, mod );
 	}
+}
+
+void G_ExitVehicle (int num){
+	Cmd_VehicleExit_f( G_FindEntityForClientNum(num));
 }
 
 

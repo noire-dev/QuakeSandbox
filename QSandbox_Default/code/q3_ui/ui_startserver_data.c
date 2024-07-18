@@ -3285,7 +3285,7 @@ static void StartServer_LoadServerScriptData(void)
 		s_scriptdata.server.lanForceRate = 0;
 	}
 	
-//HyperNoiRe cvars
+//Noire.dev cvars
 		s_scriptdata.server.maxEntities = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_maxEntities" );
 		s_scriptdata.server.singleskill = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_singleskill" );
 		s_scriptdata.server.kill = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_kill" );
@@ -3750,7 +3750,7 @@ static void StartServer_SaveServerScriptData(void)
 		UIE_SetSkirmishCvarInt( NULL, "uie_lanForceRate", s_scriptdata.server.lanForceRate);
 	}
 	
-	//HyperNoiRe cvars
+	//Noire.dev cvars
 	UIE_SetSkirmishCvarInt( NULL, "uie_maxEntities", s_scriptdata.server.maxEntities);
 	UIE_SetSkirmishCvarInt( NULL, "uie_singleskill", s_scriptdata.server.singleskill);
 	UIE_SetSkirmishCvarInt( NULL, "uie_kill", s_scriptdata.server.kill);

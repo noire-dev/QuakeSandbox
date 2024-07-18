@@ -240,8 +240,8 @@ void CG_DrawInformation( void ) {
 		y += PROP_HEIGHT;
 	}
 	
-	// QSandbox by HyperNoiRe
-		CG_DrawBigString( 320, y, "^2QSandbox by HyperNoiRe", 1.0F );
+	// QSandbox by Noire.dev
+		CG_DrawBigString( 320, y, "^2QSandbox by Noire.dev", 1.0F );
 		y += PROP_HEIGHT;
 
 	// cheats warning

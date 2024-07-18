@@ -1740,7 +1740,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 		trap_SendServerCommand( clientNum, "print \"Full lag compensation is OFF!\n\"" );
 	}
 
-		trap_SendServerCommand( clientNum, "print \"QSandbox By HyperNoire\n\"" );
+		trap_SendServerCommand( clientNum, "print \"QSandbox By Noire.dev\n\"" );
 		
 		icount = 0;
 		/*while ( (entscr = G_Find(entscr, FOFS(classname), "info_player_deathmatch")) != NULL ) {icount += 1;}	

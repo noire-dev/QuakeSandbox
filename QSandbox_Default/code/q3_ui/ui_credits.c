@@ -271,8 +271,8 @@ typedef struct {
 
 static creditEntry_t uie_credits[] = {
 //	{ CMODE_TEXT, "", { "", 0, 0, 0 } },
-	{ CMODE_TEXT, "Quake Sandbox", {"MiLab", 0, 0, 0  } },
-	{ CMODE_TEXT, "Game", {"HyperNoiRe", "JustNatsuki", 0, 0} },
+	{ CMODE_TEXT, "Quake Sandbox", {"Noire.dev", 0, 0, 0  } },
+	{ CMODE_TEXT, "Game", {"Noire.dev", "Vovan_Vm", 0, 0} },
 	{ CMODE_QUOTE, 0, {0, 0, 0, 0} }
 };
 
@@ -295,9 +295,8 @@ typedef struct {
 
 static dateImageList_t uie_dateImages[] = {
 	{ 31, 11, { 0, "menu/uie_art/imagenewyear.tga", 1.0, 0, NULL, 1.0, 0 }},
-	{ 1, 0, { 0, "menu/uie_art/imagenewyear.tga", 1.0, 0, NULL, 1.0, 0 }},
-	{ 16, 7, { 0, "menu/uie_art/image1608.tga", 1.0, 0, NULL, 1.0, 0 }},
-	{ 22, 2, { 0, "menu/uie_art/image2203.tga", 1.0, 0, NULL, 1.0, 0 }}
+	{ 16, 7, { 0, "menu/uie_art/imagesecret.tga", 1.0, 0, NULL, 1.0, 0 }},
+	{ 22, 2, { 0, "menu/uie_art/imagesecret.tga", 1.0, 0, NULL, 1.0, 0 }}
 };
 
 

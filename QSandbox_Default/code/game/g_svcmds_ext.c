@@ -131,7 +131,7 @@ void Svcmd_ReplaceTexture_f( void )
 /*
 ============
 ArenaScript
-By HyperNoiRe
+By Noire.dev
 ============
 */
 /*

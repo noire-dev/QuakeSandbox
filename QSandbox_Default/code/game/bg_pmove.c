@@ -1403,6 +1403,10 @@ static void PM_CheckDuck (void)
 	{	// duck
 	if (!pm->ps->stats[STAT_VEHICLE]){ //VEHICLE-SYSTEM: disable duck for all
 		pm->ps->pm_flags |= PMF_DUCKED;
+	} else {
+		#ifdef QAGAME
+		G_ExitVehicle(pm->ps->clientNum);
+		#endif
 	}
 	}
 	else

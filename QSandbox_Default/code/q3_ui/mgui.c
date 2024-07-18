@@ -169,7 +169,7 @@ static void MGUI_MenuDraw( void ) {
 	}
 
 	if (uis.debug) {
-	UI_DrawString( vx(50), vy(0.4), "MGUI v1.3 by HyperNoiRe", UI_CENTER|UI_SMALLFONT, color1 );
+	UI_DrawString( vx(50), vy(0.4), "MGUI v1.3 by Noire.dev", UI_CENTER|UI_SMALLFONT, color1 );
 	}
 }
 
