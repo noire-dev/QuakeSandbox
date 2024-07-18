@@ -1,7 +1,7 @@
 menu/animbg
 {
 	{
-	animMap 0.10 menu/animbg/Menu1.jpg menu/animbg/Menu2.jpg menu/animbg/Menu3.jpg menu/animbg/Menu4.jpg 
+	animMap 0.10 menu/animbg/menu1.jpg menu/animbg/menu2.jpg menu/animbg/menu3.jpg menu/animbg/menu4.jpg 
 	tcMod stretch sawtooth 1 0.20 1 0.10
 	}
 	{

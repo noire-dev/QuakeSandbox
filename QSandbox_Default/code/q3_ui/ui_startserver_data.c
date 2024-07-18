@@ -226,7 +226,7 @@ DATA ARCHIVE
 
 // Default values for cvars that we haven't yet created
 
-// On startup we load from uieSkirmish.dat, check for new vars from this list,
+// On startup we load from mitechui.dat, check for new vars from this list,
 // and add them into data storage.
 
 
@@ -1111,7 +1111,7 @@ const int uie_cvarImportSize = sizeof(uie_cvarImport)/sizeof(uie_cvarImport[0]);
 
 
 #define MAX_CVAR_DATA (24*1024)
-#define UIE_SKIRMISH_DATAFILE "uieSkirmish.dat"
+#define UIE_SKIRMISH_DATAFILE "mitechui.dat"
 
 static qboolean skirmishCvarLoaded = qfalse;
 static char skirmishCvarData[MAX_CVAR_DATA];

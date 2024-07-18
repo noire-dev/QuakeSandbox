@@ -1473,10 +1473,10 @@ static void CG_RegisterGraphics( void ) {
 	}
 
         if( ( cgs.gametype >= GT_TEAM ) && ( cgs.ffa_gt != 1 ) ) {
-                cgs.media.redOverlay = trap_R_RegisterShader( "overlay/Red");
-                cgs.media.blueOverlay = trap_R_RegisterShader( "overlay/Blue");
+                cgs.media.redOverlay = trap_R_RegisterShader( "overlay/red");
+                cgs.media.blueOverlay = trap_R_RegisterShader( "overlay/blue");
         } else {
-                cgs.media.neutralOverlay = trap_R_RegisterShader( "overlay/Neutral");
+                cgs.media.neutralOverlay = trap_R_RegisterShader( "overlay/neutral");
         }
 
 //For Double Domination:
