@@ -374,6 +374,7 @@ to the facing dir
 ================
 */
 static void PM_SetMovementDir( void ) {
+	char		var[MAX_TOKEN_CHARS];
 	if(!pm->ps->stats[STAT_VEHICLE]) { //VEHICLE-SYSTEM: disable player-move for all
 	if ( pm->cmd.forwardmove || pm->cmd.rightmove ) {
 		if ( pm->cmd.rightmove == 0 && pm->cmd.forwardmove > 0 ) {
@@ -407,11 +408,31 @@ static void PM_SetMovementDir( void ) {
 		if ( pm->cmd.rightmove == 0 && pm->cmd.forwardmove > 0 ) {
 			pm->ps->movementDir = 0;
 		} else if ( pm->cmd.rightmove < 0 ) {
+		#ifdef QAGAME
+			if (!trap_Cvar_VariableIntegerValue("cl_android")) {
 			pm->ps->delta_angles[1] += ANGLE2SHORT(0.75);
+			}
+		#endif
+		#ifdef CGAME
+			trap_Cvar_VariableStringBuffer( "cl_android", var, sizeof( var ) );
+			if (!atoi(var)) {
+			pm->ps->delta_angles[1] += ANGLE2SHORT(0.75);
+			}
+		#endif
 		} else if ( pm->cmd.rightmove == 0 && pm->cmd.forwardmove < 0 ) {
 			pm->ps->movementDir = 4;
 		} else if ( pm->cmd.rightmove > 0 ) {
+		#ifdef QAGAME
+			if (!trap_Cvar_VariableIntegerValue("cl_android")) {
 			pm->ps->delta_angles[1] -= ANGLE2SHORT(0.75);
+			}
+		#endif
+		#ifdef CGAME
+			trap_Cvar_VariableStringBuffer( "cl_android", var, sizeof( var ) );
+			if (!atoi(var)) {
+			pm->ps->delta_angles[1] -= ANGLE2SHORT(0.75);
+			}
+		#endif
 		}
 	}
 }
