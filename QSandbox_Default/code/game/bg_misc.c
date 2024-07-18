@@ -2002,6 +2002,7 @@ char *eventnames[] = {
 	"EV_BULLET",				// otherEntity is the shooter
 
 	"EV_PAIN",
+	"EV_PAINVEHICLE",
 	"EV_DEATH1",
 	"EV_DEATH2",
 	"EV_DEATH3",
@@ -2326,5 +2327,29 @@ int GetHoldableListIndex( int giTag ) {
 			return i;
 	}
 
+	return 0;
+}
+
+int BG_VehicleCheckClass (int id){
+	if(id == 1){ return VCLASS_CAR; }
+	if(id == 2){ return VCLASS_CAR; }
+	
+	return 0;
+}
+
+float BG_GetVehicleSettings (int id, int set){
+	if(id == 1){
+		if(set==VSET_SPEED){ return 900; }
+		if(set==VSET_GRAVITY){ return 0.4; }
+		if(set==VSET_WEAPON){ return 0; }
+		if(set==VSET_WEAPONRATE){ return 3; }
+	}
+	if(id == 2){
+		if(set==VSET_SPEED){ return 900; }
+		if(set==VSET_GRAVITY){ return 0.4; }
+		if(set==VSET_WEAPON){ return 1; }
+		if(set==VSET_WEAPONRATE){ return 3; }
+	}
+	
 	return 0;
 }

@@ -2020,6 +2020,11 @@ void CG_NextWeapon_f( void ) {
 	int		i;
 	int		original;
 
+	if(BG_VehicleCheckClass(cg.snap->ps.stats[STAT_VEHICLE])){	//VEHICLE-SYSTEM: weapon lock for 1
+		if(!BG_GetVehicleSettings(cg.snap->ps.stats[STAT_VEHICLE], VSET_WEAPON)){
+			return;	
+		}
+	}
 	if ( !cg.snap ) {
 		return;
 	}
@@ -2069,6 +2074,11 @@ void CG_PrevWeapon_f( void ) {
 	int		i;
 	int		original;
 
+	if(BG_VehicleCheckClass(cg.snap->ps.stats[STAT_VEHICLE])){	//VEHICLE-SYSTEM: weapon lock for 1
+		if(!BG_GetVehicleSettings(cg.snap->ps.stats[STAT_VEHICLE], VSET_WEAPON)){
+			return;	
+		}
+	}
 	if ( !cg.snap ) {
 		return;
 	}

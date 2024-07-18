@@ -259,7 +259,7 @@ static cvarTable_t		cvarTable[] = {
 	{ &sb_texturenum, "sb_texturenum", "0", CVAR_ARCHIVE },
 	{ &sb_toolnum, "sb_toolnum", "0", CVAR_ARCHIVE },
 	{ &sb_tab, "sb_tab", "1", 0 },
-	{ &spawn_preset, "spawn_preset", "set uibuildprop sl prop %s %s %i 25 %s 0 %s 0 0 \"none\" 1000 0 0 0 0 1 1 1 0 0 1 10000 0 1 100 100 120 1 0 1000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0", 0 },
+	{ &spawn_preset, "spawn_preset", "set uibuildprop sl prop %s %s %i 25 %s 0 %s 0 0 \"none\" 1000 0 0 0 0 1 1 1 0 0 1 10000 0 1 100 100 120 1 0 1000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5", 0 },
 	
 	{ &mgui_api_active, "mgui_api_active", "0", 0 },
 	{ &mgui_none, "mgui_none", "0", 0 },

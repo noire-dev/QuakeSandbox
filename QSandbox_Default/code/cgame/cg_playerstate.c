@@ -318,7 +318,7 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 	if ( ps->persistant[PERS_HITS] > ops->persistant[PERS_HITS] ) {
 		armor  = ps->persistant[PERS_ATTACKEE_ARMOR] & 0xff;
 		health = ps->persistant[PERS_ATTACKEE_ARMOR] >> 8;
-#ifdef MISSIONPACK
+#if 0
 		if (health > 100 ) {
 			trap_S_StartLocalSound( cgs.media.hitSoundHighArmor, CHAN_LOCAL_SOUND );
 		} else if (health > 50 ) {
@@ -326,8 +326,6 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 		} else {
 			trap_S_StartLocalSound( cgs.media.hitSoundLowArmor, CHAN_LOCAL_SOUND );
 		}
-#else
-		trap_S_StartLocalSound( cgs.media.hitSound, CHAN_LOCAL_SOUND );
 #endif
 	} else if ( ps->persistant[PERS_HITS] < ops->persistant[PERS_HITS] ) {
 		trap_S_StartLocalSound( cgs.media.hitTeamSound, CHAN_LOCAL_SOUND );
@@ -339,6 +337,47 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 			CG_PainEvent( &cg.predictedPlayerEntity, ps->stats[STAT_HEALTH] );
 		}
                 CG_ScorePlum( ps->clientNum, ps->origin, ops->stats[STAT_HEALTH] - ps->stats[STAT_HEALTH], 0 );
+	}
+
+
+	// if we are going into the intermission, don't start any voices
+	if ( cg.intermissionStarted ) {
+		return;
+	}
+}
+
+void CG_CheckLocalSoundsVeh( playerState_t *ps, playerState_t *ops ) {
+	int			highScore, health, armor, reward;
+	sfxHandle_t sfx;
+
+	// don't play the sounds if the player just changed teams
+	if ( ps->persistant[PERS_TEAM] != ops->persistant[PERS_TEAM] ) {
+		return;
+	}
+
+	// hit changes
+	if ( ps->persistant[PERS_HITS] > ops->persistant[PERS_HITS] ) {
+		armor  = ps->persistant[PERS_ATTACKEE_ARMOR] & 0xff;
+		health = ps->persistant[PERS_ATTACKEE_ARMOR] >> 8;
+#if 0
+		if (health > 100 ) {
+			trap_S_StartLocalSound( cgs.media.hitSoundHighArmor, CHAN_LOCAL_SOUND );
+		} else if (health > 50 ) {
+			trap_S_StartLocalSound( cgs.media.hitSound, CHAN_LOCAL_SOUND );
+		} else {
+			trap_S_StartLocalSound( cgs.media.hitSoundLowArmor, CHAN_LOCAL_SOUND );
+		}
+#endif
+	} else if ( ps->persistant[PERS_HITS] < ops->persistant[PERS_HITS] ) {
+		trap_S_StartLocalSound( cgs.media.hitTeamSound, CHAN_LOCAL_SOUND );
+	}
+
+	// health changes of more than -1 should make pain sounds
+	if ( ps->stats[STAT_VEHICLEHP] < ops->stats[STAT_VEHICLEHP] - 1 ) {
+		if ( ps->stats[STAT_VEHICLEHP] > 0 ) {
+			CG_PainVehicleEvent( &cg.predictedPlayerEntity, ps->stats[STAT_VEHICLEHP] );
+		}
+                CG_ScorePlum( ps->clientNum, ps->origin, ops->stats[STAT_VEHICLEHP] - ps->stats[STAT_VEHICLEHP], 0 );
 	}
 
 
@@ -377,9 +416,16 @@ void CG_TransitionPlayerState( playerState_t *ps, playerState_t *ops ) {
 		cg.mapRestart = qfalse;
 	}
 
+	if(!cg.snap->ps.stats[STAT_VEHICLE]){
 	if ( cg.snap->ps.pm_type != PM_INTERMISSION 
 		&& ps->persistant[PERS_TEAM] != TEAM_SPECTATOR ) {
 		CG_CheckLocalSounds( ps, ops );
+	}
+	} else {
+	if ( cg.snap->ps.pm_type != PM_INTERMISSION 
+		&& ps->persistant[PERS_TEAM] != TEAM_SPECTATOR ) {
+		CG_CheckLocalSoundsVeh( ps, ops );
+	}
 	}
 
 	// check for going low on ammo

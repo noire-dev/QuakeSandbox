@@ -416,7 +416,10 @@ char	*modNames[] = {
 	"MOD_PROXIMITY_MINE",
 	"MOD_KAMIKAZE",
 	"MOD_JUICED",
-	"MOD_GRAPPLE"
+	"MOD_GRAPPLE",
+	"MOD_CAR",
+	"MOD_CAREXPLODE",
+	"MOD_BREAKABLE_SPLASH"
 };
 
 /*
@@ -1258,6 +1261,91 @@ dflags		these flags are used to control how T_Damage works
 ============
 */
 
+double angle45hook(double value, double src_min, double src_max) {
+    return -(90.0 * (value - src_min) / (src_max - src_min));
+}
+
+int engine10hook(int value, int src_min, int src_max) {
+    return 10 * (value - src_min) / (src_max - src_min);
+}
+
+void VehicleTouchBot( gentity_t *self, gentity_t *other, trace_t *trace ) {
+	if( other->health <= 0 ) {
+		return;
+	}
+	if( !other->client ) {
+		return;
+	}
+	if( !other->singlebot ) {
+		return;
+	}
+	if( other->client->vehiclenum ) {
+		return;
+	}
+	if( self->parent ) {
+		return;
+	}
+	other->client->vehiclenum = self->s.number;
+	self->parent = other;
+	ClientUserinfoChanged( other->s.clientNum );
+	VectorCopy(self->s.origin, other->s.origin);
+	VectorCopy(self->s.pos.trBase, other->s.pos.trBase);
+	other->s.apos.trBase[1] = self->s.apos.trBase[1];
+	VectorCopy(self->r.currentOrigin, other->r.currentOrigin);
+	VectorSet( other->r.mins, -25, -25, -15 );
+	VectorSet( other->r.maxs, 25, 25, 15 );
+	self->think = VehiclePhys;
+	self->nextthink = level.time + 1;
+}
+
+void VehiclePhys( gentity_t *self ) {
+	
+	if(!self->parent || !self || !self->parent->client->vehiclenum || self->parent->health <= 0 || self->health <= 0){
+	self->think = 0;
+	self->nextthink = 0;
+	self->r.contents = CONTENTS_SOLID;
+	self->sb_coll = 0;
+	self->s.pos.trType = TR_GRAVITY;
+	self->s.pos.trTime = level.time;
+	self->physicsObject = qtrue;
+	ClientUserinfoChanged( self->parent->s.clientNum );
+	VectorSet( self->parent->r.mins, -15, -15, -24 );
+	VectorSet( self->parent->r.maxs, 15, 15, 32 );
+	VectorSet( self->parent->client->ps.origin, self->r.currentOrigin[0], self->r.currentOrigin[1], self->r.currentOrigin[2] + 40);
+	self->parent->client->vehiclenum = 0;
+	self->s.generic3 = 0;
+	self->parent->client->ps.gravity = (g_gravity.value*g_gravityModifier.value);
+	return;
+	}
+	
+	self->s.pos.trType = TR_STATIONARY;
+	self->physicsObject = qfalse;
+	self->sb_phys = 1;
+	
+	self->r.contents = CONTENTS_TRIGGER;
+	self->sb_coll = 1;
+
+	trap_UnlinkEntity( self );
+	
+	VectorCopy(self->parent->s.origin, self->s.origin);
+	VectorCopy(self->parent->s.pos.trBase, self->s.pos.trBase);
+	self->s.apos.trBase[1] = self->parent->s.apos.trBase[1];
+	if(self->vehicle == 1){
+	self->s.apos.trBase[0] = angle45hook(self->parent->client->ps.velocity[2], 0, 900); //900 is car speed
+	}
+	if(engine10hook(sqrt(self->parent->client->ps.velocity[0] * self->parent->client->ps.velocity[0] + self->parent->client->ps.velocity[1] * self->parent->client->ps.velocity[1]), 0, 900) <= 10){ //900 is car speed
+	self->s.generic3 = engine10hook(sqrt(self->parent->client->ps.velocity[0] * self->parent->client->ps.velocity[0] + self->parent->client->ps.velocity[1] * self->parent->client->ps.velocity[1]), 0, 900); //900 is car speed
+	}
+	VectorCopy(self->parent->r.currentOrigin, self->r.currentOrigin);
+	self->parent->client->ps.stats[STAT_VEHICLEHP] = self->health; //VEHICLE-SYSTEM: vehicle's hp instead player
+	
+	trap_LinkEntity( self );
+	
+	self->think = VehiclePhys;
+	self->nextthink = level.time + 1;
+	
+}
+
 void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 			   vec3_t dir, vec3_t point, int damage, int dflags, int mod ) {
 	gclient_t	*client;
@@ -1269,6 +1357,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 	int			i;
 	vec3_t		bouncedir, impactpoint;
 	gentity_t 	*act;
+	gentity_t 	*vehicle;
 
 	//in entityplus bots cannot harm other bots (unless it's a telefrag)
 	if ( !G_NpcFactionProp(NP_HARM, attacker) && attacker->singlebot >= 1 && targ->singlebot == attacker->singlebot && attacker && mod != MOD_TELEFRAG )
@@ -1280,6 +1369,28 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 				G_ModProp( targ, attacker );
 				return;
 			}
+		}
+	}
+	
+	if(mod == MOD_GAUNTLET){
+		if(!attacker->gmodtool){
+		if(targ->vehicle && !attacker->client->vehiclenum){
+		attacker->client->vehiclenum = targ->s.number;
+		targ->parent = attacker;
+		ClientUserinfoChanged( attacker->s.clientNum );
+		VectorCopy(targ->s.origin, attacker->s.origin);
+		VectorCopy(targ->s.pos.trBase, attacker->s.pos.trBase);
+		attacker->s.apos.trBase[1] = targ->s.apos.trBase[1];
+		VectorCopy(targ->r.currentOrigin, attacker->r.currentOrigin);
+		VectorSet( attacker->r.mins, -25, -25, -15 );
+		VectorSet( attacker->r.maxs, 25, 25, 15 );
+		targ->think = VehiclePhys;
+		targ->nextthink = level.time + 1;
+		return;
+		}
+		if(attacker->client->vehiclenum){
+		return;	
+		}
 		}
 	}
 	
@@ -1297,6 +1408,10 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 	if (!targ->takedamage2) {
 		return;
 	}
+	}
+	
+	if (targ->client->vehiclenum){ //VEHICLE-SYSTEM: damage vehicle instead player
+ 		targ = G_FindEntityForEntityNum(targ->client->vehiclenum);
 	}
 
 	// the intermission has allready been qualified for, so don't
@@ -1394,8 +1509,10 @@ if ( attacker && attacker->singlebot){
 		VectorNormalize(dir);
 	}
 
-	knockback = damage;
+	knockback = damage+1;
 
+	if ( mod == MOD_CAR )
+	knockback *= 2.50;
 	if ( mod == MOD_GAUNTLET )
 	knockback *= g_gknockback.value;
 	if ( mod == MOD_MACHINEGUN )
@@ -1564,10 +1681,6 @@ if ( attacker && attacker->singlebot){
         if(g_damageModifier.value > 0.01) {
             damage *= g_damageModifier.value;
         }
-
-	/*if ( damage < 1 ) {
-		damage = 1;
-	}*/
 
         /*if(targ == attacker && (g_dmflags.integer & DF_NO_SELF_DAMAGE) )
             damage *= 0.2;	//Selfdamage*/
@@ -1834,6 +1947,20 @@ PortalTouches( targ );
 		}
 	}
 
+}
+
+void G_CollDamage (int targNum, int attackerNum, int speed, int mod, vec3_t velocity){
+	vec3_t velocitynew;
+	
+	velocitynew[0] = velocity[0];
+	velocitynew[1] = velocity[1];
+	velocitynew[2] = speed*0.20;
+
+	if (speed >= 200){
+	G_Damage( G_FindEntityForEntityNum(targNum), G_FindEntityForClientNum(attackerNum), G_FindEntityForClientNum(attackerNum), velocitynew, NULL, speed*0.20, 0, mod );
+	} else {
+	G_Damage( G_FindEntityForEntityNum(targNum), G_FindEntityForClientNum(attackerNum), G_FindEntityForClientNum(attackerNum), velocitynew, NULL, 0, 0, mod );
+	}
 }
 
 

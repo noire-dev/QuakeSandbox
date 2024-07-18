@@ -118,18 +118,19 @@ typedef struct
 #define ID_SANDBOXLST		53
 #define ID_SANDBOXMODE		54
 #define ID_NEWSANDBOX		55
+#define ID_ACTIONMENU		56
 
 
 // all others
-#define ID_FREELOOK		56
-#define ID_INVERTMOUSE	57
-#define ID_ALWAYSRUN	58
-#define ID_AUTOSWITCH	59
-#define ID_MOUSESPEED	60
-#define ID_JOYENABLE	61
-#define ID_JOYTHRESHOLD	62
-#define ID_SMOOTHMOUSE	63
-#define ID_MOUSESTYLE	64
+#define ID_FREELOOK		57
+#define ID_INVERTMOUSE	58
+#define ID_ALWAYSRUN	59
+#define ID_AUTOSWITCH	60
+#define ID_MOUSESPEED	61
+#define ID_JOYENABLE	62
+#define ID_JOYTHRESHOLD	63
+#define ID_SMOOTHMOUSE	64
+#define ID_MOUSESTYLE	65
 
 
 typedef struct
@@ -212,6 +213,7 @@ typedef struct
 	menuaction_s		sandboxlst;
 	menuaction_s		sandboxmode;
 	menuaction_s		newsandbox;
+	menuaction_s		actionmenu;
 	menuradiobutton_s	joyenable;
 	menuslider_s		joythreshold;
 	int					section;
@@ -232,11 +234,11 @@ static bind_t g_bindings[] =
 	{"+scores",			"show scores",		ID_SHOWSCORES,	ANIM_IDLE,		K_TAB,			-1,		-1, -1},
 	{"+button2",		"use item",			ID_USEITEM,		ANIM_IDLE,		K_ENTER,		-1,		-1, -1},
 	{"+speed", 			"run / walk",		ID_SPEED,		ANIM_RUN,		K_SHIFT,		-1,		-1,	-1},
-	{"+forward", 		"walk forward",		ID_FORWARD,		ANIM_WALK,		K_UPARROW,		-1,		-1, -1},
-	{"+back", 			"backpedal",		ID_BACKPEDAL,	ANIM_BACK,		K_DOWNARROW,	-1,		-1, -1},
+	{"+forward", 		"walk forward / accel",		ID_FORWARD,		ANIM_WALK,		K_UPARROW,		-1,		-1, -1},
+	{"+back", 			"walk back / backpedal",		ID_BACKPEDAL,	ANIM_BACK,		K_DOWNARROW,	-1,		-1, -1},
 	{"+moveleft", 		"step left",		ID_MOVELEFT,	ANIM_STEPLEFT,	',',			-1,		-1, -1},
 	{"+moveright", 		"step right",		ID_MOVERIGHT,	ANIM_STEPRIGHT,	'.',			-1,		-1, -1},
-	{"+moveup",			"up / jump",		ID_MOVEUP,		ANIM_JUMP,		K_SPACE,		-1,		-1, -1},
+	{"+moveup",			"up / jump / handbrake",		ID_MOVEUP,		ANIM_JUMP,		K_SPACE,		-1,		-1, -1},
 	{"+movedown",		"down / crouch",	ID_MOVEDOWN,	ANIM_CROUCH,	'c',			-1,		-1, -1},
 	{"+left", 			"turn left",		ID_LEFT,		ANIM_TURNLEFT,	K_LEFTARROW,	-1,		-1, -1},
 	{"+right", 			"turn right",		ID_RIGHT,		ANIM_TURNRIGHT,	K_RIGHTARROW,	-1,		-1, -1},
@@ -264,7 +266,7 @@ static bind_t g_bindings[] =
 	{"+attack", 		"attack",			ID_ATTACK,		ANIM_ATTACK,	K_CTRL,			-1,		-1, -1},
 	{"vstr dweapprev",		"prev weapon",		ID_WEAPPREV,	ANIM_IDLE,		'[',			-1,		-1, -1},
 	{"vstr dweapnext", 		"next weapon",		ID_WEAPNEXT,	ANIM_IDLE,		']',			-1,		-1, -1},
-	{"+button3", 		"gesture",			ID_GESTURE,		ANIM_GESTURE,	'g',		-1,		-1, -1},
+	{"+button3", 		"gesture / horn",			ID_GESTURE,		ANIM_GESTURE,	'g',		-1,		-1, -1},
 	{"messagemode", 	"chat",				ID_CHAT,		ANIM_CHAT,		't',			-1,		-1, -1},
 	{"messagemode2", 	"chat - team",		ID_CHAT2,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"messagemode3", 	"chat - target",	ID_CHAT3,		ANIM_CHAT,		-1,				-1,		-1, -1},
@@ -285,6 +287,7 @@ static bind_t g_bindings[] =
 	{"vstr uibuildprop", 	"sandbox last spawn",	ID_SANDBOXLST,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr uitoolmode", 	"sandbox tool mode",	ID_SANDBOXMODE,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr lastui", 	"addon menu",	ID_NEWSANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
+	{"mgui touchscreen", 	"action menu",	ID_ACTIONMENU,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{(char*)NULL,		(char*)NULL,		0,				0,				-1,				-1,		-1,	-1},
 };
 
@@ -293,11 +296,11 @@ static bind_t g_bindingsrus[] =
 	{"+scores",			"показать результаты",		ID_SHOWSCORES,	ANIM_IDLE,		K_TAB,			-1,		-1, -1},
 	{"+button2",		"использовать предмет",			ID_USEITEM,		ANIM_IDLE,		K_ENTER,		-1,		-1, -1},
 	{"+speed", 			"бег / ходьба",		ID_SPEED,		ANIM_RUN,		K_SHIFT,		-1,		-1,	-1},
-	{"+forward", 		"идти вперед",		ID_FORWARD,		ANIM_WALK,		K_UPARROW,		-1,		-1, -1},
-	{"+back", 			"идти назад",		ID_BACKPEDAL,	ANIM_BACK,		K_DOWNARROW,	-1,		-1, -1},
+	{"+forward", 		"идти вперед / газ",		ID_FORWARD,		ANIM_WALK,		K_UPARROW,		-1,		-1, -1},
+	{"+back", 			"идти назад / ехать назад",		ID_BACKPEDAL,	ANIM_BACK,		K_DOWNARROW,	-1,		-1, -1},
 	{"+moveleft", 		"идти влево",		ID_MOVELEFT,	ANIM_STEPLEFT,	',',			-1,		-1, -1},
 	{"+moveright", 		"идти вправо",		ID_MOVERIGHT,	ANIM_STEPRIGHT,	'.',			-1,		-1, -1},
-	{"+moveup",			"прыжок",		ID_MOVEUP,		ANIM_JUMP,		K_SPACE,		-1,		-1, -1},
+	{"+moveup",			"прыжок / ручной тормоз",		ID_MOVEUP,		ANIM_JUMP,		K_SPACE,		-1,		-1, -1},
 	{"+movedown",		"присесть",	ID_MOVEDOWN,	ANIM_CROUCH,	'c',			-1,		-1, -1},
 	{"+left", 			"посмотреть влево",		ID_LEFT,		ANIM_TURNLEFT,	K_LEFTARROW,	-1,		-1, -1},
 	{"+right", 			"посмотреть вправо",		ID_RIGHT,		ANIM_TURNRIGHT,	K_RIGHTARROW,	-1,		-1, -1},
@@ -322,16 +325,16 @@ static bind_t g_bindingsrus[] =
 	{"vstr weap13",		"пулемет",				ID_WEAPON13,		ANIM_WEAPON13,	'i',			-1,		-1, -1},
 	{"vstr weap14",		"огнемет",				ID_WEAPON14,		ANIM_WEAPON14,	'l',			-1,		-1, -1},
 	{"vstr weap15",		"черная вспышка",				ID_WEAPON15,		ANIM_WEAPON15,	'k',			-1,		-1, -1},
-	{"+attack", 		"аттака",			ID_ATTACK,		ANIM_ATTACK,	K_CTRL,			-1,		-1, -1},
+	{"+attack", 		"атака",			ID_ATTACK,		ANIM_ATTACK,	K_CTRL,			-1,		-1, -1},
 	{"vstr dweapprev",		"пред оружие",		ID_WEAPPREV,	ANIM_IDLE,		'[',			-1,		-1, -1},
 	{"vstr dweapnext", 		"след оружие",		ID_WEAPNEXT,	ANIM_IDLE,		']',			-1,		-1, -1},
-	{"+button3", 		"жест",			ID_GESTURE,		ANIM_GESTURE,	'g',		-1,		-1, -1},
+	{"+button3", 		"жест / гудок",			ID_GESTURE,		ANIM_GESTURE,	'g',		-1,		-1, -1},
 	{"messagemode", 	"чат",				ID_CHAT,		ANIM_CHAT,		't',			-1,		-1, -1},
 	{"messagemode2", 	"чат - команда",		ID_CHAT2,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"messagemode3", 	"чат - цель",	ID_CHAT3,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"messagemode4", 	"чат - аттакующий",	ID_CHAT4,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"ui_teamorders", 	"меню командных приказов",	ID_BOTMENU,		ANIM_CHAT,		-1,				-1,		-1, -1},
-	{"flashlight", 	"фонарик",	ID_FLASHLIGHT,		ANIM_CHAT,		'f',				-1,		-1, -1},
+	{"flashlight", 	"фонарик / фары",	ID_FLASHLIGHT,		ANIM_CHAT,		'f',				-1,		-1, -1},
 	{"toggle cg_thirdperson", 	"переключение третьего лица",	ID_THIRDPERSON,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"ammo", 	"выбросить пули",	ID_DAMMO,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"health", 	"выбросить жизни",	ID_DHEALTH,		ANIM_CHAT,		-1,				-1,		-1, -1},
@@ -346,6 +349,7 @@ static bind_t g_bindingsrus[] =
 	{"vstr uibuildprop", 	"песочница спавн обьекта",	ID_SANDBOXLST,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr uitoolmode", 	"песочница режим инструмента",	ID_SANDBOXMODE,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr lastui", 	"меню аддонов",	ID_NEWSANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
+	{"mgui touchscreen", 	"меню действий",	ID_ACTIONMENU,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{(char*)NULL,		(char*)NULL,		0,				0,				-1,				-1,		-1,	-1},
 };
 
@@ -444,6 +448,7 @@ static menucommon_s *g_misc_controls[] = {
 	(menucommon_s *)&s_controls.sandboxlst,
 	(menucommon_s *)&s_controls.sandboxmode,
 	(menucommon_s *)&s_controls.newsandbox,
+	(menucommon_s *)&s_controls.actionmenu,
 	NULL,
 };
 
@@ -585,11 +590,11 @@ static void Controls_Update( void ) {
 	// bk001204 - parentheses
 	for( j = 0;	(control = controls[j]); j++, y += SMALLCHAR_HEIGHT ) {
 		control->x      = 320;
-		control->y      = y;
+		control->y      = y-30;
 		control->left   = 320 - 19*SMALLCHAR_WIDTH;
 		control->right  = 320 + 21*SMALLCHAR_WIDTH;
-		control->top    = y;
-		control->bottom = y + SMALLCHAR_HEIGHT;
+		control->top    = y-30;
+		control->bottom = y-30 + SMALLCHAR_HEIGHT;
 	}
 
 	if( s_controls.waitingforkey ) {
@@ -1795,6 +1800,12 @@ static void Controls_MenuInit( void )
 	s_controls.newsandbox.generic.callback  = Controls_ActionEvent;
 	s_controls.newsandbox.generic.ownerdraw = Controls_DrawKeyBinding;
 	s_controls.newsandbox.generic.id        = ID_NEWSANDBOX;
+	
+	s_controls.actionmenu.generic.type	   = MTYPE_ACTION;
+	s_controls.actionmenu.generic.flags     = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_GRAYED|QMF_HIDDEN;
+	s_controls.actionmenu.generic.callback  = Controls_ActionEvent;
+	s_controls.actionmenu.generic.ownerdraw = Controls_DrawKeyBinding;
+	s_controls.actionmenu.generic.id        = ID_ACTIONMENU;
 
 	s_controls.joyenable.generic.type      = MTYPE_RADIOBUTTON;
 	s_controls.joyenable.generic.flags	   = QMF_SMALLFONT;
@@ -1921,6 +1932,7 @@ if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &s_controls.menu, &s_controls.sandboxlst );
 	Menu_AddItem( &s_controls.menu, &s_controls.sandboxmode );
 	Menu_AddItem( &s_controls.menu, &s_controls.newsandbox );
+	Menu_AddItem( &s_controls.menu, &s_controls.actionmenu );
 }
 
 	Menu_AddItem( &s_controls.menu, &s_controls.back );

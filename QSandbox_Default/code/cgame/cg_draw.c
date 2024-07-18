@@ -723,10 +723,9 @@ static void CG_DrawStatusBar( void ) {
 	int			value;
 	clientInfo_t	*ci;
 	int				weaphack;
+	vec_t       *vel;
 
-	if ( cg_drawStatus.integer == 0 ) {
-		return;
-	}
+	vel = cg.snap->ps.velocity;
 
 	cent = &cg_entities[cg.snap->ps.clientNum];
 	ps = &cg.snap->ps;
@@ -760,7 +759,8 @@ static void CG_DrawStatusBar( void ) {
 	//
 	// ammo
 	//
-	if ( weaphack ) {
+	if(!ps->stats[STAT_VEHICLE]){
+	if ( weaphack ) { //VEHICLE-SYSTEM: vehicle's speedmeter for all
 		if(ps->stats[STAT_SWEP] <= 15){
 		value = ps->ammo[cent->currentState.weapon];
 		} else {
@@ -780,13 +780,46 @@ static void CG_DrawStatusBar( void ) {
 		}
 		}
 	}
+	} else {
+		if ( weaphack ) {
+			if(ps->stats[STAT_SWEP] <= 15){
+			value = ps->ammo[cent->currentState.weapon];
+			} else {
+			value = ps->stats[STAT_SWEPAMMO];
+			if(value <= 0){
+			cg.swep_listcl[ps->stats[STAT_SWEP]] = 2;
+			} else {
+			cg.swep_listcl[ps->stats[STAT_SWEP]] = 1;	
+			}
+			}
+			if ( value > -1 ) {
+			if(cl_language.integer == 0){
+			CG_DrawStatusElement(628+cl_screenoffset.integer-230, 440, value, "AMMO");
+			}
+			if(cl_language.integer == 1){
+			CG_DrawStatusElement(628+cl_screenoffset.integer-230, 440, value, "ПАТРОНЫ");
+			}
+			}
+		}
+		value = sqrt(vel[0] * vel[0] + vel[1] * vel[1]) * 0.20;
+		if(cl_language.integer == 0){
+		CG_DrawStatusElement(628+cl_screenoffset.integer-110, 440, value, "KM/H");
+		}
+		if(cl_language.integer == 1){
+		CG_DrawStatusElement(628+cl_screenoffset.integer-110, 440, value, "КМ/Ч");
+		}
+	}
 	
 	CG_DrawStatusBarFlag( TEAM_FREE, 0 );		//android buttons fix
 
 	//
 	// health
 	//
+	if(!ps->stats[STAT_VEHICLE]){ //VEHICLE-SYSTEM: vehicle's hp instead player
 	value = ps->stats[STAT_HEALTH];
+	} else {
+	value = ps->stats[STAT_VEHICLEHP];	
+	}
 	if(cl_language.integer == 0){
 	CG_DrawStatusElement(12-cl_screenoffset.integer, 440, value, "HEALTH");
 	}
@@ -3859,7 +3892,13 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 	if ( cg.snap->ps.pm_type != PM_SPECTATOR ) {
 		CG_DrawLagometer();
 		CG_DrawStatusBar();
+		if(!cg.snap->ps.stats[STAT_VEHICLE]){	//VEHICLE-SYSTEM: disable weapon menu for all
         CG_DrawWeaponSelect();
+		} else {
+		if(BG_GetVehicleSettings(cg.snap->ps.stats[STAT_VEHICLE], VSET_WEAPON)){
+		CG_DrawWeaponSelect();	
+		}
+		}
         CG_DrawHoldableItem();
 	}
 	}

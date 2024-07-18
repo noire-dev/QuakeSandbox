@@ -222,6 +222,12 @@ if(cl_language.integer == 0){
 		case MOD_KAMIKAZE:
 			message = "goes out with a bang";
 			break;
+		case MOD_CAREXPLODE:
+		if ( gender == GENDER_FEMALE )
+			message = "exploded in her car";
+		else
+			message = "exploded in his car";
+			break;
 		case MOD_GRENADE_SPLASH:
 			if ( gender == GENDER_FEMALE )
 				message = "tripped on her own grenade";
@@ -290,6 +296,12 @@ if(cl_language.integer == 1){
 		switch (mod) {
 		case MOD_KAMIKAZE:
 			message = "выходит с треском";
+			break;
+		case MOD_CAREXPLODE:
+		if ( gender == GENDER_FEMALE )
+			message = "взорвана в своей машине";
+		else
+			message = "взорван в своей машине";
 			break;
 		case MOD_GRENADE_SPLASH:
 			if ( gender == GENDER_FEMALE )
@@ -428,13 +440,14 @@ if(cl_language.integer == 1){
 		}
 	}
 
+gender = ci->gender;
 if(cl_language.integer == 0){
 	if ( attacker != ENTITYNUM_WORLD ) {
 
-                if(ent->generic1) {
-                    message = "was killed by ^2TEAMMATE^7";
-                }
-                else
+        if(ent->generic1) {
+            message = "was killed by ^2TEAMMATE^7";
+        }
+        else
 		switch (mod) {
 		case MOD_GRAPPLE:
 			message = "was caught by";
@@ -498,8 +511,16 @@ if(cl_language.integer == 0){
 			message = "falls to";
 			message2 = "'s Kamikaze blast";
 			break;
+		case MOD_CAREXPLODE:
+			message = "exploded by";
+			message = "'s car";
+			break;
 		case MOD_JUICED:
 			message = "was juiced by";
+			break;
+		case MOD_CAR:
+			message = "was hit by";
+			message2 = "'s car";
 			break;
 		case MOD_TELEFRAG:
 			message = "tried to invade";
@@ -527,7 +548,6 @@ if(cl_language.integer == 0){
 		}
 	}
 }
-gender = ci->gender;
 if(cl_language.integer == 1){
 	if ( attacker != ENTITYNUM_WORLD ) {
 	message2 = " ";
@@ -652,11 +672,23 @@ if(cl_language.integer == 1){
 			message = "упал от взрывной волны";
 			message2 = " ";
 			break;
+		case MOD_CAREXPLODE:
+		if ( gender == GENDER_FEMALE )
+			message = "взорвана машиной";
+		else
+			message = "взорван машиной";
+			break;
 		case MOD_JUICED:
 			if ( gender == GENDER_FEMALE )
 			message = "была выжата благодаря";
 			else
 			message = "был выжат благодаря";
+			break;
+		case MOD_CAR:
+			if ( gender == GENDER_FEMALE )
+			message = "была сбита машиной";
+			else
+			message = "был сбит машиной";
 			break;
 		case MOD_TELEFRAG:
 			if ( gender == GENDER_FEMALE )
@@ -727,7 +759,7 @@ if(cl_language.integer == 1){
 	}
 	if(cl_language.integer == 1){
 	// we don't know what it was
-	CG_Printf( "%s> %s%s%s умер при загадочных обстоятельвах.%s\n",S_COLOR_YELLOW,S_COLOR_WHITE,targetName,S_COLOR_YELLOW,S_COLOR_WHITE);
+	CG_Printf( "%s> %s%s%s умер.%s\n",S_COLOR_YELLOW,S_COLOR_WHITE,targetName,S_COLOR_YELLOW,S_COLOR_WHITE);
 	}
 }
 
@@ -972,6 +1004,12 @@ void CG_PainEvent( centity_t *cent, int health ) {
 	cent->pe.painDirection ^= 1;
 }
 
+void CG_PainVehicleEvent( centity_t *cent, int health ) {
+	char	*snd;
+
+	trap_S_StartSound (NULL, cent->currentState.number, CHAN_VOICE, CG_CustomSound(cent->currentState.number, "sound/vehicle/damage50.ogg") );
+}
+
 
 
 /*
@@ -1097,6 +1135,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 
 
 	case EV_FALL_SHORT:
+	if(!cg.predictedPlayerState.stats[STAT_VEHICLE]){
 		DEBUGNAME("EV_FALL_SHORT");
 		trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.landSound );
 		if ( clientNum == cg.predictedPlayerState.clientNum ) {
@@ -1104,8 +1143,10 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			cg.landChange = -8;
 			cg.landTime = cg.time;
 		}
+	}
 		break;
 	case EV_FALL_MEDIUM:
+	if(!cg.predictedPlayerState.stats[STAT_VEHICLE]){
 		DEBUGNAME("EV_FALL_MEDIUM");
 		// use normal pain sound
 		trap_S_StartSound( NULL, es->number, CHAN_VOICE, CG_CustomSound( es->number, "*pain100_1.wav" ) );
@@ -1114,8 +1155,10 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			cg.landChange = -16;
 			cg.landTime = cg.time;
 		}
+	}
 		break;
 	case EV_FALL_FAR:
+	if(!cg.predictedPlayerState.stats[STAT_VEHICLE]){
 		DEBUGNAME("EV_FALL_FAR");
 		trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*fall1.wav" ) );
 		cent->pe.painTime = cg.time;	// don't play a pain sound right after this
@@ -1124,6 +1167,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			cg.landChange = -24;
 			cg.landTime = cg.time;
 		}
+	}
 		break;
 
 	case EV_STEP_4:
@@ -1192,6 +1236,18 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		if(cg_singlemode.integer){ break; }
 		DEBUGNAME("EV_TAUNT");
 		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound( es->number, "*taunt.wav" ) );
+		break;
+	case EV_HORN:
+		DEBUGNAME("EV_HORN");
+		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, "sound/vehicle/horn.ogg") );
+		break;
+	case EV_CRASH25:
+		DEBUGNAME("EV_CRASH25");
+		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, "sound/vehicle/damage25.ogg") );
+		break;
+	case EV_CRASH50:
+		DEBUGNAME("EV_CRASH50");
+		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, "sound/vehicle/damage50.ogg") );
 		break;
 #ifdef MISSIONPACK
 	case EV_TAUNT_YES:
@@ -1722,6 +1778,15 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		DEBUGNAME("EV_PAIN");
 		if ( cent->currentState.number != cg.snap->ps.clientNum ) {
 			CG_PainEvent( cent, es->eventParm );
+		}
+		break;
+		
+	case EV_PAINVEHICLE:
+		// local player sounds are triggered in CG_CheckLocalSounds,
+		// so ignore events on the player
+		DEBUGNAME("EV_PAINVEHICLE");
+		if ( cent->currentState.number != cg.snap->ps.clientNum ) {
+			CG_PainVehicleEvent( cent, es->eventParm );
 		}
 		break;
 

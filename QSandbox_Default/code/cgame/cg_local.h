@@ -390,6 +390,7 @@ typedef struct {
 	int			plgreen;
 	int			plblue;
 	int			swepid;
+	int			vehiclenum;
 	int			totex;
 	int			hetex;
 	int			plradius;
@@ -1101,6 +1102,7 @@ typedef struct {
 	sfxHandle_t	useNothingSound;
 	sfxHandle_t	wearOffSound;
 	sfxHandle_t	footsteps[FOOTSTEP_TOTAL][4];
+	sfxHandle_t	carengine[11];
 	sfxHandle_t	sfx_lghit1;
 	sfxHandle_t	sfx_lghit2;
 	sfxHandle_t	sfx_lghit3;
@@ -1904,6 +1906,7 @@ void CG_CheckEvents( centity_t *cent );
 const char	*CG_PlaceString( int rank );
 void CG_EntityEvent( centity_t *cent, vec3_t position );
 void CG_PainEvent( centity_t *cent, int health );
+void CG_PainVehicleEvent( centity_t *cent, int health );
 
 
 //

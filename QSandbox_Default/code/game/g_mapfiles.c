@@ -22,11 +22,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "g_local.h"
 
-#define MAX_MAPFILE_LENGTH 2500000
+#define MAX_MAPFILE_LENGTH 2500000*8
 
-#define MAX_TOKENNUM 524288
+#define MAX_TOKENNUM 524288*8
 
-static char 		buffergmod[ 2500000 ];
+static char 		buffergmod[ 2500000*8 ];
 
 typedef enum {
 	TOT_LPAREN,
@@ -69,6 +69,9 @@ qboolean G_ClassnameAllowed( char *input ){
 			return qtrue;
 		}
 		if ( !strcmp(input, "func_prop" ) ) {
+			return qtrue;
+		}
+		if ( !strcmp(input, "target_botspawn" ) ) {
 			return qtrue;
 		}
 		if ( !strcmp(input, "team_CTF_neutralflag" ) ) {
@@ -289,6 +292,8 @@ fieldCopy_t fieldsCopy[] = {
 	{"sb_rotate0", FOFS(sb_rotate0), F_FLOAT},
 	{"sb_rotate1", FOFS(sb_rotate1), F_FLOAT},
 	{"sb_rotate2", FOFS(sb_rotate2), F_FLOAT},
+	{"physicsBounce", FOFS(physicsBounce), F_FLOAT},
+	{"vehicle", FOFS(vehicle), F_INT},
 	{"sb_generic1", FOFS(sb_generic1), F_INT},
 	{"sb_phys", FOFS(sb_phys), F_INT},
 	{"sb_coll", FOFS(sb_coll), F_INT},
@@ -396,8 +401,8 @@ void G_LoadMapfile( char *filename ){
 		return;
 	}
 
-	if ( len >= 2500000 ) {
-		trap_Error( va( S_COLOR_RED "map file too large: %s is %i, max allowed is %i", filename, len, 2500000 ) );
+	if ( len >= 2500000*8 ) {
+		trap_Error( va( S_COLOR_RED "map file too large: %s is %i, max allowed is %i", filename, len, 2500000*8 ) );
 		trap_FS_FCloseFile( f );
 		return;
 	}
@@ -488,8 +493,8 @@ void G_LoadMapfileAll( char *filename ){
 		return;
 	}
 
-	if ( len >= 2500000 ) {
-		trap_Error( va( S_COLOR_RED "map file too large: %s is %i, max allowed is %i", filename, len, 2500000 ) );
+	if ( len >= 2500000*8 ) {
+		trap_Error( va( S_COLOR_RED "map file too large: %s is %i, max allowed is %i", filename, len, 2500000*8 ) );
 		trap_FS_FCloseFile( f );
 		return;
 	}
@@ -565,6 +570,13 @@ void G_LoadMapfileAll( char *filename ){
 void G_LoadMapfile_f( void ) {
 	char buf[MAX_QPATH];
 	char mapname[64];
+	int	i;
+	
+	for (i = 0; i < MAX_CLIENTS; i++ ) {
+		if ( g_entities[i].singlebot >= 1 ) {
+			DropClientSilently( g_entities[i].client->ps.clientNum );
+		}
+	}
 	
 	if ( trap_Argc() < 2 ) {
                 G_Printf("Usage: loadmap <filename>\n");
@@ -582,6 +594,13 @@ void G_LoadMapfile_f( void ) {
 void G_LoadMapfileAll_f( void ) {
 	char buf[MAX_QPATH];
 	char mapname[64];
+	int	i;
+	
+	for (i = 0; i < MAX_CLIENTS; i++ ) {
+		if ( g_entities[i].singlebot >= 1 ) {
+			DropClientSilently( g_entities[i].client->ps.clientNum );
+		}
+	}
 	
 	if ( trap_Argc() < 2 ) {
                 G_Printf("Usage: loadmapall <filename>\n");

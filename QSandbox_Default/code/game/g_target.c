@@ -860,10 +860,21 @@ void target_botspawn_use (gentity_t *self, gentity_t *other, gentity_t *activato
 	G_AddCustomBot( self->clientname, self->s.number, self->target, self->skill, self->type, self->message );
 }
 
+void botsandbox_check (gentity_t *self){
+	if(self->parent && self->parent->health <= 0){
+	self->think = 0;
+	self->nextthink = level.time + 1;
+	G_FreeEntity(self);
+	}
+	VectorCopy( self->parent->s.pos.trBase, self->s.origin );
+	self->think = botsandbox_check;
+	self->nextthink = level.time + 1;
+}
+
 void SP_target_botspawn (gentity_t *self) {
 	float healthMultiplier = 1;
 	float skill;
-
+	if(self->sb_ettype <= 0){
 	if ( !self->clientname || !strcmp(self->clientname, "") )
 		self->clientname = "sarge";
 
@@ -882,6 +893,9 @@ void SP_target_botspawn (gentity_t *self) {
 	self->health *= healthMultiplier;
 
 	self->use = target_botspawn_use;
+	} else {
+		G_AddBot(self->clientname, self->skill, "Blue", 0, self->message, self->s.number, self->target, self->type, self );
+	}
 }
 
 //==========================================================
@@ -1995,13 +2009,13 @@ void SP_script_cmd( gentity_t *ent ) {
 
 void use_script_menu (gentity_t *ent, gentity_t *other, gentity_t *activator) {
 	if (ent->spawnflags & 1) {
-	trap_SendConsoleCommand( EXEC_APPEND, va("as_run mgui %s\n", ent->target) );
+	trap_SendConsoleCommand( EXEC_APPEND, va("mgui %s\n", ent->target) );
 	}
 	if (ent->spawnflags & 2) {
-	trap_SendServerCommand( activator-g_entities, va("clcmd \"as_run mgui %s\"", ent->target ));	
+	trap_SendServerCommand( activator-g_entities, va("clcmd \"mgui %s\"", ent->target ));	
 	}
 	if (ent->spawnflags & 4) {
-	trap_SendServerCommand( -1, va("clcmd \"as_run mgui %s\"", ent->target ));	
+	trap_SendServerCommand( -1, va("clcmd \"mgui %s\"", ent->target ));	
 	}
 }
 

@@ -70,10 +70,14 @@ void P_DamageFeedback( gentity_t *player ) {
 	}
 
 	// play an apropriate pain sound
+	if(!player->client->vehiclenum){ //VEHICLE-SYSTEM: disable pain sound for all
 	if ( (level.time > player->pain_debounce_time) && !(player->flags & FL_GODMODE) ) {
 		player->pain_debounce_time = level.time + 700;
 		G_AddEvent( player, EV_PAIN, player->health );
 		client->ps.damageEvent++;
+	}
+	} else {
+		G_AddEvent( player, EV_PAINVEHICLE, player->health );
 	}
 
 
@@ -978,6 +982,7 @@ once for each server frame, which makes for smooth demo recording.
 */
 void ClientThink_real( gentity_t *ent ) {
 	gclient_t	*client;
+	gentity_t	*vehicle;
 	pmove_t		pm;
 	int			oldEventSequence;
 	int			msec;
@@ -1211,6 +1216,20 @@ if ( !ent->speed ){
 		client->ps.speed = 0;
 	else
 		client->ps.speed = ent->speed;			//ent->speed holds a modified speed value that's set by a target_playerspeed
+	
+	if(client->vehiclenum){	//VEHICLE-SYSTEM: setup physics for all
+	if(G_FindEntityForEntityNum(client->vehiclenum)){
+	vehicle = G_FindEntityForEntityNum(client->vehiclenum);
+	client->ps.stats[STAT_VEHICLE] = vehicle->vehicle;
+	if(BG_VehicleCheckClass(vehicle->vehicle)){
+	client->ps.speed = BG_GetVehicleSettings(vehicle->vehicle, VSET_SPEED);
+	client->ps.gravity = (g_gravity.value*g_gravityModifier.value)*BG_GetVehicleSettings(vehicle->vehicle, VSET_GRAVITY);
+	}
+	}
+	} else {
+	client->ps.stats[STAT_VEHICLE] = VCLASS_NONE;
+	}
+	
 	if( bg_itemlist[client->ps.stats[STAT_PERSISTANT_POWERUP]].giTag == PW_SCOUT ) {
 		client->ps.speed *= g_scoutspeedfactor.value;
 	}

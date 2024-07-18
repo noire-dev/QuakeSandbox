@@ -1566,13 +1566,13 @@ if ( ent->r.svFlags & SVF_BOT ) {
 	strcpy(blueTeam, Info_ValueForKey( userinfo, "g_blueteam" ));
 
 	if ( ent->r.svFlags & SVF_BOT ) {
-		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\g_redteam\\%s\\g_blueteam\\%s\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\skill\\%s\\tt\\%d\\tl\\%d",
-			client->pers.netname, team, model, headModel, redTeam, blueTeam, c1, c2,
+		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\g_redteam\\%s\\g_blueteam\\%s\\vn\\%i\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\skill\\%s\\tt\\%d\\tl\\%d",
+			client->pers.netname, team, model, headModel, redTeam, blueTeam, client->vehiclenum, c1, c2,
 			client->pers.maxHealth, client->sess.wins, client->sess.losses,
 			Info_ValueForKey( userinfo, "skill" ), teamTask, teamLeader );
 	} else {
-		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\g_redteam\\%s\\g_blueteam\\%s\\hr\\%s\\hg\\%s\\hb\\%s\\tr\\%s\\tg\\%s\\tb\\%s\\pr\\%s\\pg\\%s\\pb\\%s\\si\\%s\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\tt\\%d\\tl\\%d",
-			client->pers.netname, client->sess.sessionTeam, model, headModel, redTeam, blueTeam, heligred, heliggreen, heligblue, toligred, toliggreen, toligblue, pligred, pliggreen, pligblue, swep_id, c1, c2,
+		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\g_redteam\\%s\\g_blueteam\\%s\\hr\\%s\\hg\\%s\\hb\\%s\\tr\\%s\\tg\\%s\\tb\\%s\\pr\\%s\\pg\\%s\\pb\\%s\\si\\%s\\vn\\%i\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\tt\\%d\\tl\\%d",
+			client->pers.netname, client->sess.sessionTeam, model, headModel, redTeam, blueTeam, heligred, heliggreen, heligblue, toligred, toliggreen, toligblue, pligred, pliggreen, pligblue, swep_id, client->vehiclenum, c1, c2,
 			client->pers.maxHealth, client->sess.wins, client->sess.losses, teamTask, teamLeader);
 	}
 
@@ -2581,18 +2581,15 @@ if	(client->sess.sessionTeam == TEAM_RED ) {
 	trap_GetUsercmd( client - level.clients, &ent->client->pers.cmd );
 	SetClientViewAngle( ent, spawn_angles );
 
+	if ( !ent->botspawn ) { G_KillBox( ent );}
+	trap_LinkEntity (ent);
 
-		G_KillBox( ent );
-		trap_LinkEntity (ent);
-
-		// force the base weapon up
-		client->ps.weapon = WP_MACHINEGUN;
-		ent->swep_id = WP_MACHINEGUN;
-		ent->client->ps.stats[STAT_SWEP] = WP_MACHINEGUN;
-		client->ps.weaponstate = WEAPON_READY;
-		ent->client->isEliminated = qfalse;
-
-
+	// force the base weapon up
+	client->ps.weapon = WP_MACHINEGUN;
+	ent->swep_id = WP_MACHINEGUN;
+	ent->client->ps.stats[STAT_SWEP] = WP_MACHINEGUN;
+	client->ps.weaponstate = WEAPON_READY;
+	ent->client->isEliminated = qfalse;
 
 	// don't allow full run speed for a bit
 	client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
@@ -3256,18 +3253,15 @@ if	(client->sess.sessionTeam == TEAM_RED ) {
 	trap_GetUsercmd( client - level.clients, &ent->client->pers.cmd );
 	SetClientViewAngle( ent, spawn_angles );
 
+	if ( !ent->botspawn ) { G_KillBox( ent );}
+	trap_LinkEntity (ent);
 
-		G_KillBox( ent );
-		trap_LinkEntity (ent);
-
-		// force the base weapon up
-		client->ps.weapon = WP_MACHINEGUN;
-		ent->swep_id = WP_MACHINEGUN;
-		ent->client->ps.stats[STAT_SWEP] = WP_MACHINEGUN;
-		client->ps.weaponstate = WEAPON_READY;
-		ent->client->isEliminated = qfalse;
-
-
+	// force the base weapon up
+	client->ps.weapon = WP_MACHINEGUN;
+	ent->swep_id = WP_MACHINEGUN;
+	ent->client->ps.stats[STAT_SWEP] = WP_MACHINEGUN;
+	client->ps.weaponstate = WEAPON_READY;
+	ent->client->isEliminated = qfalse;
 
 	// don't allow full run speed for a bit
 	client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
@@ -3969,13 +3963,13 @@ if	(client->sess.sessionTeam == TEAM_RED ) {
 
 	if ( (ent->client->sess.sessionTeam == TEAM_SPECTATOR) || ((client->ps.pm_type == PM_SPECTATOR || client->isEliminated) &&
 		(g_gametype.integer == GT_ELIMINATION || g_gametype.integer == GT_CTF_ELIMINATION || g_gametype.integer == GT_LMS) ) ) {
-                //Sago: Lets see if this fixes the bots only bug - loose all point on dead bug. (It didn't)
-            /*if(g_gametype.integer == GT_ELIMINATION || g_gametype.integer == GT_CTF_ELIMINATION || g_gametype.integer == GT_LMS) {
-                G_KillBox( ent );
+        //Sago: Lets see if this fixes the bots only bug - loose all point on dead bug. (It didn't)
+        /*if(g_gametype.integer == GT_ELIMINATION || g_gametype.integer == GT_CTF_ELIMINATION || g_gametype.integer == GT_LMS) {
+        G_KillBox( ent );
 		trap_LinkEntity (ent);
-            }*/
+        }*/
 	} else {
-		G_KillBox( ent );
+		if ( !ent->botspawn ) { G_KillBox( ent );}
 		trap_LinkEntity (ent);
 
 		// force the base weapon up

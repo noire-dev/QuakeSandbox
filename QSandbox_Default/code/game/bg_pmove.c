@@ -32,6 +32,7 @@ pml_t		pml;
 
 // movement parameters
 float	pm_stopspeed = 100.0f;
+float	pm_veh00001stopspeed = 100.0f; //VEHICLE-SYSTEM: stop speed control
 float	pm_duckScale = 0.25f;
 float	pm_swimScale = 0.50f;
 float	pm_wadeScale = 0.70f;
@@ -39,11 +40,13 @@ float	pm_ladderScale = 0.50;
 
 float	pm_accelerate = 10.0f;
 float	pm_airaccelerate = 1.0f;
+float	pm_veh00001accelerate = 10.0f*0.060; //VEHICLE-SYSTEM: accelerate control
 float	pm_wateraccelerate = 4.0f;
 float	pm_flyaccelerate = 8.0f;
 float	pm_ladderAccelerate = 3000;
 
 float	pm_friction = 6.0f;
+float	pm_veh00001friction = 10.0f*0.060; //VEHICLE-SYSTEM: friction control
 float	pm_waterfriction = 1.0f;
 float	pm_flightfriction = 3.0f;
 float	pm_spectatorfriction = 5.0f;
@@ -87,6 +90,12 @@ void PM_AddTouchEnt( int entityNum ) {
 	// add it
 	pm->touchents[pm->numtouch] = entityNum;
 	pm->numtouch++;
+	
+	if(BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE]) == VCLASS_CAR){ //VEHICLE-SYSTEM: turn vehicle damage
+	#ifdef QAGAME
+	G_CollDamage( entityNum, pm->ps->clientNum, sqrt(pm->ps->velocity[0] * pm->ps->velocity[0] + pm->ps->velocity[1] * pm->ps->velocity[1]), MOD_CAR, pm->ps->velocity );
+	#endif
+	}
 }
 
 /*
@@ -196,8 +205,8 @@ static void PM_Friction( void ) {
 	drop = 0;
 
 	// apply ground friction
-	if ( pm->waterlevel <= 1 ) {
-		if(mod_slickmove != 1){
+	if ( pm->waterlevel <= 1) {
+		if(mod_slickmove != 1 && !pm->ps->stats[STAT_VEHICLE]){  //VEHICLE-SYSTEM: disable player phys for all
 			if ( pml.walking && !(pml.groundTrace.surfaceFlags & SURF_SLICK) ) {
 				// if getting knocked back, no friction
 				if ( ! (pm->ps->pm_flags & PMF_TIME_KNOCKBACK) ) {
@@ -205,6 +214,19 @@ static void PM_Friction( void ) {
 					drop += control*pm_friction*pml.frametime;
 				}
 			}
+		}
+		if(BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE]) == VCLASS_CAR){ //VEHICLE-SYSTEM: turn vehicle phys
+			if ( pml.walking && !(pml.groundTrace.surfaceFlags & SURF_SLICK) ) {
+				// if getting knocked back, no friction
+				if ( ! (pm->ps->pm_flags & PMF_TIME_KNOCKBACK) ) {
+					control = speed < pm_veh00001stopspeed ? pm_veh00001stopspeed : speed;
+					if ( pm->cmd.upmove > 0 ) {		//VEHICLE-SYSTEM: space break
+					drop += pm_veh00001stopspeed*pm_veh00001friction*16*pml.frametime;
+					} else {
+					drop += control*pm_veh00001friction*pml.frametime;
+					}
+				}
+			}	
 		}
 	}
 
@@ -250,9 +272,7 @@ Handles user intended acceleration
 ==============
 */
 static void PM_Accelerate( vec3_t wishdir, float wishspeed, float accel ) {
-if(mod_accelerate == 1) {
-//#if 1
-
+if(mod_accelerate == 1 && !pm->ps->stats[STAT_VEHICLE]) {  //VEHICLE-SYSTEM: disable player accelerate for all
 	// q2 style
 	int			i;
 	float		addspeed, accelspeed, currentspeed;
@@ -270,8 +290,25 @@ if(mod_accelerate == 1) {
 	for (i=0 ; i<3 ; i++) {
 		pm->ps->velocity[i] += accelspeed*wishdir[i];
 	}
+} else if (BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE]) == VCLASS_CAR) { //VEHICLE-SYSTEM: accelerate for 1
+	// vehicle
+	int			i;
+	float		addspeed, accelspeed, currentspeed;
+
+	currentspeed = DotProduct (pm->ps->velocity, wishdir);
+	addspeed = wishspeed - currentspeed;
+	if (addspeed <= 0) {
+		return;
+	}
+	accelspeed = accel*pml.frametime*wishspeed;
+	if (accelspeed > addspeed) {
+		accelspeed = addspeed;
+	}
+
+	for (i=0 ; i<3 ; i++) {
+		pm->ps->velocity[i] += (accelspeed*wishdir[i]);
+	}
 } else {
-        //#else
 	// proper way (avoids strafe jump maxspeed bug), but feels bad
 	vec3_t		wishVelocity;
 	vec3_t		pushDir;
@@ -288,7 +325,8 @@ if(mod_accelerate == 1) {
 	}
 
 	VectorMA( pm->ps->velocity, canPush, pushDir, pm->ps->velocity );
-}
+}	
+
 
 }
 
@@ -336,6 +374,7 @@ to the facing dir
 ================
 */
 static void PM_SetMovementDir( void ) {
+	if(!pm->ps->stats[STAT_VEHICLE]) { //VEHICLE-SYSTEM: disable player-move for all
 	if ( pm->cmd.forwardmove || pm->cmd.rightmove ) {
 		if ( pm->cmd.rightmove == 0 && pm->cmd.forwardmove > 0 ) {
 			pm->ps->movementDir = 0;
@@ -364,6 +403,17 @@ static void PM_SetMovementDir( void ) {
 			pm->ps->movementDir = 7;
 		}
 	}
+	} else { //VEHICLE-SYSTEM: turn vehicle-move for all
+		if ( pm->cmd.rightmove == 0 && pm->cmd.forwardmove > 0 ) {
+			pm->ps->movementDir = 0;
+		} else if ( pm->cmd.rightmove < 0 ) {
+			pm->ps->delta_angles[1] += ANGLE2SHORT(0.75);
+		} else if ( pm->cmd.rightmove == 0 && pm->cmd.forwardmove < 0 ) {
+			pm->ps->movementDir = 4;
+		} else if ( pm->cmd.rightmove > 0 ) {
+			pm->ps->delta_angles[1] -= ANGLE2SHORT(0.75);
+		}
+	}
 }
 
 
@@ -374,7 +424,10 @@ PM_CheckJump
 */
 static qboolean PM_CheckJump( void ) {
 
-
+	if ( BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE]) == VCLASS_CAR ){ //VEHICLE-SYSTEM: disable jump for 1
+		return qfalse;		// don't allow jump for vehicle
+	}
+	
 	if ( pm->ps->pm_flags & PMF_RESPAWNED ) {
 		return qfalse;		// don't allow jump until all buttons are up
 	}
@@ -522,10 +575,14 @@ static void PM_WaterMove( void ) {
 	//
 	// user intentions
 	//
-	if ( !scale ) {
+	if ( !scale || BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE]) == VCLASS_CAR) { //VEHICLE-SYSTEM: disable water move for 1
 		wishvel[0] = 0;
 		wishvel[1] = 0;
-		wishvel[2] = -60;		// sink towards bottom
+		if(!pm->ps->stats[STAT_VEHICLE]){ //VEHICLE-SYSTEM: water slow move for all
+		wishvel[2] = -30;		// sink towards bottom
+		} else {
+		wishvel[2] = -2;		// sink towards bottom
+		}
 	} else {
 		for (i=0 ; i<3 ; i++)
 			wishvel[i] = scale * pml.forward[i]*pm->cmd.forwardmove + scale * pml.right[i]*pm->cmd.rightmove;
@@ -700,8 +757,13 @@ static void PM_AirMove( void ) {
 
 	PM_Friction();
 
-	fmove = pm->cmd.forwardmove;
+	if(!pm->ps->stats[STAT_VEHICLE]) { //VEHICLE-SYSTEM: disable air move for all
 	smove = pm->cmd.rightmove;
+	fmove = pm->cmd.forwardmove;
+	} else {
+	smove = 0;	
+	fmove = 0;	
+	}
 
 	cmd = pm->cmd;
 	scale = PM_CmdScale( &cmd );
@@ -811,7 +873,11 @@ static void PM_WalkMove( void ) {
 	PM_Friction ();
 
 	fmove = pm->cmd.forwardmove;
+	if(!pm->ps->stats[STAT_VEHICLE]) { //VEHICLE-SYSTEM: disable strafe for all
 	smove = pm->cmd.rightmove;
+	} else {
+	smove = 0;	
+	}
 
 	cmd = pm->cmd;
 	scale = PM_CmdScale( &cmd );
@@ -869,6 +935,8 @@ static void PM_WalkMove( void ) {
 	// full control, which allows them to be moved a bit
 	if ( ( pml.groundTrace.surfaceFlags & SURF_SLICK ) || pm->ps->pm_flags & PMF_TIME_KNOCKBACK || mod_slickmove == 1 ) {
 		accelerate = pm_airaccelerate;
+	} else if(BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE]) == VCLASS_CAR) { //VEHICLE-SYSTEM: accelerate for 1
+		accelerate = pm_veh00001accelerate;
 	} else {
 		accelerate = pm_accelerate;
 	}
@@ -878,8 +946,8 @@ static void PM_WalkMove( void ) {
 	//Com_Printf("velocity = %1.1f %1.1f %1.1f\n", pm->ps->velocity[0], pm->ps->velocity[1], pm->ps->velocity[2]);
 	//Com_Printf("velocity1 = %1.1f\n", VectorLength(pm->ps->velocity));
 
-	if ( ( pml.groundTrace.surfaceFlags & SURF_SLICK ) || pm->ps->pm_flags & PMF_TIME_KNOCKBACK || mod_slickmove == 1 ) {
-		pm->ps->velocity[2] -= pm->ps->gravity * pml.frametime;
+	if ( ( pml.groundTrace.surfaceFlags & SURF_SLICK ) || pm->ps->pm_flags & PMF_TIME_KNOCKBACK || mod_slickmove == 1 || BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE]) == VCLASS_CAR ) { //VEHICLE-SYSTEM: slick move for 1
+		pm->ps->velocity[2] -= (pm->ps->gravity * pml.frametime);
 	} else {
 		// don't reset the z velocity for slopes
 //		pm->ps->velocity[2] = 0;
@@ -1022,6 +1090,7 @@ static void PM_CrashLand( void ) {
 
 	// SURF_NODAMAGE is used for bounce pads where you don't ever
 	// want to take damage or play a crunch sound
+	if(!pm->ps->stats[STAT_VEHICLE]) {
 	if ( !(pml.groundTrace.surfaceFlags & SURF_NODAMAGE) )  {
 		if ( delta > 60 ) {
 			PM_AddEvent( EV_FALL_FAR );
@@ -1035,6 +1104,15 @@ static void PM_CrashLand( void ) {
 		} else {
 			PM_AddEvent( PM_FootstepForSurface() );
 		}
+	}
+	} else {
+	if ( !(pml.groundTrace.surfaceFlags & SURF_NODAMAGE) )  {
+	if ( delta > 60 ) {
+		PM_AddEvent( EV_FALL_FAR );
+	}
+	PM_AddEvent( EV_FALL_MEDIUM );
+	PM_AddEvent( EV_CRASH25 );
+	}	
 	}
 
 	// start footstep cycle over
@@ -1309,11 +1387,10 @@ static void PM_CheckDuck (void)
 
 	pm->mins[0] = -15;
 	pm->mins[1] = -15;
+	pm->mins[2] = MINS_Z;
 
 	pm->maxs[0] = 15;
 	pm->maxs[1] = 15;
-
-	pm->mins[2] = MINS_Z;
 
 	if (pm->ps->pm_type == PM_DEAD)
 	{
@@ -1324,7 +1401,9 @@ static void PM_CheckDuck (void)
 
 	if (pm->cmd.upmove < 0)
 	{	// duck
+	if (!pm->ps->stats[STAT_VEHICLE]){ //VEHICLE-SYSTEM: disable duck for all
 		pm->ps->pm_flags |= PMF_DUCKED;
+	}
 	}
 	else
 	{	// stand up if possible
@@ -1347,6 +1426,15 @@ static void PM_CheckDuck (void)
 	{
 		pm->maxs[2] = 32;
 		pm->ps->viewheight = DEFAULT_VIEWHEIGHT;
+	}
+	
+	if (pm->ps->stats[STAT_VEHICLE]){ //VEHICLE-SYSTEM: collision for all
+		pm->mins[0] = -25;
+		pm->mins[1] = -25;
+		pm->mins[2] = -15;
+		pm->maxs[0] = 25;
+	    pm->maxs[1] = 25;
+		pm->maxs[2] = 15;
 	}
 }
 
@@ -1509,6 +1597,11 @@ PM_BeginWeaponChange
 */
 static void PM_BeginWeaponChange( int weapon ) {
 	gitem_t	*item;
+	if(BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE]) == VCLASS_CAR){ //VEHICLE-SYSTEM: weapon lock for 1
+	if(!BG_GetVehicleSettings(pm->ps->stats[STAT_VEHICLE], VSET_WEAPON)){
+	return;	
+	}
+	}
 	pm->ps->generic2 = pm->cmd.weapon;
 	if ( weapon <= WP_NONE || weapon >= WP_NUM_WEAPONS ) {
 	item = BG_FindSwep(weapon);
@@ -1566,6 +1659,11 @@ static void PM_FinishWeaponChange( void ) {
 	int		weapon;
 
 	weapon = pm->cmd.weapon;
+	if(BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE]) == VCLASS_CAR){ //VEHICLE-SYSTEM: weapon lock for 1
+	if(!BG_GetVehicleSettings(pm->ps->stats[STAT_VEHICLE], VSET_WEAPON)){
+	return;	
+	}
+	}
 	if ( weapon < WP_NONE || weapon >= WP_NUM_WEAPONS ) {
 	item = BG_FindSwep(weapon);
 	#ifdef QAGAME
@@ -1778,6 +1876,12 @@ static void PM_Weapon( void ) {
 		pm->ps->weaponstate = WEAPON_READY;
 		return;
 	}
+	
+	if(BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE]) == VCLASS_CAR){ //VEHICLE-SYSTEM: weapon lock for 1
+	if(!BG_GetVehicleSettings(pm->ps->stats[STAT_VEHICLE], VSET_WEAPON)){
+	return;	
+	}
+	}
 
 	// start the animation even if out of ammo
 	if ( pm->ps->weapon == WP_GAUNTLET ) {
@@ -1844,7 +1948,6 @@ PM_Add_SwepAmmo(pm->ps->clientNum, pm->ps->stats[STAT_SWEP], -1);
 
 // fire weapon
 PM_AddEvent( EV_FIRE_WEAPON );
-
 	switch( pm->ps->stats[STAT_SWEP] ) {
 	default:
 	case WP_GAUNTLET:
@@ -1937,7 +2040,11 @@ PM_AddEvent( EV_FIRE_WEAPON );
 		addTime /= mod_teamred_firespeed;
 	}
 
+if(!BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE])){
 	pm->ps->weaponTime += addTime;
+} else {
+	pm->ps->weaponTime += addTime * BG_GetVehicleSettings(BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE]), VSET_WEAPONRATE);
+}
 }
 
 /*
@@ -1948,6 +2055,7 @@ PM_Animate
 
 static void PM_Animate( void ) {
 	if ( pm->cmd.buttons & BUTTON_GESTURE ) {
+		if(!pm->ps->stats[STAT_VEHICLE]){ //VEHICLE-SYSTEM: disable gesture for all
 		if(!cg_singlemode.integer){
 		if ( pm->ps->torsoTimer == 0 ) {
 			PM_StartTorsoAnim( TORSO_GESTURE );
@@ -1959,6 +2067,13 @@ static void PM_Animate( void ) {
 			PM_StartTorsoAnim( TORSO_ATTACK2 );
 			pm->ps->torsoTimer = 600;
 		}
+		}
+		} 
+		if( BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE]) == VCLASS_CAR ) { //VEHICLE-SYSTEM: horn for 1
+			if ( pm->ps->torsoTimer == 0 ) {
+		    pm->ps->torsoTimer = 300;
+			PM_AddEvent( EV_HORN );
+			}
 		}
 	} else if ( pm->cmd.buttons & BUTTON_GETFLAG ) {
 		if ( pm->ps->torsoTimer == 0 ) {
@@ -2348,7 +2463,9 @@ void PmoveSingle (pmove_t *pmove) {
 	PM_TorsoAnimation();
 
 	// footstep events / legs animations
+	if(!pm->ps->stats[STAT_VEHICLE]) {	//VEHICLE-SYSTEM: footsteps lock for all
 	PM_Footsteps();
+	}
 
 	// entering / leaving water splashes
 	PM_WaterEvents();

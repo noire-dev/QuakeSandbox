@@ -278,7 +278,9 @@ typedef enum {
 	STAT_MONEY,						// for buy activator funcs
 	STAT_FLASH,						// for flashlight
 	STAT_SWEP,						// for SWEP WEAPONS
-	STAT_SWEPAMMO					// for SWEP WEAPONS ammo
+	STAT_SWEPAMMO,					// for SWEP WEAPONS ammo
+	STAT_VEHICLE,					// for vehicle system
+	STAT_VEHICLEHP					// for vehicle system
 } statIndex_t;
 
 
@@ -523,6 +525,7 @@ typedef enum {
 	EV_BULLET,				// otherEntity is the shooter
 
 	EV_PAIN,
+	EV_PAINVEHICLE,
 	EV_DEATH1,
 	EV_DEATH2,
 	EV_DEATH3,
@@ -574,7 +577,12 @@ typedef enum {
 	
 	EV_SILENT_ITEM_PICKUP,		// item pickup without pickup sound
 
-	EV_FOOTSTEP_FLESH
+	EV_FOOTSTEP_FLESH,
+	
+	EV_HORN,		//VEHICLES
+	EV_CRASH25,
+	EV_CRASH50,
+	EV_CAREXPLOSION
 
 } entity_event_t;
 
@@ -713,6 +721,22 @@ typedef enum {
 	PSPECIAL_NUM
 } pspecial_t;
 
+typedef enum {
+	VCLASS_NONE,
+	VCLASS_CAR,
+
+	VCLASS_NUM
+} vehclass_t;
+
+typedef enum {
+	VSET_SPEED,
+	VSET_GRAVITY,
+	VSET_WEAPON,
+	VSET_WEAPONRATE,
+
+	VSET_NUM
+} vehsetting_t;
+
 // This is a fair assumption for Double Domination:
 #define TEAM_NONE TEAM_SPECTATOR
 
@@ -787,6 +811,8 @@ typedef enum {
 	MOD_KAMIKAZE,
 	MOD_JUICED,
 	MOD_GRAPPLE,
+	MOD_CAR,
+	MOD_CAREXPLODE,
 	MOD_BREAKABLE_SPLASH
 } meansOfDeath_t;
 
@@ -939,6 +965,9 @@ void	BG_PlayerStateToEntityState( playerState_t *ps, entityState_t *s, qboolean 
 void	BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s, int time, qboolean snap );
 
 qboolean	BG_PlayerTouchesItem( playerState_t *ps, entityState_t *item, int atTime );
+
+int BG_VehicleCheckClass (int id);
+float BG_GetVehicleSettings (int id, int set);
 
 
 #define ARENAS_PER_TIER		4

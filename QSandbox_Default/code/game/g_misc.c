@@ -845,8 +845,10 @@ static void PortalDie (gentity_t *self, gentity_t *inflictor, gentity_t *attacke
 }
 
 static void BlockDie (gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int mod) {
+	if(self->vehicle){ //VEHICLE-SYSTEM: vehicle's explode for all
+	G_StartCarExplode(self);
+	}
 	G_FreeEntity( self );
-	//FIXME do something more interesting
 }
 
 
@@ -1120,9 +1122,6 @@ static void PhysgunInteract( gentity_t *self ) {
 	
 }
 
-
-
-
 void DropPortalSource( gentity_t *player ) {
 	gentity_t	*ent;
 	gentity_t	*destination;
@@ -1231,7 +1230,7 @@ void SP_func_prop( gentity_t *ent ) {
 				ent->takedamage2 = qtrue;
 			}
 			if(ent->sb_phys == 1){ ent->s.pos.trType = TR_STATIONARY; ent->physicsObject = qfalse; }
-			if(ent->sb_phys == 2){ ent->s.pos.trType = TR_GRAVITY; ent->s.pos.trTime = level.time; ent->physicsObject = qtrue; ent->physicsBounce = 0.5; }
+			if(ent->sb_phys == 2){ ent->s.pos.trType = TR_GRAVITY; ent->s.pos.trTime = level.time; ent->physicsObject = qtrue; }
 			if(ent->sb_coll == 0){
 			ent->r.contents = CONTENTS_SOLID | CONTENTS_BODY;	
 			}
@@ -1267,7 +1266,7 @@ void SP_func_prop( gentity_t *ent ) {
 	}
 	ent->s.pos.trTime = level.time;
 	if(ent->sb_phys == 1){ ent->s.pos.trType = TR_STATIONARY; ent->physicsObject = qfalse; }
-	if(ent->sb_phys == 2){ ent->s.pos.trType = TR_GRAVITY; ent->s.pos.trTime = level.time; ent->physicsObject = qtrue; ent->physicsBounce = 0.5; }
+	if(ent->sb_phys == 2){ ent->s.pos.trType = TR_GRAVITY; ent->s.pos.trTime = level.time; ent->physicsObject = qtrue; }
 	if(ent->sb_coll == 0){
 	ent->r.contents = CONTENTS_SOLID;	
 	}
@@ -1280,13 +1279,19 @@ void SP_func_prop( gentity_t *ent ) {
 	ent->s.scales[2] = ent->sb_colscale2;
 	ent->s.apos.trBase[0] = ent->sb_rotate0;
 	ent->s.apos.trBase[1] = ent->sb_rotate1;
-	ent->s.apos.trBase[2] = ent->sb_rotate2;	
+	ent->s.apos.trBase[2] = ent->sb_rotate2;
+	if(ent->vehicle <= 0){
 	VectorSet( ent->r.mins, -ent->sb_coltype*ent->sb_colscale0, -ent->sb_coltype*ent->sb_colscale1, -ent->sb_coltype*ent->sb_colscale2);
 	VectorSet( ent->r.maxs, ent->sb_coltype*ent->sb_colscale0, ent->sb_coltype*ent->sb_colscale1, ent->sb_coltype*ent->sb_colscale2 );
+	} else {
+	VectorSet( ent->r.mins, -25, -25, -15);
+	VectorSet( ent->r.maxs, 25, 25, 15 );
+	ent->touch = VehicleTouchBot;
+	}
 	trap_LinkEntity( ent );
 }
 
-void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, char *arg04, char *arg05, char *arg06, char *arg07, char *arg08, char *arg09, char *arg10, char *arg11, char *arg12, char *arg13, char *arg14, char *arg15, char *arg16, char *arg17, char *arg18, char *arg19, char *arg20, char *arg21, char *arg22, char *arg23, char *arg24, char *arg25, char *arg26, char *arg27, char *arg28, char *arg29, char *arg30, char *arg31, char *arg32, char *arg33, char *arg34, char *arg35, char *arg36, char *arg37, char *arg38, char *arg39, char *arg40, char *arg41, char *arg42, char *arg43, char *arg44, char *arg45, char *arg46, char *arg47, char *arg48, char *arg49, char *arg50, char *arg51, char *arg52, char *arg53, char *arg54, char *arg55, char *arg56, char *arg57, char *arg58, char *arg59 ) {
+void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, char *arg04, char *arg05, char *arg06, char *arg07, char *arg08, char *arg09, char *arg10, char *arg11, char *arg12, char *arg13, char *arg14, char *arg15, char *arg16, char *arg17, char *arg18, char *arg19, char *arg20, char *arg21, char *arg22, char *arg23, char *arg24, char *arg25, char *arg26, char *arg27, char *arg28, char *arg29, char *arg30, char *arg31, char *arg32, char *arg33, char *arg34, char *arg35, char *arg36, char *arg37, char *arg38, char *arg39, char *arg40, char *arg41, char *arg42, char *arg43, char *arg44, char *arg45, char *arg46, char *arg47, char *arg48, char *arg49, char *arg50, char *arg51, char *arg52, char *arg53, char *arg54, char *arg55, char *arg56, char *arg57, char *arg58, char *arg59, char *arg60, char *arg61 ) {
 	gentity_t	*ent;
 	vec3_t		snapped;
 	vec3_t		o;
@@ -1295,12 +1300,20 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	
 	o[0] = ((int)((xyz[0] + (xyz[0] < 0 ? -atoi(arg06) : atoi(arg06))) / (atoi(arg06) * 2)) * (atoi(arg06) * 2));
 	o[1] = ((int)((xyz[1] + (xyz[1] < 0 ? -atoi(arg06) : atoi(arg06))) / (atoi(arg06) * 2)) * (atoi(arg06) * 2));
+	if(atoi(arg60) <= 0){
 	o[2] = ((int)((xyz[2] + (xyz[2] < 0 ? -atoi(arg06) : atoi(arg06))) / (atoi(arg06) * 2)) * (atoi(arg06) * 2));
+	} else {
+	o[2] = xyz[2] + 16;
+	}
 
 	if (trap_Cvar_VariableIntegerValue("cl_android")) {
     o[0] -= (xyz[0] >= 0 ? (atoi(arg06)) : -(atoi(arg06)));
     o[1] -= (xyz[1] >= 0 ? (atoi(arg06)) : -(atoi(arg06)));
+	if(atoi(arg60) <= 0){
     o[2] -= (xyz[2] >= 0 ? (atoi(arg06)) : -(atoi(arg06)));
+	} else {
+	o[2] = xyz[2] + 16;
+	}
 	}
 
 	VectorCopy (o, snapped);
@@ -1330,7 +1343,7 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent->s.pos.trType = TR_STATIONARY; ent->physicsObject = qfalse; ent->sb_phys = 1;
 	}
 	if(atoi(arg09) == 1){
-	ent->s.pos.trType = TR_GRAVITY; ent->s.pos.trTime = level.time; ent->physicsObject = qtrue; ent->physicsBounce = 0.5; ent->sb_phys = 2;
+	ent->s.pos.trType = TR_GRAVITY; ent->s.pos.trTime = level.time; ent->physicsObject = qtrue; ent->physicsBounce = atof(arg61); ent->sb_phys = 2;
 	}
 
 	if(atoi(arg10) == 0){
@@ -1459,6 +1472,9 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	if ( strcmp(arg59, "0") ) {
 	ent->type = atoi(arg59);
 	}
+	if ( strcmp(arg60, "0") ) {
+	ent->vehicle = atoi(arg60);
+	}
 
 	// check item spawn functions
 	for ( item=bg_itemlist+1 ; item->classname ; item++ ) {
@@ -1482,8 +1498,6 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 			ent->s.modelindex = G_ModelIndex( va("props/%s",arg02) );
 			CopyAlloc(ent->sb_model, arg02);
 			ent->sb_coltype = atoi(arg05);
-			VectorSet( ent->r.mins, -atoi(arg05), -atoi(arg05), -atoi(arg05) );
-			VectorSet( ent->r.maxs, atoi(arg05), atoi(arg05), atoi(arg05) );
 			ent->classname = "func_prop";
 			ent->r.svFlags &= ~SVF_NOCLIENT;
 			VectorSet( ent->r.mins, -ent->sb_coltype*ent->sb_colscale0, -ent->sb_coltype*ent->sb_colscale1, -ent->sb_coltype*ent->sb_colscale2);
@@ -1502,134 +1516,16 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent->die = BlockDie;		
 	ent->s.modelindex = G_ModelIndex( va("props/%s",arg02) );
 	CopyAlloc(ent->sb_model, arg02);
+	if(atoi(arg60) <= 0){
 	ent->sb_coltype = atoi(arg05);
-	VectorSet( ent->r.mins, -atoi(arg05), -atoi(arg05), -atoi(arg05) );
-	VectorSet( ent->r.maxs, atoi(arg05), atoi(arg05), atoi(arg05) );
-	
 	VectorSet( ent->r.mins, -ent->sb_coltype*ent->sb_colscale0, -ent->sb_coltype*ent->sb_colscale1, -ent->sb_coltype*ent->sb_colscale2);
 	VectorSet( ent->r.maxs, ent->sb_coltype*ent->sb_colscale0, ent->sb_coltype*ent->sb_colscale1, ent->sb_coltype*ent->sb_colscale2 );
-
-	trap_LinkEntity( ent );
-}
-
-void G_BuildProp( char *model, char *class, vec3_t xyz, gentity_t *player, int priv, int mix, int grid, int sf ) {
-	gentity_t	*ent;
-	vec3_t		snapped;
-	vec3_t		o;
-	spawn_t	*s;
-	gitem_t	*item;
-	
-	if(mix < 10){
-	mix = 10;
+	} else {
+	ent->sb_coltype = atoi(arg05);
+	VectorSet( ent->r.mins, -25, -25, -15);
+	VectorSet( ent->r.maxs, 25, 25, 15 );
+	ent->touch = VehicleTouchBot;
 	}
-	
-	if(mix > 100){
-	mix = 100;
-	}
-	
-	o[0] = ((int)((xyz[0] + (xyz[0] < 0 ? -grid : grid)) / (grid * 2)) * (grid * 2));
-	o[1] = ((int)((xyz[1] + (xyz[1] < 0 ? -grid : grid)) / (grid * 2)) * (grid * 2));
-	o[2] = ((int)((xyz[2] + (xyz[2] < 0 ? -grid : grid)) / (grid * 2)) * (grid * 2));
-	
-	if (trap_Cvar_VariableIntegerValue("cl_android")) {
-    o[0] -= (xyz[0] >= 0 ? grid : -grid);
-    o[1] -= (xyz[1] >= 0 ? grid : -grid);
-    o[2] -= (xyz[2] >= 0 ? grid : -grid);
-	}
-	
-	VectorCopy (o, snapped);
-	
-	// create new entity
-	ent = G_Spawn();
-	ent->spawnflags = sf;
-	ent->sandboxObject = 1;
-	ent->sb_coll = 0;
-	ent->sb_phys = 0;
-	ent->sb_takedamage = 1;
-	ent->sb_takedamage2 = 1;
-	CopyAlloc(ent->classname, class);
-
-
-	//spawn item or func
-	VectorCopy( snapped, ent->s.origin );
-	VectorCopy( snapped, ent->s.pos.trBase );
-	VectorCopy( snapped, ent->r.currentOrigin );
-	if(priv == 1){
-	ent->owner = player->s.clientNum + 1;
-	ent->ownername = player->client->pers.netname;
-	}
-
-	// check item spawn functions
-	for ( item=bg_itemlist+1 ; item->classname ; item++ ) {
-		if ( !strcmp(item->classname, ent->classname) ) {
-			snapped[2] += 48;
-			VectorCopy( snapped, ent->s.origin );
-			VectorCopy( snapped, ent->s.pos.trBase );
-			VectorCopy( snapped, ent->r.currentOrigin );
-			G_SpawnItem( ent, item );
-			return;
-		}
-	}
-
-	// check normal spawn functions
-	for ( s=sandspawns ; s->name ; s++ ) {
-		if ( !strcmp(s->name, ent->classname) ) {
-			// found it
-			CopyAlloc(ent->sb_class, ent->classname);
-			s->spawn(ent);
-			//spawn another class
-			ent->r.contents = CONTENTS_SOLID;
-			ent->s.modelindex = G_ModelIndex( va("props/%s",model) );
-			CopyAlloc(ent->sb_model, model);
-			ent->s.scales[0] = 1.0;
-			ent->s.scales[1] = 1.0;
-			ent->s.scales[2] = 1.0;
-			ent->sb_colscale0 = 1.0;
-			ent->sb_colscale1 = 1.0;
-			ent->sb_colscale2 = 1.0;
-			ent->s.apos.trBase[0] = 0;
-			ent->s.apos.trBase[1] = 0;
-			ent->s.apos.trBase[2] = 0;
-			ent->sb_rotate0 = 0;
-			ent->sb_rotate1 = 0;
-			ent->sb_rotate2 = 0;
-			ent->sb_coltype = mix;
-			VectorSet( ent->r.mins, -mix, -mix, -mix );
-			VectorSet( ent->r.maxs, mix, mix, mix );
-			ent->classname = "func_prop";
-			ent->r.svFlags &= ~SVF_NOCLIENT;
-			trap_LinkEntity( ent );
-			return;
-		}
-	}
-
-	//prop init
-	ent->s.eType = ET_GENERAL;
-	ent->classname = "func_prop";
-	ent->s.pos.trType = TR_STATIONARY;
-	ent->r.contents = CONTENTS_SOLID;
-	VectorCopy( ent->s.angles, ent->s.apos.trBase );
-	ent->health = 1000;
-	ent->takedamage = qtrue;
-	ent->takedamage2 = qtrue;
-	ent->die = BlockDie;		
-	ent->s.modelindex = G_ModelIndex( va("props/%s",model) );
-	CopyAlloc(ent->sb_model, model);
-	ent->s.scales[0] = 1.0;
-	ent->s.scales[1] = 1.0;
-	ent->s.scales[2] = 1.0;
-	ent->sb_colscale0 = 1.0;
-	ent->sb_colscale1 = 1.0;
-	ent->sb_colscale2 = 1.0;
-	ent->s.apos.trBase[0] = 0;
-	ent->s.apos.trBase[1] = 0;
-	ent->s.apos.trBase[2] = 0;
-	ent->sb_rotate0 = 0;
-	ent->sb_rotate1 = 0;
-	ent->sb_rotate2 = 0;
-	ent->sb_coltype = mix;
-	VectorSet( ent->r.mins, -mix, -mix, -mix );
-	VectorSet( ent->r.maxs, mix, mix, mix );
 
 	trap_LinkEntity( ent );
 }
@@ -1707,7 +1603,7 @@ if(attacker->gmodtool == 4){
 	targ->s.pos.trType = TR_STATIONARY; targ->physicsObject = qfalse; targ->sb_phys = 1;
 	}
 	if(attacker->gmodtoolmode == 1){
-	targ->s.pos.trType = TR_GRAVITY; targ->s.pos.trTime = level.time; targ->physicsObject = qtrue; targ->physicsBounce = 0.5; targ->sb_phys = 2;
+	targ->s.pos.trType = TR_GRAVITY; targ->s.pos.trTime = level.time; targ->physicsObject = qtrue; targ->sb_phys = 2;
 	}
 }
 if(attacker->gmodtool == 5){
@@ -1814,7 +1710,7 @@ if(attacker->gmodtool == 10){
 	} else {
 	targ->sandboxInteract = 0;
 	attacker->sandboxInteract = 0;
-	targ->s.pos.trType = TR_GRAVITY; targ->s.pos.trTime = level.time; targ->physicsObject = qtrue; targ->physicsBounce = 0.5; targ->sb_phys = 2;
+	targ->s.pos.trType = TR_GRAVITY; targ->s.pos.trTime = level.time; targ->physicsObject = qtrue; targ->sb_phys = 2;
 	trap_SendServerCommand( attacker-g_entities, va("clcmd \"%s\"", "execscript d_interact0" ));
 	}
 	}
@@ -1911,6 +1807,10 @@ void G_RunProp( gentity_t *ent ) {
 		ent->s.number, mask );
 
 	VectorCopy( tr.endpos, ent->r.currentOrigin );
+	VectorCopy( ent->r.currentOrigin, ent->s.origin );
+	ent->sb_rotate0 = ent->s.apos.trBase[0];
+	ent->sb_rotate1 = ent->s.apos.trBase[1];
+	ent->sb_rotate2 = ent->s.apos.trBase[2];
 
 	if ( tr.startsolid ) {
 		tr.fraction = 0;
@@ -1937,15 +1837,10 @@ G_HideObjects
 void G_HideObjects() {
 	int			i;
 	gentity_t	*ent;
-	int			mins, seconds, tens;
-	int			msec;
-	int start, end;
-
 
 	//
 	// go through all allocated objects
 	//
-	start = trap_Milliseconds();
 	ent = &g_entities[0];
 	for (i=0 ; i<level.num_entities ; i++, ent++) {
 	if(i>level.num_entities-1){
@@ -1970,7 +1865,6 @@ void G_ShowObjects() {
 	gentity_t	*ent;
 	int			thinktime = 1;
 
-
 	//
 	// go through all allocated objects
 	//
@@ -1989,3 +1883,37 @@ void G_ShowObjects() {
 	}
 	G_Printf("Object (show) processed!");
 }
+
+/*
+================
+G_FindEntityForEntityNum
+
+================
+*/
+gentity_t *G_FindEntityForEntityNum(int entityn) {
+    int i;
+    gentity_t *ent;
+
+    // go through all allocated objects
+    for (i = 0, ent = g_entities; i < level.num_entities; i++, ent++) {
+        if (ent->s.number == entityn) {
+            return ent;
+        }
+    }
+    
+    return NULL;
+}
+
+gentity_t *G_FindEntityForClientNum(int entityn) {
+    int i;
+    gentity_t *ent;
+
+    for (i = 0, ent = g_entities; i < level.num_entities; i++, ent++) {
+        if (ent->client || ent->client->ps.clientNum == entityn) {
+            return ent;
+        }
+    }
+    
+    return NULL;
+}
+

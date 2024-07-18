@@ -567,8 +567,8 @@ qboolean G_BotConnect( int clientNum, qboolean restart ) {
 	Q_strncpyz( settings.waypoint, Info_ValueForKey( userinfo, "waypoint" ), sizeof( settings.waypoint ) );
 
 	if (!trap_AAS_Initialized() || !BotAISetupClient( clientNum, &settings, restart )) {
-		trap_DropClient( clientNum, "BotAISetupClient failed" );
-		return qfalse;
+		//trap_DropClient( clientNum, "BotAISetupClient failed" );
+		//return qfalse;
 	}
 
 	return qtrue;
@@ -580,7 +580,7 @@ qboolean G_BotConnect( int clientNum, qboolean restart ) {
 G_AddBot
 ===============
 */
-static void G_AddBot( const char *name, float skill, const char *team, int delay, char *altname, int parentEntityNum, char* waypoint, int customspbot ) {
+static void G_AddBot( const char *name, float skill, const char *team, int delay, char *altname, int parentEntityNum, char* waypoint, int customspbot, gentity_t *spawn ) {
 	int				clientNum;
 	char			*botinfo;
 	gentity_t		*bot;
@@ -623,7 +623,6 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 	Info_SetValueForKey( userinfo, "snaps", "20" );
 	Info_SetValueForKey( userinfo, "skill", va("%1.2f", skill) );
 
-if(!onandroid.integer){
 	if ( skill >= 1 && skill < 2 ) {
 		Info_SetValueForKey( userinfo, "handicap", "50" );
 		//bot->client->botskill = 1;
@@ -680,65 +679,7 @@ if(!onandroid.integer){
 		Info_SetValueForKey( userinfo, "handicap", "10000" );
 		//bot->client->botskill = 14;
 	}
-}
-if(onandroid.integer){
-	if ( skill >= 1 && skill < 2 ) {
-		Info_SetValueForKey( userinfo, "handicap", "20" );
-		//bot->client->botskill = 1;
-	}
-	else if ( skill >= 2 && skill < 3 ) {
-		Info_SetValueForKey( userinfo, "handicap", "30" );
-		//bot->client->botskill = 2;
-	}
-	else if ( skill >= 3 && skill < 4 ) {
-		Info_SetValueForKey( userinfo, "handicap", "40" );
-		//bot->client->botskill = 3;
-	}
-	else if ( skill >= 4 && skill < 5 ) {
-		Info_SetValueForKey( userinfo, "handicap", "50" );
-		//bot->client->botskill = 4;
-	}
-	else if ( skill >= 5 && skill < 6 ) {
-		Info_SetValueForKey( userinfo, "handicap", "50" );
-		//bot->client->botskill = 5;
-	}
-	else if ( skill >= 6 && skill < 7 ) {
-		Info_SetValueForKey( userinfo, "handicap", "60" );
-		//bot->client->botskill = 6;
-	}
-	else if ( skill >= 7 && skill < 8 ) {
-		Info_SetValueForKey( userinfo, "handicap", "70" );
-		//bot->client->botskill = 7;
-	}
-	else if ( skill >= 8 && skill < 9 ) {
-		Info_SetValueForKey( userinfo, "handicap", "100" );
-		//bot->client->botskill = 8;
-	}
-	else if ( skill >= 9 && skill < 10 ) {
-		Info_SetValueForKey( userinfo, "handicap", "120" );
-		//bot->client->botskill = 9;
-	}
-	else if ( skill >= 10 && skill < 11 ) {
-		Info_SetValueForKey( userinfo, "handicap", "150" );
-		//bot->client->botskill = 10;
-	}
-	else if ( skill >= 11 && skill < 12 ) {
-		Info_SetValueForKey( userinfo, "handicap", "250" );
-		//bot->client->botskill = 11;
-	}
-	else if ( skill >= 12 && skill < 13 ) {
-		Info_SetValueForKey( userinfo, "handicap", "500" );
-		//bot->client->botskill = 12;
-	}
-	else if ( skill >= 13 && skill < 14 ) {
-		Info_SetValueForKey( userinfo, "handicap", "2500" );
-		//bot->client->botskill = 13;
-	}
-	else if ( skill >= 14 && skill < 15 ) {
-		Info_SetValueForKey( userinfo, "handicap", "5000" );
-		//bot->client->botskill = 14;
-	}
-}
+
 	key = "model";
 	model = Info_ValueForKey( botinfo, key );
 	if ( !*model ) {
@@ -813,6 +754,9 @@ if(onandroid.integer){
 	bot = &g_entities[ clientNum ];
 	bot->r.svFlags |= SVF_BOT;
 	bot->inuse = qtrue;
+	spawn->parent = bot;
+	spawn->think = botsandbox_check;
+	spawn->nextthink = level.time + 1;
 
 	// set the bot's spawning entity
 	Info_SetValueForKey( userinfo, "parentid", va( "%i", parentEntityNum ) );
@@ -892,7 +836,7 @@ void Svcmd_AddBot_f( void ) {
 	// waypoint
 	trap_Argv( 6, waypoint, sizeof(waypoint) );
 
-	G_AddBot( name, skill, team, delay, altname, 0, waypoint, 0 );
+	G_AddBot( name, skill, team, delay, altname, 0, waypoint, 0, NULL );
 
 	// if this was issued during gameplay and we are playing locally,
 	// go ahead and load the bot's media immediately
@@ -1186,9 +1130,9 @@ void G_AddCustomBot( char *name, int parentEntityNum, char* waypoint, float relS
 		trap_Cvar_Set( "cl_noprint", "1" );
 
 	if(!altname){
-	G_AddBot( name, skill, "free", 0, name, parentEntityNum, waypoint, npcid );
+	G_AddBot( name, skill, "free", 0, name, parentEntityNum, waypoint, npcid, NULL );
 	} else {
-	G_AddBot( name, skill, "free", 0, altname, parentEntityNum, waypoint, npcid );
+	G_AddBot( name, skill, "free", 0, altname, parentEntityNum, waypoint, npcid, NULL );
 	}
 
 	//restore cl_noprint to its former value

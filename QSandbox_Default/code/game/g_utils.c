@@ -1057,6 +1057,13 @@ void G_FreeEntity( gentity_t *ed ) {
 	if ( ed->neverFree ) {
 		return;
 	}
+	if ( ed->vehicle && ed->parent && ed->parent->client->vehiclenum == ed->s.number){
+		ed->parent->client->vehiclenum = 0;
+		ClientUserinfoChanged( ed->parent->s.clientNum );
+		VectorSet( ed->parent->r.mins, -15, -15, -24 );
+		VectorSet( ed->parent->r.maxs, 15, 15, 32 );
+		ed->parent->client->ps.gravity = (g_gravity.value*g_gravityModifier.value);
+	}
 
 	memset (ed, 0, sizeof(*ed));
 	ed->classname = "freed";

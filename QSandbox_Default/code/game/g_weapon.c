@@ -76,7 +76,7 @@ void Laser_Gen( gentity_t *ent )	{
 }
 
 void Laser_Think( gentity_t *self )	{
-	vec3_t		end, start, forward, up;
+	vec3_t		end, start, forward, up, add;
 	trace_t		tr;
 
 	//If Player Dies, You Die -> now thanks to Camouflage!
@@ -91,9 +91,18 @@ void Laser_Think( gentity_t *self )	{
 	}
 
 	//Set Aiming Directions
+	if(!self->parent->client->vehiclenum){
 	AngleVectors(self->parent->client->ps.viewangles, forward, right, up);
 	CalcMuzzlePoint(self->parent, forward, right, up, start);
 	VectorMA (start, 999, forward, end);
+	} else {
+	add[0] = 0;
+	add[1] = self->parent->s.apos.trBase[1];
+	add[2] = 0;
+	AngleVectors(add, forward, right, up);
+	CalcMuzzlePoint(self->parent, forward, right, up, start);
+	VectorMA (start, 320, forward, end);	
+	}
 	VectorScale( forward, 20, forward );
 
 	//Trace Position
@@ -155,7 +164,7 @@ qboolean CheckGauntletAttack( gentity_t *ent ) {
 
 	CalcMuzzlePoint ( ent, forward, right, up, muzzle );
 if(!g_building.integer){
-	VectorMA (muzzle, g_grange.integer*3, forward, end);
+	VectorMA (muzzle, g_grange.integer, forward, end);
 	trap_Trace (&tr, muzzle, NULL, NULL, end, ent->s.number, MASK_SHOT);
 }
 if(g_building.integer){
@@ -164,7 +173,7 @@ if(ent->gmodtool){
 	trap_Trace (&tr, muzzle, NULL, NULL, end, ent->s.number, MASK_SELECT);
 }
 if(!ent->gmodtool){
-	VectorMA (muzzle, g_grange.integer*3, forward, end);	
+	VectorMA (muzzle, g_grange.integer, forward, end);	
 	trap_Trace (&tr, muzzle, NULL, NULL, end, ent->s.number, MASK_SHOT);
 }
 }
@@ -172,7 +181,7 @@ if(!ent->gmodtool){
 	if ( tr.surfaceFlags & SURF_NOIMPACT ) {
 		return qfalse;
 	}
-if(!g_building.integer){
+if(!g_building.integer && !ent->client->vehiclenum){
 	if ( ent->client->noclip ) {
 		return qfalse;
 	}
@@ -189,7 +198,7 @@ if(!g_building.integer){
 	}
 	
 	if(!g_building.integer){
-		if(!ent->gmodtool){
+		if(!ent->gmodtool && !ent->client->vehiclenum){
 			if ( !traceEnt->takedamage) {
 				return qfalse;
 			}
@@ -1306,7 +1315,7 @@ void FireWeapon( gentity_t *ent ) {
 KamikazeRadiusDamage
 ===============
 */
-static void KamikazeRadiusDamage( vec3_t origin, gentity_t *attacker, float damage, float radius ) {
+void KamikazeRadiusDamage( vec3_t origin, gentity_t *attacker, float damage, float radius, int mod ) {
 	float		dist;
 	gentity_t	*ent;
 	int			numListedEntities;
@@ -1359,7 +1368,7 @@ static void KamikazeRadiusDamage( vec3_t origin, gentity_t *attacker, float dama
 			// push the center of mass higher than the origin so players
 			// get knocked into the air more
 			dir[2] += 24;
-			G_Damage( ent, NULL, attacker, dir, origin, damage, DAMAGE_RADIUS|DAMAGE_NO_TEAM_PROTECTION, MOD_KAMIKAZE );
+			G_Damage( ent, NULL, attacker, dir, origin, damage, DAMAGE_RADIUS|DAMAGE_NO_TEAM_PROTECTION, mod );
 			ent->kamikazeTime = level.time + 3000;
 //		}
 	}
@@ -1370,7 +1379,7 @@ static void KamikazeRadiusDamage( vec3_t origin, gentity_t *attacker, float dama
 KamikazeShockWave
 ===============
 */
-static void KamikazeShockWave( vec3_t origin, gentity_t *attacker, float damage, float push, float radius ) {
+void KamikazeShockWave( vec3_t origin, gentity_t *attacker, float damage, float push, float radius, int mod ) {
 	float		dist;
 	gentity_t	*ent;
 	int			numListedEntities;
@@ -1416,7 +1425,7 @@ static void KamikazeShockWave( vec3_t origin, gentity_t *attacker, float damage,
 //		if( CanDamage (ent, origin) ) {
 			VectorSubtract (ent->r.currentOrigin, origin, dir);
 			dir[2] += 24;
-			G_Damage( ent, NULL, attacker, dir, origin, damage, DAMAGE_RADIUS|DAMAGE_NO_TEAM_PROTECTION, MOD_KAMIKAZE );
+			G_Damage( ent, NULL, attacker, dir, origin, damage, DAMAGE_RADIUS|DAMAGE_NO_TEAM_PROTECTION, mod );
 			//
 			dir[2] = 0;
 			VectorNormalize(dir);
@@ -1435,7 +1444,7 @@ static void KamikazeShockWave( vec3_t origin, gentity_t *attacker, float damage,
 KamikazeDamage
 ===============
 */
-static void KamikazeDamage( gentity_t *self ) {
+void KamikazeDamage( gentity_t *self ) {
 	int i;
 	float t;
 	gentity_t *ent;
@@ -1446,13 +1455,13 @@ static void KamikazeDamage( gentity_t *self ) {
 	if (self->count >= KAMI_SHOCKWAVE_STARTTIME) {
 		// shockwave push back
 		t = self->count - KAMI_SHOCKWAVE_STARTTIME;
-		KamikazeShockWave(self->s.pos.trBase, self->activator, 25, 400,	(int) (float) t * KAMI_SHOCKWAVE_MAXRADIUS / (KAMI_SHOCKWAVE_ENDTIME - KAMI_SHOCKWAVE_STARTTIME) );
+		KamikazeShockWave(self->s.pos.trBase, self->activator, 25, 400,	(int) (float) t * KAMI_SHOCKWAVE_MAXRADIUS / (KAMI_SHOCKWAVE_ENDTIME - KAMI_SHOCKWAVE_STARTTIME), MOD_KAMIKAZE );
 	}
 	//
 	if (self->count >= KAMI_EXPLODE_STARTTIME) {
 		// do our damage
 		t = self->count - KAMI_EXPLODE_STARTTIME;
-		KamikazeRadiusDamage( self->s.pos.trBase, self->activator, 400,	(int) (float) t * KAMI_BOOMSPHERE_MAXRADIUS / (KAMI_IMPLODE_STARTTIME - KAMI_EXPLODE_STARTTIME) );
+		KamikazeRadiusDamage( self->s.pos.trBase, self->activator, 400,	(int) (float) t * KAMI_BOOMSPHERE_MAXRADIUS / (KAMI_IMPLODE_STARTTIME - KAMI_EXPLODE_STARTTIME), MOD_KAMIKAZE );
 	}
 
 	// either cycle or kill self
@@ -1539,6 +1548,74 @@ void G_StartKamikaze( gentity_t *ent ) {
 		else {
 			explosion->activator = ent->activator;
 		}
+	}
+
+	// play global sound at all clients
+	te = G_TempEntity(snapped, EV_GLOBAL_TEAM_SOUND );
+	te->r.svFlags |= SVF_BROADCAST;
+	te->s.eventParm = GTS_KAMIKAZE;
+}
+
+void CarExplodeDamage( gentity_t *self ) {
+	int i;
+	float t;
+	gentity_t *ent;
+	vec3_t newangles;
+
+	self->count += 100;
+
+	if (self->count >= KAMI_SHOCKWAVE_STARTTIME) {
+		// shockwave push back
+		t = self->count - KAMI_SHOCKWAVE_STARTTIME;
+		KamikazeShockWave(self->s.pos.trBase, self->activator, 25, 400,	(int) (float) t * 300 / (KAMI_SHOCKWAVE_ENDTIME - KAMI_SHOCKWAVE_STARTTIME), MOD_CAREXPLODE );
+	}
+	//
+	if (self->count >= KAMI_EXPLODE_STARTTIME) {
+		// do our damage
+		t = self->count - KAMI_EXPLODE_STARTTIME;
+		KamikazeRadiusDamage( self->s.pos.trBase, self->activator, 400,	(int) (float) t * 150 / (KAMI_IMPLODE_STARTTIME - KAMI_EXPLODE_STARTTIME), MOD_CAREXPLODE );
+	}
+
+	// either cycle or kill self
+	if( self->count >= KAMI_SHOCKWAVE_ENDTIME ) {
+		G_FreeEntity( self );
+		return;
+	}
+	self->nextthink = level.time + 100;
+}
+
+void G_StartCarExplode( gentity_t *ent ) {
+	gentity_t	*explosion;
+	gentity_t	*te;
+	vec3_t		snapped;
+
+	// start up the explosion logic
+	explosion = G_Spawn();
+
+	explosion->s.eType = ET_EVENTS + EV_KAMIKAZE;
+	explosion->eventTime = level.time;
+
+	VectorCopy( ent->s.pos.trBase, snapped );
+	SnapVector( snapped );		// save network bandwidth
+	G_SetOrigin( explosion, snapped );
+
+	explosion->classname = "kamikaze";
+	explosion->s.pos.trType = TR_STATIONARY;
+
+	explosion->kamikazeTime = level.time;
+
+	explosion->think = CarExplodeDamage;
+	explosion->nextthink = level.time + 100;
+	explosion->count = 0;
+	VectorClear(explosion->movedir);
+
+	trap_LinkEntity( explosion );
+
+	if ( !strcmp(ent->activator->classname, "bodyque") ) {
+		explosion->activator = &g_entities[ent->activator->r.ownerNum];
+	}
+	else {
+		explosion->activator = ent->activator;
 	}
 
 	// play global sound at all clients

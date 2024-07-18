@@ -167,6 +167,12 @@ CG_General
 */
 static void CG_General( centity_t *cent ) {
 	refEntity_t			ent;
+	refEntity_t			wheelfr;
+	refEntity_t			wheelfl;
+	refEntity_t			wheelrr;
+	refEntity_t			wheelrl;
+	int					isVehicle = 0;
+	char 				str[MAX_QPATH];
 	entityState_t		*s1;
 
 	s1 = &cent->currentState;
@@ -177,9 +183,12 @@ static void CG_General( centity_t *cent ) {
 	}
 
 	memset (&ent, 0, sizeof(ent));
+	memset (&wheelfr, 0, sizeof(wheelfr));
+	memset (&wheelfl, 0, sizeof(wheelfl));
+	memset (&wheelrr, 0, sizeof(wheelrr));
+	memset (&wheelrl, 0, sizeof(wheelrl));
 
 	// set frame
-
 	ent.frame = s1->frame;
 	ent.oldframe = ent.frame;
 	ent.backlerp = 0;
@@ -188,7 +197,6 @@ static void CG_General( centity_t *cent ) {
 	VectorCopy( cent->lerpOrigin, ent.oldorigin);
 
 	ent.hModel = cgs.gameModels[s1->modelindex];
-	
 	ent.reType = RT_MODEL;
 	ent.customSkin = trap_R_RegisterSkin(va("ptex/%s/%i.skin", CG_ConfigString( CS_MODELS+s1->modelindex ), s1->generic2));
 	if(s1->generic2 > 0){
@@ -200,6 +208,12 @@ static void CG_General( centity_t *cent ) {
 	} else {
 	ent.customShader = cgs.media.ptexShader[1];
 	}
+	}
+	
+	Com_sprintf(str, sizeof(str), CG_ConfigString(CS_MODELS + s1->modelindex));
+	
+	if (str != NULL && str[6] == 'v' && str[7] == 'e' && str[8] == 'h' && str[9] == '_') {		//offset to props/<6> check veh_
+		isVehicle = 1;
 	}
 
 	// player model
@@ -219,6 +233,110 @@ static void CG_General( centity_t *cent ) {
 
 	// add to refresh list
 	trap_R_AddRefEntityToScene (&ent);
+	
+	if(isVehicle){
+		
+	trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.carengine[s1->generic3] );
+		
+	wheelfr.frame = s1->frame;
+	wheelfr.oldframe = wheelfr.frame;
+	wheelfr.backlerp = 0;
+
+	VectorCopy( cent->lerpOrigin, wheelfr.origin);
+	VectorCopy( cent->lerpOrigin, wheelfr.oldorigin);
+	
+	wheelfr.hModel = trap_R_RegisterModel_MiTech( va("%s_wheel", str) );
+	wheelfr.customSkin = ent.customSkin;
+	wheelfr.customShader = ent.customShader;
+	wheelfr.reType = RT_MODEL;
+	
+	AnglesToAxis( cent->lerpAngles, wheelfr.axis );
+	
+	if(s1->scales[0] != 0.0){
+	VectorScale( wheelfr.axis[0], s1->scales[0], wheelfr.axis[0] );}
+	if(s1->scales[1] != 0.0){
+	VectorScale( wheelfr.axis[1], s1->scales[1], wheelfr.axis[1] );}
+	if(s1->scales[2] != 0.0){
+	VectorScale( wheelfr.axis[2], s1->scales[2], wheelfr.axis[2] );}
+	
+	CG_PositionEntityOnTag( &wheelfr, &ent, ent.hModel, "tag_wheelfr");
+	trap_R_AddRefEntityToScene (&wheelfr);
+
+
+	wheelfl.frame = s1->frame;
+	wheelfl.oldframe = wheelfl.frame;
+	wheelfl.backlerp = 0;
+
+	VectorCopy( cent->lerpOrigin, wheelfl.origin);
+	VectorCopy( cent->lerpOrigin, wheelfl.oldorigin);
+	
+	wheelfl.hModel = trap_R_RegisterModel_MiTech( va("%s_wheel", str) );
+	wheelfl.customSkin = ent.customSkin;
+	wheelfl.customShader = ent.customShader;
+	wheelfl.reType = RT_MODEL;
+	
+	AnglesToAxis( cent->lerpAngles, wheelfl.axis );
+	
+	if(s1->scales[0] != 0.0){
+	VectorScale( wheelfl.axis[0], s1->scales[0], wheelfl.axis[0] );}
+	if(s1->scales[1] != 0.0){
+	VectorScale( wheelfl.axis[1], s1->scales[1], wheelfl.axis[1] );}
+	if(s1->scales[2] != 0.0){
+	VectorScale( wheelfl.axis[2], s1->scales[2], wheelfl.axis[2] );}
+	
+	CG_PositionEntityOnTag( &wheelfl, &ent, ent.hModel, "tag_wheelfl");
+	trap_R_AddRefEntityToScene (&wheelfl);
+	
+
+	wheelrr.frame = s1->frame;
+	wheelrr.oldframe = wheelrr.frame;
+	wheelrr.backlerp = 0;
+
+	VectorCopy( cent->lerpOrigin, wheelrr.origin);
+	VectorCopy( cent->lerpOrigin, wheelrr.oldorigin);
+	
+	wheelrr.hModel = trap_R_RegisterModel_MiTech( va("%s_wheel", str) );
+	wheelrr.customSkin = ent.customSkin;
+	wheelrr.customShader = ent.customShader;
+	wheelrr.reType = RT_MODEL;
+	
+	AnglesToAxis( cent->lerpAngles, wheelrr.axis );
+	
+	if(s1->scales[0] != 0.0){
+	VectorScale( wheelrr.axis[0], s1->scales[0], wheelrr.axis[0] );}
+	if(s1->scales[1] != 0.0){
+	VectorScale( wheelrr.axis[1], s1->scales[1], wheelrr.axis[1] );}
+	if(s1->scales[2] != 0.0){
+	VectorScale( wheelrr.axis[2], s1->scales[2], wheelrr.axis[2] );}
+	
+	CG_PositionEntityOnTag( &wheelrr, &ent, ent.hModel, "tag_wheelrr");
+	trap_R_AddRefEntityToScene (&wheelrr);
+
+
+	wheelrl.frame = s1->frame;
+	wheelrl.oldframe = wheelrl.frame;
+	wheelrl.backlerp = 0;
+
+	VectorCopy( cent->lerpOrigin, wheelrl.origin);
+	VectorCopy( cent->lerpOrigin, wheelrl.oldorigin);
+	
+	wheelrl.hModel = trap_R_RegisterModel_MiTech( va("%s_wheel", str) );
+	wheelrl.customSkin = ent.customSkin;
+	wheelrl.customShader = ent.customShader;
+	wheelrl.reType = RT_MODEL;
+	
+	AnglesToAxis( cent->lerpAngles, wheelrl.axis );
+	
+	if(s1->scales[0] != 0.0){
+	VectorScale( wheelrl.axis[0], s1->scales[0], wheelrl.axis[0] );}
+	if(s1->scales[1] != 0.0){
+	VectorScale( wheelrl.axis[1], s1->scales[1], wheelrl.axis[1] );}
+	if(s1->scales[2] != 0.0){
+	VectorScale( wheelrl.axis[2], s1->scales[2], wheelrl.axis[2] );}
+	
+	CG_PositionEntityOnTag( &wheelrl, &ent, ent.hModel, "tag_wheelrl");
+	trap_R_AddRefEntityToScene (&wheelrl);
+	}
 }
 
 /*

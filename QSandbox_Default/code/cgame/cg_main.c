@@ -549,7 +549,7 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_tracerChance, "cg_tracerchance", "0.4", CVAR_CHEAT },
 	{ &cg_tracerWidth, "cg_tracerwidth", "1", CVAR_CHEAT },
 	{ &cg_tracerLength, "cg_tracerlength", "100", CVAR_CHEAT },
-	{ &cg_thirdPersonRange, "cg_thirdPersonRange", "40", CVAR_ARCHIVE },
+	{ &cg_thirdPersonRange, "cg_thirdPersonRange", "160", CVAR_ARCHIVE },
 	{ &cg_thirdPersonAngle, "cg_thirdPersonAngle", "0", CVAR_ARCHIVE },
 	{ &cg_thirdPersonOffset, "cg_thirdPersonOffset", "10", CVAR_ARCHIVE },
 	{ &cg_thirdPerson, "cg_thirdPerson", "0", CVAR_ARCHIVE},
@@ -1181,6 +1181,11 @@ static void CG_RegisterSounds( void ) {
 
 		Com_sprintf (name, sizeof(name), "sound/player/footsteps/clank%i.wav", i+1);
 		cgs.media.footsteps[FOOTSTEP_METAL][i] = trap_S_RegisterSound_MiTech (name, qfalse);
+	}
+	
+	for (i=0 ; i<=10 ; i++) {
+		Com_sprintf (name, sizeof(name), "sound/vehicle/engine%i.ogg", i);
+		cgs.media.carengine[i] = trap_S_RegisterSound_MiTech (name, qfalse);
 	}
 
 	// only register the items that the server says we need

@@ -1415,8 +1415,6 @@ void UI_Cache_f( void ) {
 	UI_AddBots_Cache();
 	UI_RemoveBots_Cache();
 	UI_SetupMenu_Cache();
-//	UI_LoadConfig_Cache();
-//	UI_SaveConfigMenu_Cache();
 	UI_BotSelect_Cache();
 	UI_CDKeyMenu_Cache();
 	UI_ModsMenu_Cache();
@@ -1553,112 +1551,145 @@ if ( Q_stricmp (UI_Argv(0), "mguicall") == 0 ) {
 	return qtrue;
 }
 
-if ( Q_stricmp (UI_Argv(0), "openui") == 0 ) {
-	if( Q_stricmp (UI_Argv(1), "ui_addbots") == 0 ){
-	UI_AddBotsMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_advanced") == 0 ){
-	UI_AdvancedMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_cdkey") == 0 ){
-	UI_CDKeyMenu_f();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_savegame") == 0 ){
-	UI_CinematicsMenu(0);
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_loadgame") == 0 ){
-	UI_CinematicsMenu(1);
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_controls2") == 0 ){
-	UI_ControlsMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_credits0") == 0 ){
-	UI_CreditMenu(0);
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_credits1") == 0 ){
-	UI_CreditMenu(1);
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_demo2") == 0 ){
-	UI_DemosMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_display") == 0 ){
-	UI_DisplayOptionsMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_ingame_bots") == 0 ){
-	UI_BotCommandMenu_f();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_ingame") == 0 ){
-	UI_InGameMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_ingame_mapvote") == 0 ){
-	UI_MapCallVote();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_menu") == 0 ){
-	UI_MainMenu();
-	}	
-	if( Q_stricmp (UI_Argv(1), "ui_mods") == 0 ){
-	UI_ModsMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_network") == 0 ){
-	UI_NetworkOptionsMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_options") == 0 ){
-	UI_SystemConfigMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_playermodel") == 0 ){
-	UI_PlayerModelMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_playersettings") == 0 ){
-	UI_PlayerSettingsMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_preferences") == 0 ){
-	UI_PreferencesMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_removebots0") == 0 ){
-	UI_RemoveBotsMenu(0);
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_removebots1") == 0 ){
-	UI_RemoveBotsMenu(1);
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_removebots2") == 0 ){
-	UI_RemoveBotsMenu(2);
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_sandbox") == 0 ){
-	UI_SandboxMainMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_saveconfig") == 0 ){
-	UI_SaveConfigMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_saveconfiged") == 0 ){
-	UI_saveMapEdMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_serverinfo") == 0 ){
-	UI_ServerInfoMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_servers2") == 0 ){
-	UI_ArenaServersMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_setup") == 0 ){
-	UI_SetupMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_sound") == 0 ){
-	UI_SoundOptionsMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_specifyserver") == 0 ){
-	UI_SpecifyServerMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_team") == 0 ){
-	UI_TeamMainMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_teamorders") == 0 ){
-	UI_TeamOrdersMenu_f();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_video") == 0 ){
-	UI_GraphicsOptionsMenu();
-	}
-	if( Q_stricmp (UI_Argv(1), "ui_workshop") == 0 ){
-	UI_WorkshopMenu();
-	}
+if( Q_stricmp (UI_Argv(0), "ui_addbots") == 0 ){
+UI_AddBotsMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_advanced") == 0 ){
+UI_AdvancedMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_cdkey") == 0 ){
+UI_CDKeyMenu_f();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_savegame") == 0 ){
+UI_CinematicsMenu(0);
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_loadgame") == 0 ){
+UI_CinematicsMenu(1);
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_controls2") == 0 ){
+UI_ControlsMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_credits0") == 0 ){
+UI_CreditMenu(0);
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_credits1") == 0 ){
+UI_CreditMenu(1);
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_demo2") == 0 ){
+UI_DemosMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_display") == 0 ){
+UI_DisplayOptionsMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_ingame_bots") == 0 ){
+UI_BotCommandMenu_f();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_ingame") == 0 ){
+UI_InGameMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_ingame_mapvote") == 0 ){
+UI_MapCallVote();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_menu") == 0 ){
+UI_MainMenu();
+return qtrue;
+}	
+if( Q_stricmp (UI_Argv(0), "ui_mods") == 0 ){
+UI_ModsMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_network") == 0 ){
+UI_NetworkOptionsMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_options") == 0 ){
+UI_SystemConfigMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_playermodel") == 0 ){
+UI_PlayerModelMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_playersettings") == 0 ){
+UI_PlayerSettingsMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_preferences") == 0 ){
+UI_PreferencesMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_removebots0") == 0 ){
+UI_RemoveBotsMenu(0);
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_removebots1") == 0 ){
+UI_RemoveBotsMenu(1);
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_removebots2") == 0 ){
+UI_RemoveBotsMenu(2);
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_sandbox") == 0 ){
+UI_SandboxMainMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_saveconfig") == 0 ){
+UI_SaveConfigMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_saveconfiged") == 0 ){
+UI_saveMapEdMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_serverinfo") == 0 ){
+UI_ServerInfoMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_servers2") == 0 ){
+UI_ArenaServersMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_setup") == 0 ){
+UI_SetupMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_sound") == 0 ){
+UI_SoundOptionsMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_specifyserver") == 0 ){
+UI_SpecifyServerMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_team") == 0 ){
+UI_TeamMainMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_teamorders") == 0 ){
+UI_TeamOrdersMenu_f();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_video") == 0 ){
+UI_GraphicsOptionsMenu();
+return qtrue;
+}
+if( Q_stricmp (UI_Argv(0), "ui_workshop") == 0 ){
+UI_WorkshopMenu();
+return qtrue;
 }
 
 if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {
@@ -1955,16 +1986,6 @@ return qtrue;
 		return qtrue;
 	}
 
-	if ( Q_stricmp (cmd, "ui_teamOrders") == 0 ) {
-		UI_BotCommandMenu_f();
-		return qtrue;
-	}
-	
-	if ( Q_stricmp (cmd, "ui_sandbox") == 0 ) {
-		UI_SandboxMainMenu();
-		return qtrue;
-	}
-
 	if ( Q_stricmp (cmd, "iamacheater") == 0 ) {
 		UI_SPUnlock_f();
 		return qtrue;
@@ -1972,11 +1993,6 @@ return qtrue;
 
 	if ( Q_stricmp (cmd, "iamamonkey") == 0 ) {
 		UI_SPUnlockMedals_f();
-		return qtrue;
-	}
-
-	if ( Q_stricmp (cmd, "ui_cdkey") == 0 ) {
-		UI_CDKeyMenu_f();
 		return qtrue;
 	}
 
@@ -2384,7 +2400,11 @@ void UI_Refresh( int realtime )
 	// draw cursor
 	if (!uis.hideCursor) {
 		UI_SetColor( NULL );
+		if(uis.activemenu->native > 0){
+		UI_DrawHandlePic( uis.cursorx-16*(uis.glconfig.vidWidth/640), uis.cursory-16*(uis.glconfig.vidWidth/640), 32*(uis.glconfig.vidWidth/640), 32*(uis.glconfig.vidWidth/640), uis.cursor);
+		} else {
 		UI_DrawHandlePic( uis.cursorx-16, uis.cursory-16, 32, 32, uis.cursor);
+		}
 	}
 
 #ifndef NDEBUG

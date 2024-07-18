@@ -707,15 +707,15 @@ set mitem21_type 1
 set mitem21_acttype 1
 set mitem21_xtype 1
 set mitem21_ytype 1
-set mitem21_x 1
-set mitem21_y 1
-set mitem21_wtype 1
-set mitem21_htype 1
-set mitem21_w 60
-set mitem21_h 60
-set mitem21_text ""
-set mitem21_cmd ""
-set mitem21_cmd2 ""
+set mitem21_x 15
+set mitem21_y 65
+set mitem21_wtype 3
+set mitem21_htype 3
+set mitem21_w 180
+set mitem21_h 90
+set mitem21_text "gesture"
+set mitem21_cmd "execscript dscripts/script.gesture.as"
+set mitem21_cmd2 "-button3"
 set mitem21_1arg	0
 set mitem21_2arg	0
 set mitem21_3arg	0
@@ -725,82 +725,82 @@ set mitem21_colorR 1.0
 set mitem21_colorG 1.0
 set mitem21_colorB 1.0
 set mitem21_colorA 1.0
-set mitem21_colorinnerR 0.0
-set mitem21_colorinnerG 0.0
-set mitem21_colorinnerB 0.0
+set mitem21_colorinnerR 0.1
+set mitem21_colorinnerG 0.1
+set mitem21_colorinnerB 0.1
 set mitem21_colorinnerA 0.80
-set mitem21_fontsize	2.5
-set mitem21_corner 4
+set mitem21_fontsize	1.25
+set mitem21_corner 5
 set mitem21_col 1
-set mitem21_mode	1
+set mitem21_mode	0
 set mitem21_style 0
 set mitem21_min 0
-set mitem21_max 4
+set mitem21_max 100
 set mitem21_savecvar "mgui_none"
 
-set mitem22_type 8
+set mitem22_type 1
 set mitem22_acttype 1
 set mitem22_xtype 1
 set mitem22_ytype 1
-set mitem22_x 30
-set mitem22_y 2
-set mitem22_wtype 2
-set mitem22_htype 2
-set mitem22_w 2.5
-set mitem22_h 0
-set mitem22_text "Scroll buttons"
-set mitem22_cmd "set ui_scrollbtnsize %s"
+set mitem22_x 25
+set mitem22_y 65
+set mitem22_wtype 3
+set mitem22_htype 3
+set mitem22_w 180
+set mitem22_h 90
+set mitem22_text "flashlight"
+set mitem22_cmd "flashlight"
 set mitem22_cmd2 ""
-set mitem22_1arg	22
+set mitem22_1arg	0
 set mitem22_2arg	0
 set mitem22_3arg	0
 set mitem22_file	""
-set mitem22_value "ui_scrollbtnsize"
+set mitem22_value ""
 set mitem22_colorR 1.0
 set mitem22_colorG 1.0
 set mitem22_colorB 1.0
 set mitem22_colorA 1.0
-set mitem22_colorinnerR 0.0
-set mitem22_colorinnerG 0.0
-set mitem22_colorinnerB 0.0
+set mitem22_colorinnerR 0.1
+set mitem22_colorinnerG 0.1
+set mitem22_colorinnerB 0.1
 set mitem22_colorinnerA 0.80
-set mitem22_fontsize	2.5
-set mitem22_corner 4
+set mitem22_fontsize	1.25
+set mitem22_corner 5
 set mitem22_col 1
-set mitem22_mode	1
+set mitem22_mode	0
 set mitem22_style 0
 set mitem22_min 0
-set mitem22_max 4
+set mitem22_max 100
 set mitem22_savecvar "mgui_none"
 
-set mitem23_type 7
+set mitem23_type 1
 set mitem23_acttype 1
 set mitem23_xtype 1
 set mitem23_ytype 1
-set mitem23_x 30
-set mitem23_y 6
-set mitem23_wtype 2
-set mitem23_htype 2
-set mitem23_w 2.5
-set mitem23_h 0
-set mitem23_text "Gyroscope"
-set mitem23_cmd "set in_gyroscope %s"
+set mitem23_x 35
+set mitem23_y 65
+set mitem23_wtype 3
+set mitem23_htype 3
+set mitem23_w 180
+set mitem23_h 90
+set mitem23_text "exit vehicle"
+set mitem23_cmd "exitvehicle"
 set mitem23_cmd2 ""
-set mitem23_1arg	23
+set mitem23_1arg	0
 set mitem23_2arg	0
 set mitem23_3arg	0
 set mitem23_file	""
-set mitem23_value "in_gyroscope"
+set mitem23_value ""
 set mitem23_colorR 1.0
 set mitem23_colorG 1.0
 set mitem23_colorB 1.0
 set mitem23_colorA 1.0
-set mitem23_colorinnerR 0.0
-set mitem23_colorinnerG 0.0
-set mitem23_colorinnerB 0.0
+set mitem23_colorinnerR 0.1
+set mitem23_colorinnerG 0.1
+set mitem23_colorinnerB 0.1
 set mitem23_colorinnerA 0.80
-set mitem23_fontsize	2.5
-set mitem23_corner 4
+set mitem23_fontsize	1.25
+set mitem23_corner 5
 set mitem23_col 1
 set mitem23_mode	0
 set mitem23_style 0
@@ -808,144 +808,15 @@ set mitem23_min 0
 set mitem23_max 100
 set mitem23_savecvar "mgui_none"
 
-set mitem24_type 7
-set mitem24_acttype 1
-set mitem24_xtype 1
-set mitem24_ytype 1
-set mitem24_x 30
-set mitem24_y 10
-set mitem24_wtype 2
-set mitem24_htype 2
-set mitem24_w 2.5
-set mitem24_h 0
-set mitem24_text "Rail autozoom"
-set mitem24_cmd "set cg_railgunAutoZoom %s"
-set mitem24_cmd2 ""
-set mitem24_1arg	24
-set mitem24_2arg	0
-set mitem24_3arg	0
-set mitem24_file	""
-set mitem24_value "cg_railgunAutoZoom"
-set mitem24_colorR 1.0
-set mitem24_colorG 1.0
-set mitem24_colorB 1.0
-set mitem24_colorA 1.0
-set mitem24_colorinnerR 0.0
-set mitem24_colorinnerG 0.0
-set mitem24_colorinnerB 0.0
-set mitem24_colorinnerA 0.80
-set mitem24_fontsize	2.5
-set mitem24_corner 4
-set mitem24_col 1
-set mitem24_mode	0
-set mitem24_style 0
-set mitem24_min 0
-set mitem24_max 100
-set mitem24_savecvar "mgui_none"
-
-set mitem25_type 8
-set mitem25_acttype 1
-set mitem25_xtype 1
-set mitem25_ytype 1
-set mitem25_x 30
-set mitem25_y 14
-set mitem25_wtype 2
-set mitem25_htype 2
-set mitem25_w 2.5
-set mitem25_h 0
-set mitem25_text "Draw distance"
-set mitem25_cmd "set sv_viewdistance %s"
-set mitem25_cmd2 ""
-set mitem25_1arg	25
-set mitem25_2arg	0
-set mitem25_3arg	0
-set mitem25_file	""
-set mitem25_value "sv_viewdistance"
-set mitem25_colorR 1.0
-set mitem25_colorG 1.0
-set mitem25_colorB 1.0
-set mitem25_colorA 1.0
-set mitem25_colorinnerR 0.0
-set mitem25_colorinnerG 0.0
-set mitem25_colorinnerB 0.0
-set mitem25_colorinnerA 0.80
-set mitem25_fontsize	2.5
-set mitem25_corner 4
-set mitem25_col 1
-set mitem25_mode	1
-set mitem25_style 0
-set mitem25_min 1
-set mitem25_max 90
-set mitem25_savecvar "mgui_none"
-
-set mitem26_type 1
-set mitem26_acttype 1
-set mitem26_xtype 1
-set mitem26_ytype 1
-set mitem26_x 15
-set mitem26_y 65
-set mitem26_wtype 3
-set mitem26_htype 3
-set mitem26_w 180
-set mitem26_h 90
-set mitem26_text "gesture"
-set mitem26_cmd "execscript dscripts/script.gesture.as"
-set mitem26_cmd2 "-button3"
-set mitem26_1arg	0
-set mitem26_2arg	0
-set mitem26_3arg	0
-set mitem26_file	""
-set mitem26_value ""
-set mitem26_colorR 1.0
-set mitem26_colorG 1.0
-set mitem26_colorB 1.0
-set mitem26_colorA 1.0
-set mitem26_colorinnerR 0.1
-set mitem26_colorinnerG 0.1
-set mitem26_colorinnerB 0.1
-set mitem26_colorinnerA 0.80
-set mitem26_fontsize	1.25
-set mitem26_corner 5
-set mitem26_col 1
-set mitem26_mode	0
-set mitem26_style 0
-set mitem26_min 0
-set mitem26_max 100
-set mitem26_savecvar "mgui_none"
-
-set mitem27_type 1
-set mitem27_acttype 1
-set mitem27_xtype 1
-set mitem27_ytype 1
-set mitem27_x 25
-set mitem27_y 65
-set mitem27_wtype 3
-set mitem27_htype 3
-set mitem27_w 180
-set mitem27_h 90
-set mitem27_text "flashlight"
-set mitem27_cmd "flashlight"
-set mitem27_cmd2 ""
-set mitem27_1arg	0
-set mitem27_2arg	0
-set mitem27_3arg	0
-set mitem27_file	""
-set mitem27_value ""
-set mitem27_colorR 1.0
-set mitem27_colorG 1.0
-set mitem27_colorB 1.0
-set mitem27_colorA 1.0
-set mitem27_colorinnerR 0.1
-set mitem27_colorinnerG 0.1
-set mitem27_colorinnerB 0.1
-set mitem27_colorinnerA 0.80
-set mitem27_fontsize	1.25
-set mitem27_corner 5
-set mitem27_col 1
-set mitem27_mode	0
-set mitem27_style 0
-set mitem27_min 0
-set mitem27_max 100
-set mitem27_savecvar "mgui_none"
+exec "mguiaddons/actionmenu/1.as"
+exec "mguiaddons/actionmenu/2.as"
+exec "mguiaddons/actionmenu/3.as"
+exec "mguiaddons/actionmenu/4.as"
+exec "mguiaddons/actionmenu/5.as"
+exec "mguiaddons/actionmenu/6.as"
+exec "mguiaddons/actionmenu/7.as"
+exec "mguiaddons/actionmenu/8.as"
+exec "mguiaddons/actionmenu/9.as"
+exec "mguiaddons/actionmenu/10.as"
 
 mgui_load

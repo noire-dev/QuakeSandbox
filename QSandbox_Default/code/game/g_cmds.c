@@ -426,8 +426,7 @@ Cmd_Give_f
 Give items to a client
 ==================
 */
-void Cmd_Give_f (gentity_t *ent)
-{
+void Cmd_Give_f (gentity_t *ent) {
 	char		*name;
 	gitem_t		*it;
 	int			i;
@@ -533,6 +532,20 @@ void Cmd_Give_f (gentity_t *ent)
 	}
 }
 
+/*
+==================
+Cmd_VehicleExit_f
+
+Exit from vehicle for player
+==================
+*/
+void Cmd_VehicleExit_f (gentity_t *ent)
+{
+	if(ent->client->vehiclenum){
+	ent->client->vehiclenum = 0;
+	ClientUserinfoChanged( ent->s.clientNum );
+	}
+}
 
 /*
 ==================
@@ -1551,59 +1564,6 @@ static void Cmd_PickTarget_f( gentity_t *ent ){
 
 /*
 ==================
-Cmd_BuildProp_f
-Added for QSandbox.
-==================
-*/
-static void Cmd_BuildProp_f( gentity_t *ent ){
-	vec3_t		end, start, forward, up, right;
-	char		model[MAX_TOKEN_CHARS];
-	char		class[MAX_TOKEN_CHARS];
-	char		priv[MAX_TOKEN_CHARS];
-	char		mix[MAX_TOKEN_CHARS];
-	char		grid[MAX_TOKEN_CHARS];
-	char		sf[MAX_TOKEN_CHARS];
-	trace_t		tr;
-	
-	if(!g_building.integer){ return; }
-	if(!g_allowprops.integer){ return; }
-		
-	//tr.endpos
-	trap_Argv( 1, model, sizeof( model ) );
-	trap_Argv( 2, class, sizeof( class ) );
-	trap_Argv( 3, priv, sizeof( priv ) );
-	trap_Argv( 4, mix, sizeof( mix ) );
-	trap_Argv( 5, grid, sizeof( grid ) );
-	trap_Argv( 6, sf, sizeof( sf ) );
-	
-	if( trap_Argc( ) < 5 ){
-	G_Printf( "usage: <model> <class> <private> <min-max> <grid> <sf>\n" );
-    return;
-	}
-	
-	//Set Aiming Directions
-	AngleVectors(ent->client->ps.viewangles, forward, right, up);
-	CalcMuzzlePoint(ent, forward, right, up, start);
-	VectorMA (start, 4096, forward, end);
-	VectorScale( forward, 0, forward );
-
-	//Trace Position
-	trap_Trace (&tr, start, NULL, NULL, end, ent->s.number, MASK_SELECT );
-	
-	if(g_safe.integer){
-	if(!Q_stricmp (class, "script_cmd")){
-	return;
-	}
-	if(!Q_stricmp (class, "target_modify")){
-	return;
-	}
-	}
-	
-	G_BuildProp( model, class, tr.endpos, ent, atoi(priv), atoi(mix), atoi(grid), atoi(sf) );
-}
-
-/*
-==================
 Cmd_SpawnList_Item_f
 Added for QSandbox.
 ==================
@@ -1671,6 +1631,8 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	char		arg57[64];
 	char		arg58[64];
 	char		arg59[64];
+	char		arg60[64];
+	char		arg61[64];
 	
 	if(!g_building.integer){ return; }
 		
@@ -1734,6 +1696,8 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	trap_Argv( 57, arg57, sizeof( arg57 ) );
 	trap_Argv( 58, arg58, sizeof( arg58 ) );
 	trap_Argv( 59, arg59, sizeof( arg59 ) );
+	trap_Argv( 60, arg60, sizeof( arg60 ) );
+	trap_Argv( 61, arg61, sizeof( arg61 ) );
 	
 	//Set Aiming Directions
 	AngleVectors(ent->client->ps.viewangles, forward, right, up);
@@ -1746,7 +1710,6 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	
 	if(!Q_stricmp (arg01, "prop")){
 	if(!g_allowprops.integer){ return; }
-		
 	if(g_safe.integer){
 	if(!Q_stricmp (arg03, "script_cmd")){
 	return;
@@ -1755,7 +1718,7 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	return;
 	}
 	}
-	G_BuildPropSL( arg02, arg03, tr.endpos, ent, arg04, arg05, arg06, arg07, arg08, arg09, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30, arg31, arg32, arg33, arg34, arg35, arg36, arg37, arg38, arg39, arg40, arg41, arg42, arg43, arg44, arg45, arg46, arg47, arg48, arg49, arg50, arg51, arg52, arg53, arg54, arg55, arg56, arg57, arg58, arg59);
+	G_BuildPropSL( arg02, arg03, tr.endpos, ent, arg04, arg05, arg06, arg07, arg08, arg09, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30, arg31, arg32, arg33, arg34, arg35, arg36, arg37, arg38, arg39, arg40, arg41, arg42, arg43, arg44, arg45, arg46, arg47, arg48, arg49, arg50, arg51, arg52, arg53, arg54, arg55, arg56, arg57, arg58, arg59, arg60, arg61);
 	
 	
 	return;
@@ -1763,34 +1726,50 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	if(!Q_stricmp (arg01, "npc")){
 	if(!g_allownpc.integer){ return; }
 	
-	tent = G_TempEntity( tr.endpos, EV_PLAYER_TELEPORT_OUT );
+	tent = G_Spawn();
+	tent->sb_ettype = 1;
 	VectorCopy( tr.endpos, tent->s.origin);
-	tent->s.origin[2] += 48;
+	tent->s.origin[2] += 25;
 	tent->classname = "target_botspawn";
 	CopyAlloc(tent->clientname, arg02);
+	
+	if(!Q_stricmp (arg03, "NPC_Enemy")){
+	tent->type = NPC_ENEMY;
+	}
+	if(!Q_stricmp (arg03, "NPC_Citizen")){
+	tent->type = NPC_CITIZEN;
+	}
+	if(!Q_stricmp (arg03, "NPC_Guard")){
+	tent->type = NPC_GUARD;
+	}
+	if(!Q_stricmp (arg03, "NPC_Partner")){
+	tent->type = NPC_PARTNER;
+	}
+	if(!Q_stricmp (arg03, "NPC_PartnerEnemy")){
+	tent->type = NPC_PARTNERENEMY;
+	}
 	tent->skill = atof(arg04);
 	tent->health = atoi(arg05);
+	CopyAlloc(tent->message, arg06);	
 	tent->spawnflags = atoi(arg08);
 	if(!Q_stricmp (arg07, "0") ){
 	CopyAlloc(tent->target, arg02);	
 	} else {
 	CopyAlloc(tent->target, arg07);	
 	}
-	if(!Q_stricmp (arg03, "NPC_Enemy")){
-	G_AddBot(tent->clientname, atof(arg04), "Blue", 0, arg06, tent->s.number, tent->target, NPC_ENEMY );
+	if(tent->health <= 0){
+	tent->health = 100;
 	}
-	if(!Q_stricmp (arg03, "NPC_Citizen")){
-	G_AddBot(tent->clientname, atof(arg04), "Blue", 0, arg06, tent->s.number, tent->target, NPC_CITIZEN );
+	if(tent->skill <= 0){
+	tent->skill = 1;
 	}
-	if(!Q_stricmp (arg03, "NPC_Guard")){
-	G_AddBot(tent->clientname, atof(arg04), "Blue", 0, arg06, tent->s.number, tent->target, NPC_GUARD );
+	if(tent->spawnflags <= 0){
+	tent->spawnflags = 1;
 	}
-	if(!Q_stricmp (arg03, "NPC_Partner")){
-	G_AddBot(tent->clientname, atof(arg04), "Blue", 0, arg06, tent->s.number, tent->target, NPC_PARTNER );
+	if(!Q_stricmp (tent->message, "0") || !tent->message ){
+	CopyAlloc(tent->message, tent->clientname);
 	}
-	if(!Q_stricmp (arg03, "NPC_PartnerEnemy")){
-	G_AddBot(tent->clientname, atof(arg04), "Blue", 0, arg06, tent->s.number, tent->target, NPC_PARTNERENEMY );
-	}
+	G_AddBot(tent->clientname, tent->skill, "Blue", 0, tent->message, tent->s.number, tent->target, tent->type, tent );
 	
 	trap_Cvar_Set("g_spSkill", arg04);
 
@@ -1872,6 +1851,8 @@ static void Cmd_PropNpc_AS_f( gentity_t *ent ){
 	char		arg57[64];
 	char		arg58[64];
 	char		arg59[64];
+	char		arg60[64];
+	char		arg61[64];
 	
 	if(!g_building.integer){ return; }
 		
@@ -1938,6 +1919,8 @@ static void Cmd_PropNpc_AS_f( gentity_t *ent ){
 	trap_Argv( 60, arg57, sizeof( arg57 ) );
 	trap_Argv( 61, arg58, sizeof( arg58 ) );
 	trap_Argv( 62, arg59, sizeof( arg59 ) );
+	trap_Argv( 63, arg60, sizeof( arg60 ) );
+	trap_Argv( 64, arg61, sizeof( arg61 ) );
 	
 	end[0] = atof(cord_x);
 	end[1] = atof(cord_y);
@@ -1945,7 +1928,6 @@ static void Cmd_PropNpc_AS_f( gentity_t *ent ){
 	
 	if(!Q_stricmp (arg01, "prop")){
 	if(!g_allowprops.integer){ return; }
-		
 	if(g_safe.integer){
 	if(!Q_stricmp (arg03, "script_cmd")){
 	return;
@@ -1954,7 +1936,7 @@ static void Cmd_PropNpc_AS_f( gentity_t *ent ){
 	return;
 	}
 	}
-	G_BuildPropSL( arg02, arg03, end, ent, arg04, arg05, arg06, arg07, arg08, arg09, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30, arg31, arg32, arg33, arg34, arg35, arg36, arg37, arg38, arg39, arg40, arg41, arg42, arg43, arg44, arg45, arg46, arg47, arg48, arg49, arg50, arg51, arg52, arg53, arg54, arg55, arg56, arg57, arg58, arg59);
+	G_BuildPropSL( arg02, arg03, end, ent, arg04, arg05, arg06, arg07, arg08, arg09, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30, arg31, arg32, arg33, arg34, arg35, arg36, arg37, arg38, arg39, arg40, arg41, arg42, arg43, arg44, arg45, arg46, arg47, arg48, arg49, arg50, arg51, arg52, arg53, arg54, arg55, arg56, arg57, arg58, arg59, arg60, arg61);
 	
 	
 	return;
@@ -1962,122 +1944,55 @@ static void Cmd_PropNpc_AS_f( gentity_t *ent ){
 	if(!Q_stricmp (arg01, "npc")){
 	if(!g_allownpc.integer){ return; }
 	
-	tent = G_TempEntity( end, EV_PLAYER_TELEPORT_OUT );
-	VectorCopy( end, tent->s.origin);
-	tent->s.origin[2] += 48;
+	tent = G_Spawn();
+	tent->sb_ettype = 1;
+	VectorCopy( ent, tent->s.origin);
+	tent->s.origin[2] += 25;
 	tent->classname = "target_botspawn";
 	CopyAlloc(tent->clientname, arg02);
+	
+	if(!Q_stricmp (arg03, "NPC_Enemy")){
+	tent->type = NPC_ENEMY;
+	}
+	if(!Q_stricmp (arg03, "NPC_Citizen")){
+	tent->type = NPC_CITIZEN;
+	}
+	if(!Q_stricmp (arg03, "NPC_Guard")){
+	tent->type = NPC_GUARD;
+	}
+	if(!Q_stricmp (arg03, "NPC_Partner")){
+	tent->type = NPC_PARTNER;
+	}
+	if(!Q_stricmp (arg03, "NPC_PartnerEnemy")){
+	tent->type = NPC_PARTNERENEMY;
+	}
 	tent->skill = atof(arg04);
 	tent->health = atoi(arg05);
+	CopyAlloc(tent->message, arg06);	
 	tent->spawnflags = atoi(arg08);
 	if(!Q_stricmp (arg07, "0") ){
 	CopyAlloc(tent->target, arg02);	
 	} else {
 	CopyAlloc(tent->target, arg07);	
 	}
-	if(!Q_stricmp (arg03, "NPC_Enemy")){
-	G_AddBot(tent->clientname, atof(arg04), "Blue", 0, arg06, tent->s.number, tent->target, NPC_ENEMY );
+	if(tent->health <= 0){
+	tent->health = 100;
 	}
-	if(!Q_stricmp (arg03, "NPC_Citizen")){
-	G_AddBot(tent->clientname, atof(arg04), "Blue", 0, arg06, tent->s.number, tent->target, NPC_CITIZEN );
+	if(tent->skill <= 0){
+	tent->skill = 1;
 	}
-	if(!Q_stricmp (arg03, "NPC_Guard")){
-	G_AddBot(tent->clientname, atof(arg04), "Blue", 0, arg06, tent->s.number, tent->target, NPC_GUARD );
+	if(tent->spawnflags <= 0){
+	tent->spawnflags = 1;
 	}
-	if(!Q_stricmp (arg03, "NPC_Partner")){
-	G_AddBot(tent->clientname, atof(arg04), "Blue", 0, arg06, tent->s.number, tent->target, NPC_PARTNER );
+	if(!Q_stricmp (tent->message, "0") || !tent->message ){
+	CopyAlloc(tent->message, tent->clientname);
 	}
-	if(!Q_stricmp (arg03, "NPC_PartnerEnemy")){
-	G_AddBot(tent->clientname, atof(arg04), "Blue", 0, arg06, tent->s.number, tent->target, NPC_PARTNERENEMY );
-	}
+	G_AddBot(tent->clientname, tent->skill, "Blue", 0, tent->message, tent->s.number, tent->target, tent->type, tent );
 	
 	trap_Cvar_Set("g_spSkill", arg04);
 
 
 	return;
-	}
-	
-	
-}
-
-/*
-==================
-Cmd_SpawnBot_f
-Added for QSandbox.
-==================
-*/
-static void Cmd_SpawnBot_f( gentity_t *ent ){
-	vec3_t		end, start, forward, up, right;
-	gentity_t 	*tent;
-	char		model[MAX_TOKEN_CHARS];
-	char		class[MAX_TOKEN_CHARS];
-	char		skill[MAX_TOKEN_CHARS];
-	char		health[MAX_TOKEN_CHARS];
-	char		name[MAX_TOKEN_CHARS];
-	char		target[MAX_TOKEN_CHARS];
-	char		weapon[MAX_TOKEN_CHARS];
-	trace_t		tr;
-	
-	if(!g_building.integer){ return; }
-	if(!g_allownpc.integer){ return; }
-		
-	//tr.endpos
-	trap_Argv( 1, model, sizeof( model ) );
-	trap_Argv( 2, class, sizeof( class ) );
-	trap_Argv( 3, skill, sizeof( skill ) );
-	trap_Argv( 4, health, sizeof( health ) );
-	trap_Argv( 5, name, sizeof( name ) );
-	trap_Argv( 6, target, sizeof( target ) );
-	trap_Argv( 7, weapon, sizeof( weapon ) );
-	
-	if(atoi(health) <= 0){
-	strcpy(health, "100");
-	}
-	
-	//Set Aiming Directions
-	AngleVectors(ent->client->ps.viewangles, forward, right, up);
-	CalcMuzzlePoint(ent, forward, right, up, start);
-	VectorMA (start, 4096, forward, end);
-	VectorScale( forward, 0, forward );
-
-	//Trace Position
-	trap_Trace (&tr, start, NULL, NULL, end, ent->s.number, MASK_SELECT );
-	tent = G_TempEntity( tr.endpos, EV_PLAYER_TELEPORT_OUT );
-	VectorCopy( tr.endpos, tent->s.origin);
-	tent->s.origin[2] += 48;
-	tent->classname = "target_botspawn";
-	CopyAlloc(tent->clientname, model);
-	tent->skill = atof(skill);
-	tent->health = atoi(health);
-	tent->spawnflags = atoi(weapon);
-	if(!Q_stricmp (target, "0") ){
-	CopyAlloc(tent->target, model);	
-	} else {
-	CopyAlloc(tent->target, target);	
-	}
-	if(!Q_stricmp (class, "NPC_Enemy")){
-	G_AddBot(tent->clientname, atof(skill), "Blue", 0, name, tent->s.number, tent->target, NPC_ENEMY );
-	}
-	if(!Q_stricmp (class, "NPC_Citizen")){
-	G_AddBot(tent->clientname, atof(skill), "Blue", 0, name, tent->s.number, tent->target, NPC_CITIZEN );
-	}
-	if(!Q_stricmp (class, "NPC_Guard")){
-	G_AddBot(tent->clientname, atof(skill), "Blue", 0, name, tent->s.number, tent->target, NPC_GUARD );
-	}
-	if(!Q_stricmp (class, "NPC_Partner")){
-	G_AddBot(tent->clientname, atof(skill), "Blue", 0, name, tent->s.number, tent->target, NPC_PARTNER );
-	}
-	if(!Q_stricmp (class, "NPC_PartnerEnemy")){
-	G_AddBot(tent->clientname, atof(skill), "Blue", 0, name, tent->s.number, tent->target, NPC_PARTNERENEMY );
-	}
-	
-	trap_Cvar_Set("g_spSkill", skill);
-	
-	//G_Printf( va("usage: %s %s %s %s %s %s %s\n", model, class, skill, health, name, music, weapon) );
-	
-    if( trap_Argc( ) < 6 ){
-	G_Printf( "usage: <model> <class> <skill> <health> <name> <music> <weapon>\n" );
-    return;
 	}
 	
 	
@@ -3579,6 +3494,7 @@ commands_t cmds[ ] =
 
   // cheats
   { "give", CMD_LIVING, Cmd_Give_f },
+  { "exitvehicle", CMD_LIVING, Cmd_VehicleExit_f },
   { "god", CMD_CHEAT|CMD_LIVING, Cmd_God_f },
   { "notarget", CMD_CHEAT|CMD_LIVING, Cmd_Notarget_f },
   { "levelshot", CMD_CHEAT, Cmd_LevelShot_f },
@@ -3586,10 +3502,8 @@ commands_t cmds[ ] =
   { "noclip", CMD_LIVING, Cmd_Noclip_f },
 
   { "kill", CMD_TEAM|CMD_LIVING, Cmd_Kill_f },
-  { "buildprop", CMD_LIVING, Cmd_BuildProp_f },
   { "sl", CMD_LIVING, Cmd_SpawnList_Item_f },
   { "create", 0, Cmd_PropNpc_AS_f },
-  { "spawnbot", CMD_LIVING, Cmd_SpawnBot_f },
   { "distprop", CMD_LIVING, Cmd_DistanceProp_f },
   { "modifyprop", CMD_LIVING, Cmd_ModifyProp_f },
   { "flashlight", CMD_LIVING, Cmd_Flashlight_f },

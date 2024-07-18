@@ -177,6 +177,7 @@ struct gentity_s {
 	vec3_t		movedir;
 
 	int			nextthink;
+	int			lastThinkTime;
 	void		(*think)(gentity_t *self);
 	void		(*reached)(gentity_t *self);	// movers call this when hitting endpoint
 	void		(*blocked)(gentity_t *self, gentity_t *other);
@@ -275,6 +276,8 @@ vec3_t		home3;
 	
 	float		distance;
 	int			type;
+	int			vehicle;
+	int			vehicleclient;
 
 	//entityplus variables
 	char		*clientname;			// name of the bot to spawn for target_botspawn
@@ -550,18 +553,16 @@ struct gclient_s {
 	int			ammoTimes[WP_NUM_WEAPONS];
     int			invulnerabilityTime;
 
-
 	char		*areabits;
 
 	qboolean	isEliminated;			//Has been killed in this round
-
-        //New vote system. The votes are saved in the client info, so we know who voted on what and can cancel votes on leave.
-        //0=not voted, 1=voted yes, -1=voted no
-        int vote;
-
-        int lastSentFlying;                             //The last client that sent the player flying
-        int lastSentFlyingTime;                         //So we can time out
-
+	
+	//New vote system. The votes are saved in the client info, so we know who voted on what and can cancel votes on leave.
+	//0=not voted, 1=voted yes, -1=voted no
+	int vote;
+	
+	int lastSentFlying;                             //The last client that sent the player flying
+	int lastSentFlyingTime;                         //So we can time out
 
 	//unlagged - backward reconciliation #1
 	// the serverTime the button was pressed
@@ -576,16 +577,18 @@ struct gclient_s {
 	// an approximation of the actual server time we received this
 	// command (not in 50ms increments)
 	int			frameOffset;
-//unlagged - backward reconciliation #1
+	//unlagged - backward reconciliation #1
 
-//unlagged - smooth clients #1
+	//unlagged - smooth clients #1
 	// the last frame number we got an update from this client
 	int			lastUpdateFrame;
-//	int			debugDelag;
-//unlagged - smooth clients #1
-        qboolean        spawnprotected;
-
-        int			accuracy[WP_NUM_WEAPONS][2];
+	//	int			debugDelag;
+	//unlagged - smooth clients #1
+	qboolean        spawnprotected;
+	
+	int			accuracy[WP_NUM_WEAPONS][2];
+	
+    int         vehiclenum;
 };
 
 //
@@ -833,6 +836,9 @@ void	G_Fade( float duration, vec4_t startColor, vec4_t endColor, int clientn );
 void	G_FadeOut( float duration, int clientn );
 void	G_FadeIn( float duration, int clientn );
 playerscore_t G_CalculatePlayerScore( gentity_t *ent );
+void botsandbox_check (gentity_t *self);
+void VehiclePhys( gentity_t *self );
+void VehicleTouchBot( gentity_t *self, gentity_t *other, trace_t *trace );
 
 void	G_InitGentity( gentity_t *e );
 gentity_t *findradius (gentity_t *ent, vec3_t org, float rad);
@@ -869,6 +875,7 @@ void target_finish_use (gentity_t *self, gentity_t *other, gentity_t *activator)
 //
 qboolean CanDamage (gentity_t *targ, vec3_t origin);
 void G_Damage (gentity_t *targ, gentity_t *inflictor, gentity_t *attacker, vec3_t dir, vec3_t point, int damage, int dflags, int mod);
+void G_CollDamage (int targNum, int attackerNum, int speed, int mod, vec3_t velocity);
 qboolean G_RadiusDamage (vec3_t origin, gentity_t *attacker, float damage, float radius, gentity_t *ignore, int mod);
 int G_InvulnerabilityEffect( gentity_t *targ, vec3_t dir, vec3_t point, vec3_t impactpoint, vec3_t bouncedir );
 void body_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int meansOfDeath );
@@ -930,13 +937,14 @@ void lock_touch( gentity_t *self, gentity_t *other, trace_t *trace );
 void TeleportPlayer( gentity_t *player, vec3_t origin, vec3_t angles );
 void DropPortalSource( gentity_t *ent );
 void DropPortalDestination( gentity_t *ent );
-void G_BuildProp( char *model, char *class, vec3_t xyz, gentity_t *player, int priv, int mix, int grid, int sf );
 void G_ModProp( gentity_t *targ, gentity_t *attacker );
 void Svcmd_RCM( void );
 void G_RunProp( gentity_t *ent );
 void G_BounceProp( gentity_t *ent, trace_t *trace );
 void G_HideObjects();
 void G_ShowObjects();
+gentity_t *G_FindEntityForEntityNum(int entityn);
+gentity_t *G_FindEntityForClientNum(int entityn);
 
 
 //
@@ -1009,7 +1017,12 @@ gclient_t	*ClientForString( const char *s );
 // g_weapon.c
 //
 void FireWeapon( gentity_t *ent );
+void KamikazeDamage( gentity_t *self );
+void CarExplodeDamage( gentity_t *self );
+void KamikazeRadiusDamage( vec3_t origin, gentity_t *attacker, float damage, float radius, int mod );
+void KamikazeShockWave( vec3_t origin, gentity_t *attacker, float damage, float push, float radius, int mod );
 void G_StartKamikaze( gentity_t *ent );
+void G_StartCarExplode( gentity_t *ent );
 
 //
 // p_hud.c

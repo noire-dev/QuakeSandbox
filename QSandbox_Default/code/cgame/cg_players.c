@@ -1066,6 +1066,9 @@ void CG_NewClientInfo( int clientNum ) {
 
 	v = Info_ValueForKey( configstring, "si" );
 	newInfo.swepid = atoi( v );
+	
+	v = Info_ValueForKey( configstring, "vn" );
+	newInfo.vehiclenum = atoi( v );
 
 	v = Info_ValueForKey( configstring, "totex" );
 	newInfo.totex = atoi( v );
@@ -1690,7 +1693,7 @@ if (cg_thirdPersonRotating.integer == 1){
 	CG_SwingAngles( torsoAngles[YAW], 25, 90, cg_swingSpeed.value, &cent->pe.torso.yawAngle, &cent->pe.torso.yawing );
 	CG_SwingAngles( legsAngles[YAW], 40, 90, cg_swingSpeed.value, &cent->pe.legs.yawAngle, &cent->pe.legs.yawing );
 	}
-	if(cg_thirdPerson.integer == 1){
+	if(cg_thirdPerson.integer == 1 || cg.snap->ps.stats[STAT_VEHICLE]){
 	// torso
 	CG_SwingAngles( torsoAngles[YAW], 60000, 90, cg_swingSpeed.value, &cent->pe.torso.yawAngle, &cent->pe.torso.yawing );
 	CG_SwingAngles( legsAngles[YAW], 60000, 90, cg_swingSpeed.value, &cent->pe.legs.yawAngle, &cent->pe.legs.yawing );
@@ -1720,7 +1723,7 @@ if (cg_thirdPersonRotating.integer == 1){
 			torsoAngles[PITCH] = 0.0f;
 		}
 if (cg_thirdPersonRotating.integer == 1){
-	if(cg_thirdPerson.integer == 1){
+	if(cg_thirdPerson.integer == 1 || cg.snap->ps.stats[STAT_VEHICLE]){
 			torsoAngles[PITCH] = 0.0f;
 	}
 }
@@ -1782,7 +1785,7 @@ if (cg_thirdPersonRotating.integer == 1){
 	if(cg_thirdPerson.integer == 0){
 	AnglesToAxis( headAngles, head );
 	}
-	if(cg_thirdPerson.integer == 1){
+	if(cg_thirdPerson.integer == 1 || cg.snap->ps.stats[STAT_VEHICLE]){
 	AnglesToAxis( torsoAngles, head );
 	}
 }
@@ -2743,11 +2746,17 @@ if(ci->gender == GENDER_MALE){
 	VectorCopy( cent->lerpOrigin, legs.origin );
 
 	VectorCopy( cent->lerpOrigin, legs.lightingOrigin );
-
+	
 	if (chibifactorbody) {
 		VectorScale(legs.axis[0], chibifactorbody, legs.axis[0]);
 		VectorScale(legs.axis[1], chibifactorbody, legs.axis[1]);
 		VectorScale(legs.axis[2], chibifactorbody, legs.axis[2]);
+	}
+	
+	if(ci->vehiclenum > 0){
+		VectorScale(legs.axis[0], 0, legs.axis[0]);
+		VectorScale(legs.axis[1], 0, legs.axis[1]);
+		VectorScale(legs.axis[2], 0, legs.axis[2]);
 	}
 
 
@@ -2806,13 +2815,7 @@ if(ci->gender == GENDER_MALE){
 	if ( ci->plradius ) {
 
 	}
-
-
-
-
-
-
-
+	
 	CG_AddRefEntityWithPowerups( &torso, &cent->currentState, ci->team, qfalse );
 
 	if ( cent->currentState.number == cg.snap->ps.clientNum) {

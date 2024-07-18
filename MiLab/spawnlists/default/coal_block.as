@@ -1,6 +1,6 @@
 //args list from 0 to 32
 //init 
-//type 
+//type
 //model 
 //class 
 //private 
@@ -59,7 +59,9 @@
 //music
 //distance
 //type
+//vehicle
+//physicsBounce
 
 //NOTE: If allowuse is enabled then you can use "bind <key> <targetname>" to use this entity
 
-sl prop 25COAL_BLOCK none 0 25 25 0 0 0 0 "none" 1000 0 0 0 0 1 1 1 0 0 1 10000 0 1 100 100 120 1 0 1000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+sl prop 25COAL_BLOCK none 0 25 25 0 0 0 0 "none" 1000 0 0 0 0 1 1 1 0 0 1 10000 0 1 100 100 120 1 0 1000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5

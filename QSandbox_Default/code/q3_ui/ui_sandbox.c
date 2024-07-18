@@ -517,7 +517,7 @@ static void SandboxMain_SaveChanges( void ) {
 	trap_Cvar_Set( "sb_classnum_view", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue] );
 	}
 	if(uis.sb_tab == 3){
-	trap_Cmd_ExecuteText( EXEC_APPEND, va("set uibuildprop spawnbot %s %s %s %s %s %s %s\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.modif0.field.buffer, s_sandboxmain.modif1.field.buffer, s_sandboxmain.modif2.field.buffer, s_sandboxmain.modif3.field.buffer, s_sandboxmain.modif4.field.buffer) );
+	trap_Cmd_ExecuteText( EXEC_APPEND, va("set uibuildprop sl npc %s %s %s %s %s %s %s\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.modif0.field.buffer, s_sandboxmain.modif1.field.buffer, s_sandboxmain.modif2.field.buffer, s_sandboxmain.modif3.field.buffer, s_sandboxmain.modif4.field.buffer) );
 	trap_Cvar_Set( "oasb_modelst", va("props/%s", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 	trap_Cvar_Set( "sb_sf", s_sandboxmain.modif0.field.buffer );
 	}
