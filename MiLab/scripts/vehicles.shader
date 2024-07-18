@@ -504,8 +504,6 @@ ptex/props/veh_alpine/res/stompedhglass
 		rgbGen lightingdiffuse
 	}
 
-
-         
 }
 
 ptex/props/veh_alpine/res/stompedhlite
@@ -526,6 +524,93 @@ ptex/props/veh_alpine/res/stompedflite
 {
   	{
 	  	map ptex/props/veh_alpine/res/stompedflite.tga
+		depthWrite
+		rgbGen lightingdiffuse
+	} 
+}
+
+//Noire.dev SKIN
+
+ptex/props/veh_alpine/res/noiredevglass
+{
+	{
+		map ptex/props/veh_alpine/res/reflect.jpg   
+		tcGen environment
+		blendFunc	add
+		rgbGen lightingdiffuse
+	}
+
+	{
+		map ptex/props/veh_alpine/res/noiredev.tga
+		blendFunc	GL_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA
+		depthWrite
+		rgbGen lightingdiffuse
+	}
+
+
+}
+
+ptex/props/veh_alpine/res/noiredev
+{      
+	{
+		map ptex/props/veh_alpine/res/reflect.jpg   
+            tcGen environment
+            rgbGen lightingdiffuse
+	}
+      {
+	  	map ptex/props/veh_alpine/res/noiredev.tga
+            blendFunc GL_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA
+		depthWrite
+		rgbGen lightingdiffuse
+	}
+
+
+         
+}
+
+ptex/props/veh_alpine/res/noiredevhglass
+{      
+
+      {
+	  	map ptex/props/veh_alpine/res/noiredevhglass_t.tga
+            blendFunc GL_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA
+		alphaFunc GT0
+		depthWrite
+		rgbGen lightingdiffuse
+	}
+	{
+		map ptex/props/veh_alpine/res/reflect.jpg   
+		blendFunc add         
+            tcGen environment
+            rgbGen lightingdiffuse
+	}
+      {
+	  	map ptex/props/veh_alpine/res/noiredevhglass.tga
+            blendFunc GL_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA
+		depthWrite
+		rgbGen lightingdiffuse
+	}
+
+}
+
+ptex/props/veh_alpine/res/noiredevhlite
+{
+  	{
+	  	map ptex/props/veh_alpine/res/noiredevhlite.tga
+		depthWrite
+		rgbGen lightingdiffuse
+	}
+      {
+		map ptex/props/veh_alpine/res/hliteglow.tga
+            blendFunc add
+		rgbGen identity
+	}    
+}
+
+ptex/props/veh_alpine/res/noiredevflite
+{
+  	{
+	  	map ptex/props/veh_alpine/res/noiredevflite.tga
 		depthWrite
 		rgbGen lightingdiffuse
 	} 
