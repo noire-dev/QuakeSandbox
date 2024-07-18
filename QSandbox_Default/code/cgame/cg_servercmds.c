@@ -243,20 +243,6 @@ static void CG_ParseDomStatus( void ) {
 	}
 }
 
-/*
-=================
-CG_ParseChallenge
-=================
-*/
-
-static void CG_ParseChallenge( void ) {
-	addChallenge(atoi( CG_Argv(1) ) );
- if(atoi( CG_Argv(1) ) == 3){
-addChallenge( 3 );
-addChallenge( 3 );
- }
-}
-
 static void CG_ParseObeliskHealth( void ) {
     cg.redObeliskHealth = atoi( CG_Argv(1) );
     cg.blueObeliskHealth = atoi( CG_Argv(2) );
@@ -1541,28 +1527,22 @@ static void CG_ServerCommand( void ) {
 		return;
 	}
 
-	// challenge completed is determened by the server. A client should consider this message valid:
-	if ( !strcmp( cmd, "ch" ) ) {
-		CG_ParseChallenge();
-		return;
-	}
+    if ( !strcmp (cmd, "oh") ) {
+        CG_ParseObeliskHealth();
+        return;
+    }
 
-        if ( !strcmp (cmd, "oh") ) {
-            CG_ParseObeliskHealth();
-            return;
-        }
-
-        if ( !strcmp( cmd, "respawn" ) ) {
+    if ( !strcmp( cmd, "respawn" ) ) {
 		CG_ParseRespawnTime();
 		return;
 	}
 
-        if ( !strcmp( cmd, "team" ) ) {
+    if ( !strcmp( cmd, "team" ) ) {
 		CG_ParseTeam();
 		return;
 	}
 
-		if ( !strcmp( cmd, "weaponProperties" ) ) {
+	if ( !strcmp( cmd, "weaponProperties" ) ) {
         CG_ParseWeaponProperties();
         return;
     }

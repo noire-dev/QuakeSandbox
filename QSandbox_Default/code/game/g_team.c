@@ -457,9 +457,6 @@ void Team_FragBonuses(gentity_t *targ, gentity_t *inflictor, gentity_t *attacker
 		targ->client->pers.teamState.lasthurtcarrier = 0;
 
 		attacker->client->ps.persistant[PERS_DEFEND_COUNT]++;
-                G_LogPrintf( "Award: %i %i: %s gained the %s award!\n", attacker->client->ps.clientNum, 3, attacker->client->pers.netname, "DEFENCE" );
-                if(!level.hadBots)
-                    ChallengeMessage(attacker,AWARD_DEFENCE);
 		team = attacker->client->sess.sessionTeam;
 		// add the sprite over the player's head
 		attacker->client->ps.eFlags &= ~(EF_AWARD_IMPRESSIVE | EF_AWARD_EXCELLENT | EF_AWARD_GAUNTLET | EF_AWARD_ASSIST | EF_AWARD_DEFEND | EF_AWARD_CAP );
@@ -478,9 +475,6 @@ void Team_FragBonuses(gentity_t *targ, gentity_t *inflictor, gentity_t *attacker
 		targ->client->pers.teamState.lasthurtcarrier = 0;
 
 		attacker->client->ps.persistant[PERS_DEFEND_COUNT]++;
-                if(!level.hadBots)
-                    ChallengeMessage(attacker,AWARD_DEFENCE);
-                G_LogPrintf( "Award: %i %i: %s gained the %s award!\n", attacker->client->ps.clientNum, 3, attacker->client->pers.netname, "DEFENCE" );
 		team = attacker->client->sess.sessionTeam;
 		// add the sprite over the player's head
 		attacker->client->ps.eFlags &= ~(EF_AWARD_IMPRESSIVE | EF_AWARD_EXCELLENT | EF_AWARD_GAUNTLET | EF_AWARD_ASSIST | EF_AWARD_DEFEND | EF_AWARD_CAP );
@@ -512,10 +506,7 @@ void Team_FragBonuses(gentity_t *targ, gentity_t *inflictor, gentity_t *attacker
 				attacker->client->pers.teamState.basedefense++;
 
 				attacker->client->ps.persistant[PERS_DEFEND_COUNT]++;
-                                G_LogPrintf( "Award: %i %i: %s gained the %s award!\n", attacker->client->ps.clientNum, 3, attacker->client->pers.netname, "DEFENCE" );
-                                if(!level.hadBots)
-                                    ChallengeMessage(attacker,AWARD_DEFENCE);
-                                // add the sprite over the player's head
+                // add the sprite over the player's head
 				attacker->client->ps.eFlags &= ~(EF_AWARD_IMPRESSIVE | EF_AWARD_EXCELLENT | EF_AWARD_GAUNTLET | EF_AWARD_ASSIST | EF_AWARD_DEFEND | EF_AWARD_CAP );
 				attacker->client->ps.eFlags |= EF_AWARD_DEFEND;
 				attacker->client->rewardTime = level.time + REWARD_SPRITE_TIME;
@@ -548,9 +539,6 @@ void Team_FragBonuses(gentity_t *targ, gentity_t *inflictor, gentity_t *attacker
 				attacker->client->pers.teamState.basedefense++;
 
 				attacker->client->ps.persistant[PERS_DEFEND_COUNT]++;
-                                if(!level.hadBots)
-                                    ChallengeMessage(attacker,AWARD_DEFENCE);
-                                G_LogPrintf( "Award: %i %i: %s gained the %s award!\n", attacker->client->ps.clientNum, 3, attacker->client->pers.netname, "DEFENCE" );
 				// add the sprite over the player's head
 				attacker->client->ps.eFlags &= ~(EF_AWARD_IMPRESSIVE | EF_AWARD_EXCELLENT | EF_AWARD_GAUNTLET | EF_AWARD_ASSIST | EF_AWARD_DEFEND | EF_AWARD_CAP );
 				attacker->client->ps.eFlags |= EF_AWARD_DEFEND;
@@ -635,9 +623,6 @@ void Team_FragBonuses(gentity_t *targ, gentity_t *inflictor, gentity_t *attacker
 		attacker->client->pers.teamState.basedefense++;
 
 		attacker->client->ps.persistant[PERS_DEFEND_COUNT]++;
-                if(!level.hadBots)
-                                    ChallengeMessage(attacker,AWARD_DEFENCE);
-                G_LogPrintf( "Award: %i %i: %s gained the %s award!\n", attacker->client->ps.clientNum, 3, attacker->client->pers.netname, "DEFENCE" );
 		// add the sprite over the player's head
 		attacker->client->ps.eFlags &= ~(EF_AWARD_IMPRESSIVE | EF_AWARD_EXCELLENT | EF_AWARD_GAUNTLET | EF_AWARD_ASSIST | EF_AWARD_DEFEND | EF_AWARD_CAP );
 		attacker->client->ps.eFlags |= EF_AWARD_DEFEND;
@@ -659,9 +644,6 @@ void Team_FragBonuses(gentity_t *targ, gentity_t *inflictor, gentity_t *attacker
 			attacker->client->pers.teamState.carrierdefense++;
 
 			attacker->client->ps.persistant[PERS_DEFEND_COUNT]++;
-                        if(!level.hadBots)
-                                    ChallengeMessage(attacker,AWARD_DEFENCE);
-                        G_LogPrintf( "Award: %i %i: %s gained the %s award!\n", attacker->client->ps.clientNum, 3, attacker->client->pers.netname, "DEFENCE" );
 			// add the sprite over the player's head
 			attacker->client->ps.eFlags &= ~(EF_AWARD_IMPRESSIVE | EF_AWARD_EXCELLENT | EF_AWARD_GAUNTLET | EF_AWARD_ASSIST | EF_AWARD_DEFEND | EF_AWARD_CAP );
 			attacker->client->ps.eFlags |= EF_AWARD_DEFEND;
@@ -1287,9 +1269,6 @@ int Team_TouchOurFlag( gentity_t *ent, gentity_t *other, int team ) {
 	other->client->ps.eFlags |= EF_AWARD_CAP;
 	other->client->rewardTime = level.time + REWARD_SPRITE_TIME;
 	other->client->ps.persistant[PERS_CAPTURES]++;
-        G_LogPrintf( "Award: %i %i: %s gained the %s award!\n", other->client->ps.clientNum, 4, other->client->pers.netname, "CAPTURE" );
-        if(TeamCount(-1,TEAM_RED) && TeamCount(-1,TEAM_BLUE) && !level.hadBots)
-            ChallengeMessage(other,AWARD_CAPTURE);
 	// other gets another 10 frag bonus
 	AddScore(other, ent->r.currentOrigin, CTF_CAPTURE_BONUS);
 
@@ -1315,9 +1294,6 @@ int Team_TouchOurFlag( gentity_t *ent, gentity_t *other, int team ) {
 				other->client->pers.teamState.assists++;
 
 				player->client->ps.persistant[PERS_ASSIST_COUNT]++;
-                                if(!level.hadBots)
-                                    ChallengeMessage(player,AWARD_ASSIST);
-                                G_LogPrintf( "Award: %i %i: %s gained the %s award!\n", player->client->ps.clientNum, 5, player->client->pers.netname, "ASSIST" );
 				// add the sprite over the player's head
 				player->client->ps.eFlags &= ~(EF_AWARD_IMPRESSIVE | EF_AWARD_EXCELLENT | EF_AWARD_GAUNTLET | EF_AWARD_ASSIST | EF_AWARD_DEFEND | EF_AWARD_CAP );
 				player->client->ps.eFlags |= EF_AWARD_ASSIST;
@@ -1329,9 +1305,6 @@ int Team_TouchOurFlag( gentity_t *ent, gentity_t *other, int team ) {
 				AddScore(player, ent->r.currentOrigin, CTF_FRAG_CARRIER_ASSIST_BONUS);
 				other->client->pers.teamState.assists++;
 				player->client->ps.persistant[PERS_ASSIST_COUNT]++;
-                                if(!level.hadBots)
-                                    ChallengeMessage(player,AWARD_ASSIST);
-                                G_LogPrintf( "Award: %i %i: %s gained the %s award!\n", player->client->ps.clientNum, 5, player->client->pers.netname, "ASSIST" );
 				// add the sprite over the player's head
 				player->client->ps.eFlags &= ~(EF_AWARD_IMPRESSIVE | EF_AWARD_EXCELLENT | EF_AWARD_GAUNTLET | EF_AWARD_ASSIST | EF_AWARD_DEFEND | EF_AWARD_CAP );
 				player->client->ps.eFlags |= EF_AWARD_ASSIST;
@@ -1975,14 +1948,10 @@ static void ObeliskDie( gentity_t *self, gentity_t *inflictor, gentity_t *attack
 	attacker->client->ps.eFlags |= EF_AWARD_CAP;
 	attacker->client->rewardTime = level.time + REWARD_SPRITE_TIME;
 	attacker->client->ps.persistant[PERS_CAPTURES]++;
-        G_LogPrintf( "Award: %i %i: %s gained the %s award!\n", attacker->client->ps.clientNum, 4, attacker->client->pers.netname, "CAPTURE" );
-        G_LogPrintf("OBELISK: %i %i %i %i: %s destroyed the enemy obelisk.\n",
-                 attacker->client->ps.clientNum,attacker->client->sess.sessionTeam,3,0,
-                 attacker->client->pers.netname);
-        if(TeamCount(-1,TEAM_RED) && TeamCount(-1,TEAM_BLUE) && !level.hadBots)
-            ChallengeMessage(attacker,AWARD_CAPTURE);
-
-        ObeliskHealthChange(self->spawnflags,self->health);
+    G_LogPrintf("OBELISK: %i %i %i %i: %s destroyed the enemy obelisk.\n",
+    attacker->client->ps.clientNum,attacker->client->sess.sessionTeam,3,0,
+    attacker->client->pers.netname);
+    ObeliskHealthChange(self->spawnflags,self->health);
 	teamgame.redObeliskAttackedTime = 0;
 	teamgame.blueObeliskAttackedTime = 0;
 }
@@ -2021,13 +1990,6 @@ static void ObeliskTouch( gentity_t *self, gentity_t *other, trace_t *trace ) {
 	other->client->ps.eFlags |= EF_AWARD_CAP;
 	other->client->rewardTime = level.time + REWARD_SPRITE_TIME;
 	other->client->ps.persistant[PERS_CAPTURES] += tokens;
-        for(i = 0;i<tokens;i++)
-        {
-            G_LogPrintf( "Award: %i %i: %s gained the %s award!\n", other->client->ps.clientNum, 4, other->client->pers.netname, "CAPTURE" );
-	if(TeamCount(-1,TEAM_RED) && TeamCount(-1,TEAM_BLUE) && !level.hadBots)
-            ChallengeMessage(other,AWARD_CAPTURE);
-        }
-
 	other->client->ps.generic1 = 0;
 	CalculateRanks();
 

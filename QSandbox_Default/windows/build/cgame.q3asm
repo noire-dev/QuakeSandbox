@@ -2,7 +2,6 @@
 cg_main
 ..\cg_syscalls
 cg_atmospheric
-cg_challenges
 cg_consolecmds
 cg_newdraw
 cg_draw

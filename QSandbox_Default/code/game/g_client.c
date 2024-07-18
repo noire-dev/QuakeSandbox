@@ -1792,7 +1792,6 @@ void ClientBegin( int clientNum ) {
 	gclient_t	*client;
 	gentity_t       *tent;
 	int			flags;
-	int		countRed, countBlue, countFree;
     char		userinfo[MAX_INFO_STRING];
 
         trap_GetUserinfo( clientNum, userinfo, sizeof( userinfo ) );
@@ -1818,37 +1817,6 @@ void ClientBegin( int clientNum ) {
 	if(g_gametype.integer == GT_LMS) {
 		client->isEliminated = qtrue; //So player does not give a point in gamemode 2 and 3
 		//trap_SendServerCommand( -1, va("print \"%s" S_COLOR_WHITE " will start dead\n\"", client->pers.netname) );
-	}
-
-	//player is a bot:
-	if( ent->r.svFlags & SVF_BOT )
-	{
-		if(!level.hadBots)
-		{
-			G_LogPrintf( "Info: There has been at least 1 bot now\n" );
-			level.hadBots = qtrue;
-		}
-	}
-
-	//Count smallest team
-	countFree = TeamCount(-1,TEAM_FREE);
-	countRed = TeamCount(-1,TEAM_RED);
-	countBlue = TeamCount(-1,TEAM_BLUE);
-	if(g_gametype.integer < GT_TEAM || g_ffa_gt)
-	{
-		if(countFree>level.teamSize)
-			level.teamSize=countFree;
-	}
-	else
-	if(countRed>countBlue)
-	{
-		if(countBlue>level.teamSize)
-			level.teamSize=countBlue;
-	}
-	else
-	{
-		if(countRed>level.teamSize)
-			level.teamSize=countRed;
 	}
 
 	// save eflags around this, because changing teams will

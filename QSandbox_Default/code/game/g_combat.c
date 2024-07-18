@@ -23,7 +23,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // g_combat.c
 
 #include "g_local.h"
-#include "challenges.h"
 
 /*
 ============
@@ -649,14 +648,10 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 
 			if( meansOfDeath == MOD_GAUNTLET ) {
 
-				// Attack gets a challenge complete:
-				if(!(attacker->r.svFlags & SVF_BOT) && !(self->r.svFlags & SVF_BOT))
-				ChallengeMessage(attacker,WEAPON_GAUNTLET_KILLS);
 				attacker->client->pers.oldmoney += 1;
-
+				
 				// play humiliation on player
 				attacker->client->ps.persistant[PERS_GAUNTLET_FRAG_COUNT]++;
-                                G_LogPrintf( "Award: %i %i: %s gained the %s award!\n", attacker->client->ps.clientNum, 0, attacker->client->pers.netname, "GAUNTLET" );
 
 				// add the sprite over the player's head
 				attacker->client->ps.eFlags &= ~(EF_AWARD_IMPRESSIVE | EF_AWARD_EXCELLENT | EF_AWARD_GAUNTLET | EF_AWARD_ASSIST | EF_AWARD_DEFEND | EF_AWARD_CAP );
@@ -666,138 +661,6 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 				// also play humiliation on target
 				self->client->ps.persistant[PERS_PLAYEREVENTS] ^= PLAYEREVENT_GAUNTLETREWARD;
 			}
-
-                        //If neither attacker or taget is bots and not the same
-                        if(self!=attacker)
-                        {
-                            switch(meansOfDeath)
-                            {
-                                case MOD_GAUNTLET:
-                                    ChallengeMessage(attacker,WEAPON_GAUNTLET_KILLS);
-                                    break;
-                                case MOD_MACHINEGUN:
-                                    ChallengeMessage(attacker,WEAPON_MACHINEGUN_KILLS);
-                                    break;
-                                case MOD_SHOTGUN:
-                                    ChallengeMessage(attacker,WEAPON_SHOTGUN_KILLS);
-                                    break;
-                                case MOD_GRENADE:
-                                case MOD_GRENADE_SPLASH:
-                                    ChallengeMessage(attacker,WEAPON_GRANADE_KILLS);
-                                    break;
-                                case MOD_ROCKET:
-                                case MOD_ROCKET_SPLASH:
-                                    ChallengeMessage(attacker,WEAPON_ROCKET_KILLS);
-                                    break;
-                                case MOD_LIGHTNING:
-                                    ChallengeMessage(attacker,WEAPON_LIGHTNING_KILLS);
-                                    break;
-                                case MOD_PLASMA:
-                                case MOD_PLASMA_SPLASH:
-                                    ChallengeMessage(attacker,WEAPON_PLASMA_KILLS);
-                                    break;
-                                case MOD_RAILGUN:
-                                    if(g_instantgib.integer)
-                                        ChallengeMessage(attacker,WEAPON_INSTANT_RAIL_KILLS);
-                                    else
-                                        ChallengeMessage(attacker,WEAPON_RAIL_KILLS);
-                                    break;
-                                case MOD_BFG:
-                                case MOD_BFG_SPLASH:
-                                    ChallengeMessage(attacker,WEAPON_BFG_KILLS);
-                                    break;
-																case MOD_FLAME:
-		                            case MOD_FLAME_SPLASH:
-		                                ChallengeMessage(attacker,WEAPON_FLAMETHROWER_KILLS);
-		                                break;
-																case MOD_ANTIMATTER:
-				                        case MOD_ANTIMATTER_SPLASH:
-				                            ChallengeMessage(attacker,WEAPON_DARKFLARE_KILLS);
-				                            break;
-                                case MOD_NAIL:
-                                    ChallengeMessage(attacker,WEAPON_NAILGUN_KILLS);
-                                    break;
-                                case MOD_CHAINGUN:
-                                    ChallengeMessage(attacker,WEAPON_CHAINGUN_KILLS);
-                                    break;
-                                case MOD_PROXIMITY_MINE:
-                                    ChallengeMessage(attacker,WEAPON_MINE_KILLS);
-                                    break;
-                                case MOD_GRAPPLE:
-                                    ChallengeMessage(attacker,WEAPON_GRAPPLE_KILLS);
-                                    break;
-                                case MOD_LAVA:
-                                case MOD_SLIME:
-                                case MOD_TRIGGER_HURT:
-                                case MOD_FALLING:
-                                    ChallengeMessage(attacker,WEAPON_PUSH_KILLS);
-                                    break;
-                                case MOD_CRUSH:
-                                    ChallengeMessage(attacker,WEAPON_CRUSH_KILLS);
-                                    break;
-                                case MOD_TELEFRAG:
-                                    ChallengeMessage(attacker,WEAPON_TELEFRAG_KILLS);
-                                    break;
-                            };
-                            ChallengeMessage(attacker,GENERAL_MONEY);
-                            ChallengeMessage(attacker,GENERAL_TOTALKILLS);
-                            ChallengeMessage(self,GENERAL_TOTALDEATHS);
-
-                            //Lets count number of powerups:
-                            i = 0;
-                            counter2 = 0;
-
-                            if(attacker->client->ps.powerups[PW_QUAD]) {
-                                ChallengeMessage(attacker,POWERUP_QUAD_KILL);
-                                counter2++;
-                            }
-                            if(self->client->ps.powerups[PW_QUAD]) {
-                                ChallengeMessage(attacker,POWERUP_COUNTER_QUAD);
-                                i++;
-                            }
-
-                            if(attacker->client->ps.powerups[PW_HASTE]) {
-                                ChallengeMessage(attacker,POWERUP_SPEED_KILL);
-                                counter2++;
-                            }
-                            if(self->client->ps.powerups[PW_HASTE]) {
-                                ChallengeMessage(attacker,POWERUP_COUNTER_SPEED);
-                                i++;
-                            }
-
-                            if(attacker->client->ps.powerups[PW_INVIS]) {
-                                ChallengeMessage(attacker,POWERUP_INVIS_KILL);
-                                counter2++;
-                            }
-                            if(self->client->ps.powerups[PW_INVIS]) {
-                                ChallengeMessage(attacker,POWERUP_COUNTER_INVIS);
-                                i++;
-                            }
-
-                            if(attacker->client->ps.powerups[PW_FLIGHT]) {
-                                ChallengeMessage(attacker,POWERUP_FLIGHT_KILL);
-                                counter2++;
-                            }
-                            if(self->client->ps.powerups[PW_FLIGHT]) {
-                                ChallengeMessage(attacker,POWERUP_COUNTER_FLIGHT);
-                                i++;
-                            }
-
-                            if(self->client->ps.powerups[PW_BATTLESUIT]) {
-                                ChallengeMessage(attacker,POWERUP_COUNTER_ENVIR);
-                                i++;
-                            }
-
-                            if(self->client->ps.powerups[PW_REGEN]) {
-                                ChallengeMessage(attacker,POWERUP_COUNTER_REGEN);
-                                i++;
-                            }
-
-                            if(i>1) //The target had more than one powerup
-                                ChallengeMessage(attacker,POWERUP_COUNTER_MULTI);
-                            if(counter2>1) //The attacker has more than one powerup
-                                ChallengeMessage(attacker,POWERUP_MULTI_KILL);
-                        }
 
 			// check for two kills in a short amount of time
 			// if this is close enough to the last kill, give a reward sound
@@ -809,10 +672,7 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 				    G_checkForMultiKill( attacker );
 				} // play excellent on player
 				attacker->client->ps.persistant[PERS_EXCELLENT_COUNT]++;
-                                G_LogPrintf( "Award: %i %i: %s gained the %s award!\n", attacker->client->ps.clientNum, 1, attacker->client->pers.netname, "EXCELLENT" );
-                                if(!level.hadBots) //There has not been any bots
-                                    ChallengeMessage(attacker,AWARD_EXCELLENT);
-									attacker->client->pers.oldmoney += 1;
+				attacker->client->pers.oldmoney += 1;
 				// add the sprite over the player's head
 				attacker->client->ps.eFlags &= ~(EF_AWARD_IMPRESSIVE | EF_AWARD_EXCELLENT | EF_AWARD_GAUNTLET | EF_AWARD_ASSIST | EF_AWARD_DEFEND | EF_AWARD_CAP );
 				attacker->client->ps.eFlags |= EF_AWARD_EXCELLENT;

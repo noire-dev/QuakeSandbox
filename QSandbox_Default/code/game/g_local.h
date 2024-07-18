@@ -25,7 +25,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../qcommon/q_shared.h"
 #include "bg_public.h"
 #include "g_public.h"
-#include "challenges.h"
 
 //==================================================================
 
@@ -700,10 +699,6 @@ typedef struct {
 	int domination_points_count;
 	char domination_points_names[MAX_DOMINATION_POINTS][MAX_DOMINATION_POINTS_NAMES];
 
-	//Added to keep track of challenges (can only be completed against humanplayers)
-	qboolean hadBots;	//There was bots in the level
-	int teamSize;		//The highest number of players on the least populated team when there was most players
-
 //unlagged - backward reconciliation #4
 	// actual time this server frame started
 	int			frameStartTime;
@@ -1045,7 +1040,6 @@ void EliminationMessage (gentity_t *client);
 void RespawnTimeMessage(gentity_t *ent, int time);
 void DominationPointNamesMessage (gentity_t *client);
 void DominationPointStatusMessage( gentity_t *ent );
-void ChallengeMessage( gentity_t *ent, int challengeNumber );
 void SendCustomVoteCommands(int clientNum);
 
 //

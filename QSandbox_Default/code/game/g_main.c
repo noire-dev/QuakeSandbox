@@ -1742,10 +1742,6 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	level.roundRespawned = qfalse;
 	level.eliminationSides = rand()%2; //0 or 1
 
-	//Challenges:
-	level.teamSize = 0;
-	level.hadBots = qfalse;
-
 	if(g_gametype.integer == GT_DOUBLE_D)
 		Team_SpawnDoubleDominationPoints();
 
