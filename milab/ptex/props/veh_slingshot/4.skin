@@ -1,0 +1,15 @@
+b_glass,ptex/props/veh_slingshot/res/glass.tga
+b_hlites,ptex/props/veh_slingshot/res/hlites.tga
+b_main,ptex/props/veh_slingshot/res/ps2_main.tga
+b_tlites,ptex/props/veh_slingshot/res/tlites.tga
+b_under,ptex/props/veh_slingshot/res/under.tga
+b_roof,ptex/props/veh_slingshot/res/ps2_roof.tga
+tag_weapon,
+tag_wheelfr,
+tag_wheelfl,
+tag_wheelrr,
+tag_wheelrl,
+tag_turbo,
+tag_smoke,
+w_tread,ptex/props/veh_alpine/res/tread.tga
+w_rim,ptex/props/veh_alpine/res/rim_amg_163.tga
