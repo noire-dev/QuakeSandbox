@@ -364,14 +364,15 @@ static void Main_MenuDraw( void ) {
 	   // standard menu drawing
 	   Menu_Draw( &s_main.menu );
    }
-	UI_DrawString( 600+cl_screenoffset.integer, 465, "Quake Sandbox v3.0", UI_RIGHT|UI_SMALLFONT, color );
+	UI_DrawString( 600+cl_screenoffset.integer, 450, "Quake Sandbox v3.0", UI_RIGHT|UI_SMALLFONT, color );
+	UI_DrawString( 600+cl_screenoffset.integer, 465, "by Noire.dev", UI_RIGHT|UI_SMALLFONT, color );
 	
 	if(!ui_tutorial01.integer){
 	if(cl_language.integer == 0){
-		UI_DrawString( 320+cl_screenoffset.integer, 393, "Сlick here and select mode ->", UI_RIGHT|UI_SMALLFONT, color );
+		UI_DrawString( 320+cl_screenoffset.integer, 373, "Сlick here and select mode ->", UI_RIGHT|UI_SMALLFONT, color );
 	}
 	if(cl_language.integer == 1){
-		UI_DrawString( 320+cl_screenoffset.integer, 393, "Нажмите сюда и выберете режим ->", UI_RIGHT|UI_SMALLFONT, color );
+		UI_DrawString( 320+cl_screenoffset.integer, 373, "Нажмите сюда и выберете режим ->", UI_RIGHT|UI_SMALLFONT, color );
 	}
 	}
 }
@@ -472,7 +473,7 @@ void UI_MainMenu( void ) {
 	s_main.modloader.generic.id			= ID_MODLOADER;
 	s_main.modloader.generic.callback	= Main_MenuEvent;
 	s_main.modloader.generic.x			= 440 + cl_screenoffset.integer;
-	s_main.modloader.generic.y			= 385;
+	s_main.modloader.generic.y			= 365;
 	s_main.modloader.width				= 256*0.90;
 	s_main.modloader.height				= 38*0.80;
 	
@@ -481,7 +482,7 @@ void UI_MainMenu( void ) {
 	s_main.moddb.generic.id			= ID_MODDB;
 	s_main.moddb.generic.callback	= Main_MenuEvent;
 	s_main.moddb.generic.x			= 460 + cl_screenoffset.integer;
-	s_main.moddb.generic.y			= 385 + 38*0.80 + 15;
+	s_main.moddb.generic.y			= 365 + 38*0.80 + 15;
 	s_main.moddb.width				= 256*0.90;
 	s_main.moddb.height				= 38*0.80;
 

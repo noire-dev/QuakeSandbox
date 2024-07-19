@@ -119,18 +119,19 @@ typedef struct
 #define ID_SANDBOXMODE		54
 #define ID_NEWSANDBOX		55
 #define ID_ACTIONMENU		56
+#define ID_EXITVEHICLE		57
 
 
 // all others
-#define ID_FREELOOK		57
-#define ID_INVERTMOUSE	58
-#define ID_ALWAYSRUN	59
-#define ID_AUTOSWITCH	60
-#define ID_MOUSESPEED	61
-#define ID_JOYENABLE	62
-#define ID_JOYTHRESHOLD	63
-#define ID_SMOOTHMOUSE	64
-#define ID_MOUSESTYLE	65
+#define ID_FREELOOK		58
+#define ID_INVERTMOUSE	59
+#define ID_ALWAYSRUN	60
+#define ID_AUTOSWITCH	61
+#define ID_MOUSESPEED	62
+#define ID_JOYENABLE	63
+#define ID_JOYTHRESHOLD	64
+#define ID_SMOOTHMOUSE	65
+#define ID_MOUSESTYLE	66
 
 
 typedef struct
@@ -214,6 +215,7 @@ typedef struct
 	menuaction_s		sandboxmode;
 	menuaction_s		newsandbox;
 	menuaction_s		actionmenu;
+	menuaction_s		exitvehicle;
 	menuradiobutton_s	joyenable;
 	menuslider_s		joythreshold;
 	int					section;
@@ -288,6 +290,7 @@ static bind_t g_bindings[] =
 	{"vstr uitoolmode", 	"sandbox tool mode",	ID_SANDBOXMODE,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr lastui", 	"addon menu",	ID_NEWSANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"mgui touchscreen", 	"action menu",	ID_ACTIONMENU,		ANIM_CHAT,		-1,				-1,		-1, -1},
+	{"exitvehicle", 	"exit vehicle",	ID_EXITVEHICLE,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{(char*)NULL,		(char*)NULL,		0,				0,				-1,				-1,		-1,	-1},
 };
 
@@ -350,6 +353,7 @@ static bind_t g_bindingsrus[] =
 	{"vstr uitoolmode", 	"песочница режим инструмента",	ID_SANDBOXMODE,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr lastui", 	"меню аддонов",	ID_NEWSANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"mgui touchscreen", 	"меню действий",	ID_ACTIONMENU,		ANIM_CHAT,		-1,				-1,		-1, -1},
+	{"exitvehicle", 	"выйти из транспорта",	ID_EXITVEHICLE,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{(char*)NULL,		(char*)NULL,		0,				0,				-1,				-1,		-1,	-1},
 };
 
@@ -449,6 +453,7 @@ static menucommon_s *g_misc_controls[] = {
 	(menucommon_s *)&s_controls.sandboxmode,
 	(menucommon_s *)&s_controls.newsandbox,
 	(menucommon_s *)&s_controls.actionmenu,
+	(menucommon_s *)&s_controls.exitvehicle,
 	NULL,
 };
 
@@ -1806,6 +1811,12 @@ static void Controls_MenuInit( void )
 	s_controls.actionmenu.generic.callback  = Controls_ActionEvent;
 	s_controls.actionmenu.generic.ownerdraw = Controls_DrawKeyBinding;
 	s_controls.actionmenu.generic.id        = ID_ACTIONMENU;
+	
+	s_controls.exitvehicle.generic.type	   = MTYPE_ACTION;
+	s_controls.exitvehicle.generic.flags     = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_GRAYED|QMF_HIDDEN;
+	s_controls.exitvehicle.generic.callback  = Controls_ActionEvent;
+	s_controls.exitvehicle.generic.ownerdraw = Controls_DrawKeyBinding;
+	s_controls.exitvehicle.generic.id        = ID_EXITVEHICLE;
 
 	s_controls.joyenable.generic.type      = MTYPE_RADIOBUTTON;
 	s_controls.joyenable.generic.flags	   = QMF_SMALLFONT;
@@ -1933,6 +1944,7 @@ if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &s_controls.menu, &s_controls.sandboxmode );
 	Menu_AddItem( &s_controls.menu, &s_controls.newsandbox );
 	Menu_AddItem( &s_controls.menu, &s_controls.actionmenu );
+	Menu_AddItem( &s_controls.menu, &s_controls.exitvehicle );
 }
 
 	Menu_AddItem( &s_controls.menu, &s_controls.back );
