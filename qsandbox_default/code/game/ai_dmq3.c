@@ -3193,7 +3193,7 @@ int BotFindEnemy(bot_state_t *bs, int curenemy) {
 			if (curenemy >= 0 && squaredist > cursquaredist) continue;
 		} //end if
 		//if the bot has no
-		if (squaredist > Square(900.0 + alertness * 4000.0)) continue;
+		if (squaredist > Square((900.0 + alertness * 4000.0) * 8)) continue;	//VIEW DISTANCE FOR BOTS * 8
 		//if on the same team
 		if(!bs->spbot){
 		if (BotSameTeam(bs, i)) 
