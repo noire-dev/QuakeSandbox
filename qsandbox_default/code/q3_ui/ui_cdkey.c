@@ -173,6 +173,7 @@ static void UI_CDKeyMenu_Init( void ) {
 
 	memset( &cdkeyMenuInfo, 0, sizeof(cdkeyMenuInfo) );
 	cdkeyMenuInfo.menu.wrapAround = qtrue;
+	cdkeyMenuInfo.menu.native 	  = qfalse;
 	cdkeyMenuInfo.menu.fullscreen = qtrue;
 
 	cdkeyMenuInfo.banner.generic.type				= MTYPE_BTEXT;

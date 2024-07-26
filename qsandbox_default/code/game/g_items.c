@@ -1071,7 +1071,7 @@ void Touch_Item2 (gentity_t *ent, gentity_t *other, trace_t *trace, qboolean all
 	}
 
 	// powerup pickups are global broadcasts
-	if ( ent->item->giType == IT_POWERUP || ent->item->giType == IT_TEAM) {
+	if ( /*ent->item->giType == IT_POWERUP ||*/ ent->item->giType == IT_TEAM) {	//disabled powerup sound for all cuz it annoying
 		// if we want the global sound to play
 		if (!ent->speed) {
 			gentity_t	*te;

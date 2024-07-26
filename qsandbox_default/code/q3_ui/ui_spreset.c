@@ -133,6 +133,7 @@ void UI_ResetMenu(void) {
 	s_reset.menu.draw       = Reset_MenuDraw;
 	s_reset.menu.key        = Reset_MenuKey;
 	s_reset.menu.wrapAround = qtrue;
+	s_reset.menu.native 	   = qfalse;
 
 	trap_GetClientState( &cstate );
 

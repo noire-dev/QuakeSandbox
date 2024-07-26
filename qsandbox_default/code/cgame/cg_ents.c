@@ -470,6 +470,12 @@ if(cg_itemstyle.integer == 3){
 		ent.nonNormalizedAxes = qtrue;
 	} else {
 		frac = 1.0;
+		if(es->scales[0] != 0.0){
+		VectorScale( ent.axis[0], es->scales[0], ent.axis[0] );}
+		if(es->scales[1] != 0.0){
+		VectorScale( ent.axis[1], es->scales[1], ent.axis[1] );}
+		if(es->scales[2] != 0.0){
+		VectorScale( ent.axis[2], es->scales[2], ent.axis[2] );}
 	}
 
 	// items without glow textures need to keep a minimum light value
@@ -741,54 +747,72 @@ static void CG_Weather( centity_t *cent ) {
 CG_Mover
 ===============
 */
-static void CG_Mover( centity_t *cent ) {
-	refEntity_t			ent;
-	entityState_t		*s1;
+static void CG_Mover(centity_t *cent) {
+    refEntity_t ent;
+    entityState_t *s1;
+    char modelname[MAX_QPATH];
+    int len;
 
-	s1 = &cent->currentState;
+    s1 = &cent->currentState;
 
-	// create the render entity
-	memset (&ent, 0, sizeof(ent));
-	VectorCopy( cent->lerpOrigin, ent.origin);
-	VectorCopy( cent->lerpOrigin, ent.oldorigin);
-	AnglesToAxis( cent->lerpAngles, ent.axis );
+    // create the render entity
+    memset(&ent, 0, sizeof(ent));
+    VectorCopy(cent->lerpOrigin, ent.origin);
+    VectorCopy(cent->lerpOrigin, ent.oldorigin);
+    AnglesToAxis(cent->lerpAngles, ent.axis);
 
-	ent.renderfx = RF_NOSHADOW;
+    ent.renderfx = RF_NOSHADOW;
 
-	// flicker between two skins (FIXME?)
-	ent.skinNum = ( cg.time >> 6 ) & 1;
+    // get the model, either as a bmodel or a modelindex
+    if (s1->solid == SOLID_BMODEL) {
+        ent.hModel = cgs.inlineDrawModel[s1->modelindex];
+    } else {
+        ent.hModel = cgs.gameModels[s1->modelindex];
+    }
 
-	// get the model, either as a bmodel or a modelindex
-	if ( s1->solid == SOLID_BMODEL ) {
-		ent.hModel = cgs.inlineDrawModel[s1->modelindex];
-	} else {
-		ent.hModel = cgs.gameModels[s1->modelindex];
-	}
+    // Get the model name
+    Q_strncpyz(modelname, CG_ConfigString(CS_MODELS + s1->modelindex), sizeof(modelname));
 
-	ent.reType = RT_MODEL;
-	ent.customSkin = trap_R_RegisterSkin(va("ptex/%s/%i.skin", CG_ConfigString( CS_MODELS+s1->modelindex ), s1->generic2));
-	if(s1->generic2 > 0){	
-	ent.customShader = trap_R_RegisterShader(va("ptex/%s/%i", CG_ConfigString( CS_MODELS+s1->modelindex ), s1->generic2));
-	}					
-	if(s1->generic2 == 255){	
-	if(cg_hide255.integer){		
-	ent.customShader = cgs.media.ptexShader[0];
-	} else {
-	ent.customShader = cgs.media.ptexShader[1];
-	}
-	}
+    // Strip extension
+    len = strlen(modelname);
+    if (len > 4 && !Q_stricmp(modelname + len - 4, ".md3")) {
+        modelname[len - 4] = '\0';
+    }
 
-	// add to refresh list
-	trap_R_AddRefEntityToScene(&ent);
+    ent.reType = RT_MODEL;
 
-	// add the secondary model
-	if ( s1->modelindex2 ) {
-		ent.skinNum = 0;
-		ent.hModel = cgs.gameModels[s1->modelindex2];
-		trap_R_AddRefEntityToScene(&ent);
-	}
+    if (len > 0) {
+        ent.customSkin = trap_R_RegisterSkin(va("ptex/%s/%i.skin", modelname, s1->generic2));
+        if (s1->generic2 > 0) {
+            ent.customShader = trap_R_RegisterShader(va("ptex/%s/%i", modelname, s1->generic2));
+        }
+        if (s1->generic2 == 255) {
+            if (cg_hide255.integer) {
+                ent.customShader = cgs.media.ptexShader[0];
+            } else {
+                ent.customShader = cgs.media.ptexShader[1];
+            }
+        }
+    }
+	
+	if(s1->scales[0] != 0.0){
+	VectorScale( ent.axis[0], s1->scales[0], ent.axis[0] );}
+	if(s1->scales[1] != 0.0){
+	VectorScale( ent.axis[1], s1->scales[1], ent.axis[1] );}
+	if(s1->scales[2] != 0.0){
+	VectorScale( ent.axis[2], s1->scales[2], ent.axis[2] );}
 
+    // add to refresh list
+    trap_R_AddRefEntityToScene(&ent);
+
+    // add the secondary model
+    if (s1->modelindex2) {
+        ent.skinNum = 0;
+        ent.hModel = cgs.gameModels[s1->modelindex2];
+        trap_R_AddRefEntityToScene(&ent);
+    }
 }
+
 
 /*
 ===============

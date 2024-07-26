@@ -668,6 +668,7 @@ static void UI_SPLevelMenu_Init( void ) {
 	memset( &levelMenuInfo, 0, sizeof(levelMenuInfo) );
 	levelMenuInfo.menu.fullscreen = qtrue;
 	levelMenuInfo.menu.wrapAround = qtrue;
+	levelMenuInfo.menu.native 	   = qfalse;
 	levelMenuInfo.menu.draw = UI_SPLevelMenu_MenuDraw;
 
 	UI_SPLevelMenu_Cache();

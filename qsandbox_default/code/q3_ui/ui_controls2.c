@@ -1251,6 +1251,7 @@ static void Controls_MenuInit( void )
 	s_controls.menu.key        = Controls_MenuKey;
 	s_controls.menu.wrapAround = qtrue;
 	s_controls.menu.fullscreen = qtrue;
+	s_controls.menu.native 	   = qfalse;
 
 	s_controls.banner.generic.type	= MTYPE_BTEXT;
 	s_controls.banner.generic.flags	= QMF_CENTER_JUSTIFY;

@@ -553,13 +553,12 @@ static void PlayerSettings_MenuInit( void ) {
 
 	s_playersettings.menu.fullscreen = qtrue;
 	s_playersettings.menu.wrapAround = qtrue;
+	s_playersettings.menu.native 	   = qfalse;
 	s_playersettings.menu.draw = PlayerSettings_MenuDraw;
 
 	PlayerSettings_Cache();
 
 	s_playersettings.menu.key        = PlayerSettings_MenuKey;
-	s_playersettings.menu.wrapAround = qtrue;
-	s_playersettings.menu.fullscreen = qtrue;
 
 	sizeScale = UI_ProportionalSizeScale( UI_SMALLFONT, 0 );
 

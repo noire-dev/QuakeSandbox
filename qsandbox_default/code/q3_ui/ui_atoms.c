@@ -2388,6 +2388,7 @@ void UI_Refresh( int realtime )
 		}
 		else {
 		// no wide screen
+		uis.scale = uis.glconfig.vidHeight * (1.0/480.0);
 		uis.bias = 0;
 		}
 	}
@@ -2411,7 +2412,9 @@ void UI_Refresh( int realtime )
 	if (uis.debug)
 	{
 		// cursor coordinates
-		UI_DrawString( 0, 0, va("(%d,%d)",uis.cursorx,uis.cursory), UI_LEFT|UI_SMALLFONT, colorRed );
+		UI_DrawString( 0, 0, va("cursor xy: (%d,%d)",uis.cursorx,uis.cursory), UI_LEFT|UI_SMALLFONT, colorRed );
+		UI_DrawString( 0, 10, va("native: %i",uis.activemenu->native), UI_LEFT|UI_SMALLFONT, colorRed );
+		UI_DrawString( 0, 20, va("screen: %ix%i",uis.glconfig.vidWidth, uis.glconfig.vidHeight), UI_LEFT|UI_SMALLFONT, colorRed );
 	}
 #endif
 

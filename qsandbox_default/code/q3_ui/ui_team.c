@@ -86,6 +86,7 @@ void TeamMain_MenuInit( void ) {
 	TeamMain_Cache();
 
 	s_teammain.menu.wrapAround = qtrue;
+	s_teammain.menu.native 	= qfalse;
 	s_teammain.menu.fullscreen = qfalse;
 
 	s_teammain.frame.generic.type   = MTYPE_BITMAP;

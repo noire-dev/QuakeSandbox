@@ -176,6 +176,7 @@ void UI_ServerInfoMenu( void )
 	s_serverinfo.menu.draw       = ServerInfo_MenuDraw;
 	s_serverinfo.menu.key        = ServerInfo_MenuKey;
 	s_serverinfo.menu.wrapAround = qtrue;
+	s_serverinfo.menu.native 	   = qfalse;
 	s_serverinfo.menu.fullscreen = qtrue;
 
 	s_serverinfo.banner.generic.type  = MTYPE_BTEXT;

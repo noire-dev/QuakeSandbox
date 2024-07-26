@@ -470,6 +470,7 @@ UI_SPPostgameMenu_Init
 */
 static void UI_SPPostgameMenu_Init( void ) {
 	postgameMenuInfo.menu.wrapAround	= qtrue;
+	postgameMenuInfo.menu.native 	   = qfalse;
 	postgameMenuInfo.menu.key			= UI_SPPostgameMenu_MenuKey;
 	postgameMenuInfo.menu.draw			= UI_SPPostgameMenu_MenuDraw;
 	postgameMenuInfo.ignoreKeysTime		= uis.realtime + 1500;

@@ -278,6 +278,7 @@ void InGame_MenuInit( void ) {
 
 	gametype = DynamicMenu_ServerGametype();
 	s_ingame.menu.wrapAround = qtrue;
+	s_ingame.menu.native = qfalse;
 	s_ingame.menu.fullscreen = qfalse;
 	s_ingame.menu.draw = InGame_MenuDraw;
 

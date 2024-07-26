@@ -259,6 +259,7 @@ static void UI_Advanced_MenuInit( void ) {
 
 	memset( &s_advanced, 0 ,sizeof(advanced_t) );
 	s_advanced.menu.wrapAround = qtrue;
+	s_advanced.menu.native 	   = qfalse;
 	s_advanced.menu.fullscreen = qtrue;
 	s_advanced.menu.key        = Advanced_MenuKey;
 	s_advanced.menu.draw 	   = UI_Advanced_Draw;

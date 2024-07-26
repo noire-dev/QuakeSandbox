@@ -183,6 +183,7 @@ if(cl_language.integer == 1){
 	s_confirm.menu.draw       = ConfirmMenu_Draw;
 	s_confirm.menu.key        = ConfirmMenu_Key;
 	s_confirm.menu.wrapAround = qtrue;
+	s_confirm.menu.native 	  = qfalse;
 
 	trap_GetClientState( &cstate );
 	if ( cstate.connState >= CA_CONNECTED ) {
@@ -263,6 +264,7 @@ void UI_Message( const char **lines ) {
 	s_confirm.menu.draw       = MessageMenu_Draw;
 	s_confirm.menu.key        = ConfirmMenu_Key;
 	s_confirm.menu.wrapAround = qtrue;
+	s_confirm.menu.native 	  = qfalse;
 	
 	trap_GetClientState( &cstate );
 	if ( cstate.connState >= CA_CONNECTED ) {

@@ -1190,7 +1190,7 @@ void VehiclePhys( gentity_t *self ) {
 	VectorCopy(self->parent->s.origin, self->s.origin);
 	VectorCopy(self->parent->s.pos.trBase, self->s.pos.trBase);
 	self->s.apos.trBase[1] = self->parent->s.apos.trBase[1];
-	if(self->vehicle == 1){
+	if(BG_VehicleCheckClass(self->parent->client->ps.stats[STAT_VEHICLE]) == VCLASS_CAR){ //VEHICLE-SYSTEM: turn vehicle fake phys
 	self->s.apos.trBase[0] = angle45hook(self->parent->client->ps.velocity[2], 0, 900); //900 is car speed
 	}
 	if(engine10hook(sqrt(self->parent->client->ps.velocity[0] * self->parent->client->ps.velocity[0] + self->parent->client->ps.velocity[1] * self->parent->client->ps.velocity[1]), 0, 900) <= 10){ //900 is car speed

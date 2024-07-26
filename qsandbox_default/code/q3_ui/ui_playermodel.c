@@ -1885,6 +1885,7 @@ static void PlayerModel_MenuInit( void )
 
 	s_playermodel.menu.key        = PlayerModel_MenuKey;
 	s_playermodel.menu.wrapAround = qtrue;
+	s_playermodel.menu.native 	   = qfalse;
 	s_playermodel.menu.fullscreen = qtrue;
 
 	s_playermodel.banner.generic.type  = MTYPE_BTEXT;

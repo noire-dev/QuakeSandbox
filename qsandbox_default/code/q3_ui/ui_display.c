@@ -247,6 +247,7 @@ static void UI_DisplayOptionsMenu_Init( void ) {
 
 	UI_DisplayOptionsMenu_Cache();
 	displayOptionsInfo.menu.wrapAround = qtrue;
+	displayOptionsInfo.menu.native 	   = qfalse;
 	displayOptionsInfo.menu.fullscreen = qtrue;
 
 	displayOptionsInfo.banner.generic.type		= MTYPE_BTEXT;

@@ -977,6 +977,7 @@ void DynamicMenu_MenuInit( qboolean full, qboolean wrap)
 	s_dynamic.menu.draw = DynamicMenu_MenuDraw;
 	s_dynamic.menu.fullscreen = full;
 	s_dynamic.menu.wrapAround = wrap;
+	s_dynamic.menu.native = qfalse;
 	s_dynamic.menu.uplimitscroll = -2400;
 	s_dynamic.menu.downlimitscroll = 2400;
 

@@ -388,16 +388,12 @@ void UI_RegisterCvars( void ) {
 	// since first usage defines their default value
 	UIE_StartServer_RegisterDisableCvars(qtrue);
 	trap_Cvar_Set( "sv_pure", "0" );
-	if(trap_Cvar_VariableValue("com_hunkMegs") >= 2047){
 	trap_Cvar_Set( "com_soundMegs", "256" );
-	} else {
-	trap_Cvar_Set( "com_soundMegs", "8" );
-	}
 	trap_Cvar_Set( "cl_dlURL", "http://ws.q3df.org/maps/downloads/%1" );
 	trap_Cvar_Set( "cl_guidServerUniq", "0" );
 	trap_Cvar_SetValue( "r_lodBias", -5 );
 	trap_Cvar_SetValue( "r_subdivisions", 1 );
-	//trap_Cvar_SetValue( "r_dlightMode", 1 );
+	trap_Cvar_SetValue( "r_envmode", 0 );
 	trap_Cvar_SetValue( "r_dlightSpecPower", 6 );
 	trap_Cvar_SetValue( "r_dlightSpecColor", 0.5 );
 	trap_Cvar_SetValue( "r_bloom_blend_base", 1 );

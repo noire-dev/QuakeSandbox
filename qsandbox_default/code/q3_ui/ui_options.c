@@ -99,6 +99,7 @@ void Options_MenuInit( void ) {
 
 	SystemConfig_Cache();
 	s_options.menu.wrapAround = qtrue;
+	s_options.menu.native 	   = qfalse;
 
 	trap_GetClientState( &cstate );
 	if ( cstate.connState >= CA_CONNECTED ) {

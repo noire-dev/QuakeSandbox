@@ -1110,6 +1110,7 @@ void GraphicsOptions_MenuInit( void )
 	GraphicsOptions_Cache();
 
 	s_graphicsoptions.menu.wrapAround = qtrue;
+	s_graphicsoptions.menu.native 	= qfalse;
 	s_graphicsoptions.menu.fullscreen = qtrue;
 	s_graphicsoptions.menu.draw       = GraphicsOptions_MenuDraw;
 

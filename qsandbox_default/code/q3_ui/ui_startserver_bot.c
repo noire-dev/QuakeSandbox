@@ -1740,6 +1740,7 @@ void StartServer_BotPage_MenuInit(void)
 
 	menuptr->key = StartServer_BotPage_MenuKey;
 	menuptr->wrapAround = qtrue;
+	menuptr->native 	= qfalse;
 	menuptr->fullscreen = qtrue;
 	menuptr->draw = StartServer_BotPage_MenuDraw;
 

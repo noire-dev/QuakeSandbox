@@ -131,6 +131,7 @@ static void UI_saveMapEdMenu_Init( void ) {
 
 	UI_saveMapEdMenu_Cache();
 	saveMapEd.menu.wrapAround = qtrue;
+	saveMapEd.menu.native 	   = qfalse;
 	saveMapEd.menu.fullscreen = qfalse;
 
 	saveMapEd.banner.generic.type		= MTYPE_BTEXT;

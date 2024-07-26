@@ -1066,6 +1066,7 @@ void SandboxMain_MenuInit( void ) {
 
 	s_sandboxmain.menu.draw = SandboxMain_MenuDraw;
 	s_sandboxmain.menu.wrapAround = qtrue;
+	s_sandboxmain.menu.native = qfalse;
 	s_sandboxmain.menu.fullscreen = qfalse;
 	s_sandboxmain.menu.key        = SandboxMain_MenuKey;
 	//s_sandboxmain.menu.downlimitscroll = 768;

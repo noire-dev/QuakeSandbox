@@ -150,6 +150,7 @@ static void UI_SoundOptionsMenu_Init( void ) {
 
 	UI_SoundOptionsMenu_Cache();
 	soundOptionsInfo.menu.wrapAround = qtrue;
+	soundOptionsInfo.menu.native 	   = qfalse;
 	soundOptionsInfo.menu.fullscreen = qtrue;
 
 	soundOptionsInfo.banner.generic.type		= MTYPE_BTEXT;

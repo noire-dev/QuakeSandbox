@@ -99,6 +99,7 @@ void SpecifyServer_MenuInit( void )
 	SpecifyServer_Cache();
 
 	s_specifyserver.menu.wrapAround = qtrue;
+	s_specifyserver.menu.native 	   = qfalse;
 	s_specifyserver.menu.fullscreen = qtrue;
 
 	s_specifyserver.banner.generic.type	 = MTYPE_BTEXT;

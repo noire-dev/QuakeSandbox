@@ -1265,6 +1265,7 @@ void StartServer_ItemPage_MenuInit_OldMenu(qboolean ingame)
 
 	menuptr->key = StartServer_ItemPage_Old_MenuKey;
 	menuptr->wrapAround = qtrue;
+	menuptr->native 	= qfalse;
 	menuptr->fullscreen = qtrue;
 	menuptr->draw = StartServer_ItemPage_Old_MenuDraw;
 

@@ -427,6 +427,7 @@ static void UI_AddBotsMenu_Init( void ) {
 	addBotsMenuInfo.menu.draw = UI_AddBotsMenu_Draw;
 	addBotsMenuInfo.menu.fullscreen = qfalse;
 	addBotsMenuInfo.menu.wrapAround = qtrue;
+	addBotsMenuInfo.menu.native = qfalse;
 	addBotsMenuInfo.delay = 1000;
 
 	addBotsMenuInfo.gametype = atoi( Info_ValueForKey( info,"g_gametype" ) );

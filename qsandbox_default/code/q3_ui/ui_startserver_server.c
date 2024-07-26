@@ -2190,6 +2190,7 @@ void StartServer_ServerPage_MenuInit(void)
 
 	menuptr->key = StartServer_ServerPage_MenuKey;
 	menuptr->wrapAround = qtrue;
+	menuptr->native 	= qfalse;
 	menuptr->fullscreen = qtrue;
 	menuptr->draw = StartServer_ServerPage_MenuDraw;
 

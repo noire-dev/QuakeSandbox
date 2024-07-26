@@ -112,6 +112,7 @@ static void UI_SaveConfigMenu_Init( void ) {
 
 	UI_SaveConfigMenu_Cache();
 	saveConfig.menu.wrapAround = qtrue;
+	saveConfig.menu.native 	   = qfalse;
 	saveConfig.menu.fullscreen = qtrue;
 
 	saveConfig.banner.generic.type		= MTYPE_BTEXT;

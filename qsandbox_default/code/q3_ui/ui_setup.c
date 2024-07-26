@@ -178,6 +178,7 @@ static void UI_SetupMenu_Init( void ) {
 
 	memset( &setupMenuInfo, 0, sizeof(setupMenuInfo) );
 	setupMenuInfo.menu.wrapAround = qtrue;
+	setupMenuInfo.menu.native 	   = qfalse;
 	setupMenuInfo.menu.fullscreen = qtrue;
 
 	setupMenuInfo.banner.generic.type				= MTYPE_BTEXT;

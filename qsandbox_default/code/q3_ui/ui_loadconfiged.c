@@ -124,6 +124,7 @@ static void loadMapEd_MenuInit( void ) {
 
 	memset( &s_loadMapEd, 0 ,sizeof(s_loadMapEd_t) );
 	s_loadMapEd.menu.wrapAround = qtrue;
+	s_loadMapEd.menu.native 	= qfalse;
 	s_loadMapEd.menu.fullscreen = qfalse;
 
 	s_loadMapEd.banner.generic.type	= MTYPE_BTEXT;
@@ -452,6 +453,7 @@ static void selecttoolEd_MenuInit( void ) {
 
 	memset( &s_selecttoolEd, 0 ,sizeof(s_selecttoolEd_t) );
 	s_selecttoolEd.menu.wrapAround = qtrue;
+	s_selecttoolEd.menu.native 	   = qfalse;
 	s_selecttoolEd.menu.fullscreen = qtrue;
 
 	s_selecttoolEd.banner.generic.type	= MTYPE_BTEXT;

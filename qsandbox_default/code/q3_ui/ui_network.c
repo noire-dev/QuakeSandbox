@@ -120,6 +120,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 
 	UI_NetworkOptionsMenu_Cache();
 	networkOptionsInfo.menu.wrapAround = qtrue;
+	networkOptionsInfo.menu.native 	   = qfalse;
 	networkOptionsInfo.menu.fullscreen = qtrue;
 
 	networkOptionsInfo.banner.generic.type		= MTYPE_BTEXT;
