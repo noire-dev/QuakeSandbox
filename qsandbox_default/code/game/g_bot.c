@@ -754,9 +754,11 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 	bot = &g_entities[ clientNum ];
 	bot->r.svFlags |= SVF_BOT;
 	bot->inuse = qtrue;
+	if(spawn){
 	spawn->parent = bot;
 	spawn->think = botsandbox_check;
 	spawn->nextthink = level.time + 1;
+	}
 
 	// set the bot's spawning entity
 	Info_SetValueForKey( userinfo, "parentid", va( "%i", parentEntityNum ) );
