@@ -155,37 +155,16 @@ qboolean CheckGauntletAttack( gentity_t *ent ) {
 	gentity_t	*traceEnt;
 	int			damage;
 
-/*if(ent->playerspecial){
-	return qtrue;
-}*/
-
 	// set aiming directions
 	AngleVectors (ent->client->ps.viewangles, forward, right, up);
 
 	CalcMuzzlePoint ( ent, forward, right, up, muzzle );
-if(!g_building.integer){
 	VectorMA (muzzle, g_grange.integer, forward, end);
 	trap_Trace (&tr, muzzle, NULL, NULL, end, ent->s.number, MASK_SHOT);
-}
-if(g_building.integer){
-if(ent->gmodtool){
-	VectorMA (muzzle, 4096, forward, end);
-	trap_Trace (&tr, muzzle, NULL, NULL, end, ent->s.number, MASK_SELECT);
-}
-if(!ent->gmodtool){
-	VectorMA (muzzle, g_grange.integer, forward, end);	
-	trap_Trace (&tr, muzzle, NULL, NULL, end, ent->s.number, MASK_SHOT);
-}
-}
 
 	if ( tr.surfaceFlags & SURF_NOIMPACT ) {
 		return qfalse;
 	}
-if(!g_building.integer && !ent->client->vehiclenum){
-	if ( ent->client->noclip ) {
-		return qfalse;
-	}
-}
 
 	traceEnt = &g_entities[ tr.entityNum ];
 
@@ -197,22 +176,40 @@ if(!g_building.integer && !ent->client->vehiclenum){
 		tent->s.generic3 = ent->s.weapon;
 	}
 	
-	if(!g_building.integer){
-		if(!ent->gmodtool && !ent->client->vehiclenum){
-			if ( !traceEnt->takedamage) {
-				return qfalse;
-			}
+	if(!ent->client->vehiclenum){
+		if ( !traceEnt->takedamage) {
+			return qfalse;
 		}
 	}
 
 	if (ent->client->ps.powerups[PW_QUAD] ) {
-		G_AddEvent( ent, EV_POWERUP_QUAD, 0 );
 		s_quadFactor = g_quadfactor.value;
 	} else {
 		s_quadFactor = 1;
 	}
 	if( ent->client->persistantPowerup && ent->client->persistantPowerup->item && ent->client->persistantPowerup->item->giTag == PW_DOUBLER ) {
-		s_quadFactor *= 2;
+	s_quadFactor *= g_doublerdamagefactor.value;
+	}
+	if( ent->client->persistantPowerup && ent->client->persistantPowerup->item && ent->client->persistantPowerup->item->giTag == PW_AMMOREGEN ) {
+	s_quadFactor *= g_ammoregendamagefactor.value;
+	}
+	if( ent->client->persistantPowerup && ent->client->persistantPowerup->item && ent->client->persistantPowerup->item->giTag == PW_GUARD ) {
+	s_quadFactor *= g_guarddamagefactor.value;
+	}
+	if( ent->client->persistantPowerup && ent->client->persistantPowerup->item && ent->client->persistantPowerup->item->giTag == PW_SCOUT ) {
+	s_quadFactor *= g_scoutdamagefactor.value;
+	}
+	if( ent->client->sess.sessionTeam == TEAM_BLUE ) {
+	s_quadFactor *= mod_teamblue_damage;
+	}
+	if( ent->client->sess.sessionTeam == TEAM_RED ) {
+	s_quadFactor *= mod_teamred_damage;
+	}
+	if(ent->botskill == 8){
+	s_quadFactor *= 100;
+	}
+	if(ent->botskill == 9){
+	s_quadFactor *= 5;
 	}
 
 	if(g_instantgib.integer)
@@ -937,33 +934,6 @@ void Weapon_Nailgun_Fire (gentity_t *ent) {
 //	VectorAdd( m->s.pos.trDelta, ent->client->ps.velocity, m->s.pos.trDelta );	// "real" physics
 }
 
-void Weapon_Special_Fire1 (gentity_t *ent) {
-	gentity_t	*m;
-	int			count;
-
-	for( count = 0; count < 15; count++ ) {
-		m = fire_special1 (ent, muzzle, forward, right, up );
-		m->damage *= s_quadFactor;
-		m->splashDamage *= s_quadFactor;
-	}
-
-//	VectorAdd( m->s.pos.trDelta, ent->client->ps.velocity, m->s.pos.trDelta );	// "real" physics
-}
-
-void Weapon_Special_Fire2 (gentity_t *ent) {
-	gentity_t	*m;
-	int			count;
-
-	for( count = 0; count < 8; count++ ) {
-		m = fire_special2 (ent, muzzle, forward, right, up );
-		m->damage *= s_quadFactor;
-		m->splashDamage *= s_quadFactor;
-	}
-
-//	VectorAdd( m->s.pos.trDelta, ent->client->ps.velocity, m->s.pos.trDelta );	// "real" physics
-}
-
-
 /*
 ======================================================================
 
@@ -1007,6 +977,40 @@ void Weapon_Antimatter_Fire (gentity_t *ent) {
 }
 
 //======================================================================
+
+/*
+======================================================================
+
+TOOLGUN
+
+======================================================================
+*/
+
+void Weapon_Toolgun( gentity_t *ent ) {
+	trace_t		tr;
+	vec3_t		end;
+	gentity_t	*tent;
+	gentity_t	*traceEnt;
+	int			damage;
+
+	// set aiming directions
+	AngleVectors (ent->client->ps.viewangles, forward, right, up);
+
+	CalcMuzzlePoint ( ent, forward, right, up, muzzle );
+	VectorMA (muzzle, TOOLGUN_RANGE, forward, end);
+	trap_Trace (&tr, muzzle, NULL, NULL, end, ent->s.number, MASK_SELECT);
+
+	if ( tr.surfaceFlags & SURF_NOIMPACT ) {
+		return;
+	}
+
+	traceEnt = &g_entities[ tr.entityNum ];
+
+	G_Damage( traceEnt, ent, ent, forward, tr.endpos,
+		1, 0, MOD_TOOLGUN );
+
+	return;
+}
 
 
 /*
@@ -1110,36 +1114,15 @@ void FireWeapon( gentity_t *ent ) {
 	if( ent->client->sess.sessionTeam == TEAM_RED ) {
 	s_quadFactor *= mod_teamred_damage;
 	}
-	if(ent->botskill == 6){
-	s_quadFactor *= 1.5;
-	}
-	if(ent->botskill == 7){
-	s_quadFactor *= 2;
-	}
 	if(ent->botskill == 8){
-	s_quadFactor *= 3;
+	s_quadFactor *= 100;
 	}
 	if(ent->botskill == 9){
 	s_quadFactor *= 5;
 	}
-	if(ent->botskill == 10){
-	s_quadFactor *= 10;
-	}
-	if(ent->botskill == 11){
-	s_quadFactor *= 15;
-	}
-	if(ent->botskill == 12){
-	s_quadFactor *= 20;
-	}
-	if(ent->botskill == 13){
-	s_quadFactor *= 50;
-	}
-	if(ent->botskill == 14){
-	s_quadFactor *= 100;
-	}
 
-        if (ent->client->spawnprotected)
-            ent->client->spawnprotected = qfalse;
+    if (ent->client->spawnprotected)
+        ent->client->spawnprotected = qfalse;
 
 	// track shots taken for accuracy tracking.  Grapple is not a weapon and gauntet is just not tracked
 	if( ent->s.weapon != WP_GRAPPLING_HOOK && ent->s.weapon != WP_GAUNTLET ) {
@@ -1161,12 +1144,6 @@ void FireWeapon( gentity_t *ent ) {
 	switch( ent->swep_id ) {
 	case WP_GAUNTLET:
 		Weapon_Gauntlet( ent );
-	/*if(ent->playerspecial == 1){
-		Weapon_Special_Fire1( ent );
-	}
-	if(ent->playerspecial == 2){
-		Weapon_Special_Fire2( ent );
-	}*/
 		break;
 	case WP_MACHINEGUN:
 		if ( g_gametype.integer != GT_TEAM ) {
@@ -1213,6 +1190,15 @@ void FireWeapon( gentity_t *ent ) {
 		break;
 	case WP_ANTIMATTER:
 		Weapon_Antimatter_Fire( ent );
+		break;
+	case WP_TOOLGUN:
+		Weapon_Toolgun( ent );
+		break;
+	case WP_PHYSGUN:
+		//PhysgunHold()
+		break;
+	case WP_GRAVITYGUN:
+		//GravitygunHold()
 		break;
 	default:
 // FIXME		G_Error( "Bad ent->s.weapon" );
@@ -1507,7 +1493,7 @@ void G_StartCarExplode( gentity_t *ent ) {
 	explosion->s.eType = ET_EVENTS + EV_KAMIKAZE;
 	explosion->eventTime = level.time;
 
-	VectorCopy( ent->s.pos.trBase, snapped );
+	VectorCopy( ent->r.currentOrigin, snapped );
 	SnapVector( snapped );		// save network bandwidth
 	G_SetOrigin( explosion, snapped );
 

@@ -451,16 +451,16 @@ int Pickup_Backpack( gentity_t *ent, gentity_t *other) {
 
 //======================================================================
 
-void Add_Weapon (gentity_t *ent, int weapon, int count)
+void Set_Weapon (gentity_t *ent, int weapon, int status)
 {
 if(weapon <= 15){
-	if(count == 1){
+	if(status == 1){
 	ent->client->ps.stats[STAT_WEAPONS] |= ( 1 << weapon );
 	} else {
 	ent->client->ps.stats[STAT_WEAPONS] &= ~( 1 << weapon );
 	}
 } else {
-	if(count == 1){
+	if(status == 1){
 	ent->swep_list[weapon] = 1;
 	trap_SendServerCommand( ent->client->ps.clientNum, va("swep_1 %i", weapon) );
 	} else {
@@ -482,6 +482,15 @@ if(weapon <= 15){
 	if ( ent->swep_ammo[weapon] > mod_ammolimit && count != 9999 ) {
 		ent->swep_ammo[weapon] = mod_ammolimit;
 	}
+}
+}
+
+void Set_Ammo (gentity_t *ent, int weapon, int count)
+{
+if(weapon <= 15){
+	ent->client->ps.ammo[weapon] = count;
+} else {
+	ent->swep_ammo[weapon] = count;
 }
 }
 
@@ -690,16 +699,10 @@ int Pickup_Weapon (gentity_t *ent, gentity_t *other) {
 	}
 
 	// add the weapon
-	if(ent->item->giTag <= 15){
-	other->client->ps.stats[STAT_WEAPONS] |= ( 1 << ent->item->giTag );
-	} else {
-	other->swep_list[ent->item->giTag] = 1;	
-	}
-
+	Set_Weapon( other, ent->item->giTag, 1 );
 	Add_Ammo( other, ent->item->giTag, quantity );
 
-	if (ent->item->giTag == WP_GRAPPLING_HOOK)
-		other->client->ps.ammo[ent->item->giTag] = -1; // unlimited ammo
+	SetUnlimitedWeapons(other);
 
 	// team deathmatch has slow weapon respawns
 	if ( g_gametype.integer == GT_TEAM ) {
@@ -1095,7 +1098,7 @@ void Touch_Item2 (gentity_t *ent, gentity_t *other, trace_t *trace, qboolean all
 
 	// fire item targets
 	G_UseTargets (ent, other);
-if(g_singlemode.integer){
+if(g_gametype.integer == GT_SINGLE){
 	// items with no specified respawn will not respawn in entityplus
 	if ( !ent->wait )
 		ent->wait = -1;

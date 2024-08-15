@@ -115,23 +115,22 @@ typedef struct
 #define ID_VTAUNT		50
 #define ID_CLRUN		51
 #define ID_SANDBOX		52
-#define ID_SANDBOXLST		53
-#define ID_SANDBOXMODE		54
-#define ID_NEWSANDBOX		55
-#define ID_ACTIONMENU		56
-#define ID_EXITVEHICLE		57
+#define ID_SANDBOXMODE		53
+#define ID_NEWSANDBOX		54
+#define ID_ACTIONMENU		55
+#define ID_EXITVEHICLE		56
 
 
 // all others
-#define ID_FREELOOK		58
-#define ID_INVERTMOUSE	59
-#define ID_ALWAYSRUN	60
-#define ID_AUTOSWITCH	61
-#define ID_MOUSESPEED	62
-#define ID_JOYENABLE	63
-#define ID_JOYTHRESHOLD	64
-#define ID_SMOOTHMOUSE	65
-#define ID_MOUSESTYLE	66
+#define ID_FREELOOK		57
+#define ID_INVERTMOUSE	58
+#define ID_ALWAYSRUN	59
+#define ID_AUTOSWITCH	60
+#define ID_MOUSESPEED	61
+#define ID_JOYENABLE	62
+#define ID_JOYTHRESHOLD	63
+#define ID_SMOOTHMOUSE	64
+#define ID_MOUSESTYLE	65
 
 
 typedef struct
@@ -211,7 +210,6 @@ typedef struct
 	menuaction_s		vtaunt;
 	menuaction_s		clrun;
 	menuaction_s		sandbox;
-	menuaction_s		sandboxlst;
 	menuaction_s		sandboxmode;
 	menuaction_s		newsandbox;
 	menuaction_s		actionmenu;
@@ -250,24 +248,24 @@ static bind_t g_bindings[] =
 	{"+mlook", 			"mouse look",		ID_MOUSELOOK,	ANIM_IDLE,		'/',			-1,		-1, -1},
 	{"centerview", 		"center view",		ID_CENTERVIEW,	ANIM_IDLE,		K_END,			-1,		-1, -1},
 	{"+zoom", 			"zoom view",		ID_ZOOMVIEW,	ANIM_IDLE,		-1,				-1,		-1, -1},
-	{"vstr weap01",		"gauntlet",			ID_WEAPON1,		ANIM_WEAPON1,	'1',			-1,		-1, -1},
-	{"vstr weap02",		"machinegun",		ID_WEAPON2,		ANIM_WEAPON2,	'2',			-1,		-1, -1},
-	{"vstr weap03",		"shotgun",			ID_WEAPON3,		ANIM_WEAPON3,	'3',			-1,		-1, -1},
-	{"vstr weap04",		"grenade launcher",	ID_WEAPON4,		ANIM_WEAPON4,	'4',			-1,		-1, -1},
-	{"vstr weap05",		"rocket launcher",	ID_WEAPON5,		ANIM_WEAPON5,	'5',			-1,		-1, -1},
-	{"vstr weap06",		"lightning",		ID_WEAPON6,		ANIM_WEAPON6,	'6',			-1,		-1, -1},
-	{"vstr weap07",		"railgun",			ID_WEAPON7,		ANIM_WEAPON7,	'7',			-1,		-1, -1},
-	{"vstr weap08",		"plasma gun",		ID_WEAPON8,		ANIM_WEAPON8,	'8',			-1,		-1, -1},
-	{"vstr weap09",		"BFG",				ID_WEAPON9,		ANIM_WEAPON9,	'9',			-1,		-1, -1},
-	{"vstr weap10",		"grappling hook",				ID_WEAPON10,		ANIM_WEAPON10,	'h',			-1,		-1, -1},
-	{"vstr weap11",		"nailgun",				ID_WEAPON11,		ANIM_WEAPON11,	'n',			-1,		-1, -1},
-	{"vstr weap12",		"prox Launcher",				ID_WEAPON12,		ANIM_WEAPON12,	'p',			-1,		-1, -1},
-	{"vstr weap13",		"chaingun",				ID_WEAPON13,		ANIM_WEAPON13,	'i',			-1,		-1, -1},
-	{"vstr weap14",		"flamethrower",				ID_WEAPON14,		ANIM_WEAPON14,	'l',			-1,		-1, -1},
-	{"vstr weap15",		"darkflare",				ID_WEAPON15,		ANIM_WEAPON15,	'k',			-1,		-1, -1},
+	{"weapon 1",		"gauntlet",			ID_WEAPON1,		ANIM_WEAPON1,	'1',			-1,		-1, -1},
+	{"weapon 2",		"machinegun",		ID_WEAPON2,		ANIM_WEAPON2,	'2',			-1,		-1, -1},
+	{"weapon 3",		"shotgun",			ID_WEAPON3,		ANIM_WEAPON3,	'3',			-1,		-1, -1},
+	{"weapon 4",		"grenade launcher",	ID_WEAPON4,		ANIM_WEAPON4,	'4',			-1,		-1, -1},
+	{"weapon 5",		"rocket launcher",	ID_WEAPON5,		ANIM_WEAPON5,	'5',			-1,		-1, -1},
+	{"weapon 6",		"lightning",		ID_WEAPON6,		ANIM_WEAPON6,	'6',			-1,		-1, -1},
+	{"weapon 7",		"railgun",			ID_WEAPON7,		ANIM_WEAPON7,	'7',			-1,		-1, -1},
+	{"weapon 8",		"plasma gun",		ID_WEAPON8,		ANIM_WEAPON8,	'8',			-1,		-1, -1},
+	{"weapon 9",		"BFG",				ID_WEAPON9,		ANIM_WEAPON9,	'9',			-1,		-1, -1},
+	{"weapon 10",		"grappling hook",				ID_WEAPON10,		ANIM_WEAPON10,	'h',			-1,		-1, -1},
+	{"weapon 11",		"nailgun",				ID_WEAPON11,		ANIM_WEAPON11,	'n',			-1,		-1, -1},
+	{"weapon 12",		"prox Launcher",				ID_WEAPON12,		ANIM_WEAPON12,	'p',			-1,		-1, -1},
+	{"weapon 13",		"chaingun",				ID_WEAPON13,		ANIM_WEAPON13,	'i',			-1,		-1, -1},
+	{"weapon 14",		"flamethrower",				ID_WEAPON14,		ANIM_WEAPON14,	'l',			-1,		-1, -1},
+	{"weapon 15",		"darkflare",				ID_WEAPON15,		ANIM_WEAPON15,	'k',			-1,		-1, -1},
 	{"+attack", 		"attack",			ID_ATTACK,		ANIM_ATTACK,	K_CTRL,			-1,		-1, -1},
-	{"vstr dweapprev",		"prev weapon",		ID_WEAPPREV,	ANIM_IDLE,		'[',			-1,		-1, -1},
-	{"vstr dweapnext", 		"next weapon",		ID_WEAPNEXT,	ANIM_IDLE,		']',			-1,		-1, -1},
+	{"weapprev",		"prev weapon",		ID_WEAPPREV,	ANIM_IDLE,		'[',			-1,		-1, -1},
+	{"weapnext", 		"next weapon",		ID_WEAPNEXT,	ANIM_IDLE,		']',			-1,		-1, -1},
 	{"+button3", 		"gesture / horn",			ID_GESTURE,		ANIM_GESTURE,	'g',		-1,		-1, -1},
 	{"messagemode", 	"chat",				ID_CHAT,		ANIM_CHAT,		't',			-1,		-1, -1},
 	{"messagemode2", 	"chat - team",		ID_CHAT2,		ANIM_CHAT,		-1,				-1,		-1, -1},
@@ -286,7 +284,6 @@ static bind_t g_bindings[] =
 	{"vtaunt", 	"voice taunt",	ID_VTAUNT,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"toggle cl_run", 	"run/walk toggle",	ID_CLRUN,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"ui_sandbox", 	"sandbox menu",	ID_SANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
-	{"vstr uibuildprop", 	"sandbox last spawn",	ID_SANDBOXLST,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr uitoolmode", 	"sandbox tool mode",	ID_SANDBOXMODE,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr lastui", 	"addon menu",	ID_NEWSANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"mgui touchscreen", 	"action menu",	ID_ACTIONMENU,		ANIM_CHAT,		-1,				-1,		-1, -1},
@@ -313,24 +310,24 @@ static bind_t g_bindingsrus[] =
 	{"+mlook", 			"обзор мышкой",		ID_MOUSELOOK,	ANIM_IDLE,		'/',			-1,		-1, -1},
 	{"centerview", 		"центр вид",		ID_CENTERVIEW,	ANIM_IDLE,		K_END,			-1,		-1, -1},
 	{"+zoom", 			"приближение",		ID_ZOOMVIEW,	ANIM_IDLE,		-1,				-1,		-1, -1},
-	{"vstr weap01",		"кулак",			ID_WEAPON1,		ANIM_WEAPON1,	'1',			-1,		-1, -1},
-	{"vstr weap02",		"автомат",		ID_WEAPON2,		ANIM_WEAPON2,	'2',			-1,		-1, -1},
-	{"vstr weap03",		"дробовик",			ID_WEAPON3,		ANIM_WEAPON3,	'3',			-1,		-1, -1},
-	{"vstr weap04",		"гранатомет",	ID_WEAPON4,		ANIM_WEAPON4,	'4',			-1,		-1, -1},
-	{"vstr weap05",		"ракетница",	ID_WEAPON5,		ANIM_WEAPON5,	'5',			-1,		-1, -1},
-	{"vstr weap06",		"молния",		ID_WEAPON6,		ANIM_WEAPON6,	'6',			-1,		-1, -1},
-	{"vstr weap07",		"рэйлган",			ID_WEAPON7,		ANIM_WEAPON7,	'7',			-1,		-1, -1},
-	{"vstr weap08",		"плазмаган",		ID_WEAPON8,		ANIM_WEAPON8,	'8',			-1,		-1, -1},
-	{"vstr weap09",		"БФГ",				ID_WEAPON9,		ANIM_WEAPON9,	'9',			-1,		-1, -1},
-	{"vstr weap10",		"крюк",				ID_WEAPON10,		ANIM_WEAPON10,	'h',			-1,		-1, -1},
-	{"vstr weap11",		"гвоздомет",				ID_WEAPON11,		ANIM_WEAPON11,	'n',			-1,		-1, -1},
-	{"vstr weap12",		"мины",				ID_WEAPON12,		ANIM_WEAPON12,	'p',			-1,		-1, -1},
-	{"vstr weap13",		"пулемет",				ID_WEAPON13,		ANIM_WEAPON13,	'i',			-1,		-1, -1},
-	{"vstr weap14",		"огнемет",				ID_WEAPON14,		ANIM_WEAPON14,	'l',			-1,		-1, -1},
-	{"vstr weap15",		"черная вспышка",				ID_WEAPON15,		ANIM_WEAPON15,	'k',			-1,		-1, -1},
+	{"weapon 1",		"кулак",			ID_WEAPON1,		ANIM_WEAPON1,	'1',			-1,		-1, -1},
+	{"weapon 2",		"автомат",		ID_WEAPON2,		ANIM_WEAPON2,	'2',			-1,		-1, -1},
+	{"weapon 3",		"дробовик",			ID_WEAPON3,		ANIM_WEAPON3,	'3',			-1,		-1, -1},
+	{"weapon 4",		"гранатомет",	ID_WEAPON4,		ANIM_WEAPON4,	'4',			-1,		-1, -1},
+	{"weapon 5",		"ракетница",	ID_WEAPON5,		ANIM_WEAPON5,	'5',			-1,		-1, -1},
+	{"weapon 6",		"молния",		ID_WEAPON6,		ANIM_WEAPON6,	'6',			-1,		-1, -1},
+	{"weapon 7",		"рэйлган",			ID_WEAPON7,		ANIM_WEAPON7,	'7',			-1,		-1, -1},
+	{"weapon 8",		"плазмаган",		ID_WEAPON8,		ANIM_WEAPON8,	'8',			-1,		-1, -1},
+	{"weapon 9",		"БФГ",				ID_WEAPON9,		ANIM_WEAPON9,	'9',			-1,		-1, -1},
+	{"weapon 10",		"крюк",				ID_WEAPON10,		ANIM_WEAPON10,	'h',			-1,		-1, -1},
+	{"weapon 11",		"гвоздомет",				ID_WEAPON11,		ANIM_WEAPON11,	'n',			-1,		-1, -1},
+	{"weapon 12",		"мины",				ID_WEAPON12,		ANIM_WEAPON12,	'p',			-1,		-1, -1},
+	{"weapon 13",		"пулемет",				ID_WEAPON13,		ANIM_WEAPON13,	'i',			-1,		-1, -1},
+	{"weapon 14",		"огнемет",				ID_WEAPON14,		ANIM_WEAPON14,	'l',			-1,		-1, -1},
+	{"weapon 15",		"черная вспышка",				ID_WEAPON15,		ANIM_WEAPON15,	'k',			-1,		-1, -1},
 	{"+attack", 		"атака",			ID_ATTACK,		ANIM_ATTACK,	K_CTRL,			-1,		-1, -1},
-	{"vstr dweapprev",		"пред оружие",		ID_WEAPPREV,	ANIM_IDLE,		'[',			-1,		-1, -1},
-	{"vstr dweapnext", 		"след оружие",		ID_WEAPNEXT,	ANIM_IDLE,		']',			-1,		-1, -1},
+	{"weapprev",		"пред оружие",		ID_WEAPPREV,	ANIM_IDLE,		'[',			-1,		-1, -1},
+	{"weapnext", 		"след оружие",		ID_WEAPNEXT,	ANIM_IDLE,		']',			-1,		-1, -1},
 	{"+button3", 		"жест / гудок",			ID_GESTURE,		ANIM_GESTURE,	'g',		-1,		-1, -1},
 	{"messagemode", 	"чат",				ID_CHAT,		ANIM_CHAT,		't',			-1,		-1, -1},
 	{"messagemode2", 	"чат - команда",		ID_CHAT2,		ANIM_CHAT,		-1,				-1,		-1, -1},
@@ -349,7 +346,6 @@ static bind_t g_bindingsrus[] =
 	{"vtaunt", 	"фраза",	ID_VTAUNT,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"toggle cl_run", 	"бег/ходьба переключение",	ID_CLRUN,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"ui_sandbox", 	"спавн меню",	ID_SANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
-	{"vstr uibuildprop", 	"песочница спавн обьекта",	ID_SANDBOXLST,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr uitoolmode", 	"песочница режим инструмента",	ID_SANDBOXMODE,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr lastui", 	"меню аддонов",	ID_NEWSANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"mgui touchscreen", 	"меню действий",	ID_ACTIONMENU,		ANIM_CHAT,		-1,				-1,		-1, -1},
@@ -449,7 +445,6 @@ static menucommon_s *g_misc_controls[] = {
 	(menucommon_s *)&s_controls.vtaunt,
 	(menucommon_s *)&s_controls.clrun,
 	(menucommon_s *)&s_controls.sandbox,
-	(menucommon_s *)&s_controls.sandboxlst,
 	(menucommon_s *)&s_controls.sandboxmode,
 	(menucommon_s *)&s_controls.newsandbox,
 	(menucommon_s *)&s_controls.actionmenu,
@@ -1789,12 +1784,6 @@ static void Controls_MenuInit( void )
 	s_controls.sandbox.generic.ownerdraw = Controls_DrawKeyBinding;
 	s_controls.sandbox.generic.id        = ID_SANDBOX;
 	
-	s_controls.sandboxlst.generic.type	   = MTYPE_ACTION;
-	s_controls.sandboxlst.generic.flags     = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_GRAYED|QMF_HIDDEN;
-	s_controls.sandboxlst.generic.callback  = Controls_ActionEvent;
-	s_controls.sandboxlst.generic.ownerdraw = Controls_DrawKeyBinding;
-	s_controls.sandboxlst.generic.id        = ID_SANDBOXLST;
-	
 	s_controls.sandboxmode.generic.type	   = MTYPE_ACTION;
 	s_controls.sandboxmode.generic.flags     = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_GRAYED|QMF_HIDDEN;
 	s_controls.sandboxmode.generic.callback  = Controls_ActionEvent;
@@ -1941,7 +1930,6 @@ if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &s_controls.menu, &s_controls.vtaunt );
 	Menu_AddItem( &s_controls.menu, &s_controls.clrun );
 	Menu_AddItem( &s_controls.menu, &s_controls.sandbox );
-	Menu_AddItem( &s_controls.menu, &s_controls.sandboxlst );
 	Menu_AddItem( &s_controls.menu, &s_controls.sandboxmode );
 	Menu_AddItem( &s_controls.menu, &s_controls.newsandbox );
 	Menu_AddItem( &s_controls.menu, &s_controls.actionmenu );

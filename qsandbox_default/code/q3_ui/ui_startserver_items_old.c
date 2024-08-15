@@ -771,7 +771,7 @@ static void StartServer_ItemPage_Old_Load( void )
 	s_itemcontrols_old.enabled = s_scriptdata.item.enabled;
 	s_itemcontrols_old.grouptype = s_scriptdata.item.groupstate;
 
-	s_itemcontrols_old.gameType.curvalue = gametype_remap2[s_scriptdata.gametype];
+	s_itemcontrols_old.gameType.curvalue = s_scriptdata.gametype;
 
 	StartServer_BothItemPage_Old_InitControls();
 }
@@ -1027,7 +1027,7 @@ static void StartServer_ItemPage_Old_Event( void* ptr, int event )
 	case ID_ITEM_GAMETYPE:
 		StartServer_SaveScriptData();
 
-		StartServer_LoadScriptDataFromType(gametype_remap[s_itemcontrols_old.gameType.curvalue]);
+		StartServer_LoadScriptDataFromType(s_itemcontrols_old.gameType.curvalue);
 
 		StartServer_BothItemPage_Old_InitControls();
 		StartServer_ItemPage_Old_UpdateInterface();

@@ -121,7 +121,6 @@ static qboolean MainMenu_LoadScript( const char* filename )
 
 void MainMenu_ReloadGame( void )
 {
-	trap_Cvar_SetValue( "ui_tutorial01", 1 );
 	if(cl_language.integer == 0){
 	UI_ConfirmMenu( "RELOAD GAME?", 0, MainMenu_ReloadAction );
 	}
@@ -364,17 +363,8 @@ static void Main_MenuDraw( void ) {
 	   // standard menu drawing
 	   Menu_Draw( &s_main.menu );
    }
-	UI_DrawString( 600+cl_screenoffset.integer, 450, "Quake Sandbox v3.2", UI_RIGHT|UI_SMALLFONT, color );
+	UI_DrawString( 600+cl_screenoffset.integer, 450, "Quake Sandbox v4.0", UI_RIGHT|UI_SMALLFONT, color );
 	UI_DrawString( 600+cl_screenoffset.integer, 465, "by Noire.dev", UI_RIGHT|UI_SMALLFONT, color );
-	
-	if(!ui_tutorial01.integer){
-	if(cl_language.integer == 0){
-		UI_DrawString( 320+cl_screenoffset.integer, 373, "Сlick here and select mode ->", UI_RIGHT|UI_SMALLFONT, color );
-	}
-	if(cl_language.integer == 1){
-		UI_DrawString( 320+cl_screenoffset.integer, 373, "Нажмите сюда и выберете режим ->", UI_RIGHT|UI_SMALLFONT, color );
-	}
-	}
 }
 
 

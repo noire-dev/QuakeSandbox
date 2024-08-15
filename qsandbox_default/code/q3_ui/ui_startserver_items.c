@@ -1046,7 +1046,7 @@ static void StartServer_ItemPage_Load( void )
 	s_itemcontrols.enabled = s_scriptdata.item.enabled;
 	s_itemcontrols.grouptype = s_scriptdata.item.groupstate;
 
-	s_itemcontrols.gameType.curvalue = gametype_remap2[s_scriptdata.gametype];
+	s_itemcontrols.gameType.curvalue = s_scriptdata.gametype;
 
 	StartServer_BothItemMenus_InitControls();
 }
@@ -1113,7 +1113,7 @@ static void StartServer_ItemPage_Event( void* ptr, int event )
 	case ID_ITEM_GAMETYPE:
 		StartServer_SaveScriptData();
 
-		StartServer_LoadScriptDataFromType(gametype_remap[s_itemcontrols.gameType.curvalue]);
+		StartServer_LoadScriptDataFromType(s_itemcontrols.gameType.curvalue);
 
 		StartServer_BothItemMenus_InitControls();
 		StartServer_BothItemMenus_UpdateInterface();
@@ -1278,7 +1278,7 @@ static void StartServer_BothItemMenus_MenuInit(qboolean ingame)
 		StartServer_CommonControls_Init(menuptr, &s_itemcontrols.common, StartServer_ItemPage_CommonEvent, COMMONCTRL_ITEMS);
 
 		s_itemcontrols.gameType.generic.type		= MTYPE_SPINCONTROL;
-		s_itemcontrols.gameType.generic.id		= ID_ITEM_GAMETYPE;
+		s_itemcontrols.gameType.generic.id			= ID_ITEM_GAMETYPE;
 		s_itemcontrols.gameType.generic.flags		= QMF_PULSEIFFOCUS|QMF_SMALLFONT;
 		s_itemcontrols.gameType.generic.callback	= StartServer_ItemPage_Event;
 		s_itemcontrols.gameType.generic.x			= GAMETYPECOLUMN_X;

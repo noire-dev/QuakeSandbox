@@ -48,8 +48,6 @@ START SERVER MENU *****
 
 #define BOT_FADETIME 1000
 
-
-
 /*
 	new control for skill input
 
@@ -62,7 +60,6 @@ typedef struct {
 	botskill_t* data;
 } menuskill_s;
 
-
 // enumerator for testing cursor position
 // within control
 enum {
@@ -70,8 +67,6 @@ enum {
 	MSKILL_LEFT,
 	MSKILL_RIGHT
 };
-
-
 
 typedef struct botcontrols_s {
 	menuframework_s menu;
@@ -123,38 +118,23 @@ typedef struct botcontrols_s {
 	char playername[MAX_NAME_LENGTH];
 } botcontrols_t;
 
-
-
-
-
-
 //
 // controls 
 //
 static botcontrols_t s_botcontrols;
 
-
-
-
 static const char* skill_items[] = {
-	"Novice",
-	"Explorer",
-	"Easy Shooter",
-	"Intermediate Fighter",
-	"Master of Survival!",
-	"Tactician!",
-	"Experienced Warrior!",
-	"Champion!",
-	"Strategist!",
-	"Veteran!",
-	"Arena Hero!",
-	"Assassin!",
-	"Mastermind!",
-	"Arena Legend!",
+	"Noob",
+	"Easy",
+	"Medium",
+	"Hard",
+	"Nightmare!",
+	"Infinite ammo",
+	"Ultra HP",
+	"Ultra Damage",
+	"Nextbot",
 	0
 };
-                                       
-
 
 static const char* botTypeSel_list[BOTTYPE_MAX + 1] = {
 	"Hand selected",	// BOTTYPE_SELECT
@@ -166,8 +146,6 @@ static const char* botTypeSel_list[BOTTYPE_MAX + 1] = {
 	0
 };
 
-
-
 static const char* botSkill_list[BOTSKILL_COUNT + 1] = {
 	"Identical",	// BOTSKILL_SAME
 	"Ranged",		// BOTSKILL_RANGE
@@ -176,10 +154,6 @@ static const char* botSkill_list[BOTSKILL_COUNT + 1] = {
 	0
 };
 
-
-
-
-
 static const char* botSlotType_list[SLOTTYPE_COUNT + 1] = {
 	"----",	// SLOTTYPE_EMPTY
 	"Human",	// SLOTTYPE_HUMAN
@@ -187,8 +161,6 @@ static const char* botSlotType_list[SLOTTYPE_COUNT + 1] = {
 	"Open",	// SLOTTYPE_OPEN
 	0
 };
-
-
 
 static const char* botSkillBias_list[SKILLBIAS_COUNT + 1] = {
 	"None",	// SKILLBIAS_NONE
@@ -204,8 +176,6 @@ static const char* botSkillBias_list[SKILLBIAS_COUNT + 1] = {
 	0
 };
 
-
-
 static const char* botChange_list[BOTCHANGE_COUNT + 1] = {
 	"Never",	// BOTCHANGE_NEVER
 	"Every map",	// BOTCHANGE_EVERYMAP
@@ -214,10 +184,6 @@ static const char* botChange_list[BOTCHANGE_COUNT + 1] = {
 	"Every 4th map",	// BOTCHANGE_MAP4
 	0
 };
-
-
-
-
 
 const char* botCopyTo_items[BOT_CT_COUNT + 1] = {
 	"Clear all bot and open slots",	// BOT_CT_CLEARALL
@@ -230,24 +196,17 @@ const char* botCopyTo_items[BOT_CT_COUNT + 1] = {
 };
 
 static const char* skill_itemsru[] = {
-	"Новичок",
-	"Исследователь",
-	"Легкий стрелок",
-	"Средний боец",
-	"Мастер выживания!",
-	"Тактик!",
-	"Опытный воин!",
-	"Богатырь!",
-	"Стратег!",
-	"Ветеран!",
-	"Герой арены!",
-	"Убийца!",
-	"Интеллектуальный гигант!",
-	"Легенда Арены!",
+	"Нуб",
+	"Легкий",
+	"Средний",
+	"Сложный",
+	"Кошмар!",
+	"Беск патроны",
+	"Ультра HP",
+	"Ультра урон",
+	"Некстбот",
 	0
 };
-                                       
-
 
 static const char* botTypeSel_listru[BOTTYPE_MAX + 1] = {
 	"Выбор вручную",	// BOTTYPE_SELECT
@@ -259,8 +218,6 @@ static const char* botTypeSel_listru[BOTTYPE_MAX + 1] = {
 	0
 };
 
-
-
 static const char* botSkill_listru[BOTSKILL_COUNT + 1] = {
 	"Идентичный",	// BOTSKILL_SAME
 	"Диапазон",		// BOTSKILL_RANGE
@@ -269,10 +226,6 @@ static const char* botSkill_listru[BOTSKILL_COUNT + 1] = {
 	0
 };
 
-
-
-
-
 static const char* botSlotType_listru[SLOTTYPE_COUNT + 1] = {
 	"----",	// SLOTTYPE_EMPTY
 	"Человек",	// SLOTTYPE_HUMAN
@@ -280,8 +233,6 @@ static const char* botSlotType_listru[SLOTTYPE_COUNT + 1] = {
 	"Открыт",	// SLOTTYPE_OPEN
 	0
 };
-
-
 
 static const char* botSkillBias_listru[SKILLBIAS_COUNT + 1] = {
 	"Нет",	// SKILLBIAS_NONE
@@ -297,8 +248,6 @@ static const char* botSkillBias_listru[SKILLBIAS_COUNT + 1] = {
 	0
 };
 
-
-
 static const char* botChange_listru[BOTCHANGE_COUNT + 1] = {
 	"Никогда",	// BOTCHANGE_NEVER
 	"Каждую карту",	// BOTCHANGE_EVERYMAP
@@ -307,10 +256,6 @@ static const char* botChange_listru[BOTCHANGE_COUNT + 1] = {
 	"Каждую 4 карту",	// BOTCHANGE_MAP4
 	0
 };
-
-
-
-
 
 const char* botCopyTo_itemsru[BOT_CT_COUNT + 1] = {
 	"Очистить всех ботов и открыть слоты",	// BOT_CT_CLEARALL
@@ -321,9 +266,6 @@ const char* botCopyTo_itemsru[BOT_CT_COUNT + 1] = {
 	"Уточненный список ботов",	// BOT_CT_NEATEN
 	0
 };
-
-
-
 
 /*
 =================
@@ -348,9 +290,6 @@ static void StartServer_BotPage_UpdateButtonInterface(void)
 	}
 }
 
-
-
-
 /*
 =================
 StartServer_BotPage_SelectItem
@@ -374,9 +313,6 @@ static void StartServer_BotPage_SelectItem(int index)
 	s_botcontrols.selected = index;
 }
 
-
-
-
 /*
 =================
 StartServer_BotPage_SetSkillRangeType
@@ -387,7 +323,6 @@ static void StartServer_BotPage_SetSkillRangeType(void)
 	StartServer_SetBotSkillRangeType(s_botcontrols.skillType.curvalue);
 	s_botcontrols.skillType.curvalue = s_scriptdata.bot.skillType;
 }
-
 
 /*
 =================
@@ -930,7 +865,7 @@ static void StartServer_BotPage_Load(void)
 {
 	int i;
 
-	s_botcontrols.botGameType.curvalue = gametype_remap2[s_scriptdata.gametype];
+	s_botcontrols.botGameType.curvalue = s_scriptdata.gametype;
 
 	Q_strncpyz( s_botcontrols.playername, UI_Cvar_VariableString("name"), MAX_NAME_LENGTH );
 
@@ -1554,7 +1489,7 @@ static void StartServer_BotPage_Event( void* ptr, int event )
 			StartServer_SaveScriptData();
 			StartServer_BotPage_SelectItem(-1);
 
-			StartServer_LoadScriptDataFromType(gametype_remap[s_botcontrols.botGameType.curvalue]);
+			StartServer_LoadScriptDataFromType(s_botcontrols.botGameType.curvalue);
 
 			StartServer_BotPage_InitControlsFromScript();
 			StartServer_BotPage_UpdateInterface();

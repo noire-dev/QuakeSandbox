@@ -404,7 +404,7 @@ static void selecttoolEd_MenuEvent( void *ptr, int event ) {
 
 	switch ( ((menucommon_s*)ptr)->id ) {
 	case ID_GO:
-		trap_Cvar_SetValue( "oasb_tool", s_selecttoolEd.list.curvalue);
+		trap_Cvar_SetValue( "toolgun_tool", s_selecttoolEd.list.curvalue);
 		UI_PopMenu();
 		break;
 

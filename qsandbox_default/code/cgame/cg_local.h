@@ -35,7 +35,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define CG_FONT_THRESHOLD 0.1
 #endif
 
-#define	POWERUP_BLINKS		10
+#define	POWERUP_BLINKS		5
 
 #define	POWERUP_BLINK_TIME	1000
 #define	FADE_TIME			500
@@ -52,7 +52,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define	ITEM_SCALEUP_TIME	cg_itemscaletime.value
 #define	ZOOM_TIME			cg_zoomtime.value
 #define	ITEM_BLOB_TIME		200
-#define	MUZZLE_FLASH_TIME	20
+#define	MUZZLE_FLASH_TIME	75
 #define	SINK_TIME			3000		// time for fragments to sink into ground before going away
 #define	ATTACKER_HEAD_TIME	10000
 #define	REWARD_TIME			2000
@@ -387,6 +387,9 @@ typedef struct {
 	int			plred;
 	int			plgreen;
 	int			plblue;
+	float		pg_red;
+	float		pg_green;
+	float		pg_blue;
 	int			swepid;
 	int			vehiclenum;
 	int			totex;
@@ -1456,10 +1459,9 @@ extern	int 	mod_slickmove;
 extern	int 	mod_overlay;
 extern	int 	mod_roundmode;
 extern	int 	mod_gravity;
-extern	int 	mod_dayangle;
-extern	int 	mod_daydefault;
 extern	int 	mod_zround;
-extern	int 	mod_yuround;
+
+extern	vmCvar_t 	g_gametype;
 
 extern	vmCvar_t 	cl_propsmallsizescale;
 extern	vmCvar_t 	cl_propheight;
@@ -1480,13 +1482,43 @@ extern	vmCvar_t	cg_zoomtime;
 extern	vmCvar_t	cg_itemscaletime;
 extern	vmCvar_t	cg_weaponselecttime;
 
-//ArenaSandBox Set
-extern	vmCvar_t	oasb_idi;
-extern	vmCvar_t	oasb_height;
-extern	vmCvar_t	oasb_tool;
-extern	vmCvar_t	oasb_modifier;
-extern	vmCvar_t	oasb_modifiers;
-extern	vmCvar_t	oasb_modelst;
+extern	vmCvar_t	cg_weaponBarActiveWidth;
+
+//Noire Set
+extern	vmCvar_t	toolgun_mod1;
+extern	vmCvar_t	toolgun_mod2;
+extern	vmCvar_t	toolgun_mod3;
+extern	vmCvar_t	toolgun_mod4;
+extern	vmCvar_t	toolgun_mod5;
+extern	vmCvar_t	toolgun_mod6;
+extern	vmCvar_t	toolgun_mod7;
+extern	vmCvar_t	toolgun_mod8;
+extern	vmCvar_t	toolgun_mod9;
+extern	vmCvar_t	toolgun_mod10;
+extern	vmCvar_t	toolgun_mod11;
+extern	vmCvar_t	toolgun_mod12;
+extern	vmCvar_t	toolgun_mod13;
+extern	vmCvar_t	toolgun_mod14;
+extern	vmCvar_t	toolgun_mod15;
+extern	vmCvar_t	toolgun_mod16;
+extern	vmCvar_t	toolgun_mod17;
+extern	vmCvar_t	toolgun_mod18;
+extern	vmCvar_t	toolgun_mod19;
+extern	vmCvar_t	toolgun_tool;
+extern	vmCvar_t	toolgun_toolcmd1;
+extern	vmCvar_t	toolgun_toolcmd2;
+extern	vmCvar_t	toolgun_toolcmd3;
+extern	vmCvar_t	toolgun_toolcmd4;
+extern	vmCvar_t	toolgun_tooltext;
+extern	vmCvar_t	toolgun_tooltip1;
+extern	vmCvar_t	toolgun_tooltip2;
+extern	vmCvar_t	toolgun_tooltip3;
+extern	vmCvar_t	toolgun_tooltip4;
+extern	vmCvar_t	toolgun_toolmode1;
+extern	vmCvar_t	toolgun_toolmode2;
+extern	vmCvar_t	toolgun_toolmode3;
+extern	vmCvar_t	toolgun_toolmode4;
+extern	vmCvar_t	toolgun_modelst;
 extern	vmCvar_t	sb_classnum_view;
 extern	vmCvar_t	sb_texture_view;
 extern	vmCvar_t	sb_texturename;
@@ -1494,9 +1526,6 @@ extern	vmCvar_t	cg_hide255;
 
 extern	vmCvar_t	cg_postprocess;
 extern	vmCvar_t	cg_toolguninfo;
-extern	vmCvar_t    cg_singlemode;
-extern	vmCvar_t    cl_drawobjective;
-extern	vmCvar_t    cl_blackloadscreen;
 extern	vmCvar_t	cl_language;
 extern	vmCvar_t	con_notifytime;
 extern  vmCvar_t    cg_helightred;
@@ -1508,7 +1537,6 @@ extern  vmCvar_t    cg_hetex;
 extern  vmCvar_t    cg_tolightred;
 extern  vmCvar_t    cg_tolightgreen;
 extern  vmCvar_t    cg_tolightblue;
-extern  vmCvar_t    gender;
 extern  vmCvar_t    cg_plightred;
 extern  vmCvar_t    cg_plightgreen;
 extern  vmCvar_t    cg_plightblue;
@@ -1545,7 +1573,7 @@ extern	vmCvar_t		cg_drawTeamOverlay;
 extern	vmCvar_t		cg_teamOverlayUserinfo;
 extern	vmCvar_t		cg_crosshairX;
 extern	vmCvar_t		cg_crosshairY;
-extern	vmCvar_t		cg_crosshairSize;
+extern	vmCvar_t		cg_crosshairScale;
 extern	vmCvar_t		cg_drawStatus;
 extern	vmCvar_t		cg_draw2D;
 extern	vmCvar_t		cg_animSpeed;
@@ -1939,6 +1967,8 @@ void CG_ShotgunFire( entityState_t *es );
 void CG_Bullet( vec3_t origin, int sourceEntityNum, vec3_t normal, qboolean flesh, int fleshEntityNum );
 
 void CG_RailTrail( clientInfo_t *ci, vec3_t start, vec3_t end );
+void CG_PhysgunTrail( clientInfo_t *ci, vec3_t start, vec3_t end );
+void CG_GravitygunTrail( clientInfo_t *ci, vec3_t start, vec3_t end );
 void CG_GrappleTrail( centity_t *ent, const weaponInfo_t *wi );
 void CG_AddViewWeapon (playerState_t *ps);
 void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent, int team, clientInfo_t *ci );

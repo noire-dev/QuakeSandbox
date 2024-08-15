@@ -26,17 +26,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // q_shared.h -- included first by ALL program modules.
 // A user mod should never modify this file
 
-//#ifdef STANDALONE
-  #define PRODUCT_NAME			"arenaunlimited"
-  #define BASEGAME			"baseau"
-  #define CLIENT_WINDOW_TITLE     	"Arena Unlimited"
-  #define CLIENT_WINDOW_MIN_TITLE 	"arenaunlimited"
-/*#else
-  #define PRODUCT_NAME			"ioq3"
-  #define BASEGAME			"baseq3"
-  #define CLIENT_WINDOW_TITLE     	"ioquake3"
-  #define CLIENT_WINDOW_MIN_TITLE 	"ioq3"
-#endif*/
+#define PRODUCT_NAME			"quakesandbox"
+#define BASEGAME				"milab"
+#define CLIENT_WINDOW_TITLE     	"MiTech: Engine"
+#define CLIENT_WINDOW_MIN_TITLE 	"MiTech: Engine"
+
 
 #ifdef _MSC_VER
   #define PRODUCT_VERSION "1.35"

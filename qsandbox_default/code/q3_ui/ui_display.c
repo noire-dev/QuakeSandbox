@@ -128,7 +128,7 @@ static void UI_DisplayOptionsMenu_Event( void* ptr, int event ) {
 		break;
 
 	case ID_CROSSSIZE:
-		trap_Cvar_SetValue( "cg_crosshairsize", displayOptionsInfo.crosssize.curvalue);
+		trap_Cvar_SetValue( "cg_crosshairScale", displayOptionsInfo.crosssize.curvalue);
 		break;
 
 	case ID_THIRDPERSON:
@@ -646,7 +646,7 @@ displayOptionsInfo.istyle.generic.name	   	= "Стиль предметов:";
 	displayOptionsInfo.brightness.curvalue  = trap_Cvar_VariableValue("r_gamma") * 10;
 	displayOptionsInfo.screensize.curvalue  = trap_Cvar_VariableValue( "cg_viewsize")/10;
 	//displayOptionsInfo.fov.curvalue  = trap_Cvar_VariableValue( "cg_fov")/10;
-	displayOptionsInfo.crosssize.curvalue  = trap_Cvar_VariableValue( "cg_crosshairsize");
+	displayOptionsInfo.crosssize.curvalue  = trap_Cvar_VariableValue( "cg_crosshairScale");
 	displayOptionsInfo.oldscore.curvalue  = trap_Cvar_VariableValue( "cg_oldscoreboard");
 	displayOptionsInfo.thirdperson.curvalue  = trap_Cvar_VariableValue( "cg_thirdperson");
 	displayOptionsInfo.thirdpersongta.curvalue  = trap_Cvar_VariableValue( "cg_thirdPersonRotating");

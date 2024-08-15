@@ -99,10 +99,38 @@ vmCvar_t	sb_texturename;
 vmCvar_t	sb_grid;
 vmCvar_t	sb_modelnum;
 vmCvar_t	sb_classnum;
-vmCvar_t	sb_toolnum;
 vmCvar_t	sb_texturenum;
 vmCvar_t	sb_tab;
 vmCvar_t	spawn_preset;
+vmCvar_t	tool_spawnpreset;
+vmCvar_t	tool_modifypreset;
+vmCvar_t	tool_modifypreset2;
+vmCvar_t	tool_modifypreset3;
+vmCvar_t	tool_modifypreset4;
+
+vmCvar_t	toolgun_toolset1;
+vmCvar_t	toolgun_toolset2;
+vmCvar_t	toolgun_toolset3;
+vmCvar_t	toolgun_toolset4;
+vmCvar_t	toolgun_toolset5;
+vmCvar_t	toolgun_toolset6;
+vmCvar_t	toolgun_toolset7;
+vmCvar_t	toolgun_toolset8;
+vmCvar_t	toolgun_toolset9;
+vmCvar_t	toolgun_toolset10;
+vmCvar_t	toolgun_toolset11;
+vmCvar_t	toolgun_toolset12;
+vmCvar_t	toolgun_toolset13;
+vmCvar_t	toolgun_toolset14;
+vmCvar_t	toolgun_toolset15;
+vmCvar_t	toolgun_toolset16;
+vmCvar_t	toolgun_toolset17;
+vmCvar_t	toolgun_toolset18;
+
+vmCvar_t	toolgun_disabledarg1;
+vmCvar_t	toolgun_disabledarg2;
+vmCvar_t	toolgun_disabledarg3;
+vmCvar_t	toolgun_disabledarg4;
 
 vmCvar_t	mgui_api_active;
 vmCvar_t	mgui_none;
@@ -130,15 +158,12 @@ vmCvar_t	ui_scrollbtnsize;
 vmCvar_t	ui_singlemode;
 vmCvar_t	legsskin;
 vmCvar_t	team_legsskin;
-vmCvar_t	cl_blackloadscreen;
 vmCvar_t	cl_selectedmod;
-vmCvar_t	cl_gmodelock;
 vmCvar_t	cl_language;
 vmCvar_t	cl_gamestyle;
 vmCvar_t	cl_screenoffset;
 vmCvar_t	cl_screencustomoffset;
 vmCvar_t	ui_loaded;
-vmCvar_t	ui_tutorial01;
 vmCvar_t	ui_backcolors;
 vmCvar_t	sensitivitymenu;
 
@@ -244,28 +269,56 @@ static cvarTable_t		cvarTable[] = {
 	{ &sb_modelnum, "sb_modelnum", "0", CVAR_ARCHIVE },
 	{ &sb_classnum, "sb_classnum", "0", CVAR_ARCHIVE },
 	{ &sb_texturenum, "sb_texturenum", "0", CVAR_ARCHIVE },
-	{ &sb_toolnum, "sb_toolnum", "0", CVAR_ARCHIVE },
 	{ &sb_tab, "sb_tab", "1", 0 },
-	{ &spawn_preset, "spawn_preset", "set uibuildprop sl prop %s %s %i 25 %s 0 %s 0 0 \"none\" 1000 0 0 0 0 1 1 1 0 0 1 10000 0 1 100 100 120 1 0 1000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5", 0 },
+	{ &spawn_preset, "spawn_preset", "set toolcmd_spawn sl prop %s %s %i 25 %s 0 %s 1 0 \"none\" -1 0 0 0 0 1 1 1 0 0 1 10000 0 1 100 100 120 1 0 1000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5", 0 },
+	{ &tool_spawnpreset, "tool_spawnpreset", "set toolcmd_spawn sl prop %s none %s 25 %s 0 %s 1 0 \"none\" -1 0 0 0 0 1 1 1 0 0 1 10000 0 1 100 100 120 1 0 1000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5", 0 },
+	{ &tool_modifypreset, "tool_modifypreset", "set toolcmd_modify tm %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s 0", 0 },
+	{ &tool_modifypreset2, "tool_modifypreset2", "set toolcmd_modify2 tm %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s 1", 0 },
+	{ &tool_modifypreset3, "tool_modifypreset3", "set toolcmd_modify3 tm %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s 2", 0 },
+	{ &tool_modifypreset4, "tool_modifypreset4", "set toolcmd_modify4 tm %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s 3", 0 },
 	
+	{ &toolgun_toolset1, "toolgun_toolset1", "--------:", 0 },
+	{ &toolgun_toolset2, "toolgun_toolset2", "--------:", 0 },
+	{ &toolgun_toolset3, "toolgun_toolset3", "--------:", 0 },
+	{ &toolgun_toolset4, "toolgun_toolset4", "--------:", 0 },
+	{ &toolgun_toolset5, "toolgun_toolset5", "--------:", 0 },
+	{ &toolgun_toolset6, "toolgun_toolset6", "--------:", 0 },
+	{ &toolgun_toolset7, "toolgun_toolset7", "--------:", 0 },
+	{ &toolgun_toolset8, "toolgun_toolset8", "--------:", 0 },
+	{ &toolgun_toolset9, "toolgun_toolset9", "--------:", 0 },
+	{ &toolgun_toolset10, "toolgun_toolset10", "--------:", 0 },
+	{ &toolgun_toolset11, "toolgun_toolset11", "--------:", 0 },
+	{ &toolgun_toolset12, "toolgun_toolset12", "--------:", 0 },
+	{ &toolgun_toolset13, "toolgun_toolset13", "--------:", 0 },
+	{ &toolgun_toolset14, "toolgun_toolset14", "--------:", 0 },
+	{ &toolgun_toolset15, "toolgun_toolset15", "--------:", 0 },
+	{ &toolgun_toolset16, "toolgun_toolset16", "--------:", 0 },
+	{ &toolgun_toolset17, "toolgun_toolset17", "--------:", 0 },
+	{ &toolgun_toolset18, "toolgun_toolset18", "--------:", 0 },
+	
+	{ &toolgun_disabledarg1, "toolgun_disabledarg1", "0", 0 },
+	{ &toolgun_disabledarg2, "toolgun_disabledarg2", "0", 0 },
+	{ &toolgun_disabledarg3, "toolgun_disabledarg3", "0", 0 },
+	{ &toolgun_disabledarg4, "toolgun_disabledarg4", "0", 0 },
+
 	{ &mgui_api_active, "mgui_api_active", "0", 0 },
 	{ &mgui_none, "mgui_none", "0", 0 },
 	
 	{ &sbt_color0_0,  "sbt_color0_0", "1", 	 CVAR_ARCHIVE },
 	{ &sbt_color0_1,  "sbt_color0_1", "1", 	 CVAR_ARCHIVE },
 	{ &sbt_color0_2,  "sbt_color0_2", "1", 	 CVAR_ARCHIVE },
-	{ &sbt_color0_3,  "sbt_color0_3", "0.60", CVAR_ARCHIVE },
-	{ &sbt_color1_0,  "sbt_color1_0", "0.30", CVAR_ARCHIVE },
-	{ &sbt_color1_1,  "sbt_color1_1", "0.30", CVAR_ARCHIVE },
-	{ &sbt_color1_2,  "sbt_color1_2", "0.30", CVAR_ARCHIVE },
+	{ &sbt_color0_3,  "sbt_color0_3", "0.80", CVAR_ARCHIVE },
+	{ &sbt_color1_0,  "sbt_color1_0", "0.50", CVAR_ARCHIVE },
+	{ &sbt_color1_1,  "sbt_color1_1", "0.50", CVAR_ARCHIVE },
+	{ &sbt_color1_2,  "sbt_color1_2", "0.50", CVAR_ARCHIVE },
 	{ &sbt_color1_3,  "sbt_color1_3", "0.90", CVAR_ARCHIVE },
-	{ &sbt_color2_0,  "sbt_color2_0", "0.50", CVAR_ARCHIVE },
-	{ &sbt_color2_1,  "sbt_color2_1", "0.50", CVAR_ARCHIVE },
-	{ &sbt_color2_2,  "sbt_color2_2", "0.30", CVAR_ARCHIVE },
+	{ &sbt_color2_0,  "sbt_color2_0", "0.30", CVAR_ARCHIVE },
+	{ &sbt_color2_1,  "sbt_color2_1", "0.30", CVAR_ARCHIVE },
+	{ &sbt_color2_2,  "sbt_color2_2", "0.95", CVAR_ARCHIVE },
 	{ &sbt_color2_3,  "sbt_color2_3", "0.90", CVAR_ARCHIVE },
-	{ &sbt_color3_0,  "sbt_color3_0", "1", 	 CVAR_ARCHIVE },
-	{ &sbt_color3_1,  "sbt_color3_1", "1", 	 CVAR_ARCHIVE },
-	{ &sbt_color3_2,  "sbt_color3_2", "1", 	 CVAR_ARCHIVE },
+	{ &sbt_color3_0,  "sbt_color3_0", "0", 	 CVAR_ARCHIVE },
+	{ &sbt_color3_1,  "sbt_color3_1", "0", 	 CVAR_ARCHIVE },
+	{ &sbt_color3_2,  "sbt_color3_2", "0", 	 CVAR_ARCHIVE },
 	{ &sbt_color3_3,  "sbt_color3_3", "1", 	 CVAR_ARCHIVE },
 	{ &sbt_wallpaper, "sbt_wallpaper", "trans", 	 CVAR_ARCHIVE },
 
@@ -273,12 +326,9 @@ static cvarTable_t		cvarTable[] = {
 
 	{ &ui_singlemode, "ui_singlemode", "0", CVAR_ARCHIVE },
 	{ &ui_loaded, "ui_loaded", "0", 0 },
-	{ &ui_tutorial01, "ui_tutorial01", "0", CVAR_ARCHIVE },
 	{ &legsskin, "legsskin", "sarge/default", CVAR_ARCHIVE },
 	{ &team_legsskin, "team_legsskin", "sarge/default", CVAR_ARCHIVE },
 	{ &cl_selectedmod, "cl_selectedmod", "default", CVAR_ARCHIVE },
-	{ &cl_blackloadscreen, "cl_blackloadscreen", "0", 0 },
-	{ &cl_gmodelock, "cl_gmodelock", "0", CVAR_ARCHIVE },
 	{ &cl_language, "cl_language", "0", CVAR_ARCHIVE },
 	{ &cl_gamestyle, "cl_gamestyle", "0", CVAR_ARCHIVE },
 	{ &cl_screenoffset, "cl_screenoffset", "107", CVAR_ARCHIVE },
@@ -395,16 +445,18 @@ void UI_RegisterCvars( void ) {
 	trap_Cvar_SetValue( "r_subdivisions", 1 );
 	trap_Cvar_SetValue( "r_envmode", 0 );
 	trap_Cvar_SetValue( "r_dlightSpecPower", 6 );
-	trap_Cvar_SetValue( "r_dlightSpecColor", 0.5 );
+	trap_Cvar_SetValue( "r_dlightSpecColor", 0.0 );
+	trap_Cvar_SetValue( "r_dlightScale", 0.75 );
 	trap_Cvar_SetValue( "r_bloom_blend_base", 1 );
-	if(trap_Cvar_VariableValue("r_bloom_intensity") >= 0.5){
-	trap_Cvar_SetValue( "r_bloom_intensity", 0.1 );
+	if(trap_Cvar_VariableValue("r_bloom_intensity") >= 0.20){
+	trap_Cvar_SetValue( "r_bloom_intensity", 0.10 );
 	}
 	trap_Cvar_SetValue( "r_bloom_passes", 6 );
-	trap_Cvar_SetValue( "r_bloom_modulate", 1 );
-	trap_Cvar_SetValue( "r_bloom_reflection", 0.5 );
-	trap_Cvar_SetValue( "r_bloom_threshold", 0 );
+	trap_Cvar_SetValue( "r_bloom_modulate", 0 );
+	trap_Cvar_SetValue( "r_bloom_reflection", 0 );
+	trap_Cvar_SetValue( "r_bloom_threshold", 0.10 );
 	trap_Cvar_SetValue( "r_bloom_threshold_mode", 0 );
+	trap_Cvar_SetValue( "r_bloom_filter_size", 2 );
 	
 	if(!trap_Cvar_VariableValue("cl_gamestyle")){
 	trap_Cvar_Set( "r_mapGreyScale", "-0.5");
@@ -667,8 +719,6 @@ void UI_RegisterCvars( void ) {
 	trap_Cvar_Set( "r_mapColorBlueT", "0");
 	}
 	trap_Cmd_ExecuteText( EXEC_APPEND, "exec uiautoexec.cfg\n");
-	trap_Cmd_ExecuteText( EXEC_APPEND, "execscript d_interact0\n");
-	trap_Cmd_ExecuteText( EXEC_APPEND, "execscript weaponset\n");
 }
 
 /*

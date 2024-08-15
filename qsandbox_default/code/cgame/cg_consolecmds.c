@@ -694,10 +694,7 @@ void CG_InitConsoleCommands( void ) {
 	trap_AddCommand ("if");
 	trap_AddCommand ("picktarget");
 	trap_AddCommand ("usetarget");
-	trap_AddCommand ("additem");
 	trap_AddCommand ("op");
-	trap_AddCommand ("qvmwrite");
-	trap_AddCommand ("qvmread");
 	trap_AddCommand ("cvar");
 	trap_AddCommand ("editline");
 	trap_AddCommand ("clientcmd");

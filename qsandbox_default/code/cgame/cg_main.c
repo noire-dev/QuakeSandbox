@@ -93,6 +93,8 @@ centity_t			cg_entities[MAX_GENTITIES];
 weaponInfo_t		cg_weapons[WEAPONS_NUM+1];
 itemInfo_t			cg_items[MAX_ITEMS];
 
+vmCvar_t	g_gametype;
+
 vmCvar_t	cl_propsmallsizescale;
 vmCvar_t 	cl_propheight;
 vmCvar_t 	cl_propspacewidth;
@@ -112,31 +114,54 @@ vmCvar_t	cg_zoomtime;
 vmCvar_t	cg_itemscaletime;
 vmCvar_t	cg_weaponselecttime;
 
-//ArenaSandBox Set
-vmCvar_t	oasb_idi;
-vmCvar_t	oasb_height;
-vmCvar_t	oasb_tool;
-vmCvar_t	oasb_modifier;
-vmCvar_t	oasb_modifiers;
-vmCvar_t	oasb_modelst;
-vmCvar_t	sb_classnum_view;
-vmCvar_t	sb_texture_view;
-vmCvar_t	sb_texturename;
-vmCvar_t	cg_hide255;
+vmCvar_t	cg_weaponBarActiveWidth;
+
+//Noire Set
+vmCvar_t	toolgun_mod1;		//modifier
+vmCvar_t	toolgun_mod2;		//modifier
+vmCvar_t	toolgun_mod3;		//modifier
+vmCvar_t	toolgun_mod4;		//modifier
+vmCvar_t	toolgun_mod5;		//modifier
+vmCvar_t	toolgun_mod6;		//modifier
+vmCvar_t	toolgun_mod7;		//modifier
+vmCvar_t	toolgun_mod8;		//modifier
+vmCvar_t	toolgun_mod9;		//modifier
+vmCvar_t	toolgun_mod10;		//modifier
+vmCvar_t	toolgun_mod11;		//modifier
+vmCvar_t	toolgun_mod12;		//modifier
+vmCvar_t	toolgun_mod13;		//modifier
+vmCvar_t	toolgun_mod14;		//modifier
+vmCvar_t	toolgun_mod15;		//modifier
+vmCvar_t	toolgun_mod16;		//modifier
+vmCvar_t	toolgun_mod17;		//modifier
+vmCvar_t	toolgun_mod18;		//modifier
+vmCvar_t	toolgun_mod19;		//modifier
+vmCvar_t	toolgun_tool;		//tool id
+vmCvar_t	toolgun_toolcmd1;	//command
+vmCvar_t	toolgun_toolcmd2;	//command
+vmCvar_t	toolgun_toolcmd3;	//command
+vmCvar_t	toolgun_toolcmd4;	//command
+vmCvar_t	toolgun_tooltext;	//info
+vmCvar_t	toolgun_tooltip1;	//info
+vmCvar_t	toolgun_tooltip2;	//info
+vmCvar_t	toolgun_tooltip3;	//info
+vmCvar_t	toolgun_tooltip4;	//info
+vmCvar_t	toolgun_toolmode1;	//mode
+vmCvar_t	toolgun_toolmode2;	//mode
+vmCvar_t	toolgun_toolmode3;	//mode
+vmCvar_t	toolgun_toolmode4;	//mode
+vmCvar_t	toolgun_modelst;	//preview model
+vmCvar_t	sb_classnum_view;	//preview class
+vmCvar_t	sb_texture_view;	//preview material
+vmCvar_t	sb_texturename;		//preview texture
+vmCvar_t	cg_hide255;			//invisible model
 
 vmCvar_t	cg_postprocess;
 vmCvar_t	cg_toolguninfo;
-vmCvar_t    cg_singlemode;
-vmCvar_t    cl_drawobjective;
-vmCvar_t    cl_blackloadscreen;
 vmCvar_t	cl_language;
 vmCvar_t	con_notifytime;
-vmCvar_t    gender;
 vmCvar_t 	cg_leiChibi; // LEILEI THANK YOU!!!
 vmCvar_t    cg_cameraeyes;
-vmCvar_t    cg_ptex;
-vmCvar_t    cg_totex;
-vmCvar_t    cg_hetex;
 vmCvar_t    cg_helightred;
 vmCvar_t    cg_helightgreen;
 vmCvar_t    cg_helightblue;
@@ -146,7 +171,6 @@ vmCvar_t    cg_tolightblue;
 vmCvar_t    cg_plightred;
 vmCvar_t    cg_plightgreen;
 vmCvar_t    cg_plightblue;
-vmCvar_t    cg_plightradius;
 vmCvar_t    cl_screenoffset;
 vmCvar_t    ui_backcolors;
 vmCvar_t	legsskin;
@@ -178,7 +202,7 @@ vmCvar_t	cg_draw3dIcons;
 vmCvar_t	cg_drawIcons;
 vmCvar_t	cg_drawCrosshair;
 vmCvar_t	cg_drawCrosshairNames;
-vmCvar_t	cg_crosshairSize;
+vmCvar_t	cg_crosshairScale;
 vmCvar_t	cg_crosshairX;
 vmCvar_t	cg_crosshairY;
 vmCvar_t	cg_draw2D;
@@ -216,7 +240,6 @@ vmCvar_t	cg_lagometer;
 vmCvar_t	cg_drawAttacker;
 vmCvar_t	cg_drawSpeed;
 vmCvar_t	cg_synchronousClients;
-//vmCvar_t 	cg_teamChatTime;
 vmCvar_t 	cg_teamChatHeight;
 vmCvar_t 	cg_teamChatScaleX;
 vmCvar_t 	cg_teamChatScaleY;
@@ -259,12 +282,7 @@ vmCvar_t	cg_chatLines;
 vmCvar_t	cg_teamChatLines;
 
 vmCvar_t	cg_commonConsole;
-//unlagged - smooth clients #2
-// this is done server-side now
-//vmCvar_t 	cg_smoothClients;
-//unlagged - smooth clients #2
 vmCvar_t	pmove_fixed;
-//vmCvar_t	cg_pmove_fixed;
 vmCvar_t	pmove_msec;
 vmCvar_t        pmove_float;
 vmCvar_t	cg_pmove_msec;
@@ -321,9 +339,6 @@ vmCvar_t	sv_fps;
 vmCvar_t	cg_projectileNudge;
 vmCvar_t	cg_optimizePrediction;
 vmCvar_t	cl_timeNudge;
-//vmCvar_t	cg_latentSnaps;
-//vmCvar_t	cg_latentCmds;
-//vmCvar_t	cg_plOut;
 //unlagged - client options
 
 //elimination addition
@@ -417,9 +432,7 @@ int mod_invulinf;
 int mod_accelerate;
 int mod_slickmove;
 int mod_overlay;
-int 	mod_gravity;
-int 	mod_dayangle;
-int 	mod_daydefault;
+int mod_gravity;
 int mod_roundmode;
 int mod_zround;
 
@@ -434,6 +447,8 @@ typedef struct {
 
 static cvarTable_t cvarTable[] = { // bk001129
 
+	{ &g_gametype, "g_gametype", "0", 0},
+
 	{ &cl_propsmallsizescale, "cl_propsmallsizescale", "0.60", CVAR_ARCHIVE},
 	{ &cl_propheight, "cl_propheight", "21", CVAR_ARCHIVE  },
 	{ &cl_propspacewidth, "cl_propspacewidth", "8", CVAR_ARCHIVE  },
@@ -447,46 +462,67 @@ static cvarTable_t cvarTable[] = { // bk001129
 	
 	{ &cg_itemscaletime, "cg_itemscaletime", "5000", CVAR_ARCHIVE },
 	{ &cg_weaponselecttime, "cg_weaponselecttime", "5000", CVAR_ARCHIVE },
-	{ &cg_zoomtime, "cg_zoomtime", "800", CVAR_ARCHIVE },
+	{ &cg_zoomtime, "cg_zoomtime", "300", CVAR_ARCHIVE },
+	{ &cg_weaponBarActiveWidth, "cg_weaponBarActiveWidth", "0", 0 },
 
 	//ArenaSandBox Set
-	{ &oasb_idi, "oasb_idi", "0", CVAR_USERINFO},
-	{ &oasb_height, "oasb_height", "0", CVAR_USERINFO},
-	{ &oasb_tool, "oasb_tool", "0", CVAR_USERINFO},
-	{ &oasb_modifier, "oasb_modifier", "0", CVAR_USERINFO},
-	{ &oasb_modifiers, "oasb_modifiers", "0", CVAR_USERINFO},
-	{ &oasb_modelst, "oasb_modelst", "0", CVAR_USERINFO},
-	{ &sb_classnum_view, "sb_classnum_view", "0", CVAR_ARCHIVE},
-	{ &sb_texture_view, "sb_texture_view", "0", CVAR_ARCHIVE},
-	{ &sb_texturename, "sb_texturename", "0", CVAR_ARCHIVE},
+	{ &toolgun_mod1, "toolgun_mod1", "0", 0},
+	{ &toolgun_mod2, "toolgun_mod2", "0", 0},
+	{ &toolgun_mod3, "toolgun_mod3", "0", 0},
+	{ &toolgun_mod4, "toolgun_mod4", "0", 0},
+	{ &toolgun_mod5, "toolgun_mod5", "0", 0},
+	{ &toolgun_mod6, "toolgun_mod6", "0", 0},
+	{ &toolgun_mod7, "toolgun_mod7", "0", 0},
+	{ &toolgun_mod8, "toolgun_mod8", "0", 0},
+	{ &toolgun_mod9, "toolgun_mod9", "0", 0},
+	{ &toolgun_mod10, "toolgun_mod10", "0", 0},
+	{ &toolgun_mod11, "toolgun_mod11", "0", 0},
+	{ &toolgun_mod12, "toolgun_mod12", "0", 0},
+	{ &toolgun_mod13, "toolgun_mod13", "0", 0},
+	{ &toolgun_mod14, "toolgun_mod14", "0", 0},
+	{ &toolgun_mod15, "toolgun_mod15", "0", 0},
+	{ &toolgun_mod16, "toolgun_mod16", "0", 0},
+	{ &toolgun_mod17, "toolgun_mod17", "0", 0},
+	{ &toolgun_mod18, "toolgun_mod18", "0", 0},
+	{ &toolgun_mod19, "toolgun_mod19", "0", 0},
+	{ &toolgun_tool, "toolgun_tool", "0", CVAR_USERINFO},
+	{ &toolgun_toolcmd1, "toolgun_toolcmd1", "", 0},
+	{ &toolgun_toolcmd2, "toolgun_toolcmd2", "", 0},
+	{ &toolgun_toolcmd3, "toolgun_toolcmd3", "", 0},
+	{ &toolgun_toolcmd4, "toolgun_toolcmd4", "", 0},
+	{ &toolgun_tooltext, "toolgun_tooltext", "", 0},
+	{ &toolgun_tooltip1, "toolgun_tooltip1", "", 0},
+	{ &toolgun_tooltip2, "toolgun_tooltip2", "", 0},
+	{ &toolgun_tooltip3, "toolgun_tooltip3", "", 0},
+	{ &toolgun_tooltip4, "toolgun_tooltip4", "", 0},
+	{ &toolgun_toolmode1, "toolgun_toolmode1", "", 0},
+	{ &toolgun_toolmode2, "toolgun_toolmode2", "", 0},
+	{ &toolgun_toolmode3, "toolgun_toolmode3", "", 0},
+	{ &toolgun_toolmode4, "toolgun_toolmode4", "", 0},
+	{ &toolgun_modelst, "toolgun_modelst", "0", 0},
+	{ &sb_classnum_view, "sb_classnum_view", "0", 0},
+	{ &sb_texture_view, "sb_texture_view", "0", 0},
+	{ &sb_texturename, "sb_texturename", "0", 0},
 	{ &cg_hide255, "cg_hide255", "0", 0},
 
 	{ &cg_postprocess, "cg_postprocess", "", 0 },
-	{ &cg_singlemode, "cg_singlemode", "0", 0 },
-	{ &cl_blackloadscreen, "cl_blackloadscreen", "0", 0 },
-	{ &cl_drawobjective, "cl_drawobjective", "0", 0 },
 	{ &cl_language, "cl_language", "0", CVAR_ARCHIVE },
 	{ &con_notifytime, "con_notifytime", "3", CVAR_ARCHIVE },
 	{ &cg_ignore, "cg_ignore", "0", 0 },	// used for debugging
     { &ui_backcolors, "ui_backcolors", "1", CVAR_ARCHIVE },
 	{ &cg_leiChibi, "cg_leiChibi", "0", CVAR_ARCHIVE}, // LEILEI
     { &cg_cameraeyes, "cg_cameraeyes", "0", CVAR_ARCHIVE },
-    { &gender, "gender", "1", CVAR_USERINFO | CVAR_ARCHIVE },
     { &cg_helightred, "cg_helightred", "100", CVAR_USERINFO | CVAR_ARCHIVE },
     { &cg_helightgreen, "cg_helightgreen", "100", CVAR_USERINFO | CVAR_ARCHIVE },
     { &cg_helightblue, "cg_helightblue", "100", CVAR_USERINFO | CVAR_ARCHIVE },
-    { &cg_ptex, "cg_ptex", "0", CVAR_USERINFO | CVAR_ARCHIVE },
-    { &cg_totex, "cg_totex", "0", CVAR_USERINFO | CVAR_ARCHIVE },
-    { &cg_hetex, "cg_hetex", "0", CVAR_USERINFO | CVAR_ARCHIVE },
     { &cg_tolightred, "cg_tolightred", "100", CVAR_USERINFO | CVAR_ARCHIVE },
     { &cg_tolightgreen, "cg_tolightgreen", "100", CVAR_USERINFO | CVAR_ARCHIVE },
     { &cg_tolightblue, "cg_tolightblue", "100", CVAR_USERINFO | CVAR_ARCHIVE },
     { &cg_plightred, "cg_plightred", "100", CVAR_USERINFO | CVAR_ARCHIVE },
     { &cg_plightgreen, "cg_plightgreen", "100", CVAR_USERINFO | CVAR_ARCHIVE },
     { &cg_plightblue, "cg_plightblue", "100", CVAR_USERINFO | CVAR_ARCHIVE },
-    { &cg_plightradius, "cg_plightradius", "0", CVAR_USERINFO | CVAR_ARCHIVE },
     { &cl_screenoffset, "cl_screenoffset", "107", CVAR_ARCHIVE },
-	{ &cg_itemstyle, "cg_itemstyle", "3", CVAR_ARCHIVE },
+	{ &cg_itemstyle, "cg_itemstyle", "2", CVAR_ARCHIVE },
 	{ &legsskin, "legsskin", "sarge/default", CVAR_USERINFO | CVAR_ARCHIVE },
 	{ &team_legsskin, "team_legsskin", "sarge/default", CVAR_USERINFO | CVAR_ARCHIVE },
 	{ &cg_thirdPersonRotating, "cg_thirdPersonRotating", "0", CVAR_ARCHIVE },
@@ -514,7 +550,7 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_drawSpeed, "cg_drawSpeed", "0", CVAR_ARCHIVE  },
 	{ &cg_drawCrosshair, "cg_drawCrosshair", "4", CVAR_ARCHIVE },
 	{ &cg_drawCrosshairNames, "cg_drawCrosshairNames", "1", CVAR_ARCHIVE },
-	{ &cg_crosshairSize, "cg_crosshairSize", "24", CVAR_ARCHIVE },
+	{ &cg_crosshairScale, "cg_crosshairScale", "24", CVAR_ARCHIVE },
 	{ &cg_crosshairX, "cg_crosshairX", "0", CVAR_ARCHIVE },
 	{ &cg_crosshairY, "cg_crosshairY", "0", CVAR_ARCHIVE },
 	{ &cg_brassTime, "cg_brassTime", "2500", CVAR_ARCHIVE },
@@ -525,9 +561,9 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_disableLevelStartFade , "cg_disableLevelStartFade", "0", CVAR_ARCHIVE | CVAR_CHEAT},
 	{ &cg_bigheadMode, "cg_bigheadMode", "0", CVAR_ARCHIVE },
 	{ &cg_railTrailTime, "cg_railTrailTime", "400", CVAR_ARCHIVE  },
-	{ &cg_gun_x, "cg_gunX", "0", CVAR_ARCHIVE },
-	{ &cg_gun_y, "cg_gunY", "0", CVAR_ARCHIVE },
-	{ &cg_gun_z, "cg_gunZ", "0", CVAR_ARCHIVE },
+	{ &cg_gun_x, "cg_gunX", "5", CVAR_ARCHIVE },
+	{ &cg_gun_y, "cg_gunY", "-1", CVAR_ARCHIVE },
+	{ &cg_gun_z, "cg_gunZ", "-1", CVAR_ARCHIVE },
 	{ &cg_centertime, "cg_centertime", "6", CVAR_ARCHIVE },
 	{ &cg_drawsubtitles, "cg_drawsubtitles", "1", CVAR_ARCHIVE },
 	{ &cg_drawSyncMessage, "cg_drawsyncmessage", "1", CVAR_ARCHIVE },
@@ -606,7 +642,7 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_timescaleFadeEnd, "cg_timescaleFadeEnd", "1", 0},
 	{ &cg_timescaleFadeSpeed, "cg_timescaleFadeSpeed", "0", 0},
 	{ &cg_timescale, "timescale", "1", 0},
-	{ &cg_scorePlum, "cg_scorePlums", "1", CVAR_USERINFO | CVAR_ARCHIVE},
+	{ &cg_scorePlum, "cg_scorePlums", "1", CVAR_ARCHIVE},
 	{ &cg_chatTime ,    "cg_chatTime", "10000", CVAR_ARCHIVE},
 	{ &cg_consoleTime , "cg_consoleTime", "10000", CVAR_ARCHIVE},
 	{ &cg_teamChatTime, "cg_teamChatTime", "10000", CVAR_ARCHIVE  },
@@ -670,9 +706,6 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_projectileNudge, "cg_projectileNudge", "0", CVAR_ARCHIVE },
 	{ &cg_optimizePrediction, "cg_optimizePrediction", "1", CVAR_ARCHIVE },
 	{ &cl_timeNudge, "cl_timeNudge", "0", CVAR_ARCHIVE },
-//	{ &cg_latentSnaps, "cg_latentSnaps", "0", CVAR_USERINFO | CVAR_CHEAT },
-//	{ &cg_latentCmds, "cg_latentCmds", "0", CVAR_USERINFO | CVAR_CHEAT },
-//	{ &cg_plOut, "cg_plOut", "0", CVAR_USERINFO | CVAR_CHEAT },
 //unlagged - client options
 	{ &cg_trueLightning, "cg_trueLightning", "0.9", CVAR_ARCHIVE},
 	{ &cg_letterBoxSize, "cg_letterBoxSize", "40", CVAR_ARCHIVE},
@@ -711,9 +744,9 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_ch13, "cg_ch13", "1", CVAR_ARCHIVE},
 	{ &cg_ch13size, "cg_ch13size", "24", CVAR_ARCHIVE},
 
-	{ &cg_crosshairColorRed, "cg_crosshairColorRed", "1.0", CVAR_ARCHIVE},
-        { &cg_crosshairColorGreen, "cg_crosshairColorGreen", "1.0", CVAR_ARCHIVE},
-        { &cg_crosshairColorBlue, "cg_crosshairColorBlue", "1.0", CVAR_ARCHIVE},
+	{ &cg_crosshairColorRed, "cg_crosshairColorRed", "0.5", CVAR_ARCHIVE | CVAR_USERINFO},
+    { &cg_crosshairColorGreen, "cg_crosshairColorGreen", "0.75", CVAR_ARCHIVE | CVAR_USERINFO},
+    { &cg_crosshairColorBlue, "cg_crosshairColorBlue", "1.0", CVAR_ARCHIVE | CVAR_USERINFO},
 
 	{ &cg_weaponBarStyle, "cg_weaponBarStyle", "0", CVAR_ARCHIVE},
         { &cg_weaponOrder,"cg_weaponOrder", "/1/2/4/3/6/7/8/9/5/", CVAR_ARCHIVE},
@@ -723,7 +756,6 @@ static cvarTable_t cvarTable[] = { // bk001129
 };
 
 static int  cvarTableSize = sizeof( cvarTable ) / sizeof( cvarTable[0] );
-int mod_yuround;
 /*
 =================
 CG_RegisterCvars
@@ -1338,9 +1370,7 @@ void CG_SetDefaultWeaponProperties(void) {
 	mod_accelerate = 1;
 	mod_slickmove = 0;
 	mod_overlay = 0;
-	mod_gravity = 512000;
-	mod_dayangle = 0;
-	mod_daydefault = 0;
+	mod_gravity = 800;
 	mod_roundmode = 0;
 	mod_zround = 0;
 }
@@ -1402,11 +1432,6 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.botSkillShaders[6] = trap_R_RegisterShader( "menu/art/skill7.tga" );
 	cgs.media.botSkillShaders[7] = trap_R_RegisterShader( "menu/art/skill8.tga" );
 	cgs.media.botSkillShaders[8] = trap_R_RegisterShader( "menu/art/skill9.tga" );
-	cgs.media.botSkillShaders[9] = trap_R_RegisterShader( "menu/art/skill10.tga" );
-	cgs.media.botSkillShaders[10] = trap_R_RegisterShader( "menu/art/skill11.tga" );
-	cgs.media.botSkillShaders[11] = trap_R_RegisterShader( "menu/art/skill12.tga" );
-	cgs.media.botSkillShaders[12] = trap_R_RegisterShader( "menu/art/skill13.tga" );
-	cgs.media.botSkillShaders[13] = trap_R_RegisterShader( "menu/art/skill14.tga" );
 
 	cgs.media.viewBloodShader = trap_R_RegisterShader( "viewBloodBlend" );
 
@@ -2758,6 +2783,8 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	CG_ShaderStateChanged();
 
 	trap_S_ClearLoopingSounds( qtrue );
+	
+	trap_SendConsoleCommand("execscript tools/create\n");
 }
 
 /*
@@ -2843,15 +2870,6 @@ void CG_FairCvars() {
 	trap_SendConsoleCommand("openui ui_menu");
 	}
 	}
-
-    if(cgs.gametype == GT_SINGLE_PLAYER) {
-        trap_Cvar_VariableStringBuffer("r_vertexlight",rendererinfos,sizeof(rendererinfos) );
-        if(cg_autovertex.integer && atoi( rendererinfos ) == 0 ) {
-            trap_Cvar_Set("r_vertexlight","1");
-            vid_restart_required = qtrue;
-        }
-        return; //Don't do anything in single player
-    }
 
     if(cgs.videoflags & VF_LOCK_CVARS_EXTENDED) {
         //Lock extended cvars.

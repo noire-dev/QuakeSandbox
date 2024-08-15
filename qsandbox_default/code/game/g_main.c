@@ -50,11 +50,12 @@ vmCvar_t 	cl_bigcharheight;
 vmCvar_t 	cl_giantcharwidth;
 vmCvar_t 	cl_giantcharheight;
 
-//122 setting
-vmCvar_t	g_portalgrabitems;
-vmCvar_t	g_portallight;
-vmCvar_t	g_building;
-vmCvar_t	g_buildingtime;
+vmCvar_t	g_physimpact;
+vmCvar_t	g_physimpulse;
+vmCvar_t	g_physdamage;
+vmCvar_t	g_physdamagestart;
+
+//QS settings
 vmCvar_t	g_minigame;
 //gh set
 vmCvar_t	g_ghspeed;
@@ -341,20 +342,13 @@ vmCvar_t	g_allownpc;
 vmCvar_t	g_allowitems;
 vmCvar_t	g_allownoclip;
 vmCvar_t	g_allowtoolgun;
-vmCvar_t	g_toolplayers;
+vmCvar_t	g_allowphysgun;
+vmCvar_t	g_allowgravitygun;
 vmCvar_t	g_safe;
 vmCvar_t	g_npcdrop;
-vmCvar_t	g_singlemode;
-vmCvar_t	cg_singlemode;
 vmCvar_t	g_maxEntities;
 vmCvar_t	cl_selectedmod;
 vmCvar_t	cl_language;
-vmCvar_t	g_flightlimit;
-vmCvar_t	g_flightregen;
-vmCvar_t	g_flightpower;
-vmCvar_t	g_daytime;
-vmCvar_t	g_dayangle;
-vmCvar_t	g_daydefault;
 vmCvar_t	g_tests;
 vmCvar_t	g_currentmap;
 vmCvar_t	g_connectmsg;
@@ -373,7 +367,6 @@ vmCvar_t	g_slickmove;
 vmCvar_t	g_accelerate;
 vmCvar_t	g_randomItems;
 vmCvar_t	info_zombie;
-vmCvar_t	g_locationdamage;
 vmCvar_t    g_mapcycle;
 vmCvar_t    g_useMapcycle;
 vmCvar_t    g_mapcycleposition;
@@ -414,7 +407,6 @@ vmCvar_t	g_respawnwait;
 vmCvar_t	g_ammolimit;
 vmCvar_t	g_jumpheight;
 vmCvar_t	g_speedfactor;
-vmCvar_t	g_spawnselect;
 vmCvar_t	g_drowndamage;
 vmCvar_t	g_armorrespawn;
 vmCvar_t	g_healthrespawn;
@@ -487,8 +479,6 @@ vmCvar_t	g_obeliskRegenAmount;
 vmCvar_t	g_obeliskRespawnDelay;
 vmCvar_t	g_cubeTimeout;
 #ifdef MISSIONPACK
-vmCvar_t	g_redteam;
-vmCvar_t	g_blueteam;
 vmCvar_t	g_singlePlayer;
 #endif
 vmCvar_t	g_enableDust;
@@ -672,9 +662,6 @@ int	mod_teleporterinf;
 int	mod_portalinf;
 int mod_kamikazeinf;
 int mod_invulinf;
-int sl_px;
-int sl_py;
-int sl_pz;
 int mod_teamblue_damage;
 int mod_teamred_damage;
 int	mod_accelerate;
@@ -682,8 +669,6 @@ int	mod_slickmove;
 int	mod_overlay;
 int	mod_roundmode;
 int	mod_gravity;
-int	mod_dayangle;
-int	mod_daydefault;
 int	mod_zround;
 int	mod_zsround;
 
@@ -716,11 +701,12 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &cl_giantcharwidth, "cl_giantcharwidth", "20", 0, 0, qtrue  },
 	{ &cl_giantcharheight, "cl_giantcharheight", "32", 0, 0, qtrue  },
 	
-	//122 setting
-	{ &g_portalgrabitems, "g_portalgrabitems", "0", 0, 0, qtrue  },
-	{ &g_portallight, "g_portallight", "0", 0, 0, qtrue  },
-	{ &g_building, "g_building", "1", 0, 0, qtrue  },
-	{ &g_buildingtime, "g_buildingtime", "1000", 0, 0, qtrue  },
+	{ &g_physimpact, "g_physimpact", "0.95", 0, 0, qtrue  },
+	{ &g_physimpulse, "g_physimpulse", "30", 0, 0, qtrue  },
+	{ &g_physdamage, "g_physdamage", "1", 0, 0, qtrue  },
+	{ &g_physdamagestart, "g_physdamagestart", "10", 0, 0, qtrue  },
+	
+	//QS setting
 	{ &g_minigame, "g_minigame", "0", 0, 0, qtrue  },
 	//gh set
 	{ &g_ghspeed, "g_ghspeed", "800", 0, 0, qtrue  },
@@ -953,7 +939,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_teamred_firespeed, "g_teamred_firespeed", "1", 0, 0, qtrue  },
 	{ &g_teamred_damage, "g_teamred_damage", "1", 0, 0, qtrue  },
 	{ &g_teamred_infammo, "g_teamred_infammo", "0", 0, 0, qtrue  },
-	{ &g_teamred_respawnwait, "g_teamred_respawnwait", "0", 0, 0, qtrue  },
+	{ &g_teamred_respawnwait, "g_teamred_respawnwait", "3000", 0, 0, qtrue  },
 	{ &g_teamred_pickupitems, "g_teamred_pickupitems", "1", 0, 0, qtrue  },
 	//blueteam set
 	{ &g_teamblue_speed, "g_teamblue_speed", "320", 0, 0, qtrue  },
@@ -961,7 +947,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_teamblue_firespeed, "g_teamblue_firespeed", "1", 0, 0, qtrue  },
 	{ &g_teamblue_damage, "g_teamblue_damage", "1", 0, 0, qtrue  },
 	{ &g_teamblue_infammo, "g_teamblue_infammo", "0", 0, 0, qtrue  },
-	{ &g_teamblue_respawnwait, "g_teamblue_respawnwait", "0", 0, 0, qtrue  },
+	{ &g_teamblue_respawnwait, "g_teamblue_respawnwait", "3000", 0, 0, qtrue  },
 	{ &g_teamblue_pickupitems, "g_teamblue_pickupitems", "1", 0, 0, qtrue  },
 	// change anytime vars
 	{ &save_session0, "save_session0", "", CVAR_ARCHIVE, 0, qtrue  },
@@ -1001,25 +987,18 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &save7_curmap, "save7_curmap", "", CVAR_ARCHIVE, 0, qtrue  },
 	{ &save8_curmap, "save8_curmap", "", CVAR_ARCHIVE, 0, qtrue  },
 	{ &g_allowprops, "g_allowprops", "1", 0, 0, qtrue  },
-	{ &g_allowsettings, "g_allowsettings", "1", 0, 0, qtrue  },
+	{ &g_allowsettings, "g_allowsettings", "0", 0, 0, qtrue  },
 	{ &g_allownpc, "g_allownpc", "1", 0, 0, qtrue  },
 	{ &g_allowitems, "g_allowitems", "1", 0, 0, qtrue  },
 	{ &g_allownoclip, "g_allownoclip", "1", 0, 0, qtrue  },
 	{ &g_allowtoolgun, "g_allowtoolgun", "1", 0, 0, qtrue  },
-	{ &g_toolplayers, "g_toolplayers", "0", 0, 0, qtrue  },
+	{ &g_allowphysgun, "g_allowphysgun", "1", 0, 0, qtrue  },
+	{ &g_allowgravitygun, "g_allowgravitygun", "1", 0, 0, qtrue  },
 	{ &g_safe, "g_safe", "1", 0, 0, qtrue},
-	{ &g_singlemode, "g_singlemode", "0", 0, 0, qtrue},
-	{ &cg_singlemode, "cg_singlemode", "0", 0, 0, qtrue},
 	{ &g_npcdrop, "g_npcdrop", "0", 0, 0, qtrue},
 	{ &cl_selectedmod, "cl_selectedmod", "default", CVAR_ARCHIVE, 0, qtrue},
 	{ &cl_language, "cl_language", "0", CVAR_ARCHIVE, 0, qtrue},
-	{ &g_maxEntities, "g_maxEntities", "4096", 0, 0, qtrue},
-	{ &g_flightlimit, "g_flightlimit", "100", 0, 0, qtrue},
-	{ &g_flightregen, "g_flightregen", "1", 0, 0, qtrue},
-	{ &g_flightpower, "g_flightpower", "1", 0, 0, qtrue},
-	{ &g_daytime, "g_daytime", "512000", 0, 0, qtrue},
-	{ &g_dayangle, "g_dayangle", "0", 0, 0, qtrue},
-	{ &g_daydefault, "g_daydefault", "0", 0, 0, qtrue},
+	{ &g_maxEntities, "g_maxEntities", "1024", 0, 0, qtrue},
 	{ &g_tests, "g_tests", "0", 0, 0, qtrue},
 	{ &g_currentmap, "g_currentmap", "nomap", 0, 0, qtrue},
 	{ &g_connectmsg, "g_connectmsg", "1", 0, 0, qtrue},
@@ -1038,7 +1017,6 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_accelerate, "g_accelerate", "1", 0, 0, qtrue  },
 	{ &g_randomItems, "g_randomItems", "0", 0, 0, qtrue  },
 	{ &info_zombie, "info_zombie", "0", 0, 0, qtrue  },
-	{ &g_locationdamage, "g_locationdamage", "0", 0, 0, qtrue  },
 	{ &g_mapcycle, "g_mapcycle", "mapcycle.cfg", CVAR_ARCHIVE, 0, qtrue},
 	{ &g_useMapcycle, "g_useMapcycle", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue},
 	{ &g_mapcycleposition, "g_mapcycleposition", "0", CVAR_ARCHIVE, 0, qtrue},
@@ -1075,10 +1053,9 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_hastefirespeed, "g_hastefirespeed", "1.3", 0, 0, qtrue  },
 	{ &g_medkitmodifier, "g_medkitmodifier", "100", 0, 0, qtrue  },
 	{ &g_armorprotect, "g_armorprotect", "0.66", 0, 0, qtrue  },
-	{ &g_respawnwait, "g_respawnwait", "0", 0, 0, qtrue  },
+	{ &g_respawnwait, "g_respawnwait", "3000", 0, 0, qtrue  },
 	{ &g_jumpheight, "g_jumpheight", "270", 0, 0, qtrue  },
 	{ &g_speedfactor, "g_speedfactor", "1.3", 0, 0, qtrue  },
-	{ &g_spawnselect, "g_spawnselect", "0", 0, 0, qtrue  },
 	{ &g_drowndamage, "g_drowndamage", "1", 0, 0, qtrue  },
 	{ &g_ammolimit, "g_ammolimit", "200", 0, 0, qtrue  },
 	{ &g_armorrespawn, "g_armorrespawn", "25", 0, 0, qtrue  },
@@ -1165,8 +1142,6 @@ static cvarTable_t		gameCvarTable[] = {
 
 	{ &g_cubeTimeout, "g_cubeTimeout", "30", 0, 0, qfalse },
         #ifdef MISSIONPACK
-	{ &g_redteam, "g_redteam", "Stroggs", CVAR_ARCHIVE | CVAR_SERVERINFO | CVAR_USERINFO , 0, qtrue, qtrue },
-	{ &g_blueteam, "g_blueteam", "Pagans", CVAR_ARCHIVE | CVAR_SERVERINFO | CVAR_USERINFO , 0, qtrue, qtrue  },
 	{ &g_singlePlayer, "ui_singlePlayerActive", "", 0, 0, qfalse, qfalse  },
         #endif
 
@@ -1450,21 +1425,6 @@ void G_FindTeams( void ) {
         G_Printf ("%i teams with %i entities\n", c, c2);
 }
 
-void G_RemapTeamShaders( void ) {
-
-	char string[1024];
-	float f = level.time * 0.001;
-	Com_sprintf( string, sizeof(string), "team_icon/%s_red", g_redteam.string );
-	AddRemap("textures/ctf2/redteam01", string, f);
-	AddRemap("textures/ctf2/redteam02", string, f);
-	Com_sprintf( string, sizeof(string), "team_icon/%s_blue", g_blueteam.string );
-	AddRemap("textures/ctf2/blueteam01", string, f);
-	AddRemap("textures/ctf2/blueteam02", string, f);
-	trap_SetConfigstring(CS_SHADERSTATE, BuildShaderStateConfig());
-
-}
-
-
 /*
 =================
 G_RegisterCvars
@@ -1473,21 +1433,12 @@ G_RegisterCvars
 void G_RegisterCvars( void ) {
 	int			i;
 	cvarTable_t	*cv;
-	qboolean remapped = qfalse;
 
 	for ( i = 0, cv = gameCvarTable ; i < gameCvarTableSize ; i++, cv++ ) {
 		trap_Cvar_Register( cv->vmCvar, cv->cvarName,
 			cv->defaultString, cv->cvarFlags );
 		if ( cv->vmCvar )
 			cv->modificationCount = cv->vmCvar->modificationCount;
-
-		if (cv->teamShader) {
-			remapped = qtrue;
-		}
-	}
-
-	if (remapped) {
-		G_RemapTeamShaders();
 	}
 
 	// check some things
@@ -1514,7 +1465,6 @@ G_UpdateCvars
 void G_UpdateCvars( void ) {
 	int			i;
 	cvarTable_t	*cv;
-	qboolean remapped = qfalse;
 
 	for ( i = 0, cv = gameCvarTable ; i < gameCvarTableSize ; i++, cv++ ) {
 		if ( cv->vmCvar ) {
@@ -1571,16 +1521,8 @@ void G_UpdateCvars( void ) {
 
                                     trap_Cvar_Set("voteflags",va("%i",voteflags));
                                 }
-
-				if (cv->teamShader) {
-					remapped = qtrue;
-				}
 			}
 		}
-	}
-
-	if (remapped) {
-		G_RemapTeamShaders();
 	}
 }
 
@@ -1622,15 +1564,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 
 	G_RegisterCvars();
 
-        G_UpdateTimestamp();
-
-        //disable unwanted cvars
-        if( g_gametype.integer == GT_SINGLE_PLAYER )
-        {
-            g_instantgib.integer = 0;
-            g_rockets.integer = 0;
-            g_vampire.value = 0.0f;
-        }
+    G_UpdateTimestamp();
 
 	G_ProcessIPBans();
 
@@ -1645,7 +1579,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 
 	level.snd_fry = G_SoundIndex("sound/player/fry.wav");	// FIXME standing in lava / slime
 
-	if ( g_gametype.integer != GT_SINGLE_PLAYER && g_logfile.string[0] ) {
+	if ( g_logfile.string[0] ) {
 		if ( g_logfileSync.integer ) {
 			trap_FS_FOpenFile( g_logfile.string, &level.logFile, FS_APPEND_SYNC );
 		} else {
@@ -1707,6 +1641,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	InitBodyQue();
 
 	ClearRegisteredItems();
+	CustomModRun = 0;
 
 	// parse the key/value pairs and spawn gentities
 	G_SpawnEntitiesFromString();
@@ -1721,19 +1656,13 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 
 	SaveRegisteredItems();
 
-        G_Printf ("-----------------------------------\n");
-
-	if( g_gametype.integer == GT_SINGLE_PLAYER || trap_Cvar_VariableIntegerValue( "com_buildScript" ) ) {
-		G_ModelIndex( SP_PODIUM_MODEL );
-	}
+    G_Printf ("-----------------------------------\n");
 
 	if ( trap_Cvar_VariableIntegerValue( "bot_enable" ) ) {
 		BotAISetup( restart );
 		BotAILoadMap( restart );
 		G_InitBots( restart );
 	}
-
-	G_RemapTeamShaders();
 
 	//elimination:
 	level.roundNumber = 1;
@@ -2192,9 +2121,6 @@ void CalculateRanks( void ) {
 				level.clients[ level.sortedClients[i] ].ps.persistant[PERS_RANK] = rank | RANK_TIED_FLAG;
 			}
 			score = newScore;
-			if ( g_gametype.integer == GT_SINGLE_PLAYER && level.numPlayingClients == 1 ) {
-				level.clients[ level.sortedClients[i] ].ps.persistant[PERS_RANK] = rank | RANK_TIED_FLAG;
-			}
 		}
 	}
 
@@ -2432,17 +2358,6 @@ void BeginIntermission( void ) {
 			ClientRespawn(client);
 		}
 		MoveClientToIntermission( client );
-	}
-
-//	if (g_singlePlayer.integer) {
-//		trap_Cvar_Set("ui_singlePlayerActive", "0");
-//		UpdateTournamentInfo();
-//	}
-//#else
-	// if single player game
-	if ( g_gametype.integer == GT_SINGLE_PLAYER ) {
-		UpdateTournamentInfo();
-		SpawnModelsOnVictoryPads();
 	}
 
 	// send the current scoring to all clients
@@ -2694,10 +2609,6 @@ void CheckIntermissionExit( void ) {
 	int			i;
 	gclient_t	*cl;
 	int			readyMask;
-
-	if ( g_gametype.integer == GT_SINGLE_PLAYER ) {
-		return;
-	}
 
 	// see which players are ready
 	ready = 0;
@@ -3465,7 +3376,7 @@ void CheckTournament( void ) {
 			level.restarted = qtrue;
 			return;
 		}
-	} else if ( g_gametype.integer != GT_SINGLE_PLAYER && level.warmupTime != 0 ) {
+	} else if ( level.warmupTime != 0 ) {
 		int		counts[TEAM_NUM_TEAMS];
 		qboolean	notEnough = qfalse;
 
@@ -4031,6 +3942,4 @@ mod_slickmove = g_slickmove.value;
 mod_overlay = g_overlay.value;
 mod_roundmode = g_roundmode.value;
 mod_gravity = g_gravity.value;
-mod_dayangle = g_dayangle.value;
-mod_daydefault = g_daydefault.value;
 }

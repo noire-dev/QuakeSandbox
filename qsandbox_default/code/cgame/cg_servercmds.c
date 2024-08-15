@@ -364,8 +364,20 @@ static void CG_ParseWeaponProperties(void) {
 	mod_roundmode     = atoi(CG_Argv(40));
 	mod_zround     = atoi(CG_Argv(41));
 	mod_gravity     = atoi(CG_Argv(42));
-	mod_dayangle     = atoi(CG_Argv(43));
-	mod_daydefault     = atoi(CG_Argv(44));
+}
+
+static void CG_ParseSweps(void) {
+    int i;
+    int weaponIndex;
+    int numArgs = trap_Argc();
+
+    for (i = 1; i < numArgs; i++) {
+        weaponIndex = atoi(CG_Argv(i));
+
+        if (weaponIndex >= 0 && weaponIndex < WEAPONS_NUM) {
+            cg.swep_listcl[weaponIndex] = 1;
+        }
+    }
 }
 
 
@@ -403,10 +415,6 @@ void CG_ParseServerinfo( void ) {
 	cgs.altExcellent = atoi( Info_ValueForKey( info, "g_altExcellent" ) );
 	mapname = Info_ValueForKey( info, "mapname" );
 	Com_sprintf( cgs.mapname, sizeof( cgs.mapname ), "maps/%s.bsp", mapname );
-	Q_strncpyz( cgs.redTeam, Info_ValueForKey( info, "g_redTeam" ), sizeof(cgs.redTeam) );
-	trap_Cvar_Set("g_redTeam", cgs.redTeam);
-	Q_strncpyz( cgs.blueTeam, Info_ValueForKey( info, "g_blueTeam" ), sizeof(cgs.blueTeam) );
-	trap_Cvar_Set("g_blueTeam", cgs.blueTeam);
 
 //unlagged - server options
 	// we'll need this for deciding whether or not to predict weapon effects
@@ -1245,6 +1253,7 @@ static void CG_ServerCommand( void ) {
 	const char	*cmd;
 	char		text[MAX_SAY_TEXT];
 	int			offset;
+	const char  *arg;
 	int			i;
 
 	cmd = CG_Argv(0);
@@ -1347,14 +1356,14 @@ static void CG_ServerCommand( void ) {
 	}
 	
 	if ( !strcmp( cmd, "allswep_0" ) ) {
-		for(i = 1 ; i <= (WEAPONS_NUM-1)-15 ; i++){
+		for(i = 1 ; i < WEAPONS_NUM-15 ; i++){
 		cg.swep_listcl[i+15] = 0; 
 		}
 		return;
 	}
 	
 	if ( !strcmp( cmd, "allswep_1" ) ) {
-		for(i = 1 ; i <= (WEAPONS_NUM-1)-15 ; i++){
+		for(i = 1 ; i < WEAPONS_NUM-15 ; i++){
 		cg.swep_listcl[i+15] = 1; 
 		}
 		return;
@@ -1390,6 +1399,12 @@ static void CG_ServerCommand( void ) {
 	}
 
 	if ( !strcmp( cmd, "print" ) ) {
+		//if the message to print is about a client being dropped after a silent drop, suppress the drop message
+		arg = CG_Argv(1);
+		offset = strlen(arg) - strlen("DR_SILENT_DROP") - 1 ;
+		if ( !strcmp(&arg[offset], "DR_SILENT_DROP\n") )
+			return;
+		
 		CG_Printf( "%s", CG_Argv(1) );
 #ifdef MISSIONPACK
 		cmd = CG_Argv(1);			// yes, this is obviously a hack, but so is the way we hear about
@@ -1544,6 +1559,11 @@ static void CG_ServerCommand( void ) {
 
 	if ( !strcmp( cmd, "weaponProperties" ) ) {
         CG_ParseWeaponProperties();
+        return;
+    }
+	
+	if ( !strcmp( cmd, "sweps" ) ) {
+        CG_ParseSweps();
         return;
     }
 

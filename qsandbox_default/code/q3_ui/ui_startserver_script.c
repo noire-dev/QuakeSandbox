@@ -29,23 +29,18 @@ START SERVER SCRIPT ENGINE *****
 
 // uie_punkbuster is handled as a special case in the save code
 static const char* saveparam_list[] = {
-	"uie_gametype", "uie_pure", "uie_inactivity", "uie_allowmaxrate",
-	"uie_maxrate", "uie_allowpass","uie_password", "uie_allowvote",
-	"uie_allowdownload", "uie_smoothclients", "uie_pmove_fixed",
-	"uie_pmove_msec", "uie_syncclients", "uie_minPing", "uie_maxPing",
-	"uie_allowMinPing", "uie_allowMaxPing", "uie_gravity", "uie_jumpheight", "uie_knockback",
-	"uie_quadfactor", "uie_netport", "uie_svfps", "uie_allowprivateclients",
-	"uie_privateclients", "uie_privatepassword", "uie_strictAuth",
-   "uie_lanForceRate", 
+"uie_gametype", "uie_pure", "uie_inactivity", "uie_allowmaxrate",
+"uie_maxrate", "uie_allowpass","uie_password", "uie_allowvote",
+"uie_allowdownload", "uie_smoothclients", "uie_pmove_fixed",
+"uie_pmove_msec", "uie_syncclients", "uie_minPing", "uie_maxPing",
+"uie_allowMinPing", "uie_allowMaxPing", "uie_gravity", "uie_jumpheight", "uie_knockback",
+"uie_quadfactor", "uie_netport", "uie_svfps", "uie_allowprivateclients",
+"uie_privateclients", "uie_privatepassword", "uie_strictAuth",
+"uie_lanForceRate", 
 "uie_maxEntities",
 "uie_singleskill",
 "uie_kill",
 "uie_damageModifier",
-"uie_flightlimit",
-"uie_flightregen",
-"uie_flightpower",
-"uie_building",
-"uie_spawnselect",
 "uie_roundmode",
 "uie_elimination",
 "uie_obeliskHealth",
@@ -78,7 +73,6 @@ static const char* saveparam_list[] = {
 "uie_vampire",
 "uie_vampire_max_health",
 "uie_regen",
-"uie_locationdamage",
 "uie_maxweaponpickup",
 "uie_droppeditemtime",
 "uie_autoflagreturn",
@@ -174,13 +168,10 @@ static const char* saveparam_list[] = {
 "uie_elimination_flight",
 "uie_elimination_items",
 "uie_elimination_holdable",
-"uie_portalgrabitems",
-"uie_portallight",
 "uie_minigame",
 "uie_overlay",
 "uie_randomItems",
 "uie_slickmove",
-//"uie_music",
 "uie_spawnprotect",
 "uie_elimination_lockspectator",
 "uie_awardpushing",
@@ -434,36 +425,6 @@ static const char* saveparam_list[] = {
 	0
 };
 
-/*
-typedef struct customsaveparam_s {
-	int type;
-	char* param;
-} customsaveparam_t;
-
-
-// custom game parameters, those available on a subset of gametypes
-// Note: many of these are existing Cvars, not those added by UIE
-// It wouldn't make sense to store ui_ffa_* values in a tourney
-// script, but they're always valid Cvars, so we can't eliminate them
-// by checking for their existence from saveparam_list[]
-
-// these cvars are now obsolete
-static const customsaveparam_t customsaveparam_list[] = {
-	{ GT_FFA, "ui_ffa_fraglimit" },
-	{ GT_FFA, "ui_ffa_timelimit" },
-	{ GT_TOURNAMENT, "ui_tourney_fraglimit" },
-	{ GT_TOURNAMENT, "ui_tourney_timelimit" },
-	{ GT_TEAM, "ui_team_fraglimit" },
-	{ GT_TEAM, "ui_team_timelimit" },
-	{ GT_TEAM, "ui_team_friendly" },
-	{ GT_CTF, "ui_ctf_capturelimit" },
-	{ GT_CTF, "ui_ctf_timelimit" },
-	{ GT_CTF, "ui_ctf_friendly" }
-};
-*/
-
-
-
 static const int botChange_frequency[BOTCHANGE_COUNT + 1] = {
 	0,	// BOTCHANGE_NEVER
 	1,
@@ -472,9 +433,6 @@ static const int botChange_frequency[BOTCHANGE_COUNT + 1] = {
 	4,	// BOTCHANGE_MAP4
 	0	// size matches botChange_list[]
 };
-
-
-
 
 // internal Q3 exe script buffer is limited to 16K in size
 // so there's no benefit in increasing our script buffer
@@ -735,11 +693,6 @@ AddScript(va("set g_spSkill %i\n", s_scriptdata.server.singleskill));
 AddScript(va("set g_kill %i\n", s_scriptdata.server.kill));
 AddScript(va("set g_damageModifier  \"%s\"\n", s_scriptdata.server.damageModifier));
 AddScript(va("set cl_selectedmod  \"%s\"\n", s_scriptdata.server.selectedmod));
-AddScript(va("set g_flightlimit %i\n", s_scriptdata.server.flightlimit));
-AddScript(va("set g_flightregen %i\n", s_scriptdata.server.flightregen));
-AddScript(va("set g_flightpower %i\n", s_scriptdata.server.flightpower));
-AddScript(va("set g_building %i\n", s_scriptdata.server.building));
-AddScript(va("set g_spawnselect %i\n", s_scriptdata.server.spawnselect));
 AddScript(va("set g_roundmode %i\n", s_scriptdata.server.roundmode));
 AddScript(va("set g_elimination %i\n", s_scriptdata.server.elimination));
 AddScript(va("set g_obeliskHealth %i\n", s_scriptdata.server.obeliskHealth));
@@ -772,7 +725,6 @@ AddScript(va("set g_forcerespawn %i\n", s_scriptdata.server.forcerespawn));
 AddScript(va("set g_vampire  \"%s\"\n", s_scriptdata.server.vampire));
 AddScript(va("set g_vampire_max_health %i\n", s_scriptdata.server.vampire_max_health));
 AddScript(va("set g_regen %i\n", s_scriptdata.server.regen));
-AddScript(va("set g_locationdamage %i\n", s_scriptdata.server.locationdamage));
 AddScript(va("set g_maxweaponpickup %i\n", s_scriptdata.server.maxweaponpickup));
 AddScript(va("set g_droppeditemtime %i\n", s_scriptdata.server.droppeditemtime));
 AddScript(va("set g_autoflagreturn %i\n", s_scriptdata.server.autoflagreturn));
@@ -861,13 +813,10 @@ AddScript(va("set elimination_regen %i\n", s_scriptdata.server.elimination_regen
 AddScript(va("set elimination_flight %i\n", s_scriptdata.server.elimination_flight));
 AddScript(va("set elimination_items %i\n", s_scriptdata.server.elimination_items));
 AddScript(va("set elimination_holdable %i\n", s_scriptdata.server.elimination_holdable));
-AddScript(va("set g_portalgrabitems %i\n", s_scriptdata.server.portalgrabitems));
-AddScript(va("set g_portallight %i\n", s_scriptdata.server.portallight));
 AddScript(va("set g_minigame %i\n", s_scriptdata.server.minigame));
 AddScript(va("set g_overlay %i\n", s_scriptdata.server.overlay));
 AddScript(va("set g_randomItems %i\n", s_scriptdata.server.randomItems));
 AddScript(va("set g_slickmove %i\n", s_scriptdata.server.slickmove));
-//AddScript(va("set g_music %i\n", s_scriptdata.server.music));
 AddScript(va("set g_spawnprotect %i\n", s_scriptdata.server.spawnprotect));
 AddScript(va("set elimination_lockspectator %i\n", s_scriptdata.server.elimination_lockspectator));
 AddScript(va("set g_awardpushing %i\n", s_scriptdata.server.awardpushing));
@@ -2308,7 +2257,12 @@ static qboolean StartServer_WriteMapParams( void )
 		else {
 			mapname = s_scriptdata.map.data[index].shortName;
 		}
+		
+		if (s_scriptdata.gametype != GT_SINGLE){
 		AddScript(va("map %s; ", mapname));
+		} else {
+		AddScript(va("spmap %s; ", mapname));
+		}
 
 		// sort the bots out
 		AddScript("vstr "SERVER_KICKBOT"; vstr "SERVER_ADDBOT"; ");
@@ -2409,7 +2363,12 @@ static qboolean LoadServer_WriteMapParams( void )
 		else {
 			mapname = s_scriptdata.map.data[index].shortName;
 		}
+		
+		if (s_scriptdata.gametype != GT_SINGLE){
 		AddScript(va("map %s; ", UI_ArenaScriptAutoChar( "save_curmap" )));
+		} else {
+		AddScript(va("spmap %s; ", UI_ArenaScriptAutoChar( "save_curmap" )));
+		}
 
 		// sort the bots out
 		AddScript("vstr "SERVER_KICKBOT"; vstr "SERVER_ADDBOT"; ");
@@ -2685,7 +2644,7 @@ qboolean StartServer_LoadFromConfig( const char* filename)
 				UIE_StartServer_LoadSkirmishCvars();
 				return qfalse;	// don't update
 			}
-			Q_strncpyz(cvar, va(gametype_cvar_base[gametype_remap2[gametype]], token + 1), CVAR_BUFFER);
+			Q_strncpyz(cvar, va(gametype_cvar_base[gametype], token + 1), CVAR_BUFFER);
 		}
 		else
 			Q_strncpyz(cvar, token, CVAR_BUFFER);
@@ -2731,7 +2690,7 @@ static void StartServer_WriteScriptCvar( const char* cvarTemplate )
 
 	if (*cvarTemplate == '*') {
 		cvar = cvarTemplate + 1;
-		s = gametype_cvar_base[gametype_remap2[s_scriptdata.gametype]];
+		s = gametype_cvar_base[s_scriptdata.gametype];
 	}
 	else {
 		cvar = cvarTemplate;

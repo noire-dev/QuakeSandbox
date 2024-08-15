@@ -271,11 +271,6 @@ copy qsandbox_default\windows\baseoa\vm\qagame.qvm milab\x.default\vm\qagame.qvm
 copy qsandbox_default\windows\baseoa\vm\cgame.qvm milab\x.default\vm\cgame.qvm
 copy qsandbox_default\windows\baseoa\vm\ui.qvm milab\x.default\vm\ui.qvm
 
-:: Replace "default" here with the name of your mod SINGLE
-copy qsandbox_default\windows\baseoa\vm\qagame.qvm milab\x.single\vm\qagame.qvm
-copy qsandbox_default\windows\baseoa\vm\cgame.qvm milab\x.single\vm\cgame.qvm
-copy qsandbox_default\windows\baseoa\vm\ui.qvm milab\x.single\vm\ui.qvm
-
 color 0A
 pause
 

@@ -129,7 +129,7 @@ if(cl_language.integer == 0){
         else
             switch( mod ) {
             case MOD_SUICIDE:
-                    message = "suicides";
+                    return;
                     break;
             case MOD_FALLING:
                     message = "cratered";
@@ -163,10 +163,7 @@ if(cl_language.integer == 1){
         else
             switch( mod ) {
             case MOD_SUICIDE:
-				if ( gender == GENDER_FEMALE )
-				message = "суициднулась";
-				else
-                message = "суициднулся";
+				return;
                     break;
             case MOD_FALLING:
 					if ( gender == GENDER_FEMALE )
@@ -370,8 +367,11 @@ if(cl_language.integer == 1){
 	}
 }
 
-        //If a suicide happens while disconnecting then we might not have a targetName
-	if (message && strlen(targetName)) {
+    //If a suicide happens while disconnecting then we might not have a targetName
+	if(mod == MOD_SUICIDE){
+		return;
+	}
+	if (message) {
 		CG_Printf( "%s> %s%s%s %s.%s\n", 
 				S_COLOR_YELLOW,
 				S_COLOR_WHITE,
@@ -413,18 +413,18 @@ if(cl_language.integer == 1){
 		}
 }
 #ifndef MISSIONPACK
-	if(!cg_singlemode.integer){
+	if(cgs.gametype != GT_SINGLE && cgs.gametype != GT_SANDBOX){
 		if (!(cg_singlePlayerActive.integer && cg_cameraOrbit.integer)) {
-			//CG_CenterPrint( s, SCREEN_HEIGHT * 0.30, (int)(BIGCHAR_WIDTH * 0.6) );
+			CG_CenterPrint( s, SCREEN_HEIGHT * 0.30, (int)(BIGCHAR_WIDTH * 0.6) );
 		} 
 	}
 #else
-	if(!cg_singlemode.integer){
-		//CG_CenterPrint( s, SCREEN_HEIGHT * 0.30, (int)(BIGCHAR_WIDTH * 0.6) );
+	if(cgs.gametype != GT_SINGLE && cgs.gametype != GT_SANDBOX){
+		CG_CenterPrint( s, SCREEN_HEIGHT * 0.30, (int)(BIGCHAR_WIDTH * 0.6) );
 	}
 #endif
 
-		// print the text message as well
+	// print the text message as well
 	}
 
 	// check for double client messages
@@ -1030,6 +1030,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	clientInfo_t	*ci;
 	byte			r, g, b;
 	int				weaphack;
+	int 			random_number;
 
 	es = &cent->currentState;
 	event = es->event & ~EV_EVENT_BITS;
@@ -1233,7 +1234,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound( es->number, "*jump1.wav" ) );
 		break;
 	case EV_TAUNT:
-		if(cg_singlemode.integer){ break; }
+		if(cgs.gametype == GT_SINGLE){ break; }
 		DEBUGNAME("EV_TAUNT");
 		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound( es->number, "*taunt.wav" ) );
 		break;
@@ -1245,9 +1246,19 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		DEBUGNAME("EV_CRASH25");
 		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, "sound/vehicle/damage25.ogg") );
 		break;
-	case EV_CRASH50:
-		DEBUGNAME("EV_CRASH50");
-		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, "sound/vehicle/damage50.ogg") );
+	case EV_OT1_IMPACT:
+		DEBUGNAME("EV_OT1_IMPACT");
+		random_number = rand() % 3 + 1;
+		if(random_number == 1){
+		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, "sound/objects/basic/impact1") );}
+		if(random_number == 2){
+		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, "sound/objects/basic/impact2") );}
+		if(random_number == 3){
+		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, "sound/objects/basic/impact3") );}
+		break;
+	case EV_GRAVITYSOUND:
+		DEBUGNAME("EV_GRAVITYSOUND");
+		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, "sound/gravitygun") );
 		break;
 #ifdef MISSIONPACK
 	case EV_TAUNT_YES:
@@ -1454,14 +1465,14 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	// other events
 	//
 	case EV_PLAYER_TELEPORT_IN:
-		if(cg_singlemode.integer){ break; }
+		if(cgs.gametype == GT_SINGLE){ break; }
 		DEBUGNAME("EV_PLAYER_TELEPORT_IN");
 		trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.teleInSound );
 		CG_SpawnEffect( position);
 		break;
 
 	case EV_PLAYER_TELEPORT_OUT:
-		if(cg_singlemode.integer){ break; }
+		if(cgs.gametype == GT_SINGLE){ break; }
 		DEBUGNAME("EV_PLAYER_TELEPORT_OUT");
 		trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.teleOutSound );
 		CG_SpawnEffect(  position);
@@ -1527,7 +1538,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		CG_LightningBoltBeam(es->origin2, es->pos.trBase);
 		break;
 	case EV_SCOREPLUM:
-		if(cg_singlemode.integer){ break; }
+		if(cgs.gametype == GT_SINGLE){ break; }
 		DEBUGNAME("EV_SCOREPLUM");
 		CG_ScorePlum( cent->currentState.otherEntityNum, cent->lerpOrigin, cent->currentState.time, cent->currentState.weapon );
 		break;

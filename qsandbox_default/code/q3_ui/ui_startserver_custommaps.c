@@ -78,7 +78,9 @@ static vec4_t shadow_color = {0.0, 0.0, 0.0, 1.0 };
 
 
 static const char* maptype_icon[NUM_GAMETYPES] = {
+	"menu/uie_art/gt_sandbox",		// GT_SANDBOX
 	"menu/uie_art/gt_ffa",		// GT_FFA
+	"menu/uie_art/gt_single",		// GT_SINGLE
 	"menu/uie_art/gt_tourney",		// GT_TOURNAMENT
 	"menu/uie_art/gt_team",	// GT_TEAM
 	"menu/uie_art/gt_ctf",		// GT_CTF
@@ -113,32 +115,46 @@ int GametypeBits( char *string ) {
 		if( token[0] == 0 ) {
 			break;
 		}
+		
+		if( Q_stricmp( token, "sandbox" ) == 0 ) {
+			bits |= 1 << GT_SANDBOX;
+			continue;
+		}
 
 		if( Q_stricmp( token, "ffa" ) == 0 ) {
+			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_FFA;
 			bits |= 1 << GT_LMS;
 			bits |= 1 << GT_ELIMINATION;
 			bits |= 1 << GT_DOMINATION;
 			continue;
 		}
+		
+		if( Q_stricmp( token, "entityplus" ) == 0 ) { //entityplus support
+			bits |= 1 << GT_SINGLE;
+			continue;
+		}
+		
+		if( Q_stricmp( token, "singleplayer" ) == 0 ) {	//Quake Sandbox single mode
+			bits |= 1 << GT_SINGLE;
+			continue;
+		}
 
 		if( Q_stricmp( token, "tourney" ) == 0 ) {
+			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_TOURNAMENT;
 			continue;
 		}
 
-		if( Q_stricmp( token, "single" ) == 0 ) {
-			bits |= 1 << GT_SINGLE_PLAYER;
-			continue;
-		}
-
 		if( Q_stricmp( token, "team" ) == 0 ) {
+			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_TEAM;
 			bits |= 1 << GT_ELIMINATION;
 			continue;
 		}
 
 		if( Q_stricmp( token, "ctf" ) == 0 ) {
+			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_CTF;
 			bits |= 1 << GT_DOUBLE_D;
 			bits |= 1 << GT_CTF_ELIMINATION;
@@ -147,40 +163,48 @@ int GametypeBits( char *string ) {
 		}
 		
 		if( Q_stricmp( token, "oneflag" ) == 0 ) {
+			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_1FCTF;
 			continue;
 		}
                 
 		if( Q_stricmp( token, "overload" ) == 0 ) {
+			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_OBELISK;
 			continue;
 		}
                 
 		if( Q_stricmp( token, "harvester" ) == 0 ) {
+			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_HARVESTER;
 			continue;
 		}
 
 		if( Q_stricmp( token, "elimination" ) == 0 ) {
+			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_ELIMINATION;
 			continue;
 		}
 
 		if( Q_stricmp( token, "ctfelimination" ) == 0 ) {
+			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_CTF_ELIMINATION;
 			continue;
 	}
 
 		if( Q_stricmp( token, "lms" ) == 0 ) {
+			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_LMS;
 			continue;
 		}
 		if( Q_stricmp( token, "dd" ) == 0 ) {
+			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_DOUBLE_D;
 			continue;
 		}
                 
 		if( Q_stricmp( token, "dom" ) == 0 ) {
+			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_DOMINATION;
 			continue;
 		}
@@ -220,8 +244,6 @@ int UI_BuildMapListByType(int* list, int listmax, int gametype,
 	}
 	else {
 		matchbits = 1 << gametype;
-		if (gametype == GT_FFA)
-			matchbits |= (1 << GT_SINGLE_PLAYER);
 	}
 
 	nummaps = UI_GetNumArenas();
@@ -267,7 +289,7 @@ const char* UIE_DefaultIconFromGameType(int gametype)
 		return NULL;
 	}
 
-	return maptype_icon[ gametype_remap2[gametype] ];
+	return maptype_icon[ gametype ];
 }
 
 
@@ -763,9 +785,7 @@ void StartServer_DrawMapPicture(int x, int y, int w, int h, mappic_t* mappic, ve
 	{
 		for (i = 0; i < NUM_GAMETYPES; i++)
 		{
-			mapbits = 1 << gametype_remap[i];
-			if (gametype_remap[i] == GT_FFA)
-				mapbits |= 1<< GT_SINGLE_PLAYER;
+			mapbits = 1 << i;
 
 			if (!(mapbits & mappic->gamebits))
 				continue;

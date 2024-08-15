@@ -845,7 +845,7 @@ static void PortalDie (gentity_t *self, gentity_t *inflictor, gentity_t *attacke
 }
 
 static void BlockDie (gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int mod) {
-	if(self->vehicle){ //VEHICLE-SYSTEM: vehicle's explode for all
+	if(self->vehicle || self->objectType == OT_TNT){ //VEHICLE-SYSTEM: vehicle's explode for all
 	G_StartCarExplode(self);
 	}
 	G_FreeEntity( self );
@@ -899,46 +899,6 @@ static void PortalTouch( gentity_t *self, gentity_t *other, trace_t *trace) {
 	if( !other->client ) {
 		return;
 	}
-//	if( other->client->ps.persistant[PERS_TEAM] != self->spawnflags ) {
-//		return;
-//	}
-if(g_portalgrabitems.integer == 1){
-		other->client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GAUNTLET );
-//		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_MACHINEGUN );
-		other->client->ps.ammo[WP_MACHINEGUN] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_SHOTGUN );
-		other->client->ps.ammo[WP_SHOTGUN] = 0;	
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_GRENADE_LAUNCHER );
-		other->client->ps.ammo[WP_GRENADE_LAUNCHER] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_ROCKET_LAUNCHER );
-		other->client->ps.ammo[WP_ROCKET_LAUNCHER] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_LIGHTNING );
-		other->client->ps.ammo[WP_LIGHTNING] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_RAILGUN );
-		other->client->ps.ammo[WP_RAILGUN] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_PLASMAGUN );
-		other->client->ps.ammo[WP_PLASMAGUN] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_BFG );
-		other->client->ps.ammo[WP_BFG] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_GRAPPLING_HOOK );
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_NAILGUN );
-		other->client->ps.ammo[WP_NAILGUN] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_PROX_LAUNCHER );
-		other->client->ps.ammo[WP_PROX_LAUNCHER] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_CHAINGUN );
-		other->client->ps.ammo[WP_CHAINGUN] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_FLAMETHROWER );
-		other->client->ps.ammo[WP_FLAMETHROWER] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_ANTIMATTER );
-		other->client->ps.ammo[WP_ANTIMATTER] = 0;
-       other->client->ps.powerups[PW_QUAD] =  level.time - ( level.time % 1000 );
-       other->client->ps.powerups[PW_REGEN] =  level.time - ( level.time % 1000 );
-       other->client->ps.powerups[PW_HASTE] =  level.time - ( level.time % 1000 );
-       other->client->ps.powerups[PW_BATTLESUIT] =  level.time - ( level.time % 1000 );
-       other->client->ps.powerups[PW_INVIS] =  level.time - ( level.time % 1000 );
-       other->client->ps.powerups[PW_FLIGHT] =  level.time - ( level.time % 1000 );
-	   other->client->ps.stats[STAT_HOLDABLE_ITEM] = 0;
-}
 	if ( other->client->ps.powerups[PW_NEUTRALFLAG] ) {		// only happens in One Flag CTF
 		Drop_Item( other, BG_FindItemForPowerup( PW_NEUTRALFLAG ), 0 );
 		other->client->ps.powerups[PW_NEUTRALFLAG] = 0;
@@ -972,89 +932,6 @@ if(g_portalgrabitems.integer == 1){
 	TeleportPlayer( other, destination->s.pos.trBase, destination->s.angles );
 }
 
-static void PortalTouches( gentity_t *other ) {
-	gentity_t	*destination;
-	vec3_t		dest;
-	vec3_t		o;
-	vec3_t		angles;
-	
-	angles[0] = 0;
-	angles[1] = 0;
-	angles[2] = 0;
-
-	o[0] = sl_px;
-	o[1] = sl_py;
-	o[2] = sl_pz;
-	VectorCopy (o, dest);
-
-	// see if we will even let other try to use it
-	if( other->health <= 0 ) {
-		return;
-	}
-	if( !other->client ) {
-		return;
-	}
-//	if( other->client->ps.persistant[PERS_TEAM] != self->spawnflags ) {
-//		return;
-//	}
-if(g_portalgrabitems.integer == 1){
-		other->client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GAUNTLET );
-//		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_MACHINEGUN );
-		other->client->ps.ammo[WP_MACHINEGUN] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_SHOTGUN );
-		other->client->ps.ammo[WP_SHOTGUN] = 0;	
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_GRENADE_LAUNCHER );
-		other->client->ps.ammo[WP_GRENADE_LAUNCHER] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_ROCKET_LAUNCHER );
-		other->client->ps.ammo[WP_ROCKET_LAUNCHER] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_LIGHTNING );
-		other->client->ps.ammo[WP_LIGHTNING] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_RAILGUN );
-		other->client->ps.ammo[WP_RAILGUN] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_PLASMAGUN );
-		other->client->ps.ammo[WP_PLASMAGUN] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_BFG );
-		other->client->ps.ammo[WP_BFG] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_GRAPPLING_HOOK );
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_NAILGUN );
-		other->client->ps.ammo[WP_NAILGUN] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_PROX_LAUNCHER );
-		other->client->ps.ammo[WP_PROX_LAUNCHER] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_CHAINGUN );
-		other->client->ps.ammo[WP_CHAINGUN] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_FLAMETHROWER );
-		other->client->ps.ammo[WP_FLAMETHROWER] = 0;
-		other->client->ps.stats[STAT_WEAPONS] &= ~( 1 << WP_ANTIMATTER );
-		other->client->ps.ammo[WP_ANTIMATTER] = 0;
-       other->client->ps.powerups[PW_QUAD] =  level.time - ( level.time % 1000 );
-       other->client->ps.powerups[PW_REGEN] =  level.time - ( level.time % 1000 );
-       other->client->ps.powerups[PW_HASTE] =  level.time - ( level.time % 1000 );
-       other->client->ps.powerups[PW_BATTLESUIT] =  level.time - ( level.time % 1000 );
-       other->client->ps.powerups[PW_INVIS] =  level.time - ( level.time % 1000 );
-       other->client->ps.powerups[PW_FLIGHT] =  level.time - ( level.time % 1000 );
-	   other->client->ps.stats[STAT_HOLDABLE_ITEM] = 0;
-}
-	if ( other->client->ps.powerups[PW_NEUTRALFLAG] ) {		// only happens in One Flag CTF
-		Drop_Item( other, BG_FindItemForPowerup( PW_NEUTRALFLAG ), 0 );
-		other->client->ps.powerups[PW_NEUTRALFLAG] = 0;
-	}
-	else if ( other->client->ps.powerups[PW_REDFLAG] ) {		// only happens in standard CTF
-		Drop_Item( other, BG_FindItemForPowerup( PW_REDFLAG ), 0 );
-		other->client->ps.powerups[PW_REDFLAG] = 0;
-	}
-	else if ( other->client->ps.powerups[PW_BLUEFLAG] ) {	// only happens in standard CTF
-		Drop_Item( other, BG_FindItemForPowerup( PW_BLUEFLAG ), 0 );
-		other->client->ps.powerups[PW_BLUEFLAG] = 0;
-	}
-
-	// if there is not one, die!
-	if( sl_py == 0 ) {
-		return;
-	}
-
-	TeleportPlayer( other, dest, angles );
-}
-
 static void PortalEnable( gentity_t *self ) {
 	self->touch = PortalTouch;
 	self->think = G_FreeEntity;
@@ -1065,78 +942,16 @@ static void ShowSandObject( gentity_t *self ) {
 	trap_LinkEntity( self );
 }
 
-static void PhysgunInteract( gentity_t *self ) {
-	vec3_t		end, start, forward, up, right;
-	trace_t		tr;
-	
-	if(!self->sandboxInteract || self->parent->health <= 0){
-	self->parent = NULL;
-	self->think = 0;
-	self->nextthink = 0;
-	self->sandboxInteract = 0;
-	self->parent->sandboxInteract = 0;
-	self->parent->InteractDist = 0;
-	return;
-	}
-	
-	self->s.pos.trType = TR_STATIONARY; self->physicsObject = qfalse; self->sb_phys = 1;
-	
-	if(self->parent->InteractDist == 0){
-	//Set Aiming Directions
-	AngleVectors(self->parent->client->ps.viewangles, forward, right, up);
-	CalcMuzzlePoint(self->parent, forward, right, up, start);
-	VectorMA (start, 4096, forward, end);
-	VectorScale( forward, 0, forward );
-
-	//Trace Position
-	trap_Trace (&tr, start, NULL, NULL, end, self->parent->s.number, MASK_SELECT );
-
-	self->parent->InteractDist = Distance(start, tr.endpos);
-	if(self->parent->InteractDist < 55){
-	self->parent->InteractDist = 55;
-	}
-	if(self->parent->InteractDist > 4096){
-	self->parent->InteractDist = 4096;
-	}
-	}
-	
-	//Set Aiming Directions
-	AngleVectors(self->parent->client->ps.viewangles, forward, right, up);
-	CalcMuzzlePoint(self->parent, forward, right, up, start);
-	VectorMA (start, self->parent->InteractDist, forward, end);
-	VectorScale( forward, 0, forward );
-
-	trap_UnlinkEntity( self );
-
-	//Trace Position
-	trap_Trace (&tr, start, NULL, NULL, end, self->parent->s.number, MASK_SELECT );
-	
-	VectorCopy(tr.endpos, self->s.origin);
-	VectorCopy(tr.endpos, self->s.pos.trBase);
-	VectorCopy(tr.endpos, self->r.currentOrigin);
-	
-	trap_LinkEntity( self );
-	
-	self->think = PhysgunInteract;
-	self->nextthink = level.time + 1;
-	
-}
-
 void DropPortalSource( gentity_t *player ) {
 	gentity_t	*ent;
 	gentity_t	*destination;
 	vec3_t		snapped;
-	vec3_t		lastpos;
 
 	// create the portal source
 	ent = G_Spawn();
 	ent->s.modelindex = G_ModelIndex( "models/powerups/teleporter/tele_enter.md3" );
 
 	VectorCopy( player->s.pos.trBase, snapped );
-	VectorCopy( snapped, lastpos );
-	sl_px = lastpos[0];
-	sl_py = lastpos[1];
-	sl_pz = lastpos[2];
 	SnapVector( snapped );
 	G_SetOrigin( ent, snapped );
 	VectorCopy( player->r.mins, ent->r.mins );
@@ -1181,6 +996,44 @@ char *G_ClearStringMisc( char *input ){
 		input[strlen(input)-1] = '\0';
 	}
 	return input;
+}
+
+/*
+================
+G_TouchProp
+
+================
+*/
+void G_TouchProp( gentity_t *self, gentity_t *other, trace_t *trace ) {
+	if( other->health <= 0 ) {
+		return;
+	}
+	if( !other->client ) {
+		return;
+	}
+	if( !other->singlebot ) {
+		return;
+	}
+	if( other->client->vehiclenum ) {
+		return;
+	}
+	if(	self->vehicle <= 0) {
+		return;
+	}
+	if( self->parent && self->parent->client->vehiclenum ) {
+		return;
+	}
+	other->client->vehiclenum = self->s.number;
+	self->parent = other;
+	ClientUserinfoChanged( other->s.clientNum );
+	VectorCopy(self->s.origin, other->s.origin);
+	VectorCopy(self->s.pos.trBase, other->s.pos.trBase);
+	other->s.apos.trBase[1] = self->s.apos.trBase[1];
+	VectorCopy(self->r.currentOrigin, other->r.currentOrigin);
+	VectorSet( other->r.mins, -25, -25, -15 );
+	VectorSet( other->r.maxs, 25, 25, 15 );
+	self->think = VehiclePhys;
+	self->nextthink = level.time + 1;
 }
 
 /*QUAKED func_prop (0 .5 .8) ?
@@ -1286,8 +1139,8 @@ void SP_func_prop( gentity_t *ent ) {
 	} else {
 	VectorSet( ent->r.mins, -25, -25, -15);
 	VectorSet( ent->r.maxs, 25, 25, 15 );
-	ent->touch = VehicleTouchBot;
 	}
+	ent->touch = G_TouchProp;
 	trap_LinkEntity( ent );
 }
 
@@ -1300,19 +1153,19 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	
 	o[0] = ((int)((xyz[0] + (xyz[0] < 0 ? -atoi(arg06) : atoi(arg06))) / (atoi(arg06) * 2)) * (atoi(arg06) * 2));
 	o[1] = ((int)((xyz[1] + (xyz[1] < 0 ? -atoi(arg06) : atoi(arg06))) / (atoi(arg06) * 2)) * (atoi(arg06) * 2));
-	if(atoi(arg60) <= 0){
+	if(atoi(arg09) <= 0){
 	o[2] = ((int)((xyz[2] + (xyz[2] < 0 ? -atoi(arg06) : atoi(arg06))) / (atoi(arg06) * 2)) * (atoi(arg06) * 2));
 	} else {
-	o[2] = xyz[2] + 16;
+	o[2] = xyz[2] + atoi(arg05);
 	}
 
 	if (trap_Cvar_VariableIntegerValue("cl_android")) {
     o[0] -= (xyz[0] >= 0 ? (atoi(arg06)) : -(atoi(arg06)));
     o[1] -= (xyz[1] >= 0 ? (atoi(arg06)) : -(atoi(arg06)));
-	if(atoi(arg60) <= 0){
+	if(atoi(arg09) <= 0){
     o[2] -= (xyz[2] >= 0 ? (atoi(arg06)) : -(atoi(arg06)));
 	} else {
-	o[2] = xyz[2] + 16;
+	o[2] = xyz[2] + atoi(arg05);
 	}
 	}
 
@@ -1322,8 +1175,12 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent = G_Spawn();
 	ent->spawnflags = atoi(arg07);
 	ent->sandboxObject = 1;
+	ent->objectType = OT_BASIC;
 	ent->sb_takedamage = 1;
 	ent->sb_takedamage2 = 1;
+	if(atoi(arg12) == -1){
+		ent->sb_takedamage2 = 0;
+	}
 	CopyAlloc(ent->classname, arg03);
 
 
@@ -1443,7 +1300,7 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent->skill = atoi(arg49);
 	}
 	if ( strcmp(arg50, "0") ) {
-	CopyAlloc(ent->overlay, arg50);
+	ent->objectType = atoi(arg50);
 	}
 	if ( strcmp(arg51, "0") ) {
 	CopyAlloc(ent->target2, arg51);
@@ -1511,8 +1368,8 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent->s.eType = ET_GENERAL;
 	ent->classname = "func_prop";
 	VectorCopy( ent->s.angles, ent->s.apos.trBase );
-	ent->takedamage = qtrue;
-	ent->takedamage2 = qtrue;
+	ent->takedamage = ent->sb_takedamage;
+	ent->takedamage2 = ent->sb_takedamage2;
 	ent->die = BlockDie;		
 	ent->s.modelindex = G_ModelIndex( va("props/%s",arg02) );
 	CopyAlloc(ent->sb_model, arg02);
@@ -1524,220 +1381,149 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent->sb_coltype = atoi(arg05);
 	VectorSet( ent->r.mins, -25, -25, -15);
 	VectorSet( ent->r.maxs, 25, 25, 15 );
-	ent->touch = VehicleTouchBot;
 	}
-
+	ent->touch = G_TouchProp;
 	trap_LinkEntity( ent );
 }
 
-void G_AddItem( char *name, vec3_t origin, int wait, int count, char *target, int sf  ) {
-	gentity_t	*ent;
-
-	// spawn item
-	ent = G_Spawn();
-	VectorCopy( origin, ent->s.origin );
-	ent->classname = name;
-	ent->wait = wait;
-	ent->count = count;
-	ent->target = target;
-	ent->spawnflags = sf;
-	G_CallSpawn(ent);
-}
-
-void SandboxObject( gentity_t *ent ) {
-	//Здесь берется само название модели, а не ее присвоенный id
-	ent->s.modelindex = G_ModelIndex( va("props/%s",ent->sb_model) );
-	ent->die = BlockDie;
-	ent->health = 300;
-	ent->takedamage = qtrue;
-	VectorSet( ent->r.mins, -ent->sb_coltype, -ent->sb_coltype, -ent->sb_coltype);
-	VectorSet( ent->r.maxs, ent->sb_coltype, ent->sb_coltype, ent->sb_coltype );
-}
-
-void G_ModProp( gentity_t *targ, gentity_t *attacker ) { //gmodtool, gmodtoolmode, gmodmodifiers, gmodmod_one, gmodmod_two
-int number;
-if(!g_building.integer){ return; }
-if(!g_allowtoolgun.integer){ return; }
-number = rand() % 2 + 1;
-if(number == 1){
-trap_SendServerCommand( attacker-g_entities, va("clcmd \"%s\"", "play sound/toolgun1" ));
-}
-if(number == 2){
-trap_SendServerCommand( attacker-g_entities, va("clcmd \"%s\"", "play sound/toolgun2" ));
-}
-if(!g_toolplayers.integer){
-if(targ->client){
-if(attacker->gmodtool != 999){
-return;
-}
-}
-}
-if(!attacker->client){
-return;
-}
-if(targ->owner != attacker->s.clientNum + 1){
-if(targ->owner != 0){
-trap_SendServerCommand( attacker->s.clientNum, va( "cp \"Owned by %s\n\"", targ->ownername ));
-return;
-}	
-}
-/*if(targ->s.generic2 != attacker->s.clientNum + 1){
-if(targ->s.generic2 != 0){
-trap_SendServerCommand( attacker->s.clientNum, va( "cp \"Selected by another player\n\"" ));
-return;
-}	
-}*/
-if(attacker->gmodtool == 1){
-	targ->s.generic2 = atoi(attacker->gmodmodifiers);
-	targ->sb_generic1 = atoi(attacker->gmodmodifiers);
-}
-if(attacker->gmodtool == 2){
-	G_FreeEntity(targ);
-}
-if(attacker->gmodtool == 3){
-	targ->s.modelindex = G_ModelIndex( va("props/%s", attacker->gmodmodifiers) );
-	CopyAlloc(targ->sb_model, attacker->gmodmodifiers);
-}
-if(attacker->gmodtool == 4){
-	if(attacker->gmodtoolmode == 0){
-	targ->s.pos.trType = TR_STATIONARY; targ->physicsObject = qfalse; targ->sb_phys = 1;
+void G_ModProp( gentity_t *targ, gentity_t *attacker, char *arg01, char *arg02, char *arg03, char *arg04, char *arg05, char *arg06, char *arg07, char *arg08, char *arg09, char *arg10, char *arg11, char *arg12, char *arg13, char *arg14, char *arg15, char *arg16, char *arg17, char *arg18, char *arg19 ) { //tool_id
+	if(g_gametype.integer != GT_SANDBOX){
+		return; 
 	}
-	if(attacker->gmodtoolmode == 1){
-	targ->s.pos.trType = TR_GRAVITY; targ->s.pos.trTime = level.time; targ->physicsObject = qtrue; targ->sb_phys = 2;
+	if(!g_allowtoolgun.integer){
+		return; 
 	}
-}
-if(attacker->gmodtool == 5){
-	if(attacker->gmodtoolmode == 0){
-	targ->owner = 0;
-	targ->ownername = 0;
+	if(targ->client && !targ->singlebot){
+		return;
 	}
-	if(attacker->gmodtoolmode == 1){
-	targ->owner = attacker->s.clientNum + 1;
-	targ->ownername = attacker->client->pers.netname;
+	if(!attacker->client){
+		return;
 	}
-	if(attacker->gmodtoolmode == 2){
-	if(targ->ownername){
-	trap_SendServerCommand( attacker->s.clientNum, va( "cp \"Owned by %s\n\"", targ->ownername ));
-	} 
-	if(!targ->ownername){
-	trap_SendServerCommand( attacker->s.clientNum, "cp \"Not owned\n\"" );
-	} 
+	if(targ->owner != attacker->s.clientNum + 1){
+		if(targ->owner != 0){
+			trap_SendServerCommand( attacker->s.clientNum, va( "cp \"Owned by %s\n\"", targ->ownername ));
+			return;
+		}	
 	}
-}
-if(attacker->gmodtool == 6){
-	if(attacker->gmodtoolmode == 0){
-	targ->r.contents = CONTENTS_SOLID;
-	targ->sb_coll = 0;
+	if(attacker->tool_id == 0){
+		// client-side command for spawn prop
 	}
-	if(attacker->gmodtoolmode == 1){
-	targ->r.contents = CONTENTS_TRIGGER;
-	targ->sb_coll = 1;
+	if(attacker->tool_id == 1){
+		targ->s.generic2 = atoi(arg01);
+		targ->sb_generic1 = atoi(arg01);
 	}
-trap_UnlinkEntity( targ );
-trap_LinkEntity( targ );
-}
-if(attacker->gmodtool == 7){
-	if(attacker->gmodtoolmode == 0){
-	targ->health = atoi(attacker->gmodmodifiers);
+	if(attacker->tool_id == 2){
+		if(!targ->singlebot){
+			G_FreeEntity(targ);
+		} else {
+			DropClientSilently( targ->client->ps.clientNum );	
+		}
 	}
-	if(attacker->gmodtoolmode == 1){
-	targ->takedamage = qfalse;
-	targ->sb_takedamage = 0;
+	if(attacker->tool_id == 3){
+		targ->s.modelindex = G_ModelIndex( va("props/%s", arg01) );
+		CopyAlloc(targ->sb_model, arg01);
 	}
-	if(attacker->gmodtoolmode == 2){
-	targ->takedamage = qtrue;
-	targ->sb_takedamage = 1;
+	if(attacker->tool_id == 4){
+		if(atoi(arg19) == 0){
+		targ->s.pos.trType = TR_STATIONARY; targ->physicsObject = qfalse; targ->sb_phys = 1;
+		}
+		if(atoi(arg19) == 1){
+		targ->s.pos.trType = TR_GRAVITY; targ->s.pos.trTime = level.time; targ->physicsObject = qtrue; targ->sb_phys = 2;
+		}
 	}
-	if(attacker->gmodtoolmode == 3){
-	targ->takedamage2 = qfalse;
-	targ->sb_takedamage2 = 0;
+	if(attacker->tool_id == 5){
+		if(atoi(arg19) == 0){
+		targ->owner = 0;
+		targ->ownername = 0;
+		}
+		if(atoi(arg19) == 1){
+		targ->owner = attacker->s.clientNum + 1;
+		targ->ownername = attacker->client->pers.netname;
+		}
+		if(atoi(arg19) == 2){
+		if(targ->ownername){
+		trap_SendServerCommand( attacker->s.clientNum, va( "cp \"Owned by %s\n\"", targ->ownername ));
+		} 
+		if(!targ->ownername){
+		trap_SendServerCommand( attacker->s.clientNum, "cp \"Not owned\n\"" );
+		} 
+		}
 	}
-	if(attacker->gmodtoolmode == 4){
-	targ->takedamage2 = qtrue;
-	targ->sb_takedamage2 = 1;
-	}
-}
-if(attacker->gmodtool == 8){
-	targ->s.constantLight = atoi(attacker->gmodmodifiers) | ( attacker->gmodmod_one << 8 ) | ( attacker->gmodmod_two << 16 ) | ( attacker->gmodtoolmode << 24 );
-	targ->sb_red = atoi(attacker->gmodmodifiers);
-	targ->sb_green = attacker->gmodmod_one;
-	targ->sb_blue = attacker->gmodmod_two;
-	targ->sb_radius = attacker->gmodtoolmode;
+	if(attacker->tool_id == 6){
+		if(atoi(arg19) == 0){
+		targ->r.contents = CONTENTS_SOLID;
+		targ->sb_coll = 0;
+		}
+		if(atoi(arg19) == 1){
+		targ->r.contents = CONTENTS_TRIGGER;
+		targ->sb_coll = 1;
+		}
 	trap_UnlinkEntity( targ );
 	trap_LinkEntity( targ );
-}
-if(attacker->gmodtool == 9){
-if(attacker->gmodtoolmode == 0){
-	targ->s.apos.trBase[0] = atof(attacker->gmodmodifiers);
-	targ->sb_rotate0 = atof(attacker->gmodmodifiers);
-}
-if(attacker->gmodtoolmode == 1){
-	targ->s.apos.trBase[1] = atof(attacker->gmodmodifiers);
-	targ->sb_rotate1 = atof(attacker->gmodmodifiers);
-}
-if(attacker->gmodtoolmode == 2){
-	targ->s.apos.trBase[2] = atof(attacker->gmodmodifiers);
-	targ->sb_rotate2 = atof(attacker->gmodmodifiers);
-}
-	trap_UnlinkEntity( targ );
-	trap_LinkEntity( targ );
-}
-if(attacker->gmodtool == 10){
-	if(attacker->gmodtoolmode == 0){
-	if(!targ->sandboxInteract){
-	targ->parent = attacker;
-	targ->sandboxInteract = 1;
-	attacker->sandboxInteract = 1;
-	targ->think = PhysgunInteract;
-	targ->nextthink = level.time + 1;
-	targ->parent->InteractDist = 0;
-	trap_SendServerCommand( attacker-g_entities, va("clcmd \"%s\"", "execscript d_interact1" ));
-	} else {
-	targ->sandboxInteract = 0;
-	attacker->sandboxInteract = 0;
-	trap_SendServerCommand( attacker-g_entities, va("clcmd \"%s\"", "execscript d_interact0" ));
 	}
+	if(attacker->tool_id == 7){
+		targ->health = atoi(arg01);
 	}
-	if(attacker->gmodtoolmode == 1){
-	if(!targ->sandboxInteract){
-	targ->parent = attacker;
-	targ->sandboxInteract = 1;
-	attacker->sandboxInteract = 1;
-	targ->think = PhysgunInteract;
-	targ->nextthink = level.time + 1;
-	targ->parent->InteractDist = 0;
-	trap_SendServerCommand( attacker-g_entities, va("clcmd \"%s\"", "execscript d_interact1" ));
-	} else {
-	targ->sandboxInteract = 0;
-	attacker->sandboxInteract = 0;
-	targ->s.pos.trType = TR_GRAVITY; targ->s.pos.trTime = level.time; targ->physicsObject = qtrue; targ->sb_phys = 2;
-	trap_SendServerCommand( attacker-g_entities, va("clcmd \"%s\"", "execscript d_interact0" ));
+	if(attacker->tool_id == 8){
+		targ->s.constantLight = atoi(arg01) | ( atoi(arg02) << 8 ) | ( atoi(arg03) << 16 ) | ( atoi(arg04) << 24 );
+		targ->sb_red = atoi(arg01);
+		targ->sb_green = atoi(arg02);
+		targ->sb_blue = atoi(arg03);
+		targ->sb_radius = atoi(arg04);
+		trap_UnlinkEntity( targ );
+		trap_LinkEntity( targ );
 	}
+	if(attacker->tool_id == 9){
+	if(atoi(arg19) == 0){
+		targ->s.apos.trBase[0] += atof(arg01);
+		targ->sb_rotate0 += atof(arg01);
 	}
-}
-if(attacker->gmodtool == 11){
-if(attacker->gmodtoolmode == 0){
-	targ->s.scales[0] = atof(attacker->gmodmodifiers);
-	targ->sb_colscale0 = atof(attacker->gmodmodifiers);
-}
-if(attacker->gmodtoolmode == 1){
-	targ->s.scales[1] = atof(attacker->gmodmodifiers);
-	targ->sb_colscale1 = atof(attacker->gmodmodifiers);
-}
-if(attacker->gmodtoolmode == 2){
-	targ->s.scales[2] = atof(attacker->gmodmodifiers);
-	targ->sb_colscale2 = atof(attacker->gmodmodifiers);
-}
-	VectorSet( targ->r.mins, -targ->sb_coltype*targ->sb_colscale0, -targ->sb_coltype*targ->sb_colscale1, -targ->sb_coltype*targ->sb_colscale2);
-	VectorSet( targ->r.maxs, targ->sb_coltype*targ->sb_colscale0, targ->sb_coltype*targ->sb_colscale1, targ->sb_coltype*targ->sb_colscale2 );
-	trap_UnlinkEntity( targ );
-	trap_LinkEntity( targ );
-}
+	if(atoi(arg19) == 1){
+		targ->s.apos.trBase[1] += atof(arg01);
+		targ->sb_rotate1 += atof(arg01);
+	}
+	if(atoi(arg19) == 2){
+		targ->s.apos.trBase[2] += atof(arg01);
+		targ->sb_rotate2 += atof(arg01);
+	}
+		trap_UnlinkEntity( targ );
+		trap_LinkEntity( targ );
+	}
+	if(attacker->tool_id == 10){
+	if(atoi(arg19) == 0){
+		targ->s.scales[0] = atof(arg01);
+		targ->sb_colscale0 = atof(arg01);
+	}
+	if(atoi(arg19) == 1){
+		targ->s.scales[1] = atof(arg01);
+		targ->sb_colscale1 = atof(arg01);
+	}
+	if(atoi(arg19) == 2){
+		targ->s.scales[2] = atof(arg01);
+		targ->sb_colscale2 = atof(arg01);
+	}
+		VectorSet( targ->r.mins, -targ->sb_coltype*targ->sb_colscale0, -targ->sb_coltype*targ->sb_colscale1, -targ->sb_coltype*targ->sb_colscale2);
+		VectorSet( targ->r.maxs, targ->sb_coltype*targ->sb_colscale0, targ->sb_coltype*targ->sb_colscale1, targ->sb_coltype*targ->sb_colscale2 );
+		trap_UnlinkEntity( targ );
+		trap_LinkEntity( targ );
+	}
 }
 
-void Svcmd_RCM( void ) {
+#define		PHYS_ROTATING 0.020
+#define		PHYS_PROP_IMPACT g_physimpact.value
+#define		PHYS_SENS g_physimpulse.integer
+#define		PHYS_DAMAGE g_physdamage.value
+#define		PHYS_DAMAGESTART g_physdamagestart.integer
 
-	CustomModRun = 0;
+void G_PropSmoke( gentity_t *ent, float impact ){
+	gentity_t   *temp;
+	
+	temp = G_TempEntity(ent->r.currentOrigin, EV_SMOKEPUFF);
+	temp->s.constantLight = (((70 | 64 << 8 ) | 64 << 16 ) | ( 255 << 24 ));
+	temp->s.eventParm = 2;	//eventParm is used to determine the amount of time the smoke puff exists
+	temp->s.generic1 = 100;	//generic1 is used to determine the movement speed of the smoke puff
+	temp->s.otherEntityNum = (int)impact; //otherEntityNum is used to determine the size of the smokepuff. The default is 32.
+	VectorCopy(ent->s.angles, temp->s.angles);
 }
 
 /*
@@ -1759,6 +1545,13 @@ void G_BounceProp( gentity_t *ent, trace_t *trace ) {
 
 	// cut the velocity to keep from bouncing forever
 	VectorScale( ent->s.pos.trDelta, ent->physicsBounce, ent->s.pos.trDelta );
+	
+	// check for stop
+	if ( trace->plane.normal[2] > 0.2 && ent->s.pos.trDelta[2] < 30 ) {
+		ent->s.apos.trBase[0] = 0;		// reset rotate
+		ent->s.apos.trBase[2] = 0;		// reset rotate
+		G_DisablePropPhysics( ent, trace->endpos );	//disable phys if it not moving
+	}
 
 	VectorAdd( ent->r.currentOrigin, trace->plane.normal, ent->r.currentOrigin);
 	VectorCopy( ent->r.currentOrigin, ent->s.pos.trBase );
@@ -1771,62 +1564,122 @@ G_RunProp
 
 ================
 */
-void G_RunProp( gentity_t *ent ) {
-	vec3_t		origin;
-	trace_t		tr;
-	int			contents;
-	int			mask;
+void G_RunProp(gentity_t *ent) {
+    vec3_t origin;
+    trace_t tr;
+	gentity_t *hit;
+	float impactForce;
+	float impactForceAll;
+	vec3_t impactVector;
 
-
-	// if groundentity has been set to -1, it may have been pushed off an edge
-	if ( ent->s.groundEntityNum == -1 ) {
-		if ( ent->s.pos.trType != TR_GRAVITY ) {
-			ent->s.pos.trType = TR_GRAVITY;
-			ent->s.pos.trTime = level.time;
-		}
-	}
+    // Unlink the entity so that it won't interact with other entities during the calculation
+    trap_UnlinkEntity(ent);
 	
-	if ( ent->s.pos.trType == TR_STATIONARY ) {
-		// check think function
-		G_RunThink( ent );
-		return;
+    // If ground entity has been set to -1, apply gravity if necessary
+    if (ent->s.groundEntityNum == -1 && ent->s.pos.trType != TR_GRAVITY) {
+        ent->s.pos.trType = TR_GRAVITY;
+        ent->s.pos.trTime = level.time;
+    }
+
+    // If the entity is stationary, re-link it and run the think function
+    if (ent->s.pos.trType == TR_STATIONARY) {
+        trap_LinkEntity(ent);
+        G_RunThink(ent);
+        return;
+    }
+	
+	// Get current position based on the entity's trajectory
+    BG_EvaluateTrajectory(&ent->s.pos, level.time, origin);
+
+    // Trace a line from the current origin to the new position
+    trap_Trace(&tr, ent->r.currentOrigin, ent->r.mins, ent->r.maxs, origin, ent->s.number, MASK_PLAYERSOLID);
+	
+    // Update entity position to the end of the trace
+    VectorCopy(tr.endpos, ent->r.currentOrigin);
+    VectorCopy(ent->r.currentOrigin, ent->s.origin);
+	
+    // Link the entity back into the world
+    trap_LinkEntity(ent);
+
+    // If there's a collision, handle it
+    if (tr.fraction < 1.0f && tr.entityNum != ENTITYNUM_NONE) {
+        hit = &g_entities[tr.entityNum];
+
+        if (hit->s.number != ent->s.number) {  // Ignore self
+            // Calculate the impact force
+            impactForce = sqrt(ent->s.pos.trDelta[0] * ent->s.pos.trDelta[0] + ent->s.pos.trDelta[1] * ent->s.pos.trDelta[1]);
+			impactForceAll = sqrt(ent->s.pos.trDelta[0] * ent->s.pos.trDelta[0] + ent->s.pos.trDelta[1] * ent->s.pos.trDelta[1] + ent->s.pos.trDelta[2] * ent->s.pos.trDelta[2]);
+
+            // Optionally apply a force or velocity to the hit entity to simulate the push
+			if (impactForce > PHYS_SENS) {
+			if (!hit->client){
+			G_EnablePropPhysics(hit);
+			}
+			VectorCopy(ent->s.pos.trDelta, impactVector);
+			VectorScale(impactVector, PHYS_PROP_IMPACT, impactVector);	
+			if (!hit->client){
+            VectorAdd(hit->s.pos.trDelta, impactVector, hit->s.pos.trDelta);  // Transfer velocity from the prop to the hit entity
+			} else {
+			if(hit->grabbedEntity != ent){
+			VectorAdd(hit->client->ps.velocity, impactVector, hit->client->ps.velocity);  // Transfer velocity from the prop to the hit player
+			}
+			}
+			}
+			if(impactForceAll > PHYS_DAMAGESTART){
+			if(hit->grabbedEntity != ent){
+			G_PropDamage(hit, (int)(impactForceAll * PHYS_DAMAGE));
+			}
+			G_PropDamage(ent, (int)(impactForceAll * (PHYS_DAMAGE*0.50)));
+			}
+			if(impactForceAll > PHYS_SENS){
+			if(hit->grabbedEntity != ent){
+			if(ent->objectType == OT_BASIC){
+			G_AddEvent( ent, EV_OT1_IMPACT, 0 );
+			G_PropSmoke( ent, impactForceAll*0.5);
+			}
+			if(ent->objectType == OT_VEHICLE){
+			G_AddEvent( ent, EV_CRASH25, 0 );
+			G_PropSmoke( ent, impactForceAll*0.5);
+			}
+			if(ent->objectType == OT_TNT){
+			G_AddEvent( ent, EV_CRASH25, 0 );
+			G_PropSmoke( ent, impactForceAll*0.5);
+			}
+			}
+			}
+        }
+    }
+
+    // Rotate entity during movement (optional physics feature)
+	if (!ent->isGrabbed){
+    if (ent->s.pos.trDelta[1] != 0) {
+        ent->s.apos.trBase[1] -= ent->s.pos.trDelta[1] * PHYS_ROTATING;
+    }
+    if (ent->s.pos.trDelta[0] != 0) {
+        ent->s.apos.trBase[0] += ent->s.pos.trDelta[0] * PHYS_ROTATING;
+    }
 	}
 
-	if(!ent->sandboxInteract){
-	// get current position
-	BG_EvaluateTrajectory( &ent->s.pos, level.time, origin );
-	}
+    // Save rotation
+    ent->sb_rotate0 = ent->s.apos.trBase[0];
+    ent->sb_rotate1 = ent->s.apos.trBase[1];
+    ent->sb_rotate2 = ent->s.apos.trBase[2];
 
-	// trace a line from the previous position to the current position
-	if ( ent->clipmask ) {
-		mask = ent->clipmask;
-	} else {
-		mask = MASK_PLAYERSOLID;
-	}
-	trap_Trace( &tr, ent->r.currentOrigin, ent->r.mins, ent->r.maxs, origin,
-		ent->s.number, mask );
+    // Check for solid start (possible embedded in another object)
+    if (tr.startsolid) {
+        tr.fraction = 0;
+    }
 
-	VectorCopy( tr.endpos, ent->r.currentOrigin );
-	VectorCopy( ent->r.currentOrigin, ent->s.origin );
-	ent->sb_rotate0 = ent->s.apos.trBase[0];
-	ent->sb_rotate1 = ent->s.apos.trBase[1];
-	ent->sb_rotate2 = ent->s.apos.trBase[2];
-
-	if ( tr.startsolid ) {
-		tr.fraction = 0;
-	}
-
-	trap_LinkEntity( ent );
-
-	// check think function
-	G_RunThink( ent );
-
+    // Run think function after updating entity
+    G_RunThink(ent);
+	
 	if ( tr.fraction == 1 ) {
 		return;
 	}
 
 	G_BounceProp( ent, &tr );
 }
+
 
 /*
 ================
@@ -1844,7 +1697,7 @@ void G_HideObjects() {
 	ent = &g_entities[0];
 	for (i=0 ; i<level.num_entities ; i++, ent++) {
 	if(i>level.num_entities-1){
-	G_Printf("Object (hide) processed!");	
+	G_Printf("Object (hide) processed!\n");	
 	}
 	if(ent->sandboxObject){
 	trap_UnlinkEntity( ent );
@@ -1872,7 +1725,7 @@ void G_ShowObjects() {
 	for (i=0 ; i<level.num_entities ; i++, ent++) {
 	thinktime += 10;
 	if(i>level.num_entities-1){
-	G_Printf("Object (show) processed!");	
+	G_Printf("Object (show) processed!\n");	
 	}
 	if(ent->sandboxObject){
 	ent->nextthink = level.time + thinktime;

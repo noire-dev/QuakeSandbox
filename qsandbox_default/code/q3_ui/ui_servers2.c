@@ -80,18 +80,20 @@ MULTIPLAYER MENU (SERVER BROWSER)
 #define SORT_PING			4
 
 #define GAMES_ALL			0
-#define GAMES_FFA			1
-#define GAMES_TEAMPLAY		2
-#define GAMES_TOURNEY		3
-#define GAMES_CTF			4
-#define GAMES_ONEFLAG		5
-#define GAMES_OBELISK		6
-#define GAMES_HARVESTER		7
-#define GAMES_ELIMINATION	8
-#define GAMES_ELIM_CTF		9
-#define GAMES_LMS			10
-#define GAMES_DD			11
-#define GAMES_DOM			12
+#define GAMES_SANDBOX		1
+#define GAMES_FFA			2
+#define GAMES_SINGLE		3
+#define GAMES_TEAMPLAY		4
+#define GAMES_TOURNEY		5
+#define GAMES_CTF			6
+#define GAMES_ONEFLAG		7
+#define GAMES_OBELISK		8
+#define GAMES_HARVESTER		9
+#define GAMES_ELIMINATION	10
+#define GAMES_ELIM_CTF		11
+#define GAMES_LMS			12
+#define GAMES_DD			13
+#define GAMES_DOM			14
 
 static const char *master_items[] = {
 	"Local",
@@ -101,7 +103,9 @@ static const char *master_items[] = {
 
 static const char *servertype_items[] = {
 	"All",
+	"Sandbox",
 	"Free For All",
+	"Single Player",
 	"Team Deathmatch",
 	"Tournament",
 	"Capture the Flag",
@@ -552,9 +556,21 @@ static void ArenaServers_UpdateMenu( void ) {
 		switch( g_gametype ) {
 		case GAMES_ALL:
 			break;
+			
+		case GAMES_SANDBOX:
+			if( servernodeptr->gametype != GT_SANDBOX ) {
+				continue;
+			}
+			break;
 
 		case GAMES_FFA:
 			if( servernodeptr->gametype != GT_FFA ) {
+				continue;
+			}
+			break;
+			
+		case GAMES_SINGLE:
+			if( servernodeptr->gametype != GT_SINGLE ) {
 				continue;
 			}
 			break;
@@ -795,10 +811,10 @@ static void ArenaServers_Insert( char* adrstr, char* info, int pingtime )
 	i = atoi( Info_ValueForKey( info, "gametype") );
 	servernodeptr->gametype = i;
 	if(cl_language.integer == 0){
-	Q_strncpyz( servernodeptr->gamename, gametypen_items[i], sizeof(servernodeptr->gamename) );
+	Q_strncpyz( servernodeptr->gamename, gametype_items[i], sizeof(servernodeptr->gamename) );
 	}
 	if(cl_language.integer == 1){
-	Q_strncpyz( servernodeptr->gamename, gametypen_itemsru[i], sizeof(servernodeptr->gamename) );
+	Q_strncpyz( servernodeptr->gamename, gametype_itemsru[i], sizeof(servernodeptr->gamename) );
 	}
 }
 
@@ -1145,6 +1161,14 @@ static void ArenaServers_StartRefresh( void )
 		default:
 		case GAMES_ALL:
 			myargs[0] = 0;
+			break;
+
+		case GAMES_SANDBOX:
+			strcpy( myargs, " sandbox" );
+			break;
+
+		case GAMES_SINGLE:
+			strcpy( myargs, " single" );
 			break;
 
 		case GAMES_FFA:

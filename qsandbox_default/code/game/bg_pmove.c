@@ -2020,8 +2020,14 @@ PM_AddEvent( EV_FIRE_WEAPON );
 	case WP_ANTIMATTER:
 		addTime = mod_amdelay;
 		break;
-	case 65535:
-		addTime = 10;
+	case WP_TOOLGUN:
+		addTime = 200;
+		break;
+	case WP_PHYSGUN:
+		addTime = 100;
+		break;
+	case WP_GRAVITYGUN:
+		addTime = 100;
 		break;
 	}
 
@@ -2066,7 +2072,7 @@ PM_Animate
 static void PM_Animate( void ) {
 	if ( pm->cmd.buttons & BUTTON_GESTURE ) {
 		if(!pm->ps->stats[STAT_VEHICLE]){ //VEHICLE-SYSTEM: disable gesture for all
-		if(!cg_singlemode.integer){
+		if(g_gametype.integer != GT_SINGLE){
 		if ( pm->ps->torsoTimer == 0 ) {
 			PM_StartTorsoAnim( TORSO_GESTURE );
 			pm->ps->torsoTimer = TIMER_GESTURE;
@@ -2327,8 +2333,8 @@ void PmoveSingle (pmove_t *pmove) {
 	}
 
 	// set the firing flag for continuous beam weapons
-	if ( !(pm->ps->pm_flags & PMF_RESPAWNED) && pm->ps->pm_type != PM_INTERMISSION && pm->ps->pm_type != PM_NOCLIP && pm->ps->pm_type != PM_CUTSCENE
-		&& ( pm->cmd.buttons & BUTTON_ATTACK ) && pm->ps->ammo[ pm->ps->weapon ] ) {
+	if ( !(pm->ps->pm_flags & PMF_RESPAWNED) && pm->ps->pm_type != PM_INTERMISSION && pm->ps->pm_type != PM_CUTSCENE
+		&& ( pm->cmd.buttons & BUTTON_ATTACK ) && (pm->ps->ammo[ pm->ps->weapon ] || pm->ps->stats[STAT_SWEPAMMO]) ) {
 		pm->ps->eFlags |= EF_FIRING;
 	} else {
 		pm->ps->eFlags &= ~EF_FIRING;
@@ -2405,7 +2411,8 @@ void PmoveSingle (pmove_t *pmove) {
 	if ( pm->ps->pm_type == PM_NOCLIP ) {
 		PM_NoclipMove ();
 		PM_DropTimers ();
-		//return;
+		PM_Weapon();
+		return;
 	}
 
 	if (pm->ps->pm_type == PM_FREEZE || pm->ps->pm_type == PM_CUTSCENE) {

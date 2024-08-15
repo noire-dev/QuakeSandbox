@@ -206,39 +206,6 @@ const char *G_GetArenaInfoByMap( const char *map ) {
 	return NULL;
 }
 
-
-/*
-=================
-PlayerIntroSound
-=================
-*/
-static void PlayerIntroSound( const char *modelAndSkin ) {
-	char	model[MAX_QPATH];
-        char	modelnospaces[MAX_QPATH];
-	char	*skin;
-        int     c = 0, d = 0;
-
-	Q_strncpyz( model, modelAndSkin, sizeof(model) );
-
-        // Mix3r_Durachok: skip any spaces & color stuff
-        while (model[c] != '\0') {
-                if (model[c] == '^') {
-                        c++;
-                        if (model[c] == '\0') {
-                                break;
-                        }
-                } else if (model[c] != ' ') {
-                        modelnospaces[d] = model[c];
-                        d++;
-	}
-                c++;
-	}
-
-        modelnospaces[d] = '\0';
-
-	trap_SendConsoleCommand( EXEC_APPEND, va( "play sound/player/announce/%s.wav\n", skin ) );
-}
-
 /*
 ===============
 G_AddRandomBot
@@ -466,7 +433,7 @@ void G_CheckMinimumPlayers( void ) {
 			}
 		}
 	}
-	else if (g_gametype.integer == GT_FFA || g_gametype.integer == GT_LMS) {
+	else if (g_gametype.integer == GT_FFA || g_gametype.integer == GT_LMS || g_gametype.integer == GT_SANDBOX) {
 		if (minplayers >= g_maxclients.integer) {
 			minplayers = g_maxclients.integer-1;
 		}
@@ -501,11 +468,6 @@ void G_CheckBotSpawn( void ) {
 		}
 		ClientBegin( botSpawnQueue[n].clientNum );
 		botSpawnQueue[n].spawnTime = 0;
-
-		if( g_gametype.integer == GT_SINGLE_PLAYER ) {
-			trap_GetUserinfo( botSpawnQueue[n].clientNum, userinfo, sizeof(userinfo) );
-			PlayerIntroSound( Info_ValueForKey (userinfo, "model") );
-		}
 	}
 }
 
@@ -625,59 +587,18 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 
 	if ( skill >= 1 && skill < 2 ) {
 		Info_SetValueForKey( userinfo, "handicap", "50" );
-		//bot->client->botskill = 1;
 	}
 	else if ( skill >= 2 && skill < 3 ) {
 		Info_SetValueForKey( userinfo, "handicap", "70" );
-		//bot->client->botskill = 2;
 	}
 	else if ( skill >= 3 && skill < 4 ) {
 		Info_SetValueForKey( userinfo, "handicap", "90" );
-		//bot->client->botskill = 3;
 	}
 	else if ( skill >= 4 && skill < 5 ) {
 		Info_SetValueForKey( userinfo, "handicap", "100" );
-		//bot->client->botskill = 4;
 	}
-	else if ( skill >= 5 && skill < 6 ) {
+	else if ( skill >= 5 && skill < 999 ) {
 		Info_SetValueForKey( userinfo, "handicap", "100" );
-		//bot->client->botskill = 5;
-	}
-	else if ( skill >= 6 && skill < 7 ) {
-		Info_SetValueForKey( userinfo, "handicap", "120" );
-		//bot->client->botskill = 6;
-	}
-	else if ( skill >= 7 && skill < 8 ) {
-		Info_SetValueForKey( userinfo, "handicap", "150" );
-		//bot->client->botskill = 7;
-	}
-	else if ( skill >= 8 && skill < 9 ) {
-		Info_SetValueForKey( userinfo, "handicap", "200" );
-		//bot->client->botskill = 8;
-	}
-	else if ( skill >= 9 && skill < 10 ) {
-		Info_SetValueForKey( userinfo, "handicap", "250" );
-		//bot->client->botskill = 9;
-	}
-	else if ( skill >= 10 && skill < 11 ) {
-		Info_SetValueForKey( userinfo, "handicap", "300" );
-		//bot->client->botskill = 10;
-	}
-	else if ( skill >= 11 && skill < 12 ) {
-		Info_SetValueForKey( userinfo, "handicap", "500" );
-		//bot->client->botskill = 11;
-	}
-	else if ( skill >= 12 && skill < 13 ) {
-		Info_SetValueForKey( userinfo, "handicap", "1000" );
-		//bot->client->botskill = 12;
-	}
-	else if ( skill >= 13 && skill < 14 ) {
-		Info_SetValueForKey( userinfo, "handicap", "5000" );
-		//bot->client->botskill = 13;
-	}
-	else if ( skill >= 14 && skill < 15 ) {
-		Info_SetValueForKey( userinfo, "handicap", "10000" );
-		//bot->client->botskill = 14;
 	}
 
 	key = "model";
@@ -1062,48 +983,6 @@ void G_InitBots( qboolean restart ) {
 	G_LoadArenas();
 
 	trap_Cvar_Register( &bot_minplayers, "bot_minplayers", "0", CVAR_SERVERINFO );
-
-	if( g_gametype.integer == GT_SINGLE_PLAYER ) {
-		trap_GetServerinfo( serverinfo, sizeof(serverinfo) );
-		Q_strncpyz( map, Info_ValueForKey( serverinfo, "mapname" ), sizeof(map) );
-		arenainfo = G_GetArenaInfoByMap( map );
-		if ( !arenainfo ) {
-			return;
-		}
-
-		strValue = Info_ValueForKey( arenainfo, "fraglimit" );
-		fragLimit = atoi( strValue );
-		if ( fragLimit ) {
-			trap_Cvar_Set( "fraglimit", strValue );
-		}
-		else {
-			trap_Cvar_Set( "fraglimit", "0" );
-		}
-
-		strValue = Info_ValueForKey( arenainfo, "timelimit" );
-		timeLimit = atoi( strValue );
-		if ( timeLimit ) {
-			trap_Cvar_Set( "timelimit", strValue );
-		}
-		else {
-			trap_Cvar_Set( "timelimit", "0" );
-		}
-
-		if ( !fragLimit && !timeLimit ) {
-			trap_Cvar_Set( "fraglimit", "10" );
-			trap_Cvar_Set( "timelimit", "0" );
-		}
-
-		basedelay = BOT_BEGIN_DELAY_BASE;
-		strValue = Info_ValueForKey( arenainfo, "special" );
-		if( Q_stricmp( strValue, "training" ) == 0 ) {
-			basedelay += 10000;
-		}
-
-		if( !restart ) {
-			G_SpawnBots( Info_ValueForKey( arenainfo, "bots" ), basedelay );
-		}
-	}
 }
 
 /*

@@ -97,8 +97,8 @@ void UI_SPKickDupe_f( void )
 	int i, j;
 	char name[MAX_PLAYER_NAME];
 
-	if (!trap_Cvar_VariableValue( "sv_running" ) || trap_Cvar_VariableValue( "g_gametype" ) != GT_SINGLE_PLAYER) {
-		Com_Printf("Local server and single player game only\n");
+	if (!trap_Cvar_VariableValue( "sv_running" )) {
+		Com_Printf("Local server game only\n");
 		return;
 	}
 

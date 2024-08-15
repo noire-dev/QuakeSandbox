@@ -75,11 +75,6 @@ START SERVER MENU *****
 #define ID_SERVER_SINGLESKILL 368
 #define ID_SERVER_KILL 369
 #define ID_SERVER_DAMAGEMODIFIER 370
-#define ID_SERVER_FLIGHTLIMIT 371
-#define ID_SERVER_FLIGHTREGEN 372
-#define ID_SERVER_FLIGHTPOWER 373
-#define ID_SERVER_BUILDING 374
-#define ID_SERVER_SPAWNSELECT 375
 #define ID_SERVER_ROUNDMODE 376
 #define ID_SERVER_ELIMINATION 377
 #define ID_SERVER_OBELISKHEALTH 378
@@ -112,7 +107,6 @@ START SERVER MENU *****
 #define ID_SERVER_VAMPIRE 405
 #define ID_SERVER_VAMPIRE_MAX_HEALTH 406
 #define ID_SERVER_REGEN 407
-#define ID_SERVER_LOCATIONDAMAGE 408
 #define ID_SERVER_MAXWEAPONPICKUP 409
 #define ID_SERVER_DROPPEDITEMTIME 410
 #define ID_SERVER_AUTOFLAGRETURN 411
@@ -208,13 +202,10 @@ START SERVER MENU *****
 #define ID_SERVER_ELIMINATION_FLIGHT 501
 #define ID_SERVER_ELIMINATION_ITEMS 502
 #define ID_SERVER_ELIMINATION_HOLDABLE 503
-#define ID_SERVER_PORTALGRABITEMS 504
-#define ID_SERVER_PORTALLIGHT 505
 #define ID_SERVER_MINIGAME 506
 #define ID_SERVER_OVERLAY 507
 #define ID_SERVER_RANDOMITEMS 508
 #define ID_SERVER_ALLOWVOTE 509
-/*#define ID_SERVER_MUSIC 508*/
 #define ID_SERVER_SPAWNPROTECT 510
 #define ID_SERVER_ELIMINATION_LOCKSPECTATOR 511
 #define ID_SERVER_AWARDPUSHING 512
@@ -620,21 +611,6 @@ static controlinit_t srv_general[] = {
 		
 	{ SRVCTRL_TEXTFIELD, 0, ID_SERVER_DAMAGEMODIFIER, ITEM_ALWAYSON|ITEM_HALFGAP,
 		"Damage modifier(float):", NULL, 0, 0, s_scriptdata.server.damageModifier, 9, 9, NULL },
-		
-	{ SRVCTRL_NUMFIELD, 0, ID_SERVER_FLIGHTLIMIT, ITEM_ALWAYSON|ITEM_HALFGAP,
-		"Flashlight limit:", &s_scriptdata.server.flightlimit, -999999999, 999999999, NULL, 9, 9, NULL },
-		
-	{ SRVCTRL_NUMFIELD, 0, ID_SERVER_FLIGHTREGEN, ITEM_ALWAYSON|ITEM_HALFGAP,
-		"Flashlight regen:", &s_scriptdata.server.flightregen, -999999999, 999999999, NULL, 9, 9, NULL },
-		
-	{ SRVCTRL_NUMFIELD, 0, ID_SERVER_FLIGHTPOWER, ITEM_ALWAYSON|ITEM_HALFGAP,
-		"Flashlight power:", &s_scriptdata.server.flightpower, -999999999, 999999999, NULL, 9, 9, NULL },
-
-	{ SRVCTRL_RADIO, 0, ID_SERVER_BUILDING, ITEM_ALWAYSON,
-		"Allow building:", &s_scriptdata.server.building, -9999999, 9999999, NULL, 0, 0, NULL },
-		
-	{ SRVCTRL_RADIO, 0, ID_SERVER_SPAWNSELECT, ITEM_ALWAYSON,
-		"Custom spawn settings:", &s_scriptdata.server.spawnselect, -9999999, 9999999, NULL, 0, 0, NULL },
 
 	{ SRVCTRL_RADIO, 0, ID_SERVER_ROUNDMODE, ITEM_ALWAYSON,
 		"Round mode:", &s_scriptdata.server.roundmode, -9999999, 9999999, NULL, 0, 0, NULL },
@@ -726,8 +702,6 @@ static controlinit_t srv_rules[] = {
 		"Vampire max health:", &s_scriptdata.server.vampire_max_health, -999999999, 999999999, NULL, 9, 9, NULL },
 	{ SRVCTRL_NUMFIELD, 0, ID_SERVER_REGEN, ITEM_ALWAYSON,
 		"Regen health:", &s_scriptdata.server.regen, -999999999, 999999999, NULL, 9, 9, NULL },
-	{ SRVCTRL_RADIO, 0, ID_SERVER_LOCATIONDAMAGE, ITEM_ALWAYSON,
-		"Location damage:", &s_scriptdata.server.locationdamage, -999999999, 999999999, NULL, 9, 9, NULL },
 	{ SRVCTRL_NUMFIELD, 0, ID_SERVER_MAXWEAPONPICKUP, ITEM_ALWAYSON,
 		"Max weapon pickup:", &s_scriptdata.server.maxweaponpickup, -999999999, 999999999, NULL, 9, 9, NULL },
 	{ SRVCTRL_NUMFIELD, 0, ID_SERVER_DROPPEDITEMTIME, ITEM_ALWAYSON,
@@ -963,11 +937,6 @@ static controlinit_t srv_teamother[] = {
 
 // other controls
 static controlinit_t srv_other[] = {
-
-	{ SRVCTRL_RADIO, 0, ID_SERVER_PORTALGRABITEMS, ITEM_ALWAYSON,
-		"Holdable portal grab items:", &s_scriptdata.server.portalgrabitems, -999999999, 999999999, NULL, 9, 9, NULL },
-	{ SRVCTRL_RADIO, 0, ID_SERVER_PORTALLIGHT, ITEM_ALWAYSON,
-		"Lightning gun teleport to portal:", &s_scriptdata.server.portallight, -999999999, 999999999, NULL, 9, 9, NULL },
 	{ SRVCTRL_RADIO, 0, ID_SERVER_MINIGAME, ITEM_ALWAYSON,
 		"Minigame quad:", &s_scriptdata.server.minigame, -999999999, 999999999, NULL, 9, 9, NULL },
 	{ SRVCTRL_SPIN, 0, ID_SERVER_OVERLAY, ITEM_ALWAYSON,
@@ -976,8 +945,6 @@ static controlinit_t srv_other[] = {
 		"Random items:", &s_scriptdata.server.randomItems, -999999999, 999999999, NULL, 9, 9, NULL },
 	{ SRVCTRL_SPIN, 0, ID_SERVER_SLICKMOVE, ITEM_ALWAYSON,
 		"Player move:", &s_scriptdata.server.slickmove, -999999999, 999999999, NULL, 9, 9, slickmove_list },
-	/*{ SRVCTRL_TEXTFIELD, 0, ID_SERVER_MUSIC, ITEM_ALWAYSON,
-		"Music:", &s_scriptdata.server.music, -9999999, 9999999, NULL, 16, 64, NULL },*/
 	{ SRVCTRL_NUMFIELD, 0, ID_SERVER_SPAWNPROTECT, ITEM_ALWAYSON,
 		"Spawn protect:", &s_scriptdata.server.spawnprotect, -999999999, 999999999, NULL, 9, 9, NULL },
 	{ SRVCTRL_RADIO, 0, ID_SERVER_ELIMINATION_LOCKSPECTATOR, ITEM_ALWAYSON,
@@ -1828,7 +1795,7 @@ StartServer_ServerPage_Load
 */
 static void StartServer_ServerPage_Load( void )
 {
-	s_servercontrols.gameType.curvalue = gametype_remap2[s_scriptdata.gametype];
+	s_servercontrols.gameType.curvalue = s_scriptdata.gametype;
 
 	StartServer_ServerPage_InitControlsFromScript(-1);
 }
@@ -2028,7 +1995,7 @@ static void StartServer_ServerPage_Event( void* ptr, int event )
 			}
 
 			StartServer_SaveScriptData();
-			StartServer_LoadScriptDataFromType(gametype_remap[s_servercontrols.gameType.curvalue]);
+			StartServer_LoadScriptDataFromType(s_servercontrols.gameType.curvalue);
 
 			StartServer_ServerPage_InitControlsFromScript(-1);	// gametype is already accurate
 			StartServer_ServerPage_UpdateInterface();

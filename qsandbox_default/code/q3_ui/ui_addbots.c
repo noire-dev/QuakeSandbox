@@ -300,7 +300,6 @@ static void UI_AddBotsMenu_GetSortedBotNums( void ) {
 	qsort( addBotsMenuInfo.sortedBotNums, addBotsMenuInfo.numBots, sizeof(addBotsMenuInfo.sortedBotNums[0]), UI_AddBotsMenu_SortCompare );
 }
 
-
 /*
 =================
 UI_AddBotsMenu_Draw
@@ -357,50 +356,34 @@ if(cl_language.integer == 1){
 	}
 }
 
-
-
-
-
-
-	
 /*
 =================
 UI_AddBotsMenu_Init
 =================
 */
 static const char *skillNames[] = {
-	"Novice",
-	"Explorer",
-	"Easy Shooter",
-	"Intermediate Fighter",
-	"Master of Survival!",
-	"Tactician!",
-	"Experienced Warrior!",
-	"Champion!",
-	"Strategist!",
-	"Veteran!",
-	"Arena Hero!",
-	"Assassin!",
-	"Mastermind!",
-	"Arena Legend!",
+	"Noob",
+	"Easy",
+	"Medium",
+	"Hard",
+	"Nightmare!",
+	"Infinite ammo",
+	"Ultra HP",
+	"Ultra Damage",
+	"Nextbot",
 	0
 };
 
 static const char* skillNames_ru[] = {
-	"Новичок",
-	"Исследователь",
-	"Легкий стрелок",
-	"Средний боец",
-	"Мастер выживания!",
-	"Тактик!",
-	"Опытный воин!",
-	"Богатырь!",
-	"Стратег!",
-	"Ветеран!",
-	"Герой арены!",
-	"Убийца!",
-	"Интеллектуальный гигант!",
-	"Легенда Арены!",
+	"Нуб",
+	"Легкий",
+	"Средний",
+	"Сложный",
+	"Кошмар!",
+	"Беск патроны",
+	"Ультра HP",
+	"Ультра урон",
+	"Некстбот",
 	0
 };
 
@@ -494,8 +477,8 @@ if(cl_language.integer == 1){
 	addBotsMenuInfo.skill_slider.generic.callback = UI_AddBotsMenu_SkillChangeEvent;
 	addBotsMenuInfo.skill_slider.generic.id		= ID_SKILLSLIDER;
 	addBotsMenuInfo.skill_slider.minvalue			= 0.0;
-	addBotsMenuInfo.skill_slider.maxvalue			= 13.0;
-	addBotsMenuInfo.skill_slider.curvalue			= Com_Clamp( 0, 13, (int)trap_Cvar_VariableValue( "g_spSkill" ) - 1 );
+	addBotsMenuInfo.skill_slider.maxvalue			= 8.0;
+	addBotsMenuInfo.skill_slider.curvalue			= Com_Clamp( 0, 8, (int)trap_Cvar_VariableValue( "g_spSkill" ) - 1 );
 
    y += SMALLCHAR_HEIGHT;
 	addBotsMenuInfo.skill.generic.type		= MTYPE_SPINCONTROL;

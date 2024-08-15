@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #define MAX_TOKENNUM 524288*8
 
-static char 		buffergmod[ 2500000*8 ];
+static char 		mapbuffer[ 2500000*8 ];
 
 typedef enum {
 	TOT_LPAREN,
@@ -305,6 +305,7 @@ fieldCopy_t fieldsCopy[] = {
 	{"sb_ettype", FOFS(sb_ettype), F_INT},
 	{"sb_takedamage", FOFS(sb_takedamage), F_INT},
 	{"sb_takedamage2", FOFS(sb_takedamage2), F_INT},
+	{"objectType", FOFS(objectType), F_INT},
 
 	{"distance", FOFS(distance), F_FLOAT},
 	{"type", FOFS(type), F_INT},
@@ -409,18 +410,18 @@ void G_LoadMapfile( char *filename ){
 	ClearRegisteredItems();
 	G_ClearEntities();
 
-	trap_FS_Read( buffergmod, len, f );
-	buffergmod[len] = 0;
+	trap_FS_Read( mapbuffer, len, f );
+	mapbuffer[len] = 0;
 	trap_FS_FCloseFile( f );
 	
-	COM_Compress(buffergmod);
+	COM_Compress(mapbuffer);
 	
 	for ( i = 0; i < MAX_MAPFILE_LENGTH; i++ ){
 		
 		//Filter comments( start at # and end at break )
-		if( buffergmod[i] == '#' ){
+		if( mapbuffer[i] == '#' ){
 			while( i < MAX_MAPFILE_LENGTH && !pgbreak ){
-				if( buffergmod[i] == '\n' || buffergmod[i] == '\r' )
+				if( mapbuffer[i] == '\n' || mapbuffer[i] == '\r' )
 					pgbreak = qtrue;
 				i++;
 			}
@@ -429,9 +430,9 @@ void G_LoadMapfile( char *filename ){
 			//continue;
 		}
 		
-		if( SkippedChar( buffergmod[i] ) ){
+		if( SkippedChar( mapbuffer[i] ) ){
 			if( !lastSpace ){
-				buffergmod[charCount] = ' ';
+				mapbuffer[charCount] = ' ';
 				charCount++;
 				lastSpace = qtrue;
 			}
@@ -439,13 +440,13 @@ void G_LoadMapfile( char *filename ){
 		}
 		
 		lastSpace = qfalse;
-		buffergmod[charCount] = buffergmod[i];
+		mapbuffer[charCount] = mapbuffer[i];
 		charCount++;
 	}
 	
 	i = 0;
 	while( i < MAX_MAPFILE_LENGTH && tokenNum < MAX_TOKENNUM){
-		i = G_setTokens2( buffergmod, tokens2[tokenNum].value, i);
+		i = G_setTokens2( mapbuffer, tokens2[tokenNum].value, i);
 		tokens2[tokenNum].type = G_setTokenType2( tokens2[tokenNum].value );
 		tokenNum++;
 	}
@@ -501,18 +502,18 @@ void G_LoadMapfileAll( char *filename ){
 	ClearRegisteredItems();
 	G_ClearEntitiesAll();
 
-	trap_FS_Read( buffergmod, len, f );
-	buffergmod[len] = 0;
+	trap_FS_Read( mapbuffer, len, f );
+	mapbuffer[len] = 0;
 	trap_FS_FCloseFile( f );
 	
-	COM_Compress(buffergmod);
+	COM_Compress(mapbuffer);
 	
 	for ( i = 0; i < MAX_MAPFILE_LENGTH; i++ ){
 		
 		//Filter comments( start at # and end at break )
-		if( buffergmod[i] == '#' ){
+		if( mapbuffer[i] == '#' ){
 			while( i < MAX_MAPFILE_LENGTH && !pgbreak ){
-				if( buffergmod[i] == '\n' || buffergmod[i] == '\r' )
+				if( mapbuffer[i] == '\n' || mapbuffer[i] == '\r' )
 					pgbreak = qtrue;
 				i++;
 			}
@@ -521,9 +522,9 @@ void G_LoadMapfileAll( char *filename ){
 			//continue;
 		}
 		
-		if( SkippedChar( buffergmod[i] ) ){
+		if( SkippedChar( mapbuffer[i] ) ){
 			if( !lastSpace ){
-				buffergmod[charCount] = ' ';
+				mapbuffer[charCount] = ' ';
 				charCount++;
 				lastSpace = qtrue;
 			}
@@ -531,13 +532,13 @@ void G_LoadMapfileAll( char *filename ){
 		}
 		
 		lastSpace = qfalse;
-		buffergmod[charCount] = buffergmod[i];
+		mapbuffer[charCount] = mapbuffer[i];
 		charCount++;
 	}
 	
 	i = 0;
 	while( i < MAX_MAPFILE_LENGTH && tokenNum < MAX_TOKENNUM){
-		i = G_setTokens2( buffergmod, tokens2[tokenNum].value, i);
+		i = G_setTokens2( mapbuffer, tokens2[tokenNum].value, i);
 		tokens2[tokenNum].type = G_setTokenType2( tokens2[tokenNum].value );
 		tokenNum++;
 	}

@@ -18,27 +18,10 @@ START SERVER GLOBAL DATA USED BY UI AND SCRIPT *****
 
 scriptdata_t s_scriptdata;
 
-
-// map game type to internal flags
-int gametype_remap[NUM_GAMETYPES] = {
-		GT_FFA,			
-		GT_TOURNAMENT, 		
-		GT_TEAM, 		
-		GT_CTF,
-		GT_1FCTF,
-		GT_OBELISK,
-		GT_HARVESTER,
-		GT_ELIMINATION, 	
-		GT_CTF_ELIMINATION, 	
-		GT_LMS, 		
-		GT_DOUBLE_D,
-		GT_DOMINATION
-};		
-int gametype_remap2[MAX_GAME_TYPE] = {0, 1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
-
-// order must mach that of gametype_remap[]
 char* gametype_cvar_base[NUM_GAMETYPES] = {
+	"uie_sandbox_%s",
 	"uie_ffa_%s",
+	"uie_single_%s",
 	"uie_tourney_%s",
 	"uie_team_%s",
 	"uie_ctf_%s",
@@ -52,20 +35,16 @@ char* gametype_cvar_base[NUM_GAMETYPES] = {
 	"uie_domination_%s"
 };
 
-
-
-
 const char* idmap_list[] = {
 	"gm_construct",
 	"gm_flatgrass",
 	0
 };
 
-
-
-
 const char *gametype_items[NUM_GAMETYPES + 1] = {
+	"Sandbox",
 	"Free For All",
+	"Single Player",
 	"Tournament",
 	"Team Deathmatch",
 	"Capture the Flag",
@@ -81,7 +60,9 @@ const char *gametype_items[NUM_GAMETYPES + 1] = {
 };
 
 const char *gametype_itemsru[NUM_GAMETYPES + 1] = {
+	"Песочница",
 	"Все Против Всех",
+	"Одиночная Игра",
 	"Турнир",
 	"Командный Бой",
 	"Захват флага",
@@ -95,43 +76,6 @@ const char *gametype_itemsru[NUM_GAMETYPES + 1] = {
 	"Доминирование",
 	0
 };
-
-const char *gametypen_items[NUM_GAMETYPES + 2] = {
-	"Free For All",
-	"Tournament",
-	"Single Player",
-	"Team Deathmatch",
-	"Capture the Flag",
-	"One Flag Capture",
-	"Overload",
-	"Harvester",
-	"Elimination",
-	"CTF Elimination",
-	"Last Man Standing",
-	"Double Domination",
-	"Domination",
-	0
-};
-
-const char *gametypen_itemsru[NUM_GAMETYPES + 2] = {
-	"Все Против Всех",
-	"Турнир",
-	"Одиночная игра",
-	"Командный Бой",
-	"Захват флага",
-	"Один Флаг",
-	"Атака Базы",
-	"Жнец",
-	"Устранение",
-	"CTF-Устранение",
-	"Выживание",
-	"A и B",
-	"Доминирование",
-	0
-};
-
-
-
 
 //
 // individual items
@@ -240,53 +184,48 @@ typedef struct {
 
 
 uie_cvarTable_t uie_cvarTable[] = {
-	{ "uie_gametype", "0" },
-	{ "uie_pure", "0" },
-	{ "uie_dynamiclight", "0" },
-	{ "uie_dedicated", "0" },
-	{ "uie_inactivity", "90" },
-	{ "uie_config_showid", "0" },
-	{ "uie_pmove_fixed", "1" },
-	{ "uie_pmove_msec", "8" },
-	{ "uie_smoothclients", "1" },
-	{ "uie_syncclients", "0" },
-	{ "uie_allowmaxrate", "0" },
-	{ "uie_maxrate", "0" },
-	{ "uie_allowdownload", "0" },
-	{ "uie_allowpass", "0" },
-	{ "uie_password", "" },
-	{ "uie_allowvote", "0" },
-	{ "uie_minPing", "0" },
-	{ "uie_maxPing", "0" },
-	{ "uie_allowMinPing", "0" },
-	{ "uie_allowMaxPing", "0" },
-	{ "uie_preventConfigBug", "0" },
-	{ "uie_gravity", "800" },
-	{ "uie_jumpheight", "270" },
-	{ "uie_knockback", "1000" },
-	{ "uie_quadfactor", "3" },
-	{ "uie_netport", "27960" },
-	{ "uie_svfps", "20" },
-	{ "uie_allowprivateclients", "0" },
-	{ "uie_privateclients", "0" },
-	{ "uie_privatepassword", "" },
-	{ "uie_punkbuster", "0" },
-	{ "uie_strictAuth", "1" },
-   { "uie_lanForceRate", "1" },
-   
-   { "uie_maxEntities", "4096" },
-   { "uie_singleskill", "2" },
-   { "uie_kill", "1" },
-   { "uie_damageModifier", "1" },
-   { "uie_selectedmod", "default" },
-   { "uie_flightlimit", "100" },
-   { "uie_flightregen", "1" },
-   { "uie_flightpower", "1" },
-   { "uie_building", "1" },
-   { "uie_spawnselect", "0" },
-   { "uie_roundmode", "0" },
-   { "uie_elimination", "0" },
-   { "uie_obeliskHealth", "2500" },
+{ "uie_gametype", "0" },
+{ "uie_pure", "0" },
+{ "uie_dynamiclight", "0" },
+{ "uie_dedicated", "0" },
+{ "uie_inactivity", "0" },
+{ "uie_config_showid", "0" },
+{ "uie_pmove_fixed", "1" },
+{ "uie_pmove_msec", "8" },
+{ "uie_smoothclients", "1" },
+{ "uie_syncclients", "0" },
+{ "uie_allowmaxrate", "0" },
+{ "uie_maxrate", "0" },
+{ "uie_allowdownload", "0" },
+{ "uie_allowpass", "0" },
+{ "uie_password", "" },
+{ "uie_allowvote", "1" },
+{ "uie_minPing", "0" },
+{ "uie_maxPing", "0" },
+{ "uie_allowMinPing", "0" },
+{ "uie_allowMaxPing", "0" },
+{ "uie_preventConfigBug", "0" },
+{ "uie_gravity", "800" },
+{ "uie_jumpheight", "270" },
+{ "uie_knockback", "1000" },
+{ "uie_quadfactor", "3" },
+{ "uie_netport", "27960" },
+{ "uie_svfps", "60" },
+{ "uie_allowprivateclients", "0" },
+{ "uie_privateclients", "0" },
+{ "uie_privatepassword", "" },
+{ "uie_punkbuster", "0" },
+{ "uie_strictAuth", "1" },
+{ "uie_lanForceRate", "1" },
+
+{ "uie_maxEntities", "1024" },
+{ "uie_singleskill", "1" },
+{ "uie_kill", "1" },
+{ "uie_damageModifier", "1" },
+{ "uie_selectedmod", "default" },
+{ "uie_roundmode", "0" },
+{ "uie_elimination", "0" },
+{ "uie_obeliskHealth", "2500" },
 { "uie_obeliskRegenPeriod", "1" },
 { "uie_obeliskRegenAmount", "15" },
 { "uie_obeliskRespawnDelay", "10" },
@@ -309,19 +248,18 @@ uie_cvarTable_t uie_cvarTable[] = {
 { "uie_noplayerclip", "0" },
 { "uie_jumpheight", "270" },
 { "uie_regenarmor", "0" },
-{ "uie_ammolimit", "200" },
+{ "uie_ammolimit", "9000" },
 { "uie_quadfactor", "3" },
 { "uie_respawntime", "0" },
 { "uie_forcerespawn", "0" },
 { "uie_vampire", "0.0" },
 { "uie_vampire_max_health", "500" },
 { "uie_regen", "0" },
-{ "uie_locationdamage", "0" },
 { "uie_maxweaponpickup", "1" },
 { "uie_droppeditemtime", "30" },
 { "uie_autoflagreturn", "30" },
 { "uie_armorprotect", "0.66" },
-{ "uie_respawnwait", "0" },
+{ "uie_respawnwait", "3000" },
 { "uie_speedfactor", "1.3" },
 { "uie_scoutspeedfactor", "1.5" },
 { "uie_scoutfirespeed", "1.5" },
@@ -352,24 +290,24 @@ uie_cvarTable_t uie_cvarTable[] = {
 { "uie_teamred_firespeed", "1" },
 { "uie_teamred_damage", "1" },
 { "uie_teamred_infammo", "0" },
-{ "uie_teamred_respawnwait", "0" },
+{ "uie_teamred_respawnwait", "3000" },
 { "uie_teamred_pickupitems", "1" },
 { "uie_eliminationredrespawn", "0" },
-{ "uie_eliminationred_startHealth", "200" },
+{ "uie_eliminationred_startHealth", "100" },
 { "uie_eliminationred_startArmor", "0" },
 { "uie_teamblue_speed", "320" },
 { "uie_teamblue_gravityModifier", "1" },
 { "uie_teamblue_firespeed", "1" },
 { "uie_teamblue_damage", "1" },
 { "uie_teamblue_infammo", "0" },
-{ "uie_teamblue_respawnwait", "0" },
+{ "uie_teamblue_respawnwait", "3000" },
 { "uie_teamblue_pickupitems", "1" },
 { "uie_eliminationrespawn", "0" },
-{ "uie_elimination_startHealth", "200" },
+{ "uie_elimination_startHealth", "100" },
 { "uie_elimination_startArmor", "0" },
 { "uie_eliminationred_grapple", "0" },
 { "uie_eliminationred_gauntlet", "1" },
-{ "uie_eliminationred_machinegun", "0" },
+{ "uie_eliminationred_machinegun", "500" },
 { "uie_eliminationred_shotgun", "0" },
 { "uie_eliminationred_grenade", "0" },
 { "uie_eliminationred_rocket", "0" },
@@ -384,7 +322,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 { "uie_eliminationred_antimatter", "0" },
 { "uie_elimination_grapple", "0" },
 { "uie_elimination_gauntlet", "1" },
-{ "uie_elimination_machinegun", "0" },
+{ "uie_elimination_machinegun", "500" },
 { "uie_elimination_shotgun", "0" },
 { "uie_elimination_grenade", "0" },
 { "uie_elimination_rocket", "0" },
@@ -412,13 +350,10 @@ uie_cvarTable_t uie_cvarTable[] = {
 { "uie_elimination_flight", "0" },
 { "uie_elimination_items", "0" },
 { "uie_elimination_holdable", "0" },
-{ "uie_portalgrabitems", "0" },
-{ "uie_portallight", "0" },
 { "uie_minigame", "0" },
 { "uie_overlay", "0" },
 { "uie_randomItems", "0" },
 { "uie_slickmove", "0" },
-/*{ "uie_music", "" },*/
 { "uie_spawnprotect", "500" },
 { "uie_elimination_lockspectator", "0" },
 { "uie_awardpushing", "1" },
@@ -463,7 +398,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 { "uie_ghtimeout", "10000" },
 // Пила
 { "uie_gdelay", "400" },
-{ "uie_gdamage", "50" },
+{ "uie_gdamage", "100" },
 { "uie_grange", "32" },
 { "uie_gknockback", "1" },
 // Автомат
@@ -494,8 +429,8 @@ uie_cvarTable_t uie_cvarTable[] = {
 // Гранаты
 { "uie_glammocount", "-1" },
 { "uie_glweaponcount", "-1" },
-{ "uie_gldelay", "800" },
-{ "uie_glspeed", "700" },
+{ "uie_gldelay", "500" },
+{ "uie_glspeed", "1000" },
 { "uie_glbounce", "1" },
 { "uie_glgravity", "1" },
 { "uie_gltimeout", "2500" },
@@ -653,6 +588,70 @@ uie_cvarTable_t uie_cvarTable[] = {
 { "uie_amhoming", "0" },
 { "uie_amguided", "0" },
 
+	{ "uie_sandbox_fragtype", "0" },
+	{ "uie_sandbox_timetype", "0" },
+	{ "uie_sandbox_customfraglimits", "" },
+	{ "uie_sandbox_customtimelimits", "" },
+	{ "uie_sandbox_maplist", "" },
+	{ "uie_sandbox_maplistexclude", "" },
+	{ "uie_sandbox_MapRepeat", "1" },
+	{ "uie_sandbox_MapSource", "0" },
+	{ "uie_sandbox_RandomMapCount", "5" },
+	{ "uie_sandbox_RandomMapType", "0" },
+	{ "uie_sandbox_slottype", "" },
+	{ "uie_sandbox_botname", "" },
+	{ "uie_sandbox_botexclude", "" },
+	{ "uie_sandbox_botskill", "" },
+	{ "uie_sandbox_BotSelection", "1" },
+	{ "uie_sandbox_BotCount", "0" },
+	{ "uie_sandbox_BotChange", "0" },
+	{ "uie_sandbox_OpenSlotCount", "99" },
+	{ "uie_sandbox_BotSkillType", "0" },
+	{ "uie_sandbox_BotSkillValue", "0" },
+	{ "uie_sandbox_BotSkillBias", "0" },
+	{ "uie_sandbox_PlayerJoinAs", "0" },
+	{ "uie_sandbox_hostname", "QS Sandbox" },
+	{ "uie_sandbox_ForceRespawn", "0" },
+	{ "uie_sandbox_itemGroups", "" },
+	{ "uie_sandbox_itemsHidden", "" },
+	{ "uie_sandbox_WarmUp", "20" },
+	{ "uie_sandbox_doWarmUp", "0" },
+	{ "uie_sandbox_fraglimit", "0" },
+	{ "uie_sandbox_timelimit", "0" },
+	{ "uie_sandbox_weaponrespawn", "5" },
+	
+	{ "uie_single_fragtype", "0" },
+	{ "uie_single_timetype", "0" },
+	{ "uie_single_customfraglimits", "" },
+	{ "uie_single_customtimelimits", "" },
+	{ "uie_single_maplist", "" },
+	{ "uie_single_maplistexclude", "" },
+	{ "uie_single_MapRepeat", "1" },
+	{ "uie_single_MapSource", "0" },
+	{ "uie_single_RandomMapCount", "5" },
+	{ "uie_single_RandomMapType", "0" },
+	{ "uie_single_slottype", "" },
+	{ "uie_single_botname", "" },
+	{ "uie_single_botexclude", "" },
+	{ "uie_single_botskill", "" },
+	{ "uie_single_BotSelection", "1" },
+	{ "uie_single_BotCount", "0" },
+	{ "uie_single_BotChange", "0" },
+	{ "uie_single_OpenSlotCount", "99" },
+	{ "uie_single_BotSkillType", "0" },
+	{ "uie_single_BotSkillValue", "0" },
+	{ "uie_single_BotSkillBias", "0" },
+	{ "uie_single_PlayerJoinAs", "0" },
+	{ "uie_single_hostname", "QS Single" },
+	{ "uie_single_ForceRespawn", "0" },
+	{ "uie_single_itemGroups", "" },
+	{ "uie_single_itemsHidden", "" },
+	{ "uie_single_WarmUp", "20" },
+	{ "uie_single_doWarmUp", "0" },
+	{ "uie_single_fraglimit", "0" },
+	{ "uie_single_timelimit", "0" },
+	{ "uie_single_weaponrespawn", "5" },
+
 	{ "uie_ffa_fragtype", "0" },
 	{ "uie_ffa_timetype", "0" },
 	{ "uie_ffa_customfraglimits", "" },
@@ -667,10 +666,10 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_ffa_botname", "" },
 	{ "uie_ffa_botexclude", "" },
 	{ "uie_ffa_botskill", "" },
-	{ "uie_ffa_BotSelection", "0" },
+	{ "uie_ffa_BotSelection", "1" },
 	{ "uie_ffa_BotCount", "4" },
 	{ "uie_ffa_BotChange", "0" },
-	{ "uie_ffa_OpenSlotCount", "0" },
+	{ "uie_ffa_OpenSlotCount", "99" },
 	{ "uie_ffa_BotSkillType", "0" },
 	{ "uie_ffa_BotSkillValue", "0" },
 	{ "uie_ffa_BotSkillBias", "0" },
@@ -699,10 +698,10 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_tourney_botname", "" },
 	{ "uie_tourney_botexclude", "" },
 	{ "uie_tourney_botskill", "" },
-	{ "uie_tourney_BotSelection", "0" },
+	{ "uie_tourney_BotSelection", "1" },
 	{ "uie_tourney_BotCount", "4" },
 	{ "uie_tourney_BotChange", "0" },
-	{ "uie_tourney_OpenSlotCount", "0" },
+	{ "uie_tourney_OpenSlotCount", "99" },
 	{ "uie_tourney_BotSkillType", "0" },
 	{ "uie_tourney_BotSkillValue", "0" },
 	{ "uie_tourney_BotSkillBias", "0" },
@@ -732,10 +731,10 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_team_botexclude", "" },
 	{ "uie_team_botexclude", "" },
 	{ "uie_team_botskill", "" },
-	{ "uie_team_BotSelection", "0" },
+	{ "uie_team_BotSelection", "1" },
 	{ "uie_team_BotCount", "4" },
 	{ "uie_team_BotChange", "0" },
-	{ "uie_team_OpenSlotCount", "0" },
+	{ "uie_team_OpenSlotCount", "99" },
 	{ "uie_team_BotSkillType", "0" },
 	{ "uie_team_BotSkillValue", "0" },
 	{ "uie_team_BotSkillBias", "0" },
@@ -767,10 +766,10 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_ctf_slottype", "" },
 	{ "uie_ctf_botname", "" },
 	{ "uie_ctf_botskill", "" },
-	{ "uie_ctf_BotSelection", "0" },
+	{ "uie_ctf_BotSelection", "1" },
 	{ "uie_ctf_BotCount", "4" },
 	{ "uie_ctf_BotChange", "0" },
-	{ "uie_ctf_OpenSlotCount", "0" },
+	{ "uie_ctf_OpenSlotCount", "99" },
 	{ "uie_ctf_BotSkillType", "0" },
 	{ "uie_ctf_BotSkillValue", "0" },
 	{ "uie_ctf_BotSkillBias", "0" },
@@ -802,10 +801,10 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_oneflag_slottype", "" },
 	{ "uie_oneflag_botname", "" },
 	{ "uie_oneflag_botskill", "" },
-	{ "uie_oneflag_BotSelection", "0" },
+	{ "uie_oneflag_BotSelection", "1" },
 	{ "uie_oneflag_BotCount", "4" },
 	{ "uie_oneflag_BotChange", "0" },
-	{ "uie_oneflag_OpenSlotCount", "0" },
+	{ "uie_oneflag_OpenSlotCount", "99" },
 	{ "uie_oneflag_BotSkillType", "0" },
 	{ "uie_oneflag_BotSkillValue", "0" },
 	{ "uie_oneflag_BotSkillBias", "0" },
@@ -837,10 +836,10 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_overload_slottype", "" },
 	{ "uie_overload_botname", "" },
 	{ "uie_overload_botskill", "" },
-	{ "uie_overload_BotSelection", "0" },
+	{ "uie_overload_BotSelection", "1" },
 	{ "uie_overload_BotCount", "4" },
 	{ "uie_overload_BotChange", "0" },
-	{ "uie_overload_OpenSlotCount", "0" },
+	{ "uie_overload_OpenSlotCount", "99" },
 	{ "uie_overload_BotSkillType", "0" },
 	{ "uie_overload_BotSkillValue", "0" },
 	{ "uie_overload_BotSkillBias", "0" },
@@ -872,10 +871,10 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_harvester_slottype", "" },
 	{ "uie_harvester_botname", "" },
 	{ "uie_harvester_botskill", "" },
-	{ "uie_harvester_BotSelection", "0" },
+	{ "uie_harvester_BotSelection", "1" },
 	{ "uie_harvester_BotCount", "4" },
 	{ "uie_harvester_BotChange", "0" },
-	{ "uie_harvester_OpenSlotCount", "0" },
+	{ "uie_harvester_OpenSlotCount", "99" },
 	{ "uie_harvester_BotSkillType", "0" },
 	{ "uie_harvester_BotSkillValue", "0" },
 	{ "uie_harvester_BotSkillBias", "0" },
@@ -907,10 +906,10 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_elim_slottype", "" },
 	{ "uie_elim_botname", "" },
 	{ "uie_elim_botskill", "" },
-	{ "uie_elim_BotSelection", "0" },
+	{ "uie_elim_BotSelection", "1" },
 	{ "uie_elim_BotCount", "4" },
 	{ "uie_elim_BotChange", "0" },
-	{ "uie_elim_OpenSlotCount", "0" },
+	{ "uie_elim_OpenSlotCount", "99" },
 	{ "uie_elim_BotSkillType", "0" },
 	{ "uie_elim_BotSkillValue", "0" },
 	{ "uie_elim_BotSkillBias", "0" },
@@ -942,10 +941,10 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_ctfelim_slottype", "" },
 	{ "uie_ctfelim_botname", "" },
 	{ "uie_ctfelim_botskill", "" },
-	{ "uie_ctfelim_BotSelection", "0" },
+	{ "uie_ctfelim_BotSelection", "1" },
 	{ "uie_ctfelim_BotCount", "4" },
 	{ "uie_ctfelim_BotChange", "0" },
-	{ "uie_ctfelim_OpenSlotCount", "0" },
+	{ "uie_ctfelim_OpenSlotCount", "99" },
 	{ "uie_ctfelim_BotSkillType", "0" },
 	{ "uie_ctfelim_BotSkillValue", "0" },
 	{ "uie_ctfelim_BotSkillBias", "0" },
@@ -977,10 +976,10 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_lms_slottype", "" },
 	{ "uie_lms_botname", "" },
 	{ "uie_lms_botskill", "" },
-	{ "uie_lms_BotSelection", "0" },
+	{ "uie_lms_BotSelection", "1" },
 	{ "uie_lms_BotCount", "4" },
 	{ "uie_lms_BotChange", "0" },
-	{ "uie_lms_OpenSlotCount", "0" },
+	{ "uie_lms_OpenSlotCount", "99" },
 	{ "uie_lms_BotSkillType", "0" },
 	{ "uie_lms_BotSkillValue", "0" },
 	{ "uie_lms_BotSkillBias", "0" },
@@ -1012,10 +1011,10 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_doubledom_slottype", "" },
 	{ "uie_doubledom_botname", "" },
 	{ "uie_doubledom_botskill", "" },
-	{ "uie_doubledom_BotSelection", "0" },
+	{ "uie_doubledom_BotSelection", "1" },
 	{ "uie_doubledom_BotCount", "4" },
 	{ "uie_doubledom_BotChange", "0" },
-	{ "uie_doubledom_OpenSlotCount", "0" },
+	{ "uie_doubledom_OpenSlotCount", "99" },
 	{ "uie_doubledom_BotSkillType", "0" },
 	{ "uie_doubledom_BotSkillValue", "0" },
 	{ "uie_doubledom_BotSkillBias", "0" },
@@ -1047,10 +1046,10 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_domination_slottype", "" },
 	{ "uie_domination_botname", "" },
 	{ "uie_domination_botskill", "" },
-	{ "uie_domination_BotSelection", "0" },
+	{ "uie_domination_BotSelection", "1" },
 	{ "uie_domination_BotCount", "4" },
 	{ "uie_domination_BotChange", "0" },
-	{ "uie_domination_OpenSlotCount", "0" },
+	{ "uie_domination_OpenSlotCount", "99" },
 	{ "uie_domination_BotSkillType", "0" },
 	{ "uie_domination_BotSkillValue", "0" },
 	{ "uie_domination_BotSkillBias", "0" },
@@ -1110,7 +1109,7 @@ const int uie_cvarImportSize = sizeof(uie_cvarImport)/sizeof(uie_cvarImport[0]);
 
 
 
-#define MAX_CVAR_DATA (24*1024)
+#define MAX_CVAR_DATA (30*1024)
 #define UIE_SKIRMISH_DATAFILE "mitechui.dat"
 
 static qboolean skirmishCvarLoaded = qfalse;
@@ -1787,7 +1786,7 @@ void StartServer_LoadMapList(void)
 	if (s_scriptdata.map.listSource == MAP_MS_RANDOMEXCLUDE)
 		ml = "maplistexclude";
 
-	s = gametype_cvar_base[gametype_remap2[s_scriptdata.gametype]];
+	s = gametype_cvar_base[s_scriptdata.gametype];
 	UI_LoadMultiArray(s, ml, SSMP_ShortName_Callback, MAX_NUMMAPS, SHORTMAP_BUFFER, ';');
 }
 
@@ -2151,14 +2150,11 @@ static void StartServer_BuildMapDistribution(void)
 		gamebits = GametypeBits( Info_ValueForKey( info, "type") );
 		for (j = 0; j < NUM_GAMETYPES; j++)
 		{
-			gametype = gametype_remap[j];
+			gametype = j;
 			matchbits = 1 << gametype;
-			if( gametype == GT_FFA ) {
-				matchbits |= ( 1 << GT_SINGLE_PLAYER );
-			}
 
 			if (matchbits & gamebits)
-				s_scriptdata.map.TypeCount[ gametype_remap2[gametype] ][maptype]++;
+				s_scriptdata.map.TypeCount[ gametype ][maptype]++;
 		}
 	}
 }
@@ -2178,7 +2174,7 @@ void StartServer_SaveMapList(void)
 	if (s_scriptdata.map.listSource == MAP_MS_RANDOMEXCLUDE)
 		s1 = "maplistexclude";
 
-	s = gametype_cvar_base[gametype_remap2[s_scriptdata.gametype]];
+	s = gametype_cvar_base[s_scriptdata.gametype];
 	UI_SaveMultiArray(s, s1, SSMP_ShortName_Callback, MAX_NUMMAPS, SHORTMAP_BUFFER, ';');
 }
 
@@ -2207,7 +2203,7 @@ static void StartServer_LoadMapScriptData(void)
 	f = "customfraglimits";
 	f2 = "fragtype";
 
-	s = gametype_cvar_base[gametype_remap2[s_scriptdata.gametype]];
+	s = gametype_cvar_base[s_scriptdata.gametype];
 
 	if (s_scriptdata.gametype >= GT_CTF && !(s_scriptdata.gametype == GT_LMS)) {
 		s_scriptdata.map.fragLimit = UIE_GetSkirmishCvarIntClamp(0, 999, s, "capturelimit");
@@ -2271,7 +2267,7 @@ static void StartServer_SaveMapScriptData(void)
 	char* s;
 	char *f, *f2;
 
-	s = gametype_cvar_base[gametype_remap2[s_scriptdata.gametype]];
+	s = gametype_cvar_base[s_scriptdata.gametype];
 	f = "customfraglimits";
 	f2 = "fragtype";
 
@@ -2864,7 +2860,7 @@ void StartServer_LoadBotNameList(int type)
 	int i;
 
 	s_scriptdata.bot.typeSelect = type;
-	s = gametype_cvar_base[ gametype_remap2[s_scriptdata.gametype] ];
+	s = gametype_cvar_base[ s_scriptdata.gametype ];
 
 	memset(&s_scriptdata.bot.name, 0, PLAYER_SLOTS*MAX_NAME_LENGTH);
 
@@ -2940,7 +2936,7 @@ void StartServer_SaveBotNameList(void)
 	botskill_t* b;
 	qboolean exclude;
 
-	s = gametype_cvar_base[ gametype_remap2[s_scriptdata.gametype] ];
+	s = gametype_cvar_base[ s_scriptdata.gametype ];
 
 	if (StartServer_IsRandomBotExclude(s_scriptdata.bot.typeSelect)) {
 		exclude = qtrue;
@@ -2986,7 +2982,7 @@ void StartServer_LoadBotScriptData(void)
 	int i, value, max;
 	botskill_t* b;
 
-	s = gametype_cvar_base[ gametype_remap2[s_scriptdata.gametype] ];
+	s = gametype_cvar_base[ s_scriptdata.gametype ];
 
 	//
 	// load state values
@@ -3044,7 +3040,7 @@ static void StartServer_SaveBotScriptData(void)
 	// save state values
 	//
 
-	s = gametype_cvar_base[ gametype_remap2[s_scriptdata.gametype] ];
+	s = gametype_cvar_base[ s_scriptdata.gametype ];
 
 	// method of selecting bots
 	UIE_SetSkirmishCvarInt(s, "BotSelection", s_scriptdata.bot.typeSelect);
@@ -3110,7 +3106,7 @@ void StartServer_LoadDisabledItems(void)
 	char* ptr, *ptr_last;
 	int i;
 
-	s = gametype_cvar_base[ gametype_remap2[s_scriptdata.gametype] ];
+	s = gametype_cvar_base[ s_scriptdata.gametype ];
 
 	// load the group on/off/custom values
 	memset(buffer,0,sizeof(buffer));
@@ -3188,7 +3184,7 @@ static void StartServer_SaveItemScriptData(void)
 	char buffer[256];
 	int i;
 
-	s = gametype_cvar_base[ gametype_remap2[s_scriptdata.gametype] ];
+	s = gametype_cvar_base[ s_scriptdata.gametype ];
 
 	// save the group values
 	for (i = 0; i < ITEMGROUP_COUNT; i++)
@@ -3286,18 +3282,13 @@ static void StartServer_LoadServerScriptData(void)
 	}
 	
 //Noire.dev cvars
-		s_scriptdata.server.maxEntities = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_maxEntities" );
-		s_scriptdata.server.singleskill = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_singleskill" );
-		s_scriptdata.server.kill = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_kill" );
-		UIE_GetSkirmishCvar(NULL, "uie_damageModifier",s_scriptdata.server.damageModifier, 32);
-		UIE_GetSkirmishCvar(NULL, "uie_selectedmod",s_scriptdata.server.selectedmod, 32);
-		s_scriptdata.server.flightlimit = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_flightlimit" );
-		s_scriptdata.server.flightregen = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_flightregen" );
-		s_scriptdata.server.flightpower = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_flightpower" );
-		s_scriptdata.server.building = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_building" );
-		s_scriptdata.server.spawnselect = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_spawnselect" );
-		s_scriptdata.server.roundmode = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_roundmode" );
-		s_scriptdata.server.elimination = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_elimination" );
+s_scriptdata.server.maxEntities = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_maxEntities" );
+s_scriptdata.server.singleskill = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_singleskill" );
+s_scriptdata.server.kill = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_kill" );
+UIE_GetSkirmishCvar(NULL, "uie_damageModifier",s_scriptdata.server.damageModifier, 32);
+UIE_GetSkirmishCvar(NULL, "uie_selectedmod",s_scriptdata.server.selectedmod, 32);
+s_scriptdata.server.roundmode = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_roundmode" );
+s_scriptdata.server.elimination = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_elimination" );
 s_scriptdata.server.obeliskHealth = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_obeliskHealth" );
 s_scriptdata.server.obeliskRegenPeriod = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_obeliskRegenPeriod" );
 s_scriptdata.server.obeliskRegenAmount = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_obeliskRegenAmount" );
@@ -3328,7 +3319,6 @@ s_scriptdata.server.forcerespawn = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999
 UIE_GetSkirmishCvar(NULL, "uie_vampire",s_scriptdata.server.vampire, 32);
 s_scriptdata.server.vampire_max_health = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_vampire_max_health" );
 s_scriptdata.server.regen = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_regen" );
-s_scriptdata.server.locationdamage = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_locationdamage" );
 s_scriptdata.server.maxweaponpickup = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_maxweaponpickup" );
 s_scriptdata.server.droppeditemtime = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_droppeditemtime" );
 s_scriptdata.server.autoflagreturn = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_autoflagreturn" );
@@ -3417,13 +3407,10 @@ s_scriptdata.server.elimination_regen = UIE_GetSkirmishCvarIntClamp(-9999999, 99
 s_scriptdata.server.elimination_flight = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_elimination_flight" );
 s_scriptdata.server.elimination_items = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_elimination_items" );
 s_scriptdata.server.elimination_holdable = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_elimination_holdable" );
-s_scriptdata.server.portalgrabitems = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_portalgrabitems" );
-s_scriptdata.server.portallight = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_portallight" );
 s_scriptdata.server.minigame = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_minigame" );
 s_scriptdata.server.overlay = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_overlay" );
 s_scriptdata.server.randomItems = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_randomItems" );
 s_scriptdata.server.slickmove = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_slickmove" );
-/*s_scriptdata.server.music = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_music" );*/
 s_scriptdata.server.spawnprotect = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_spawnprotect" );
 s_scriptdata.server.elimination_lockspectator = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_elimination_lockspectator" );
 s_scriptdata.server.awardpushing = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_awardpushing" );
@@ -3667,7 +3654,7 @@ UIE_GetSkirmishCvar(NULL, "uie_amknockback",s_scriptdata.server.g_amknockback, 3
 	trap_Cvar_Set( "cl_selectedmod", s_scriptdata.server.selectedmod );
 
 	gametype = s_scriptdata.gametype;
-	s = gametype_cvar_base[ gametype_remap2[gametype] ];
+	s = gametype_cvar_base[ gametype ];
 
 	// reset server text control
 	UIE_GetSkirmishCvar( s, "hostname", s_scriptdata.server.hostname, MAX_HOSTNAME_LENGTH );
@@ -3750,19 +3737,14 @@ static void StartServer_SaveServerScriptData(void)
 		UIE_SetSkirmishCvarInt( NULL, "uie_lanForceRate", s_scriptdata.server.lanForceRate);
 	}
 	
-	//Noire.dev cvars
-	UIE_SetSkirmishCvarInt( NULL, "uie_maxEntities", s_scriptdata.server.maxEntities);
-	UIE_SetSkirmishCvarInt( NULL, "uie_singleskill", s_scriptdata.server.singleskill);
-	UIE_SetSkirmishCvarInt( NULL, "uie_kill", s_scriptdata.server.kill);
-	UIE_SetSkirmishCvar( NULL, "uie_damageModifier", s_scriptdata.server.damageModifier);
-	UIE_SetSkirmishCvar( NULL, "uie_selectedmod", s_scriptdata.server.selectedmod);
-	UIE_SetSkirmishCvarInt( NULL, "uie_flightlimit", s_scriptdata.server.flightlimit);
-	UIE_SetSkirmishCvarInt( NULL, "uie_flightregen", s_scriptdata.server.flightregen);
-	UIE_SetSkirmishCvarInt( NULL, "uie_flightpower", s_scriptdata.server.flightpower);
-	UIE_SetSkirmishCvarInt( NULL, "uie_building", s_scriptdata.server.building);
-	UIE_SetSkirmishCvarInt( NULL, "uie_spawnselect", s_scriptdata.server.spawnselect);
-	UIE_SetSkirmishCvarInt( NULL, "uie_roundmode", s_scriptdata.server.roundmode);
-	UIE_SetSkirmishCvarInt( NULL, "uie_elimination", s_scriptdata.server.elimination);
+//Noire.dev cvars
+UIE_SetSkirmishCvarInt( NULL, "uie_maxEntities", s_scriptdata.server.maxEntities);
+UIE_SetSkirmishCvarInt( NULL, "uie_singleskill", s_scriptdata.server.singleskill);
+UIE_SetSkirmishCvarInt( NULL, "uie_kill", s_scriptdata.server.kill);
+UIE_SetSkirmishCvar( NULL, "uie_damageModifier", s_scriptdata.server.damageModifier);
+UIE_SetSkirmishCvar( NULL, "uie_selectedmod", s_scriptdata.server.selectedmod);
+UIE_SetSkirmishCvarInt( NULL, "uie_roundmode", s_scriptdata.server.roundmode);
+UIE_SetSkirmishCvarInt( NULL, "uie_elimination", s_scriptdata.server.elimination);
 UIE_SetSkirmishCvarInt( NULL, "uie_obeliskHealth", s_scriptdata.server.obeliskHealth);
 UIE_SetSkirmishCvarInt( NULL, "uie_obeliskRegenPeriod", s_scriptdata.server.obeliskRegenPeriod);
 UIE_SetSkirmishCvarInt( NULL, "uie_obeliskRegenAmount", s_scriptdata.server.obeliskRegenAmount);
@@ -3793,7 +3775,6 @@ UIE_SetSkirmishCvarInt( NULL, "uie_forcerespawn", s_scriptdata.server.forcerespa
 UIE_SetSkirmishCvar( NULL, "uie_vampire", s_scriptdata.server.vampire);
 UIE_SetSkirmishCvarInt( NULL, "uie_vampire_max_health", s_scriptdata.server.vampire_max_health);
 UIE_SetSkirmishCvarInt( NULL, "uie_regen", s_scriptdata.server.regen);
-UIE_SetSkirmishCvarInt( NULL, "uie_locationdamage", s_scriptdata.server.locationdamage);
 UIE_SetSkirmishCvarInt( NULL, "uie_maxweaponpickup", s_scriptdata.server.maxweaponpickup);
 UIE_SetSkirmishCvarInt( NULL, "uie_droppeditemtime", s_scriptdata.server.droppeditemtime);
 UIE_SetSkirmishCvarInt( NULL, "uie_autoflagreturn", s_scriptdata.server.autoflagreturn);
@@ -3882,13 +3863,10 @@ UIE_SetSkirmishCvarInt( NULL, "uie_elimination_regen", s_scriptdata.server.elimi
 UIE_SetSkirmishCvarInt( NULL, "uie_elimination_flight", s_scriptdata.server.elimination_flight);
 UIE_SetSkirmishCvarInt( NULL, "uie_elimination_items", s_scriptdata.server.elimination_items);
 UIE_SetSkirmishCvarInt( NULL, "uie_elimination_holdable", s_scriptdata.server.elimination_holdable);
-UIE_SetSkirmishCvarInt( NULL, "uie_portalgrabitems", s_scriptdata.server.portalgrabitems);
-UIE_SetSkirmishCvarInt( NULL, "uie_portallight", s_scriptdata.server.portallight);
 UIE_SetSkirmishCvarInt( NULL, "uie_minigame", s_scriptdata.server.minigame);
 UIE_SetSkirmishCvarInt( NULL, "uie_overlay", s_scriptdata.server.overlay);
 UIE_SetSkirmishCvarInt( NULL, "uie_randomItems", s_scriptdata.server.randomItems);
 UIE_SetSkirmishCvarInt( NULL, "uie_slickmove", s_scriptdata.server.slickmove);
-/*UIE_SetSkirmishCvarInt( NULL, "uie_music", s_scriptdata.server.music);*/
 UIE_SetSkirmishCvarInt( NULL, "uie_spawnprotect", s_scriptdata.server.spawnprotect);
 UIE_SetSkirmishCvarInt( NULL, "uie_elimination_lockspectator", s_scriptdata.server.elimination_lockspectator);
 UIE_SetSkirmishCvarInt( NULL, "uie_awardpushing", s_scriptdata.server.awardpushing);
@@ -4127,7 +4105,7 @@ UIE_SetSkirmishCvarInt( NULL, "uie_amguided", s_scriptdata.server.g_amguided);
 	//
 
 	gametype = s_scriptdata.gametype;
-	s = gametype_cvar_base[ gametype_remap2[gametype] ];
+	s = gametype_cvar_base[ gametype ];
 
 	//
 	// save state values

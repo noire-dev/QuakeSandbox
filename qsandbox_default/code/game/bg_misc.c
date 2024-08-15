@@ -203,8 +203,8 @@ gitem_t	bg_itemlist[] =
 		"weapon_gauntlet", 
 		"sound/misc/w_pkup.wav",
         { "models/weapons2/gauntlet/gauntlet.md3",
-		"models/weapons2/gauntlet/gauntletslip.md3", "models/weapons2/gauntlet/gauntletkk.md3", "models/weapons2/gauntlet/gauntletsaw.md3"},
-/* icon */		"icons/iconw_gauntlet1",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_gauntlet",
 /* pickup */	"Melee",
 /* pickup */	"Кулак",
 		0,
@@ -220,8 +220,8 @@ gitem_t	bg_itemlist[] =
 		"weapon_shotgun", 
 		"sound/misc/w_pkup.wav",
         { "models/weapons2/shotgun/shotgun.md3", 
-		"models/weapons2/shotgun/shotgundoom.md3", "models/weapons2/shotgun/shotgunslip.md3", "models/weapons2/shotgun/shotgunoa.md3"},
-/* icon */		"icons/iconw_shotgun1",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_shotgun",
 /* pickup */	"Shotgun",
 /* pickup */	"Дробовик",
 		10,
@@ -237,8 +237,8 @@ gitem_t	bg_itemlist[] =
 		"weapon_machinegun", 
 		"sound/misc/w_pkup.wav",
         { "models/weapons2/machinegun/machinegun.md3", 
-		"models/weapons2/pistol/pistoldoom.md3", "models/weapons2/pistol/pistolstrogg.md3", "models/weapons2/machinegun/machinegunoa.md3"},
-/* icon */		"icons/iconw_machinegun1",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_machinegun",
 /* pickup */	"Machinegun",
 /* pickup */	"Автомат",
 		40,
@@ -254,8 +254,8 @@ gitem_t	bg_itemlist[] =
 		"weapon_grenadelauncher",
 		"sound/misc/w_pkup.wav",
         { "models/weapons2/grenadel/grenadel.md3", 
-		"models/weapons2/grenadel/grenadeldoom.md3", "models/weapons2/grenades/grenadesearth3rd.md3", "models/weapons2/grenadel/grenadeloa.md3"},
-/* icon */		"icons/iconw_grenade1",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_grenade",
 /* pickup */	"Grenade Launcher",
 /* pickup */	"Гранатомёт",
 		10,
@@ -271,8 +271,8 @@ gitem_t	bg_itemlist[] =
 		"weapon_rocketlauncher",
 		"sound/misc/w_pkup.wav",
         { "models/weapons2/rocketl/rocketl.md3", 
-		"models/weapons2/rocketl/rocketlslip.md3", "models/weapons2/rocketl/rocketlstrogg.md3", "models/weapons2/rocketl/rocketll.md3"},
-/* icon */		"icons/iconw_rocket1",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_rocket",
 /* pickup */	"Rocket Launcher",
 /* pickup */	"Ракетница",
 		10,
@@ -288,8 +288,8 @@ gitem_t	bg_itemlist[] =
 		"weapon_lightning", 
 		"sound/misc/w_pkup.wav",
         { "models/weapons2/lightning/lightning.md3", 
-		"models/weapons2/lightning/lightningslip.md3", "models/weapons2/lightning/lightningdoom.md3", "models/weapons2/lightning/lightningoa.md3"},
-/* icon */		"icons/iconw_lightning1",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_lightning",
 /* pickup */	"Lightning Gun",
 /* pickup */	"Молния",
 		100,
@@ -305,8 +305,8 @@ gitem_t	bg_itemlist[] =
 		"weapon_railgun", 
 		"sound/misc/w_pkup.wav",
         { "models/weapons2/railgun/railgun.md3", 
-		"models/weapons2/railgun/railgunearth.md3", "models/weapons2/railgun/railgunslip.md3", "models/weapons2/railgun/railgunoa.md3"},
-/* icon */		"icons/iconw_railgun1",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_railgun",
 /* pickup */	"Railgun",
 /* pickup */	"Рэйлган",
 		10,
@@ -322,8 +322,8 @@ gitem_t	bg_itemlist[] =
 		"weapon_plasmagun", 
 		"sound/misc/w_pkup.wav",
         { "models/weapons2/plasma/plasma.md3", 
-		"models/weapons2/plasma/plasmadoom.md3", "models/weapons2/plasma/plasmastrogg.md3", "models/weapons2/plasma/plasmakk.md3"},
-/* icon */		"icons/iconw_plasma1",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_plasma",
 /* pickup */	"Plasma Gun",
 /* pickup */	"Плазмаган",
 		50,
@@ -339,8 +339,8 @@ gitem_t	bg_itemlist[] =
 		"weapon_bfg",
 		"sound/misc/w_pkup.wav",
         { "models/weapons2/bfg/bfg.md3", 
-		"models/weapons2/bfg/bfgdoom.md3", "models/weapons2/bfg/bfgstrogg.md3", "models/weapons2/bfg/bfgoa.md3"},
-/* icon */		"icons/iconw_bfg1",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_bfg",
 /* pickup */	"BFG10K",
 /* pickup */	"БФГ10К",
 		20,
@@ -356,8 +356,8 @@ gitem_t	bg_itemlist[] =
 		"weapon_grapplinghook",
 		"sound/misc/w_pkup.wav",
         { "models/weapons2/grapple/grapple.md3", 
-		"models/weapons2/shotgun/shotgunstrogg.md3", "models/weapons2/pistol/pistolearth.md3", "models/weapons2/grapple/grapple.md3"},
-/* icon */		"icons/iconw_grapple1",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_grapple",
 /* pickup */	"Grappling Hook",
 /* pickup */	"Крюк",
 		0,
@@ -919,8 +919,8 @@ Only in One Flag CTF games
 		"weapon_nailgun", 
 		"sound/misc/w_pkup.wav",
         { "models/weapons/nailgun/nailgun.md3", 
-		"models/weapons2/gauntlet/gauntletearth.md3", "models/weapons2/grenades/grenadesstrogg.md3", "models/weapons/nailgun/nailgunoa.md3"},
-/* icon */		"icons/iconw_nailgun1",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_nailgun",
 /* pickup */	"Nailgun",
 /* pickup */	"Гвоздомёт",
 		10,
@@ -936,8 +936,8 @@ Only in One Flag CTF games
 		"weapon_prox_launcher", 
 		"sound/misc/w_pkup.wav",
         { "models/weapons/proxmine/proxmine.md3", 
-		"models/weapons2/boomstick/boomstickslip.md3", "models/weapons2/boomstick/boomstickdoom.md3", "models/weapons/proxmine/proxmineoa.md3"},
-/* icon */		"icons/iconw_proxlauncher1",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_proxlauncher",
 /* pickup */	"Prox Launcher",
 /* pickup */	"Миномёт",
 		5,
@@ -958,8 +958,8 @@ Only in One Flag CTF games
 		"weapon_chaingun", 
 		"sound/misc/w_pkup.wav",
         { "models/weapons/vulcan/vulcan.md3", 
-		"models/weapons2/boomstick/boomstickstrogg.md3", "models/weapons2/pistol/pistolearth.md3", "models/weapons/vulcan/vulcanoa.md3"},
-/* icon */		"icons/iconw_chaingun1",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_chaingun",
 /* pickup */	"Chaingun",
 /* pickup */	"Пулемет",
 		80,
@@ -976,8 +976,8 @@ Only in One Flag CTF games
 		"weapon_flamethrower",
 		"sound/misc/w_pkup.wav",
         { "models/weapons2/flamethrower/rocketl.md3", 
-		"models/weapons2/lightning/lightningearth.md3", "models/weapons2/plasma/plasmaearth.md3", "models/weapons2/grenadel/grenadelstrogg.md3"},
-/* icon */		"icons/iconw_flamethrower1",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_flamethrower",
 /* pickup */	"Flamethrower",
 /* pickup */	"Огнемёт",
 		100,
@@ -1042,8 +1042,8 @@ Only in One Flag CTF games
 		"weapon_antimatter",
 		"sound/misc/w_pkup.wav",
         { "models/weapons2/antimatter/plasma.md3", 
-		"models/weapons2/grenadel/grenadel1.md3", "models/weapons2/bfg/bfgkk.md3", "models/weapons2/machinegun/machinegunkk.md3"},
-/* icon */		"icons/iconw_voodoo1",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_voodoo",
 /* pickup */	"Dark Flare",
 /* pickup */	"Черная вспышка",
 		100,
@@ -1343,6 +1343,57 @@ Only in Domination games
 		0,
 		IT_TEAM,
 		DOM_POINTBLUE,
+/* precache */ "",
+/* sounds */ ""
+	},
+	
+/*QUAKED weapon_toolgun (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+*/
+	{
+		"weapon_toolgun", 
+		"sound/misc/w_pkup.wav",
+        { "models/weapons/toolgun/toolgun.md3",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_toolgun",
+/* pickup */	"Toolgun",
+/* pickup */	"Тулган",
+		0,
+		IT_WEAPON,
+		WP_TOOLGUN,
+/* precache */ "",
+/* sounds */ ""
+	},
+	
+/*QUAKED weapon_physgun (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+*/
+	{
+		"weapon_physgun", 
+		"sound/misc/w_pkup.wav",
+        { "models/weapons/physgun/physgun.md3",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_physgun",
+/* pickup */	"Physgun",
+/* pickup */	"Физган",
+		0,
+		IT_WEAPON,
+		WP_PHYSGUN,
+/* precache */ "",
+/* sounds */ ""
+	},
+	
+/*QUAKED weapon_gravitygun (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+*/
+	{
+		"weapon_gravitygun", 
+		"sound/misc/w_pkup.wav",
+        { "models/weapons/physgun/physgun.md3",
+		NULL, NULL, NULL},
+/* icon */		"icons/iconw_gravitygun",
+/* pickup */	"Gravitygun",
+/* pickup */	"Гравитиган",
+		0,
+		IT_WEAPON,
+		WP_GRAVITYGUN,
 /* precache */ "",
 /* sounds */ ""
 	},
@@ -1851,38 +1902,30 @@ void BG_EvaluateTrajectoryDelta( const trajectory_t *tr, int atTime, vec3_t resu
 
 char *eventnames[] = {
 	"EV_NONE",
-
 	"EV_FOOTSTEP",
 	"EV_FOOTSTEP_METAL",
 	"EV_FOOTSPLASH",
 	"EV_FOOTWADE",
 	"EV_SWIM",
-
 	"EV_STEP_4",
 	"EV_STEP_8",
 	"EV_STEP_12",
 	"EV_STEP_16",
-
 	"EV_FALL_SHORT",
 	"EV_FALL_MEDIUM",
 	"EV_FALL_FAR",
-
-	"EV_JUMP_PAD",			// boing sound at origin", jump sound on player
-
-	"EV_JUMP",
+	"EV_JUMP_PAD",			// boing sound at origin, jump sound on player
+	"EV_JUMP",                        //Event 14
 	"EV_WATER_TOUCH",	// foot touches
 	"EV_WATER_LEAVE",	// foot leaves
 	"EV_WATER_UNDER",	// head touches
 	"EV_WATER_CLEAR",	// head leaves
-
 	"EV_ITEM_PICKUP",			// normal item pickups are predictable
 	"EV_GLOBAL_ITEM_PICKUP",	// powerup / team sounds are broadcast to everyone
-
 	"EV_NOAMMO",
 	"EV_CHANGE_WEAPON",
 	"EV_FIRE_WEAPON",
-
-	"EV_USE_ITEM0",
+	"EV_USE_ITEM0",                   //Event 24
 	"EV_USE_ITEM1",
 	"EV_USE_ITEM2",
 	"EV_USE_ITEM3",
@@ -1898,57 +1941,72 @@ char *eventnames[] = {
 	"EV_USE_ITEM13",
 	"EV_USE_ITEM14",
 	"EV_USE_ITEM15",
-
-	"EV_ITEM_RESPAWN",
+	"EV_ITEM_RESPAWN",                //Event 40
 	"EV_ITEM_POP",
 	"EV_PLAYER_TELEPORT_IN",
 	"EV_PLAYER_TELEPORT_OUT",
-
 	"EV_GRENADE_BOUNCE",		// eventParm will be the soundindex
-
 	"EV_GENERAL_SOUND",
 	"EV_GLOBAL_SOUND",		// no attenuation
 	"EV_GLOBAL_TEAM_SOUND",
-
 	"EV_BULLET_HIT_FLESH",
 	"EV_BULLET_HIT_WALL",
-
-	"EV_MISSILE_HIT",
+	"EV_MISSILE_HIT",                 //Event 50
 	"EV_MISSILE_MISS",
 	"EV_MISSILE_MISS_METAL",
 	"EV_RAILTRAIL",
 	"EV_SHOTGUN",
 	"EV_BULLET",				// otherEntity is the shooter
-
 	"EV_PAIN",
 	"EV_PAINVEHICLE",
 	"EV_DEATH1",
 	"EV_DEATH2",
 	"EV_DEATH3",
-	"EV_OBITUARY",
-
+	"EV_OBITUARY",                    //Event 60
 	"EV_POWERUP_QUAD",
 	"EV_POWERUP_BATTLESUIT",
 	"EV_POWERUP_REGEN",
-
 	"EV_GIB_PLAYER",			// gib a previously living player
 	"EV_SCOREPLUM",			// score plum
-
-//Not all of these are used in baseoa but we keep them to gurantie event numbers between version
 	"EV_PROXIMITY_MINE_STICK",
 	"EV_PROXIMITY_MINE_TRIGGER",
 	"EV_KAMIKAZE",			// kamikaze explodes
 	"EV_OBELISKEXPLODE",		// obelisk explodes
+	"EV_OBELISKPAIN",			// obelisk is in pain
 	"EV_INVUL_IMPACT",		// invulnerability sphere impact
 	"EV_JUICED",				// invulnerability juiced effect
 	"EV_LIGHTNINGBOLT",		// lightning bolt bounced of invulnerability sphere
-
-
 	"EV_DEBUG_LINE",
 	"EV_STOPLOOPINGSOUND",
 	"EV_TAUNT",
-
-	"EV_FOOTSTEP_FLESH"
+	"EV_TAUNT_YES",
+	"EV_TAUNT_NO",
+	"EV_TAUNT_FOLLOWME",
+	"EV_TAUNT_GETFLAG",
+	"EV_TAUNT_GUARDBASE",
+	"EV_TAUNT_PATROL",
+	"EV_EMIT_DEBRIS_LIGHT",		// emit light concrete chunks
+	"EV_EMIT_DEBRIS_DARK",		// emit dark concrete chunks
+	"EV_EMIT_DEBRIS_LIGHT_LARGE",	// emit light large concrete chunks
+	"EV_EMIT_DEBRIS_DARK_LARGE",	// emit dark large concrete chunks
+	"EV_EMIT_DEBRIS_WOOD",		// emit wooden chunks
+	"EV_EMIT_DEBRIS_FLESH",		// emit gibs
+	"EV_EMIT_DEBRIS_GLASS",		// emite shards of glass
+	"EV_EMIT_DEBRIS_STONE",		// emit chunks of stone
+	"EV_EARTHQUAKE",
+	"EV_EXPLOSION",
+	"EV_PARTICLES_GRAVITY",
+	"EV_PARTICLES_LINEAR",
+	"EV_PARTICLES_LINEAR_UP",
+	"EV_PARTICLES_LINEAR_DOWN",
+	"EV_OVERLAY",
+	"EV_SMOKEPUFF",
+	"EV_SILENT_ITEM_PICKUP",		// item pickup without pickup sound
+	"EV_FOOTSTEP_FLESH",
+	"EV_HORN",		//VEHICLES
+	"EV_CRASH25",
+	"EV_OT1_IMPACT",
+	"EV_GRAVITYSOUND"
 };
 
 /*

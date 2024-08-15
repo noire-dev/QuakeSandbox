@@ -49,7 +49,7 @@
 //deathTarget
 //lootTarget
 //skill
-//overlay
+//objectType
 //target2
 //damagetarget
 //targetname2
@@ -62,6 +62,7 @@
 //vehicle
 //physicsBounce
 
+
 //NOTE: If allowuse is enabled then you can use "bind <key> <targetname>" to use this entity
 
-sl prop veh_camaro none 0 25 25 0 3 1 0 "none" 500 0 0 0 0 1 1 1 0 0 1 10000 0 1 100 100 120 1 0 1000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0
+sl prop veh_camaro none 0 25 25 0 3 1 0 "none" 500 0 0 0 0 1 1 1 0 0 1 10000 0 1 100 100 120 1 0 1000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0

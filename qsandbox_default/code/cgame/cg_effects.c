@@ -1166,6 +1166,7 @@ void CG_ParticlesFromEntityState( vec3_t origin, int type, entityState_t *es) {
 	r = es->constantLight & 255;
 	g = ( es->constantLight >> 8 ) & 255;
 	b = ( es->constantLight >> 16 ) & 255;
+	radius = es->generic2;
 
 	CG_Particles( origin, es->eventParm, speed, lifetime, radius, type, r, g, b );
 }

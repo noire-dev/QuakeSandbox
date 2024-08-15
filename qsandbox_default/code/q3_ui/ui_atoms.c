@@ -78,6 +78,8 @@ void UI_PushMenu( menuframework_s *menu )
 	
 	if(trap_Cvar_VariableValue("cl_android")){
 	trap_Cvar_SetValue( "in_nativetouch", 1 );
+	trap_Cvar_SetValue( "cg_alwaysWeaponBar", 1 );
+	trap_Cvar_SetValue( "cl_voip", 0 );
 	}
 	
 	uis.menuscroll = 0;
@@ -1680,7 +1682,7 @@ UI_TeamMainMenu();
 return qtrue;
 }
 if( Q_stricmp (UI_Argv(0), "ui_teamorders") == 0 ){
-UI_TeamOrdersMenu_f();
+UI_BotCommandMenu_f();
 return qtrue;
 }
 if( Q_stricmp (UI_Argv(0), "ui_video") == 0 ){

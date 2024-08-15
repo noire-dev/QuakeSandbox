@@ -322,7 +322,7 @@ void InGame_MenuInit( void ) {
 	}
 	s_ingame.addbots.color				= color_red;
 	s_ingame.addbots.style				= UI_CENTER|UI_SMALLFONT;
-	if( !trap_Cvar_VariableValue( "sv_running" ) || !trap_Cvar_VariableValue( "bot_enable" ) || (gametype == GT_SINGLE_PLAYER)) {
+	if( !trap_Cvar_VariableValue( "sv_running" ) || !trap_Cvar_VariableValue( "bot_enable" ) ) {
 		s_ingame.addbots.generic.flags |= QMF_GRAYED;
 	}
 
@@ -341,7 +341,7 @@ void InGame_MenuInit( void ) {
 	}
 	s_ingame.removebots.color				= color_red;
 	s_ingame.removebots.style				= UI_CENTER|UI_SMALLFONT;
-	if( !trap_Cvar_VariableValue( "sv_running" ) || !trap_Cvar_VariableValue( "bot_enable" ) || (gametype == GT_SINGLE_PLAYER)) {
+	if( !trap_Cvar_VariableValue( "sv_running" ) || !trap_Cvar_VariableValue( "bot_enable" ) ) {
 		s_ingame.removebots.generic.flags |= QMF_GRAYED;
 	}
 
@@ -424,7 +424,7 @@ void InGame_MenuInit( void ) {
 	}
 	s_ingame.enableditems.color				= color_red;
 	s_ingame.enableditems.style				= UI_CENTER|UI_SMALLFONT;
-	if( !trap_Cvar_VariableValue( "sv_running" ) || gametype == GT_SINGLE_PLAYER)
+	if( !trap_Cvar_VariableValue( "sv_running" ) )
 	{
 		s_ingame.enableditems.generic.flags |= QMF_GRAYED;
 	}
@@ -561,7 +561,9 @@ typedef struct {
 
 
 static gametypeMenu gametypeMenu_data[] = {
+	{ GT_SANDBOX, "SandBox"},
 	{ GT_FFA, "DeathMatch"},
+	{ GT_SINGLE, "Single"},
 	{ GT_TOURNAMENT, "Tournament"},
 	{ GT_TEAM, "Team DM"},
 	{ GT_CTF, "CTF"},
@@ -575,7 +577,9 @@ static gametypeMenu gametypeMenu_data[] = {
 	{ GT_DOMINATION, "Domination"},
 };
 static gametypeMenu gametypeMenu_dataru[] = {
+	{ GT_SANDBOX, "Песочница"},
 	{ GT_FFA, "Все против всех"},
+	{ GT_SINGLE, "Одиночная игра"},
 	{ GT_TOURNAMENT, "Турнир"},
 	{ GT_TEAM, "Командный бой"},
 	{ GT_CTF, "Захват флага"},
@@ -930,7 +934,9 @@ static void IG_CallVoteGameType_Event( int index )
 	UI_ForceMenuOff();
 
 	switch (id) {
+	case GT_SANDBOX:
 	case GT_FFA:
+	case GT_SINGLE:
 	case GT_TOURNAMENT:
 	case GT_TEAM:
 	case GT_CTF:
@@ -1211,10 +1217,6 @@ static void IG_Map_SubMenu( void )
 	}
 
 	depth = DynamicMenu_Depth();
-	if (DynamicMenu_ServerGametype() == GT_SINGLE_PLAYER) {
-		DynamicMenu_SetFlags(depth, ID_NEXTMAP, QMF_GRAYED);
-		DynamicMenu_SetFlags(depth, ID_ENABLEDITEMS, QMF_GRAYED);
-	}
 
 	DynamicMenu_FinishSubMenuInit();
 }
@@ -1646,9 +1648,9 @@ static void InGameDynamic_InitPrimaryMenu( void )
 
 	depth = DynamicMenu_Depth();
 	gametype = trap_Cvar_VariableValue("g_gametype");
-	if (gametype < GT_TEAM || team == TEAM_SPECTATOR || gametype == GT_LMS) {
-		DynamicMenu_SetFlags(depth, IGM_TEAMORDERS, QMF_GRAYED);
-	}
+	//if (gametype < GT_TEAM || team == TEAM_SPECTATOR || gametype == GT_LMS) {
+	//	DynamicMenu_SetFlags(depth, IGM_TEAMORDERS, QMF_GRAYED);
+	//}
 
 	// disable map commands if non-local server
 	localserver = trap_Cvar_VariableValue( "sv_running" );
@@ -1657,13 +1659,13 @@ static void InGameDynamic_InitPrimaryMenu( void )
 	}
 
 	// singleplayer/spec protects voting menu (otherwise it could be used to cheat)
-	if (gametype == GT_SINGLE_PLAYER || team == TEAM_SPECTATOR) {
+	if (team == TEAM_SPECTATOR) {
 		DynamicMenu_SetFlags(depth, IGM_CALLVOTE, QMF_GRAYED);
 		DynamicMenu_SetFlags(depth, IGM_VOTE, QMF_GRAYED);
 	}
 
 	// bot manipulation
-	if (!localserver || !trap_Cvar_VariableValue( "bot_enable" ) || (gametype == GT_SINGLE_PLAYER)) {
+	if (!localserver || !trap_Cvar_VariableValue( "bot_enable" )) {
 		DynamicMenu_SetFlags(depth, IGM_BOTS, QMF_GRAYED);
 	}
 
@@ -2101,7 +2103,7 @@ static void DM_TeamList_SubMenu( void )
 	DynamicMenu_SubMenuInit();
 
 	DynamicMenu_AddItem("me", 0, 0, DM_BotPlayerTarget_Event);
-	if ( DynamicMenu_ServerGametype() == GT_FFA ){
+	if ( DynamicMenu_ServerGametype() == GT_FFA || DynamicMenu_ServerGametype() == GT_LMS || DynamicMenu_ServerGametype() == GT_SANDBOX ){
 	DynamicMenu_AddListOfPlayers(PT_ALL, 0, DM_BotPlayerTarget_Event);
 	} else {
 	DynamicMenu_AddListOfPlayers(PT_FRIENDLY|PT_EXCLUDEGRANDPARENT, 0, DM_BotPlayerTarget_Event);	
@@ -2199,7 +2201,7 @@ DM_EnemyList_SubMenu
 static void DM_EnemyList_SubMenu( void )
 {
 	DynamicMenu_SubMenuInit();
-	if ( DynamicMenu_ServerGametype() == GT_FFA ){
+	if ( DynamicMenu_ServerGametype() == GT_FFA || DynamicMenu_ServerGametype() == GT_LMS || DynamicMenu_ServerGametype() == GT_SANDBOX ){
 	DynamicMenu_AddListOfPlayers(PT_ALL, 0, DM_BotPlayerTarget_Event);
 	} else {
 	DynamicMenu_AddListOfPlayers(PT_ENEMY, 0, DM_BotPlayerTarget_Event);	
@@ -2331,7 +2333,7 @@ static void BotCommand_InitPrimaryMenu( void )
 	if(cl_language.integer == 0){
 	DynamicMenu_AddItem("Close!", 0, 0, DM_Close_Event);
 	DynamicMenu_AddItem("Everyone", 0, DM_CommandList_SubMenu, 0);
-	if ( DynamicMenu_ServerGametype() == GT_FFA ){
+	if ( DynamicMenu_ServerGametype() == GT_FFA || DynamicMenu_ServerGametype() == GT_LMS || DynamicMenu_ServerGametype() == GT_SANDBOX ){
 	DynamicMenu_AddListOfPlayers(PT_ALL, DM_CommandList_SubMenu, 0);
 	} else {
 	DynamicMenu_AddListOfPlayers(PT_FRIENDLY|PT_BOTONLY, DM_CommandList_SubMenu, 0);		
@@ -2342,7 +2344,7 @@ static void BotCommand_InitPrimaryMenu( void )
 	if(cl_language.integer == 1){
 	DynamicMenu_AddItem("Закрыть!", 0, 0, DM_Close_Event);
 	DynamicMenu_AddItem("Everyone", 0, DM_CommandList_SubMenu, 0);
-	if ( DynamicMenu_ServerGametype() == GT_FFA ){
+	if ( DynamicMenu_ServerGametype() == GT_FFA || DynamicMenu_ServerGametype() == GT_LMS || DynamicMenu_ServerGametype() == GT_SANDBOX ){
 	DynamicMenu_AddListOfPlayers(PT_ALL, DM_CommandList_SubMenu, 0);
 	} else {
 	DynamicMenu_AddListOfPlayers(PT_FRIENDLY|PT_BOTONLY, DM_CommandList_SubMenu, 0);		

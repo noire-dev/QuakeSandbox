@@ -127,7 +127,6 @@ static qboolean	CG_ParseAnimationFile( const char *filename, clientInfo_t *ci ) 
 	ci->footsteps = FOOTSTEP_NORMAL;
 	VectorClear( ci->headOffset );
 	ci->gender = GENDER_MALE;
-	trap_Cvar_Set( "gender", "MALE" );
 	ci->fixedlegs = qfalse;
 	ci->fixedtorso = qfalse;
 
@@ -182,19 +181,10 @@ static qboolean	CG_ParseAnimationFile( const char *filename, clientInfo_t *ci ) 
 			}
 			if ( token[0] == 'f' || token[0] == 'F' ) {
 				ci->gender = GENDER_FEMALE;
-//if ( cent->currentState.number == cg.snap->ps.clientNum) {
-//				trap_Cvar_Set( "gender", "FEMALE" );
-//}
 			} else if ( token[0] == 'n' || token[0] == 'N' ) {
 				ci->gender = GENDER_NEUTER;
-//if ( cent->currentState.number == cg.snap->ps.clientNum) {
-//				trap_Cvar_Set( "gender", "NEUTER" );
-//}
 			} else {
 				ci->gender = GENDER_MALE;
-//if ( cent->currentState.number == cg.snap->ps.clientNum) {
-//				trap_Cvar_Set( "gender", "MALE" );
-//}
 			}
 			continue;
 		} else if ( !Q_stricmp( token, "fixedlegs" ) ) {
@@ -784,21 +774,6 @@ static void CG_LoadClientInfo( int clientNum, clientInfo_t *ci ) {
 //	char		redTeam[MAX_QPATH];
 
 	teamname[0] = 0;
-#ifdef MISSIONPACK
-//	if( cgs.gametype >= GT_TEAM && cgs.ffa_gt!=1) {
-//		if( ci->team == TEAM_BLUE ) {
-//			Q_strncpyz(teamname, cg_blueTeamName.string, sizeof(teamname) );
-//		} else {
-//			Q_strncpyz(teamname, cg_redTeamName.string, sizeof(teamname) );
-//		}
-//	}
-//	if( teamname[0] ) {
-//		strcat( teamname, "/" );
-//	}
-#endif
-//			Q_strncpyz(teamname, legsskin.string, sizeof(teamname) );
-
-//			Q_strncpyz(redTeam, legsskin.string, sizeof(redTeam) );
 
 	modelloaded = qtrue;
 	if ( !CG_RegisterClientModelname( ci, ci->modelName, ci->skinName, ci->headModelName, ci->headSkinName, teamname, ci->legsModelName, ci->legsSkinName ) ) {
@@ -1063,6 +1038,15 @@ void CG_NewClientInfo( int clientNum ) {
 
 	v = Info_ValueForKey( configstring, "pb" );
 	newInfo.plblue = atoi( v );
+	
+	v = Info_ValueForKey( configstring, "pg_r" );
+	newInfo.pg_red = atof( v )*255;
+
+	v = Info_ValueForKey( configstring, "pg_g" );
+	newInfo.pg_green = atof( v )*255;
+
+	v = Info_ValueForKey( configstring, "pg_b" );
+	newInfo.pg_blue = atof( v )*255;
 
 	v = Info_ValueForKey( configstring, "si" );
 	newInfo.swepid = atoi( v );
@@ -1070,24 +1054,9 @@ void CG_NewClientInfo( int clientNum ) {
 	v = Info_ValueForKey( configstring, "vn" );
 	newInfo.vehiclenum = atoi( v );
 
-	v = Info_ValueForKey( configstring, "totex" );
-	newInfo.totex = atoi( v );
-
-	v = Info_ValueForKey( configstring, "hetex" );
-	newInfo.hetex = atoi( v );
-
-	v = Info_ValueForKey( configstring, "pd" );
-	newInfo.plradius = atoi( v );
-
 	// bot skill
 	v = Info_ValueForKey( configstring, "skill" );
 	newInfo.botSkill = atoi( v );
-	
-	// bot skill
-	v = Info_ValueForKey( configstring, "wp" );
-	if(newInfo.botSkill){
-	newInfo.plradius = atoi( v );
-	}
 
 	// handicap
 	v = Info_ValueForKey( configstring, "hc" );
@@ -1119,11 +1088,6 @@ void CG_NewClientInfo( int clientNum ) {
 		// to prevent load hitches
 		char modelStr[MAX_QPATH];
 		char *skin;
-
-		if(5 == 100) {
-			Q_strncpyz( newInfo.legsModelName, DEFAULT_TEAM_MODEL, sizeof( newInfo.legsModelName ) );
-			Q_strncpyz( newInfo.legsSkinName, "default", sizeof( newInfo.legsSkinName ) );
-		} else {
 			trap_Cvar_VariableStringBuffer( "headmodel", modelStr, sizeof( modelStr ) );
 			if ( ( skin = strchr( modelStr, '/' ) ) == NULL) {
 				skin = "default";
@@ -1133,15 +1097,6 @@ void CG_NewClientInfo( int clientNum ) {
 
 			Q_strncpyz( newInfo.legsSkinName, skin, sizeof( newInfo.legsSkinName ) );
 			Q_strncpyz( newInfo.legsModelName, modelStr, sizeof( newInfo.legsModelName ) );
-		}
-
-		if ( 5 == 100) {
-			// keep skin name
-			slash = strchr( v, '/' );
-			if ( slash ) {
-				Q_strncpyz( newInfo.legsSkinName, slash + 1, sizeof( newInfo.legsSkinName ) );
-			}
-		}
 	} else {
 		Q_strncpyz( newInfo.legsModelName, v, sizeof( newInfo.legsModelName ) );
 
@@ -1156,9 +1111,6 @@ void CG_NewClientInfo( int clientNum ) {
 		}
 	}
 
-	v = Info_ValueForKey( configstring, "g_blueteam" );
-	Q_strncpyz(newInfo.blueTeam, v, MAX_TEAMNAME);
-
 	// model
 	v = Info_ValueForKey( configstring, "model" );
 	if ( cg_forceModel.integer ) {
@@ -1167,28 +1119,16 @@ void CG_NewClientInfo( int clientNum ) {
 		char modelStr[MAX_QPATH];
 		char *skin;
 
-		if(5 == 100) {
-			Q_strncpyz( newInfo.modelName, DEFAULT_TEAM_MODEL, sizeof( newInfo.modelName ) );
-			Q_strncpyz( newInfo.skinName, "default", sizeof( newInfo.skinName ) );
+		trap_Cvar_VariableStringBuffer( "model", modelStr, sizeof( modelStr ) );
+		if ( ( skin = strchr( modelStr, '/' ) ) == NULL) {
+			skin = "default";
 		} else {
-			trap_Cvar_VariableStringBuffer( "model", modelStr, sizeof( modelStr ) );
-			if ( ( skin = strchr( modelStr, '/' ) ) == NULL) {
-				skin = "default";
-			} else {
-				*skin++ = 0;
-			}
-
-			Q_strncpyz( newInfo.skinName, skin, sizeof( newInfo.skinName ) );
-			Q_strncpyz( newInfo.modelName, modelStr, sizeof( newInfo.modelName ) );
+			*skin++ = 0;
 		}
 
-		if (5 == 100) {
-			// keep skin name
-			slash = strchr( v, '/' );
-			if ( slash ) {
-				Q_strncpyz( newInfo.skinName, slash + 1, sizeof( newInfo.skinName ) );
-			}
-		}
+		Q_strncpyz( newInfo.skinName, skin, sizeof( newInfo.skinName ) );
+		Q_strncpyz( newInfo.modelName, modelStr, sizeof( newInfo.modelName ) );
+
 	} else {
 		Q_strncpyz( newInfo.modelName, v, sizeof( newInfo.modelName ) );
 
@@ -1211,28 +1151,16 @@ void CG_NewClientInfo( int clientNum ) {
 		char modelStr[MAX_QPATH];
 		char *skin;
 
-		if(5 == 100) {
-			Q_strncpyz( newInfo.headModelName, DEFAULT_TEAM_MODEL, sizeof( newInfo.headModelName ) );
-			Q_strncpyz( newInfo.headSkinName, "default", sizeof( newInfo.headSkinName ) );
+		trap_Cvar_VariableStringBuffer( "headmodel", modelStr, sizeof( modelStr ) );
+		if ( ( skin = strchr( modelStr, '/' ) ) == NULL) {
+			skin = "default";
 		} else {
-			trap_Cvar_VariableStringBuffer( "headmodel", modelStr, sizeof( modelStr ) );
-			if ( ( skin = strchr( modelStr, '/' ) ) == NULL) {
-				skin = "default";
-			} else {
-				*skin++ = 0;
-			}
-
-			Q_strncpyz( newInfo.headSkinName, skin, sizeof( newInfo.headSkinName ) );
-			Q_strncpyz( newInfo.headModelName, modelStr, sizeof( newInfo.headModelName ) );
+			*skin++ = 0;
 		}
 
-		if ( 5 == 100) {
-			// keep skin name
-			slash = strchr( v, '/' );
-			if ( slash ) {
-				Q_strncpyz( newInfo.headSkinName, slash + 1, sizeof( newInfo.headSkinName ) );
-			}
-		}
+		Q_strncpyz( newInfo.headSkinName, skin, sizeof( newInfo.headSkinName ) );
+		Q_strncpyz( newInfo.headModelName, modelStr, sizeof( newInfo.headModelName ) );
+
 	} else {
 		Q_strncpyz( newInfo.headModelName, v, sizeof( newInfo.headModelName ) );
 
@@ -2648,18 +2576,6 @@ void CG_Player( centity_t *cent ) {
 	}
 	ci = &cgs.clientinfo[ clientNum ];
 
-if ( cent->currentState.number == cg.snap->ps.clientNum) {
-if(ci->gender == GENDER_NEUTER){
-				trap_Cvar_Set( "gender", "NEUTER" );
-}
-if(ci->gender == GENDER_FEMALE){
-				trap_Cvar_Set( "gender", "FEMALE" );
-}
-if(ci->gender == GENDER_MALE){
-				trap_Cvar_Set( "gender", "MALE" );
-}
-}
-
 	// it is possible to see corpses from disconnected players that may
 	// not have valid clientinfo
 	if ( !ci->infoValid ) {
@@ -2695,7 +2611,7 @@ if(ci->gender == GENDER_MALE){
 	if ( cent->currentState.number == cg.snap->ps.clientNum) {
 //	CG_PlayerSprites( cent );
 	} else {
-	if(!cg_singlemode.integer)
+	if(cgs.gametype != GT_SINGLE)
 	CG_PlayerSprites( cent );
 	}
 

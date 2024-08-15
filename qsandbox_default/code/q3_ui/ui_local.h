@@ -89,10 +89,38 @@ extern vmCvar_t	sb_texturename;
 extern vmCvar_t	sb_grid;
 extern vmCvar_t	sb_modelnum;
 extern vmCvar_t	sb_classnum;
-extern vmCvar_t	sb_toolnum;
 extern vmCvar_t	sb_texturenum;
 extern vmCvar_t	sb_tab;
 extern vmCvar_t	spawn_preset;
+extern vmCvar_t	tool_spawnpreset;
+extern vmCvar_t	tool_modifypreset;
+extern vmCvar_t	tool_modifypreset2;
+extern vmCvar_t	tool_modifypreset3;
+extern vmCvar_t	tool_modifypreset4;
+
+extern vmCvar_t	toolgun_toolset1;
+extern vmCvar_t	toolgun_toolset2;
+extern vmCvar_t	toolgun_toolset3;
+extern vmCvar_t	toolgun_toolset4;
+extern vmCvar_t	toolgun_toolset5;
+extern vmCvar_t	toolgun_toolset6;
+extern vmCvar_t	toolgun_toolset7;
+extern vmCvar_t	toolgun_toolset8;
+extern vmCvar_t	toolgun_toolset9;
+extern vmCvar_t	toolgun_toolset10;
+extern vmCvar_t	toolgun_toolset11;
+extern vmCvar_t	toolgun_toolset12;
+extern vmCvar_t	toolgun_toolset13;
+extern vmCvar_t	toolgun_toolset14;
+extern vmCvar_t	toolgun_toolset15;
+extern vmCvar_t	toolgun_toolset16;
+extern vmCvar_t	toolgun_toolset17;
+extern vmCvar_t	toolgun_toolset18;
+
+extern vmCvar_t	toolgun_disabledarg1;
+extern vmCvar_t	toolgun_disabledarg2;
+extern vmCvar_t	toolgun_disabledarg3;
+extern vmCvar_t	toolgun_disabledarg4;
 
 extern vmCvar_t	mgui_api_active;
 extern vmCvar_t	mgui_none;
@@ -121,13 +149,10 @@ extern vmCvar_t	ui_singlemode;
 extern vmCvar_t	legsskin;
 extern vmCvar_t	sensitivitymenu;
 extern vmCvar_t	team_legsskin;
-extern vmCvar_t	cl_blackloadscreen;
 extern vmCvar_t	cl_selectedmod;
-extern vmCvar_t	cl_gmodelock;
 extern vmCvar_t	cl_language;
 extern vmCvar_t	cl_gamestyle;
 extern vmCvar_t	ui_loaded;
-extern vmCvar_t	ui_tutorial01;
 extern vmCvar_t	cl_screenoffset;
 extern vmCvar_t	cl_screencustomoffset;
 extern vmCvar_t	ui_backcolors;
@@ -308,6 +333,7 @@ typedef struct
 	int	top;
 	int	right;
 	int	bottom;
+	float heightmod;
 	menuframework_s *parent;
 	int menuPosition;
 	unsigned flags;
@@ -543,7 +569,6 @@ extern void UI_Message( const char **lines );
 //
 // ui_sandbox.c
 //
-extern void SandboxMain_Cache( void );
 extern void UI_SandboxMainMenu(void);
 
 //

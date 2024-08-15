@@ -116,7 +116,7 @@ untrap_BotGetLevelItemGoal
 ==================
  */
 int untrap_BotGetLevelItemGoal(int start, char *classname, void /* struct bot_goal_s */ *goal) {
-    static char *gametypeNames[] = {"ffa", "tournament", "single", "team", "ctf", "oneflag", "obelisk", "harvester", "elimination", "ctf", "lms", "dd", "dom"};
+    static char *gametypeNames[] = {"sandbox", "ffa", "single", "tournament", "single", "team", "ctf", "oneflag", "obelisk", "harvester", "elimination", "ctf", "lms", "dd", "dom"};
     char allowedGametypes[MAX_EPAIRKEY];
     char *gametypeName;
 
@@ -124,7 +124,7 @@ int untrap_BotGetLevelItemGoal(int start, char *classname, void /* struct bot_go
     while(start>-1) {
         if(!trap_AAS_ValueForBSPEpairKey(start,"gametype",allowedGametypes,MAX_EPAIRKEY))
             return start; //No gametype flag
-        if( gametype >= GT_FFA && gametype < GT_MAX_GAME_TYPE ) {
+        if( gametype >= GT_SANDBOX && gametype < GT_MAX_GAME_TYPE ) {
             gametypeName = gametypeNames[gametype];
             if(strstr( allowedGametypes, gametypeName ))
             {
@@ -2320,9 +2320,7 @@ TeamPlayIsOn
 ==================
 */
 int TeamPlayIsOn(void) {
-	if(gametype == GT_FFA){
-	if(g_building.integer || g_singlemode.integer){ return 1; }
-	}
+	if(gametype == GT_SANDBOX || gametype == GT_SINGLE){ return 1; }
 	
 	return ( gametype >= GT_TEAM && g_ffa_gt!=1);
 }
@@ -2942,11 +2940,9 @@ BotSameTeam
 ==================
 */
 int BotSameTeam(bot_state_t *bs, int entnum) {
-	if(gametype == GT_FFA){
-	if(g_building.integer || g_singlemode.integer){
+	if(gametype == GT_SANDBOX || gametype == GT_SINGLE){
 	if(bs->spbot){
 		return 1; 
-	}
 	}
 	}
 	if (bs->client < 0 || bs->client >= MAX_CLIENTS) {
@@ -4882,7 +4878,7 @@ void BotCheckConsoleMessages(bot_state_t *bs) {
 							break;
 						}
 					}
-				} else if (gametype == GT_FFA && g_building.integer || gametype == GT_FFA && g_singlemode.integer) {
+				} else if (gametype == GT_FFA || gametype == GT_LMS || gametype == GT_SANDBOX) {
 					chat_reply = trap_Characteristic_BFloat(bs->character, CHARACTERISTIC_CHAT_REPLY, 0, 1);
 					if (random() < 1.5 / (NumBots()+1) && random() < chat_reply) {
 						//if bot replies with a chat message

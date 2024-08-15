@@ -556,123 +556,36 @@ static void CG_DrawToolgun() {
 	vec3_t		angles;
 	vec3_t		origin;
 	gitem_t	*it;
+	
+		if(toolgun_tool.integer == 0){
+		trap_R_RemapShader( "models/weapons/toolgun/screen", "models/weapons/toolgun/screen", "0.005" );
+		} else {
+		if(trap_R_RegisterShader(va("models/weapons/toolgun/tool%i", toolgun_tool.integer)) != 0){
+		trap_R_RemapShader( "models/weapons/toolgun/screen", va("models/weapons/toolgun/tool%i", toolgun_tool.integer) , "0.005" );
+		} else {
+		trap_R_RemapShader( "models/weapons/toolgun/screen", "models/weapons/toolgun/toolerror", "0.005" );
+		}
+		}
 		
 		CG_DrawPic( -1 - cl_screenoffset.integer, 0+cg_toolguninfo.integer, 300, 125, trap_R_RegisterShaderNoMip( "menu/art/blacktrans" ) );
-		
-		if(oasb_tool.integer == 1){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Material", 1.0F);
+
+		CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, toolgun_tooltext.string, 1.0F);
+		if(toolgun_mod19.integer == 0){
+		CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, toolgun_toolmode1.string, 1.0F);
+		} else
+		if(toolgun_mod19.integer == 1){
+		CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, toolgun_toolmode2.string, 1.0F);
+		} else
+		if(toolgun_mod19.integer == 2){
+		CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, toolgun_toolmode3.string, 1.0F);
+		} else
+		if(toolgun_mod19.integer == 3){
+		CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, toolgun_toolmode4.string, 1.0F);
 		}
-		if(oasb_tool.integer == 2){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Delete", 1.0F);
-		}
-		if(oasb_tool.integer == 3){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Model", 1.0F);
-		}
-		if(oasb_tool.integer == 4){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Physics", 1.0F);
-			if(oasb_modifier.integer == 0){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Stationary", 1.0F);
-			}
-			if(oasb_modifier.integer == 1){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Gravity", 1.0F);
-			}
-			y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, "1.Stationary", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2.Gravity", 1.0F);
-		}
-		if(oasb_tool.integer == 5){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Permission", 1.0F);
-			if(oasb_modifier.integer == 0){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Public", 1.0F);
-			}
-			if(oasb_modifier.integer == 1){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Private", 1.0F);
-			}
-			if(oasb_modifier.integer == 2){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Get", 1.0F);
-			}
-			y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, "1.Public", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2.Private", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "3.Get", 1.0F);
-		}
-		if(oasb_tool.integer == 6){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Collision", 1.0F);
-			if(oasb_modifier.integer == 0){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "On", 1.0F);
-			}
-			if(oasb_modifier.integer == 1){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Off", 1.0F);
-			}
-			y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, "1.On", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2.Off", 1.0F);
-		}
-		if(oasb_tool.integer == 7){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Health", 1.0F);
-			if(oasb_modifier.integer == 0){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Set", 1.0F);
-			}
-			if(oasb_modifier.integer == 1){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Not allow damage", 1.0F);
-			}
-			if(oasb_modifier.integer == 2){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Allow damage", 1.0F);
-			}
-			if(oasb_modifier.integer == 3){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Not allow prop damage", 1.0F);
-			}
-			if(oasb_modifier.integer == 4){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Allow prop damage", 1.0F);
-			}
-			y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, "1.Set", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2.Not allow damage", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "3.Allow damage", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "4.Not allow prop damage", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "5.Allow prop damage", 1.0F);
-		}
-		if(oasb_tool.integer == 8){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Color", 1.0F);
-		}
-		if(oasb_tool.integer == 9){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Angles", 1.0F);
-			if(oasb_modifier.integer == 0){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "X", 1.0F);
-			}
-			if(oasb_modifier.integer == 1){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Y", 1.0F);
-			}
-			if(oasb_modifier.integer == 2){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Z", 1.0F);
-			}
-			y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, "1.X", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2.Y", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "3.Z", 1.0F);
-		}
-		if(oasb_tool.integer == 10){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Physgun", 1.0F);
-			if(oasb_modifier.integer == 0){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Stationary", 1.0F);
-			}
-			if(oasb_modifier.integer == 1){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Gravity", 1.0F);
-			}
-			y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, "1.Stationary", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2.Gravity", 1.0F);
-		}
-		
-		if(oasb_tool.integer == 11){
-			CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, "Scale", 1.0F);
-			if(oasb_modifier.integer == 0){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "X", 1.0F);
-			}
-			if(oasb_modifier.integer == 1){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Y", 1.0F);
-			}
-			if(oasb_modifier.integer == 2){
-			CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, "Z", 1.0F);
-			}
-			y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, "1. X", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "2. Y", 1.0F);
-			y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, "3. Z", 1.0F);
-		}
+		y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, toolgun_tooltip1.string, 1.0F);
+		y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, toolgun_tooltip2.string, 1.0F);
+		y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, toolgun_tooltip3.string, 1.0F);
+		y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, toolgun_tooltip4.string, 1.0F);
 
 		origin[0] = 70;
 		origin[1] = 0;
@@ -680,7 +593,7 @@ static void CG_DrawToolgun() {
 		angles[YAW] = 90 + 20 * sin( cg.time / 1000.0 );
 		if(!BG_CheckClassname(sb_classnum_view.string)){
 		CG_Draw3DModelCopy( 640 + cl_screenoffset.integer - TEXT_ICON_SPACE  - 160, 1 + 12, 160, 160,
-					   trap_R_RegisterModel_MiTech( oasb_modelst.string ), 0, origin, angles );
+					   trap_R_RegisterModel_MiTech( toolgun_modelst.string ), 0, origin, angles );
 		} else {
 		for ( it = bg_itemlist + 1 ; it->classname ; it++ ) {
 		if ( !Q_stricmp( it->classname, sb_classnum_view.string ) )
@@ -740,10 +653,8 @@ static void CG_DrawStatusBar( void ) {
 
 	// draw any 3D icons first, so the changes back to 2D are minimized
 	if (weaphack) {
-		if(weaphack == WP_GAUNTLET){
-			if(oasb_tool.integer){
-				CG_DrawToolgun();
-		}
+		if(weaphack == WP_TOOLGUN){
+			CG_DrawToolgun();
 		}
 	}
 
@@ -765,7 +676,7 @@ static void CG_DrawStatusBar( void ) {
 		value = ps->ammo[cent->currentState.weapon];
 		} else {
 		value = ps->stats[STAT_SWEPAMMO];
-		if(value <= 0){
+		if(value <= 0 && value != -1){
 		cg.swep_listcl[ps->stats[STAT_SWEP]] = 2;
 		} else {
 		cg.swep_listcl[ps->stats[STAT_SWEP]] = 1;	
@@ -786,7 +697,7 @@ static void CG_DrawStatusBar( void ) {
 			value = ps->ammo[cent->currentState.weapon];
 			} else {
 			value = ps->stats[STAT_SWEPAMMO];
-			if(value <= 0){
+			if(value <= 0 && value != -1){
 			cg.swep_listcl[ps->stats[STAT_SWEP]] = 2;
 			} else {
 			cg.swep_listcl[ps->stats[STAT_SWEP]] = 1;	
@@ -1645,7 +1556,7 @@ static float CG_DrawScores( float y ) {
 		if ( s1 != score ) {
 			s2 = score;
 		}
-		if(!cg_singlemode.integer){
+		if(cgs.gametype != GT_SINGLE){
 		if ( s2 != SCORE_NOT_PRESENT ) {
 			s = va( "%2i", s2 );
 			w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH + 8;
@@ -1716,13 +1627,14 @@ static float CG_DrawPowerups( float y ) {
 	int		t;
 	gitem_t	*item;
 	int		x;
-	int		color;
 	float	size;
 	float	f;
-	static float colors[2][4] = {
-    { 0.2f, 1.0f, 0.2f, 1.0f } ,
-    { 1.0f, 0.2f, 0.2f, 1.0f }
-  };
+	static float colors[4];
+	
+	colors[0]=cg_crosshairColorRed.value;
+    colors[1]=cg_crosshairColorGreen.value;
+    colors[2]=cg_crosshairColorBlue.value;
+    colors[3]=1.0f;
 
 	ps = &cg.snap->ps;
 
@@ -1769,11 +1681,9 @@ static float CG_DrawPowerups( float y ) {
 
     if (item) {
 
-		  color = 1;
-
 		  y -= ICON_SIZE;
 
-		  trap_R_SetColor( colors[color] );
+		  trap_R_SetColor( colors );
 		  CG_DrawField( x + 16, y, 5, sortedTime[ i ] / 1000, 1 );
 
 		  t = ps->powerups[ sorted[i] ];
@@ -2826,13 +2736,13 @@ static void CG_DrawCrosshair(void)
 				ca = cg_ch13.integer;
 				break;
                         default:
-                                w = h = cg_crosshairSize.value;
+                                w = h = cg_crosshairScale.value;
                                 ca = cg_drawCrosshair.integer;
                                 break;
 		}
 	}
 	else{
-		w = h = cg_crosshairSize.value;
+		w = h = cg_crosshairScale.value;
 		ca = cg_drawCrosshair.integer;
 	}
 
@@ -2892,7 +2802,7 @@ static void CG_DrawCrosshair3D(void)
 		return;
 	}
 
-	w = h = cg_crosshairSize.value;
+	w = h = cg_crosshairScale.value;
 
 	// pulse the size of the crosshair when picking up items
 	f = cg.time - cg.itemPickupBlendTime;
@@ -3144,13 +3054,6 @@ static qboolean CG_DrawScoreboard( void ) {
 		return qfalse;
 	}
 
-	// should never happen in Team Arena
-	if (cgs.gametype == GT_SINGLE_PLAYER && cg.predictedPlayerState.pm_type == PM_INTERMISSION ) {
-		cg.deferredPlayerLoading = 0;
-		firstTime = qtrue;
-		return qfalse;
-	}
-
 	// don't draw scoreboard during death while warmup up
 	if ( cg.warmup && !cg.showScores ) {
 		return qfalse;
@@ -3217,7 +3120,7 @@ CG_DrawIntermission
 static void CG_DrawIntermission( void ) {
 	cg.scoreFadeTime = cg.time;
 
-if(cl_drawobjective.integer == 0){
+if(cgs.gametype != GT_SINGLE){
 if(cg_oldscoreboard.integer == 0){
 	cg.scoreBoardShowing = CG_DrawScoreboard();
 }
@@ -3366,9 +3269,15 @@ static void CG_DrawWarmup( void ) {
 #endif
 		}
 	} else {
-		if ( cgs.gametype == GT_FFA ) {
+		if ( cgs.gametype == GT_SANDBOX ) {
+			if(cl_language.integer == 0){s = "Sandbox";}
+			if(cl_language.integer == 1){s = "Песочница";}
+		} else if ( cgs.gametype == GT_FFA ) {
 			if(cl_language.integer == 0){s = "Free For All";}
 			if(cl_language.integer == 1){s = "Все Против Всех";}
+		} else if ( cgs.gametype == GT_SINGLE ) {
+			if(cl_language.integer == 0){s = "Single Player";}
+			if(cl_language.integer == 1){s = "Одиночная Игра";}
 		} else if ( cgs.gametype == GT_TEAM ) {
 			if(cl_language.integer == 0){s = "Team Deathmatch";}
 			if(cl_language.integer == 1){s = "Командный Бой";}
@@ -3768,14 +3677,14 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 		teamChatSizeX *= f;
 		teamChatSizeY *= f;
 
-			if(!cg_singlemode.integer){
+			if(cgs.gametype != GT_SINGLE){
 			CG_DrawGenericConsole(&cgs.console, consoleLines, cg_consoleTime.integer, 
 					0 - cl_screenoffset.integer, 0, 
 					consoleSizeX,
 					consoleSizeY
 					);
 			}
-			if(!cg_singlemode.integer){
+			if(cgs.gametype != GT_SINGLE){
 			CG_DrawGenericConsole(&cgs.chat, chatLines, cg_chatTime.integer, 
 					0 - cl_screenoffset.integer, 
 					CG_ConsoleChatPositionY(consoleSizeY, chatSizeY) - cg_chatY.integer,
@@ -3783,7 +3692,7 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 					chatSizeY
 					);
 			}
-			if(!cg_singlemode.integer){
+			if(cgs.gametype != GT_SINGLE){
 			CG_DrawGenericConsole(&cgs.teamChat, teamChatLines, cg_teamChatTime.integer, 
 					0 - cl_screenoffset.integer, 
 					cg_teamChatY.integer - teamChatLines*teamChatSizeY,
@@ -3798,7 +3707,7 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 
 		if(stereoFrame == STEREO_CENTER)
 			CG_DrawCrosshair();
-		if(!cg_singlemode.integer){
+		if(cgs.gametype != GT_SINGLE){
 		CG_DrawCrosshairNames();
 		}
 	} else {
@@ -3808,7 +3717,7 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 			CG_DrawProxWarning();
 			if(stereoFrame == STEREO_CENTER)
 				CG_DrawCrosshair();
-			if(!cg_singlemode.integer){
+			if(cgs.gametype != GT_SINGLE){
 			CG_DrawCrosshairNames();
 			}
 
@@ -3911,7 +3820,7 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 	CG_DrawFade();
 	
 // don't draw center string if scoreboard is up
-if(cl_drawobjective.integer == 0){
+if(cgs.gametype != GT_SINGLE){
 if(cg_oldscoreboard.integer == 0){
 	cg.scoreBoardShowing = CG_DrawScoreboard();
 }
@@ -3946,6 +3855,7 @@ if(cg_oldscoreboard.integer == 1){
 	}
 
 	// if player is dead, draw death message
+	if ( cgs.gametype == GT_SINGLE ) {
 	if ( cg.snap->ps.pm_type == PM_DEAD ) {
 		CG_DrawDeathMessage();
 
@@ -3955,6 +3865,7 @@ if(cg_oldscoreboard.integer == 1){
 
 	if ( cg.snap->ps.pm_type != PM_DEAD && cg.deathmusicStarted ) {
 		CG_StopDeathMusic();
+	}
 	}
 
 	//draw objectives notification

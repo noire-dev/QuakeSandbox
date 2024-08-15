@@ -112,11 +112,32 @@ void DeathmatchScoreboardMessage( gentity_t *ent ) {
 }
 
 void G_SendWeaponProperties(gentity_t *ent) {
-	char string[2048];
-	Com_sprintf(string, sizeof(string), "%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",
-	            mod_sgspread, mod_sgcount, mod_lgrange, mod_mgspread, mod_cgspread, mod_jumpheight, mod_gdelay, mod_mgdelay ,mod_sgdelay, mod_gldelay, mod_rldelay, mod_lgdelay, mod_pgdelay, mod_rgdelay, mod_bfgdelay, mod_ngdelay, mod_pldelay, mod_cgdelay, mod_ftdelay, mod_scoutfirespeed, mod_ammoregenfirespeed, mod_doublerfirespeed, mod_guardfirespeed, mod_hastefirespeed, mod_noplayerclip, mod_ammolimit, mod_invulmove, mod_amdelay, mod_teamred_firespeed, mod_teamblue_firespeed, mod_medkitlimit, mod_medkitinf, mod_teleporterinf, mod_portalinf, mod_kamikazeinf, mod_invulinf, mod_accelerate, mod_slickmove, mod_overlay, mod_roundmode, mod_zround, mod_gravity, mod_dayangle, mod_daydefault);
+	char string[4096];
+	Com_sprintf(string, sizeof(string), "%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",
+	            mod_sgspread, mod_sgcount, mod_lgrange, mod_mgspread, mod_cgspread, mod_jumpheight, mod_gdelay, mod_mgdelay ,mod_sgdelay, mod_gldelay, mod_rldelay, mod_lgdelay, mod_pgdelay, mod_rgdelay, mod_bfgdelay, mod_ngdelay, mod_pldelay, mod_cgdelay, mod_ftdelay, mod_scoutfirespeed, mod_ammoregenfirespeed, mod_doublerfirespeed, mod_guardfirespeed, mod_hastefirespeed, mod_noplayerclip, mod_ammolimit, mod_invulmove, mod_amdelay, mod_teamred_firespeed, mod_teamblue_firespeed, mod_medkitlimit, mod_medkitinf, mod_teleporterinf, mod_portalinf, mod_kamikazeinf, mod_invulinf, mod_accelerate, mod_slickmove, mod_overlay, mod_roundmode, mod_zround, mod_gravity);
 	trap_SendServerCommand(ent-g_entities, va( "weaponProperties %s", string));
 }
+
+void G_SendSwepWeapons(gentity_t *ent) {
+    char string[4096] = "";
+    int i;
+    int len;
+
+    for (i = MAX_WEAPONS; i < WEAPONS_NUM; i++) {
+        if (ent->swep_list[i] == 1) {
+            Q_strcat(string, sizeof(string), va("%i ", i));
+        }
+    }
+    len = strlen(string);
+    if (len > 0 && string[len - 1] == ' ') {
+        string[len - 1] = '\0';
+    }
+
+    trap_SendServerCommand(ent - g_entities, va("sweps %s", string));
+}
+
+
+
 
 
 /*
@@ -420,10 +441,7 @@ void Cmd_Give_f (gentity_t *ent) {
 	gentity_t		*it_ent;
 	trace_t		trace;
 
-	/*if ( !CheatsOk( ent ) ) {
-		return;
-	}*/
-	if(!g_building.integer){ return; }
+	if(g_gametype.integer != GT_SANDBOX){ return; }
 	if(!g_allowitems.integer){ return; }
 
 	name = ConcatArgs( 1 );
@@ -443,7 +461,7 @@ void Cmd_Give_f (gentity_t *ent) {
 	if (give_all || Q_strequal(name, "weapons"))
 	{
 		ent->client->ps.stats[STAT_WEAPONS] = (1 << WP_NUM_WEAPONS) - 1 - ( 1 << WP_NONE );
-			for(i = 1 ; i <= (WEAPONS_NUM-1)-15 ; i++){
+			for(i = 1 ; i < WEAPONS_NUM-15 ; i++){
 				ent->swep_list[i+15] = 1; 
 				ent->swep_ammo[i+15] = 9999; 
 			}
@@ -457,6 +475,7 @@ void Cmd_Give_f (gentity_t *ent) {
 		for ( i = 0 ; i < MAX_WEAPONS ; i++ ) {
 			ent->client->ps.ammo[i] = 9999;
 		}
+		SetUnlimitedWeapons(ent);
 		if (!give_all)
 			return;
 	}
@@ -596,10 +615,7 @@ argv(0) noclip
 void Cmd_Noclip_f( gentity_t *ent ) {
 	char	*msg;
 
-	/*if ( !CheatsOk( ent ) ) {
-		return;
-	}*/
-	if(!g_building.integer){ return; }
+	if(g_gametype.integer != GT_SANDBOX){ return; }
 	if(!g_allownoclip.integer){ return; }
 
 	if ( ent->client->noclip ) {
@@ -955,9 +971,10 @@ if(weapon <= 15){
 	amount = client->ps.ammo[weapon];
 	if(amount == 0){ return; }
 	client->ps.ammo[weapon] = 0;
-	Add_Weapon( ent, weapon, 0);
+	Set_Weapon( ent, weapon, 0);
 	client->ps.weapon = WP_GAUNTLET;
 	client->ps.generic2 = WP_GAUNTLET;
+	trap_SendServerCommand( ent - g_entities, va("clcmd \"%s\"", "weapon 1" ));
 	ent->swep_id = WP_GAUNTLET;
 	xr_item = BG_FindSwep( weapon );
 	if(!xr_item->classname){ return; }
@@ -967,9 +984,10 @@ if(weapon <= 15){
 	amount = ent->swep_ammo[weapon];
 	if(amount == 0){ return; }
 	ent->swep_ammo[weapon] = 0;
-	Add_Weapon( ent, weapon, 0);
+	Set_Weapon( ent, weapon, 0);
 	client->ps.weapon = WP_GAUNTLET;
 	client->ps.generic2 = WP_GAUNTLET;
+	trap_SendServerCommand( ent - g_entities, va("clcmd \"%s\"", "weapon 1" ));
 	ent->swep_id = WP_GAUNTLET;
 	xr_item = BG_FindSwep( weapon );
 	if(!xr_item->classname){ return; }
@@ -1620,7 +1638,7 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	char		arg60[64];
 	char		arg61[64];
 	
-	if(!g_building.integer){ return; }
+	if(g_gametype.integer != GT_SANDBOX){ return; }
 		
 	//tr.endpos
 	trap_Argv( 1, arg01, sizeof( arg01 ) );
@@ -1688,8 +1706,7 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	//Set Aiming Directions
 	AngleVectors(ent->client->ps.viewangles, forward, right, up);
 	CalcMuzzlePoint(ent, forward, right, up, start);
-	VectorMA (start, 4096, forward, end);
-	VectorScale( forward, 0, forward );
+	VectorMA (start, TOOLGUN_RANGE, forward, end);
 
 	//Trace Position
 	trap_Trace (&tr, start, NULL, NULL, end, ent->s.number, MASK_SELECT );
@@ -1704,8 +1721,12 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	return;
 	}
 	}
+	tent = G_TempEntity( tr.endpos, EV_PARTICLES_GRAVITY );
+	tent->s.constantLight = (((rand() % 256 | rand() % 256 << 8 ) | rand() % 256 << 16 ) | ( 255 << 24 ));
+	tent->s.eventParm = 24; //eventParm is used to determine the number of particles
+	tent->s.generic1 = 500; //generic1 is used to determine the speed of the particles
+	tent->s.generic2 = 16; //generic2 is used to determine the size of the particles
 	G_BuildPropSL( arg02, arg03, tr.endpos, ent, arg04, arg05, arg06, arg07, arg08, arg09, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30, arg31, arg32, arg33, arg34, arg35, arg36, arg37, arg38, arg39, arg40, arg41, arg42, arg43, arg44, arg45, arg46, arg47, arg48, arg49, arg50, arg51, arg52, arg53, arg54, arg55, arg56, arg57, arg58, arg59, arg60, arg61);
-	
 	
 	return;
 	}
@@ -1718,7 +1739,7 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	tent->s.origin[2] += 25;
 	tent->classname = "target_botspawn";
 	CopyAlloc(tent->clientname, arg02);
-	tent->type = NPC_CITIZEN;
+	tent->type = NPC_ENEMY;
 	if(!Q_stricmp (arg03, "NPC_Enemy")){
 	tent->type = NPC_ENEMY;
 	}
@@ -1758,12 +1779,97 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	G_AddBot(tent->clientname, tent->skill, "Blue", 0, tent->message, tent->s.number, tent->target, tent->type, tent );
 	
 	trap_Cvar_Set("g_spSkill", arg04);
-
-
 	return;
 	}
+}
+
+/*
+==================
+Cmd_Modify_Prop_f
+Added for QSandbox.
+==================
+*/
+static void Cmd_Modify_Prop_f( gentity_t *ent ){
+	vec3_t		end, start, forward, up, right;
+	trace_t		tr;
+	gentity_t 	*tent;
+	gentity_t	*traceEnt;
+	char		arg01[64];
+	char		arg02[64];
+	char		arg03[64];
+	char		arg04[64];
+	char		arg05[64];
+	char		arg06[64];
+	char		arg07[64];
+	char		arg08[64];
+	char		arg09[64];
+	char		arg10[64];
+	char		arg11[64];
+	char		arg12[64];
+	char		arg13[64];
+	char		arg14[64];
+	char		arg15[64];
+	char		arg16[64];
+	char		arg17[64];
+	char		arg18[64];
+	char		arg19[64];
 	
+	if(g_gametype.integer != GT_SANDBOX){ return; }
+		
+	//tr.endpos
+	trap_Argv( 1, arg01, sizeof( arg01 ) );
+	trap_Argv( 2, arg02, sizeof( arg02 ) );
+	trap_Argv( 3, arg03, sizeof( arg03 ) );
+	trap_Argv( 4, arg04, sizeof( arg04 ) );
+	trap_Argv( 5, arg05, sizeof( arg05 ) );
+	trap_Argv( 6, arg06, sizeof( arg06 ) );
+	trap_Argv( 7, arg07, sizeof( arg07 ) );
+	trap_Argv( 8, arg08, sizeof( arg08 ) );
+	trap_Argv( 9, arg09, sizeof( arg09 ) );
+	trap_Argv( 10, arg10, sizeof( arg10 ) );
+	trap_Argv( 11, arg11, sizeof( arg11 ) );
+	trap_Argv( 12, arg12, sizeof( arg12 ) );
+	trap_Argv( 13, arg13, sizeof( arg13 ) );
+	trap_Argv( 14, arg14, sizeof( arg14 ) );
+	trap_Argv( 15, arg15, sizeof( arg15 ) );
+	trap_Argv( 16, arg16, sizeof( arg16 ) );
+	trap_Argv( 17, arg17, sizeof( arg17 ) );
+	trap_Argv( 18, arg18, sizeof( arg18 ) );
+	trap_Argv( 19, arg19, sizeof( arg19 ) );
 	
+	//Set Aiming Directions
+	AngleVectors(ent->client->ps.viewangles, forward, right, up);
+	CalcMuzzlePoint(ent, forward, right, up, start);
+	VectorMA (start, TOOLGUN_RANGE, forward, end);
+
+	//Trace Position
+	trap_Trace (&tr, start, NULL, NULL, end, ent->s.number, MASK_SELECT );
+	
+	traceEnt = &g_entities[ tr.entityNum ];		//entity for modding
+	
+	tent = G_TempEntity( tr.endpos, EV_PARTICLES_GRAVITY );
+	tent->s.constantLight = (((rand() % 256 | rand() % 256 << 8 ) | rand() % 256 << 16 ) | ( 255 << 24 ));
+	tent->s.eventParm = 24; //eventParm is used to determine the number of particles
+	tent->s.generic1 = 125; //generic1 is used to determine the speed of the particles
+	tent->s.generic2 = 3; //generic2 is used to determine the size of the particles
+	G_ModProp( traceEnt, ent, arg01, arg02, arg03, arg04, arg05, arg06, arg07, arg08, arg09, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19);
+	return;
+}
+
+/*
+==================
+Cmd_Altfire_Physgun_f
+Added for QSandbox.
+==================
+*/
+static void Cmd_Altfire_Physgun_f( gentity_t *ent ){
+	if ( ent->client->ps.weapon == WP_PHYSGUN ){
+	    if (ent->client->buttons & BUTTON_ATTACK) {
+			if (ent->grabbedEntity) {
+				ent->grabbedEntity->grabNewPhys = 1;	//say physgun about freeze option
+			}
+		}
+	}
 }
 
 /*
@@ -1840,7 +1946,7 @@ static void Cmd_PropNpc_AS_f( gentity_t *ent ){
 	char		arg60[64];
 	char		arg61[64];
 	
-	if(!g_building.integer){ return; }
+	if(g_gametype.integer != GT_SANDBOX){ return; }
 		
 	//tr.endpos
 	trap_Argv( 1, cord_x, sizeof( cord_x ) );
@@ -1936,7 +2042,7 @@ static void Cmd_PropNpc_AS_f( gentity_t *ent ){
 	tent->s.origin[2] += 25;
 	tent->classname = "target_botspawn";
 	CopyAlloc(tent->clientname, arg02);
-	tent->type = NPC_CITIZEN;
+	tent->type = NPC_ENEMY;
 	if(!Q_stricmp (arg03, "NPC_Enemy")){
 	tent->type = NPC_ENEMY;
 	}
@@ -1976,93 +2082,44 @@ static void Cmd_PropNpc_AS_f( gentity_t *ent ){
 	G_AddBot(tent->clientname, tent->skill, "Blue", 0, tent->message, tent->s.number, tent->target, tent->type, tent );
 	
 	trap_Cvar_Set("g_spSkill", arg04);
-
-
 	return;
 	}
-	
-	
 }
 
 /*
 ==================
-Cmd_DistanceProp_f
+Cmd_PhysgunDist_f
 Added for QSandbox.
 ==================
 */
-static void Cmd_DistanceProp_f( gentity_t *ent ){
-	vec3_t		end, start, forward, up, right;
+static void Cmd_PhysgunDist_f( gentity_t *ent ){
 	char		mode[MAX_TOKEN_CHARS];
-	trace_t		tr;
-	
-	if(!g_building.integer){
-	return;	
-	}
 	
 	trap_Argv( 1, mode, sizeof( mode ) );
-	if(atoi(mode) == 1){
-	ent->InteractDist -= 5;
-	if(ent->InteractDist < 55){
-	ent->InteractDist = 55;
-	}
-	}
-	if(atoi(mode) == 2){
-	ent->InteractDist += 5;
-	if(ent->InteractDist > 4096){
-	ent->InteractDist = 4096;
-	}
+	
+	if ( ent->client->ps.weapon == WP_PHYSGUN ){
+	    if (ent->client->buttons & BUTTON_ATTACK) {
+			if (ent->grabbedEntity) {
+					if(atoi(mode) == 0){
+					ent->grabDist -= 20;
+					if(ent->grabbedEntity->sb_coltype){
+					if(ent->grabDist < ent->grabbedEntity->sb_coltype+1){
+					ent->grabDist = ent->grabbedEntity->sb_coltype+1;
+					}
+					} else {
+					if(ent->grabDist < 100){
+					ent->grabDist = 100;
+					}	
+					}
+					}
+					if(atoi(mode) == 1){
+					ent->grabDist += 20;
+					}
+			}
+		}
 	}
 	
 }
-
-/*
-==================
-Cmd_ModifyProp_f
-KK-OAX Added for QSandbox.
-==================
-*/
-static void Cmd_ModifyProp_f( gentity_t *ent ){
-	char		modifier[MAX_TOKEN_CHARS];
-	char		value1[MAX_TOKEN_CHARS];
-	char		value2[MAX_TOKEN_CHARS];
-	gentity_t		*entscr;
-	
-	if(!g_building.integer){
-	return;	
-	}
-		
-	//tr.endpos
-	trap_Argv( 1, modifier, sizeof( modifier ) );
-	trap_Argv( 2, value1, sizeof( value1 ) );
-	trap_Argv( 3, value2, sizeof( value2 ) );
-	
-	while ( (entscr = G_Find(entscr, FOFS(selectedpr), "1")) != NULL ) {
-	if(entscr->s.generic2){
-		if(atoi(modifier) == 0){
-			entscr->s.generic2 = 0;
-			entscr->selectedpr = "0";
-		}
-		if(atoi(modifier) == 1){
-		
-		}
-		if(atoi(modifier) == 2){
-			G_FreeEntity(entscr);
-		}
-		if(atoi(modifier) == 3){
-			entscr->s.modelindex = G_ModelIndex( va("props/%s",value1) );
-			CopyAlloc(entscr->sb_model, value1);
-		}
-	}
-	}
-
-    if( trap_Argc( ) < 2 ){
-	G_Printf( "usage: <modifier> <value1> <value2>\n" );
-    return;
-	}
-	
-	
-}
-
 
 static void Cmd_FlashlightOn_f( gentity_t *ent ){
 	char        arg[MAX_TOKEN_CHARS];
@@ -2105,9 +2162,6 @@ static void Cmd_Flashlight_f( gentity_t *ent ){
 	char        arg[MAX_TOKEN_CHARS];
 
 if(ent->flashon != 1){
-	if ( ent->client->ps.stats[STAT_FLASH] <= 20 ){
-		return;	
-	}
 	Cmd_FlashlightOn_f( ent );
 	return;
 }
@@ -2574,7 +2628,7 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 	if ( !Q_stricmp( arg1, "g_gametype" ) ) {
                 char	s[MAX_STRING_CHARS];
 		i = atoi( arg2 );
-		if( i == GT_SINGLE_PLAYER || i < GT_FFA || i >= GT_MAX_GAME_TYPE) {
+		if( i < GT_SANDBOX || i >= GT_MAX_GAME_TYPE) {
 			trap_SendServerCommand( ent-g_entities, "print \"Invalid gametype.\n\"" );
 			return;
 		}
@@ -3263,9 +3317,6 @@ void Cmd_UseCvar_f( gentity_t *ent ) {
 	"g_teamred_infammo",
 	"g_teamred_respawnwait",
 	"g_teamred_pickupitems",
-	"g_flightlimit",
-	"g_flightregen",
-	"g_flightpower",
 	"g_regenarmor",
 	"g_spectatorspeed",
 	"eliminationrespawn",
@@ -3274,7 +3325,6 @@ void Cmd_UseCvar_f( gentity_t *ent ) {
 	"g_slickmove",
 	"g_accelerate",
 	"g_randomItems",
-	"g_locationdamage",
 	"g_kill",
 	"g_kamikazeinf",
 	"g_invulinf",
@@ -3312,7 +3362,6 @@ void Cmd_UseCvar_f( gentity_t *ent ) {
 	"g_ammolimit",
 	"g_jumpheight",
 	"g_speedfactor",
-	"g_spawnselect",
 	"g_drowndamage",
 	"g_armorrespawn",
 	"g_healthrespawn",
@@ -3390,7 +3439,7 @@ void Cmd_UseCvar_f( gentity_t *ent ) {
 	"g_regen",
 	0
 };
-if(!g_building.integer){ return; }
+if(g_gametype.integer != GT_SANDBOX){ return; }
 if(!g_allowsettings.integer){ return; }
 
     trap_Argv( 1, p1, sizeof( p1 ) );
@@ -3452,8 +3501,6 @@ commands_t cmds[ ] =
   // normal commands
   { "team", 0, Cmd_Team_f },
   { "vote", 0, Cmd_Vote_f },
-  /*{ "ignore", 0, Cmd_Ignore_f },
-  { "unignore", 0, Cmd_Ignore_f },*/
 
   // communication commands
   { "tell", CMD_MESSAGE, Cmd_Tell_f },
@@ -3471,9 +3518,6 @@ commands_t cmds[ ] =
   { "vosay_local", CMD_MESSAGE|CMD_INTERMISSION, Cmd_Voice_f },
   { "votell", CMD_MESSAGE|CMD_INTERMISSION, Cmd_VoiceTell_f },
   { "vtaunt", CMD_MESSAGE|CMD_INTERMISSION, Cmd_VoiceTaunt_f },
-  /*{ "m", CMD_MESSAGE|CMD_INTERMISSION, Cmd_PrivateMessage_f },
-  { "mt", CMD_MESSAGE|CMD_INTERMISSION, Cmd_PrivateMessage_f },
-  { "a", CMD_MESSAGE|CMD_INTERMISSION, Cmd_AdminMessage_f },*/
 
   { "score", CMD_INTERMISSION, Cmd_Score_f },
   { "acc", CMD_INTERMISSION, Cmd_Acc_f},
@@ -3489,15 +3533,11 @@ commands_t cmds[ ] =
 
   { "kill", CMD_TEAM|CMD_LIVING, Cmd_Kill_f },
   { "sl", CMD_LIVING, Cmd_SpawnList_Item_f },
+  { "tm", CMD_LIVING, Cmd_Modify_Prop_f },
+  { "altfire_physgun", CMD_LIVING, Cmd_Altfire_Physgun_f },
   { "create", 0, Cmd_PropNpc_AS_f },
-  { "distprop", CMD_LIVING, Cmd_DistanceProp_f },
-  { "modifyprop", CMD_LIVING, Cmd_ModifyProp_f },
+  { "physgun_dist", CMD_LIVING, Cmd_PhysgunDist_f },
   { "flashlight", CMD_LIVING, Cmd_Flashlight_f },
- // { "flashlighton", CMD_LIVING, Cmd_FlashlightOn_f },
- // { "flashlightoff", CMD_LIVING, Cmd_FlashlightOff_f },
- // { "crosshair", CMD_LIVING, Cmd_Crosshair_f },
- // { "crosshairon", CMD_LIVING, Cmd_CrosshairOn_f },
- // { "crosshairoff", CMD_LIVING, Cmd_CrosshairOff_f },
   { "ammo", CMD_TEAM|CMD_LIVING, Cmd_DropAmmo_f },
   { "health", CMD_TEAM|CMD_LIVING, Cmd_DropHealth_f },
   { "armor", CMD_TEAM|CMD_LIVING, Cmd_DropArmor_f },

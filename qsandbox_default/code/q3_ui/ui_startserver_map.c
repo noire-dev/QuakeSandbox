@@ -828,7 +828,7 @@ StartServer_MapPage_Load
 */
 static void StartServer_MapPage_Load(void)
 {
-	s_mapcontrols.gameType.curvalue = gametype_remap2[ s_scriptdata.gametype ];
+	s_mapcontrols.gameType.curvalue = s_scriptdata.gametype;
 
 	StartServer_MapPage_InitControlsFromScript();
 	StartServer_MapPage_CheckLimitType();
@@ -919,7 +919,7 @@ static void StartServer_MapPage_SetSourceTypeText(void)
 	int remap;
 	int subtype;
 
-	remap = gametype_remap2[s_scriptdata.gametype];
+	remap = s_scriptdata.gametype;
 	id = s_scriptdata.map.TypeCount[remap][MAP_GROUP_ID];
 	nonid = s_scriptdata.map.TypeCount[remap][MAP_GROUP_NONID];
 	total = id + nonid;
@@ -1075,7 +1075,7 @@ static void StartServer_MapPage_MenuEvent( void* ptr, int event )
 			// make all changes before updating control page
 			StartServer_SaveScriptData();
 
-			StartServer_LoadScriptDataFromType(gametype_remap[ s_mapcontrols.gameType.curvalue ]);
+			StartServer_LoadScriptDataFromType( s_mapcontrols.gameType.curvalue );
 			StartServer_MapPage_InitControlsFromScript();
 
 			StartServer_MapPage_UpdateInterface();

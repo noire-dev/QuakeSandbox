@@ -1458,7 +1458,7 @@ StartServer_WeaponPage_Load
 */
 static void StartServer_WeaponPage_Load( void )
 {
-	s_weaponcontrols.gameType.curvalue = gametype_remap2[s_scriptdata.gametype];
+	s_weaponcontrols.gameType.curvalue = s_scriptdata.gametype;
 
 	StartServer_WeaponPage_InitControlsFromScript(-1);
 }
@@ -1639,7 +1639,7 @@ static void StartServer_WeaponPage_Event( void* ptr, int event )
 			}
 
 			StartServer_SaveScriptData();
-			StartServer_LoadScriptDataFromType(gametype_remap[s_weaponcontrols.gameType.curvalue]);
+			StartServer_LoadScriptDataFromType(s_weaponcontrols.gameType.curvalue);
 
 			StartServer_WeaponPage_InitControlsFromScript(-1);	// gametype is already accurate
 			StartServer_WeaponPage_UpdateInterface();

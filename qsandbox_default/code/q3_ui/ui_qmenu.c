@@ -229,8 +229,13 @@ void PText_Init( menutext_s *t )
 
 	t->generic.left   = x - PROP_GAP_WIDTH * sizeScale;
 	t->generic.right  = x + w + PROP_GAP_WIDTH * sizeScale;
+	if(t->generic.heightmod){
+	t->generic.top    = y - (t->generic.heightmod*h);
+	t->generic.bottom = y + (t->generic.heightmod*h);
+	} else {
 	t->generic.top    = y;
-	t->generic.bottom = y + h;
+	t->generic.bottom = y + h;	
+	}
 }
 
 /*

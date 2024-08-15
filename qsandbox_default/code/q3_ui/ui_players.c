@@ -80,8 +80,8 @@ typedef struct {
 
 
 typedef struct {
-	sfxHandle_t	flash[MAX_WEAPONS][4];
-	sfxHandle_t	firing[MAX_WEAPONS];
+	sfxHandle_t	flash[WEAPONS_NUM][4];
+	sfxHandle_t	firing[WEAPONS_NUM];
 } sfxWeapon_t;
 
 

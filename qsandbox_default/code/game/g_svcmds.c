@@ -431,43 +431,6 @@ void Svcmd_PickTarget_f( void ){
 }
 
 /*
-==================
-Svcmd_AddItem_f
-Added for QSandbox.
-==================
-*/
-void Svcmd_AddItem_f( void ){
-	char   name[1024];
-	char   orig0[1024];
-	char   orig1[1024];
-	char   orig2[1024];
-	char   wait[1024];
-	char   count[1024];
-	char   target[1024];
-	char   sf[1024];
-	vec3_t		origin;
-	gentity_t 	*act;
-	
-	if( trap_Argc( ) < 3 ){
-    G_Printf( "usage: additem <name> <x,y,z> <wait> <count> <target> <suspended>\n" );
-    return;}
-	
-	trap_Argv( 1, name, sizeof( name ) );
-	trap_Argv( 2, orig0, sizeof( orig0 ) );
-	trap_Argv( 3, orig1, sizeof( orig1 ) );
-	trap_Argv( 4, orig2, sizeof( orig2 ) );
-	trap_Argv( 5, wait, sizeof( wait ) );
-	trap_Argv( 6, count, sizeof( count ) );
-	trap_Argv( 7, target, sizeof( target ) );
-	trap_Argv( 8, sf, sizeof( sf ) );
-	origin[0] = atof(orig0);
-	origin[1] = atof(orig1);
-	origin[2] = atof(orig2);
-
-	G_AddItem( name, origin, atoi(wait), atoi(count), target, atoi(sf)  );
-}
-
-/*
 =================
 Svcmd_AdmUseCvar_f
 =================
@@ -484,7 +447,8 @@ void Svcmd_AdmUseCvar_f( void ) {
 	"g_allowitems",
 	"g_allownoclip",
 	"g_allowtoolgun",
-	"g_toolplayers",
+	"g_allowphysgun",
+	"g_allowgravitygun",
 	0
 };
 
@@ -497,7 +461,7 @@ void Svcmd_AdmUseCvar_f( void ) {
 	return;
 	}
 	
-	for (i = 0; i < 7; i++) {
+	for (i = 0; i < 8; i++) {
     if (Q_stricmp(p1, admcvar_items[i]) == 0) {
 	trap_Cvar_Set(p1, va("%s", p2));
 	trap_SendServerCommand( -1, va("print \"Variable %s changed to %s\n\"", p1, p2));
@@ -593,7 +557,6 @@ struct
   { "game_memory", qfalse, Svcmd_GameMem_f },
   { "addbot", qfalse, Svcmd_AddBot_f },
   { "botlist", qfalse, Svcmd_BotList_f },
-  { "abort_podium", qfalse, Svcmd_AbortPodium_f },
   { "addip", qfalse, Svcmd_AddIP_f },
   { "removeip", qfalse, Svcmd_RemoveIP_f },
 
@@ -630,17 +593,13 @@ struct
   { "useadmcvar", qfalse, Svcmd_AdmUseCvar_f },
   { "if", qfalse, Svcmd_Condition_f },
   { "picktarget", qfalse, Svcmd_PickTarget_f },
-  { "additem", qfalse, Svcmd_AddItem_f },
   { "op", qfalse, Svcmd_Operation_f },
-  { "qvmwrite", qfalse, Svcmd_QvmWrite_f },
-  { "qvmread", qfalse, Svcmd_QvmRead_f },
   { "cvar", qfalse, Svcmd_Cvar_f },
   { "editline", qfalse, Svcmd_Editline_f },
   { "clientcmd", qfalse, Svcmd_ClientCommand_f },
   { "syscmd", qfalse, Svcmd_SystemCommand_f },
   { "random", qfalse, Svcmd_Random_f },
   { "for", qfalse, Svcmd_For_f },
-  { "RCM", qfalse, Svcmd_RCM },
   { "savegame", qfalse, Svcmd_SaveSession_f }
 };
 

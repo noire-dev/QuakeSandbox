@@ -157,8 +157,9 @@ void TeamMain_MenuInit( void ) {
 			      
 	// set initial states
 	switch( gametype ) {
-	case GT_SINGLE_PLAYER:
+	case GT_SANDBOX:
 	case GT_FFA:
+	case GT_SINGLE:
 	case GT_TOURNAMENT:
 		s_teammain.joinred.generic.flags  |= QMF_GRAYED;
 		s_teammain.joinblue.generic.flags |= QMF_GRAYED;

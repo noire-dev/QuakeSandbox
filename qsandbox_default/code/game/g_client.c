@@ -1283,16 +1283,10 @@ if desired.
 void ClientUserinfoChanged( int clientNum ) {
 	gentity_t *ent;
 	int		teamTask, teamLeader, team, health;
-	int		oasbidi;
-	int		oasbheight;
 	int		singlebot;
-	int		gmodtool;
-	float	gmodtoolmode;
-	char	gmodmodifiers;
 	int		botskill;
 	char	*s;
 	char	model[MAX_QPATH];
-	char	gender[MAX_QPATH];
 	char	headModel[MAX_QPATH];
 	char	oldname[MAX_STRING_CHARS];
 	char        err[MAX_STRING_CHARS];
@@ -1309,8 +1303,10 @@ void ClientUserinfoChanged( int clientNum ) {
 	char	pligred[MAX_INFO_STRING];
 	char	pliggreen[MAX_INFO_STRING];
 	char	pligblue[MAX_INFO_STRING];
+	char	pgred[MAX_INFO_STRING];
+	char	pggreen[MAX_INFO_STRING];
+	char	pgblue[MAX_INFO_STRING];
 	char	swep_id[MAX_INFO_STRING];
-	char	pligradius[MAX_INFO_STRING];
 	char	redTeam[MAX_INFO_STRING];
 	char	blueTeam[MAX_INFO_STRING];
 	char	userinfo[MAX_INFO_STRING];
@@ -1414,22 +1410,9 @@ void ClientUserinfoChanged( int clientNum ) {
 ent->playername = ent->client->pers.netname;
 ent->maxHealth = ent->client->pers.maxHealth;
 ent->playerTeam = ent->client->sess.sessionTeam;
-ent->playerspecial = ent->client->sess.sessionTeam;
 
-Q_strncpyz( ent->gmodmodifiers, Info_ValueForKey( userinfo, "oasb_modifiers" ), sizeof(ent->gmodmodifiers) );
-Q_strncpyz( gender, Info_ValueForKey (userinfo, "gender"), sizeof( gender ) );
-oasbidi = atoi( Info_ValueForKey( userinfo, "oasb_idi" ) );
-ent->gmodmod_one = oasbidi;
-oasbheight = atoi( Info_ValueForKey( userinfo, "oasb_height" ) );
-ent->gmodmod_two = oasbheight;
+ent->tool_id = atoi( Info_ValueForKey( userinfo, "toolgun_tool" ) );
 
-ent->playerspecial = atoi(Info_ValueForKey( userinfo, "cg_hetex" ));
-client->pers.playerspecial = atoi(Info_ValueForKey( userinfo, "cg_hetex" ));
-
-gmodtool = atoi( Info_ValueForKey( userinfo, "oasb_tool" ) );
-ent->gmodtool = gmodtool;
-gmodtoolmode = atoi( Info_ValueForKey( userinfo, "oasb_modifier" ) );
-ent->gmodtoolmode = gmodtoolmode;
 if ( ent->r.svFlags & SVF_BOT ) {
 botskill = atoi( Info_ValueForKey( userinfo, "skill" ) );
 ent->botskill = botskill;
@@ -1562,6 +1545,9 @@ if ( ent->r.svFlags & SVF_BOT ) {
 	strcpy(heligred, Info_ValueForKey( userinfo, "cg_helightred" ));
 	strcpy(heliggreen, Info_ValueForKey( userinfo, "cg_helightgreen" ));
 	strcpy(heligblue, Info_ValueForKey( userinfo, "cg_helightblue" ));
+	strcpy(pgred, Info_ValueForKey( userinfo, "cg_crosshairColorRed" ));
+	strcpy(pggreen, Info_ValueForKey( userinfo, "cg_crosshairColorGreen" ));
+	strcpy(pgblue, Info_ValueForKey( userinfo, "cg_crosshairColorBlue" ));
 	strcpy(swep_id, va("%i", ent->swep_id));
 	strcpy(blueTeam, Info_ValueForKey( userinfo, "g_blueteam" ));
 
@@ -1571,8 +1557,8 @@ if ( ent->r.svFlags & SVF_BOT ) {
 			client->pers.maxHealth, client->sess.wins, client->sess.losses,
 			Info_ValueForKey( userinfo, "skill" ), teamTask, teamLeader );
 	} else {
-		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\g_redteam\\%s\\g_blueteam\\%s\\hr\\%s\\hg\\%s\\hb\\%s\\tr\\%s\\tg\\%s\\tb\\%s\\pr\\%s\\pg\\%s\\pb\\%s\\si\\%s\\vn\\%i\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\tt\\%d\\tl\\%d",
-			client->pers.netname, client->sess.sessionTeam, model, headModel, redTeam, blueTeam, heligred, heliggreen, heligblue, toligred, toliggreen, toligblue, pligred, pliggreen, pligblue, swep_id, client->vehiclenum, c1, c2,
+		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\g_redteam\\%s\\g_blueteam\\%s\\hr\\%s\\hg\\%s\\hb\\%s\\tr\\%s\\tg\\%s\\tb\\%s\\pr\\%s\\pg\\%s\\pb\\%s\\pg_r\\%s\\pg_g\\%s\\pg_b\\%s\\si\\%s\\vn\\%i\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\tt\\%d\\tl\\%d",
+			client->pers.netname, client->sess.sessionTeam, model, headModel, redTeam, blueTeam, heligred, heliggreen, heligblue, toligred, toliggreen, toligblue, pligred, pliggreen, pligblue, pgred, pggreen, pgblue, swep_id, client->vehiclenum, c1, c2,
 			client->pers.maxHealth, client->sess.wins, client->sess.losses, teamTask, teamLeader);
 	}
 
@@ -1684,7 +1670,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 	client->pers.connected = CON_CONNECTING;
 
 	// read or initialize the session data
-	if(!g_singlemode.integer){
+	if(g_gametype.integer != GT_SINGLE){
 	if ( firstTime || level.newSession ) {
 		G_InitSessionData( client, userinfo );
 	}
@@ -1890,24 +1876,21 @@ void ClientSpawn(gentity_t *ent) {
 	clientSession_t		savedSess;
 	int		persistant[MAX_PERSISTANT];
 	gentity_t	*spawnPoint;
-	//gentity_t *tent;
 	int		flags;
 	int		health;
 	int		savedPing;
-//	char	*savedAreaBits;
 	int		accuracy_hits, accuracy_shots,vote;
-        int		accuracy[WP_NUM_WEAPONS][2];
+    int		accuracy[WP_NUM_WEAPONS][2];
 	int		eventSequence;
 	char	userinfo[MAX_INFO_STRING];
 
 	index = ent - g_entities;
 	client = ent->client;
 
-	//if ( !IsBot( ent ) )
-		//G_FadeIn( 1.0, ent-g_entities );
-	
-	trap_SendServerCommand( index, va("clcmd \"%s\"", "execscript d_interact0" ));
-
+	if(g_gametype.integer == GT_SINGLE){
+	if ( !IsBot( ent ) )
+		G_FadeIn( 1.0, ent-g_entities );
+	}
 
 	//In Elimination the player should not spawn if he have already spawned in the round (but not for spectators)
 	// N_G: You've obviously wanted something ELSE
@@ -2071,10 +2054,10 @@ void ClientSpawn(gentity_t *ent) {
 	health = atoi( Info_ValueForKey( userinfo, "handicap" ) );
 	client->pers.maxHealth = health;
 	if (!(ent->r.svFlags & SVF_BOT)){
-			if ( client->pers.maxHealth < 1 || client->pers.maxHealth > 100 ) {
-				client->pers.maxHealth = 100;
+		if ( client->pers.maxHealth < 1 || client->pers.maxHealth > 100 ) {
+			client->pers.maxHealth = 100;
+		}
 	}
-			}
 
 	// clear entity values
 	client->ps.stats[STAT_MAX_HEALTH] = client->pers.maxHealth;
@@ -2092,451 +2075,20 @@ void ClientSpawn(gentity_t *ent) {
 	ent->watertype = 0;
 	ent->flags = 0;
 
-
-
-        //Sago: No one has hit the client yet!
-        client->lastSentFlying = -1;
+    //Sago: No one has hit the client yet!
+    client->lastSentFlying = -1;
 	VectorCopy (playerMins, ent->r.mins);
 	VectorCopy (playerMaxs, ent->r.maxs);
 
-
-
-
 	client->ps.clientNum = index;
 
-if(g_gametype.integer != GT_ELIMINATION && g_gametype.integer != GT_CTF_ELIMINATION && g_gametype.integer != GT_LMS && !g_elimination_allgametypes.integer && g_spawnselect.integer != 1)
-{
+	SetUnlimitedWeapons(ent);
+	SetSandboxWeapons(ent);
 	if ( ent->botspawn ) {
 		SetupCustomBot( ent );
 	} else {
-	client->ps.stats[STAT_WEAPONS] = ( 1 << WP_MACHINEGUN );
-	if ( g_gametype.integer == GT_TEAM ) {
-		client->ps.ammo[WP_MACHINEGUN] = 50;
-	} else {
-		client->ps.ammo[WP_MACHINEGUN] = 100;
+		SetCustomWeapons( ent );
 	}
-
-	client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GAUNTLET );
-	client->ps.ammo[WP_GAUNTLET] = -1;
-	client->ps.ammo[WP_GRAPPLING_HOOK] = -1;
-
-	// health will count down towards max_health
-	ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH];
-	ent->helpme = 0;
-	ent->client->ps.stats[STAT_FLASH] = g_flightlimit.integer/2;
-	}
-}
-else
-{
-	client->ps.ammo[WP_GAUNTLET] = -1;
-	client->ps.ammo[WP_GRAPPLING_HOOK] = -1;
-	if ( ent->botspawn ) {
-		SetupCustomBot( ent );
-	} else {
-if	(client->sess.sessionTeam == TEAM_FREE) {
-	if (g_elimination_gauntlet.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GAUNTLET );
-	}
-	if (g_elimination_machinegun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_MACHINEGUN );
-		client->ps.ammo[WP_MACHINEGUN] = g_elimination_machinegun.integer;
-	}
-	if (g_elimination_shotgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SHOTGUN );
-		client->ps.ammo[WP_SHOTGUN] = g_elimination_shotgun.integer;
-	}
-	if (g_elimination_grenade.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRENADE_LAUNCHER );
-		client->ps.ammo[WP_GRENADE_LAUNCHER] = g_elimination_grenade.integer;
-	}
-	if (g_elimination_rocket.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ROCKET_LAUNCHER );
-		client->ps.ammo[WP_ROCKET_LAUNCHER] = g_elimination_rocket.integer;
-	}
-	if (g_elimination_lightning.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_LIGHTNING );
-		client->ps.ammo[WP_LIGHTNING] = g_elimination_lightning.integer;
-	}
-	if (g_elimination_railgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_RAILGUN );
-		client->ps.ammo[WP_RAILGUN] = g_elimination_railgun.integer;
-	}
-	if (g_elimination_plasmagun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PLASMAGUN );
-		client->ps.ammo[WP_PLASMAGUN] = g_elimination_plasmagun.integer;
-	}
-	if (g_elimination_bfg.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_BFG );
-		client->ps.ammo[WP_BFG] = g_elimination_bfg.integer;
-	}
-    if (g_elimination_grapple.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRAPPLING_HOOK );
-	}
-	if (g_elimination_nail.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_NAILGUN );
-		client->ps.ammo[WP_NAILGUN] = g_elimination_nail.integer;
-	}
-	if (g_elimination_mine.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PROX_LAUNCHER );
-		client->ps.ammo[WP_PROX_LAUNCHER] = g_elimination_mine.integer;
-	}
-	if (g_elimination_chain.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_CHAINGUN );
-		client->ps.ammo[WP_CHAINGUN] = g_elimination_chain.integer;
-	}
-	if (g_elimination_flame.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_FLAMETHROWER );
-		client->ps.ammo[WP_FLAMETHROWER] = g_elimination_flame.integer;
-	}
-	if (g_elimination_antimatter.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ANTIMATTER );
-		client->ps.ammo[WP_ANTIMATTER] = g_elimination_antimatter.integer;
-	}
-	if(g_elimination_quad.integer) {
-       client->ps.powerups[PW_QUAD] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_QUAD] +=  g_elimination_quad.integer * 1000;
-	}
-    if(g_elimination_regen.integer) {
-       client->ps.powerups[PW_REGEN] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_REGEN] +=  g_elimination_regen.integer * 1000;
-	}
-	if(g_elimination_haste.integer) {
-       client->ps.powerups[PW_HASTE] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_HASTE] +=  g_elimination_haste.integer * 1000;
-	}
-	if(g_elimination_bsuit.integer) {
-       client->ps.powerups[PW_BATTLESUIT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_BATTLESUIT] +=  g_elimination_bsuit.integer * 1000;
-	}
-	if(g_elimination_invis.integer) {
-       client->ps.powerups[PW_INVIS] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_INVIS] +=  g_elimination_invis.integer * 1000;
-	}
-	if(g_elimination_flight.integer) {
-       client->ps.powerups[PW_FLIGHT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_FLIGHT] +=  g_elimination_flight.integer * 1000;
-	}
-	if(g_elimination_holdable.integer == 1) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_TELEPORTER);
-	}
-	if(g_elimination_holdable.integer == 2) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_MEDKIT);
-	}
-	if(g_elimination_holdable.integer == 3) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_KAMIKAZE);
-		client->ps.eFlags |= EF_KAMIKAZE;
-	}
-	if(g_elimination_holdable.integer == 4) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_INVULNERABILITY);
-	}
-	if(g_elimination_holdable.integer == 5) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_PORTAL);
-	}
-
-
-	ent->health = client->ps.stats[STAT_ARMOR] = g_elimination_startArmor.integer;
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer;
-	if(ent->botskill == 6){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 1.5;
-	}
-	if(ent->botskill == 7){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 2;
-	}
-	if(ent->botskill == 8){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 3;
-	}
-	if(ent->botskill == 9){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 5;
-	}
-	if(ent->botskill == 10){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 10;
-	}
-	if(ent->botskill == 11){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 15;
-	}
-	if(ent->botskill == 12){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 20;
-	}
-	if(ent->botskill == 13){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 50;
-	}
-	if(ent->botskill == 14){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 100;
-	}
-	ent->helpme = 0;
-	ent->client->ps.stats[STAT_FLASH] = g_flightlimit.integer/2;
-}
-
-if	(client->sess.sessionTeam == TEAM_BLUE) {
-	if (g_elimination_gauntlet.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GAUNTLET );
-	}
-	if (g_elimination_machinegun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_MACHINEGUN );
-		client->ps.ammo[WP_MACHINEGUN] = g_elimination_machinegun.integer;
-	}
-	if (g_elimination_shotgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SHOTGUN );
-		client->ps.ammo[WP_SHOTGUN] = g_elimination_shotgun.integer;
-	}
-	if (g_elimination_grenade.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRENADE_LAUNCHER );
-		client->ps.ammo[WP_GRENADE_LAUNCHER] = g_elimination_grenade.integer;
-	}
-	if (g_elimination_rocket.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ROCKET_LAUNCHER );
-		client->ps.ammo[WP_ROCKET_LAUNCHER] = g_elimination_rocket.integer;
-	}
-	if (g_elimination_lightning.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_LIGHTNING );
-		client->ps.ammo[WP_LIGHTNING] = g_elimination_lightning.integer;
-	}
-	if (g_elimination_railgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_RAILGUN );
-		client->ps.ammo[WP_RAILGUN] = g_elimination_railgun.integer;
-	}
-	if (g_elimination_plasmagun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PLASMAGUN );
-		client->ps.ammo[WP_PLASMAGUN] = g_elimination_plasmagun.integer;
-	}
-	if (g_elimination_bfg.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_BFG );
-		client->ps.ammo[WP_BFG] = g_elimination_bfg.integer;
-	}
-    if (g_elimination_grapple.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRAPPLING_HOOK );
-	}
-	if (g_elimination_nail.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_NAILGUN );
-		client->ps.ammo[WP_NAILGUN] = g_elimination_nail.integer;
-	}
-	if (g_elimination_mine.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PROX_LAUNCHER );
-		client->ps.ammo[WP_PROX_LAUNCHER] = g_elimination_mine.integer;
-	}
-	if (g_elimination_chain.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_CHAINGUN );
-		client->ps.ammo[WP_CHAINGUN] = g_elimination_chain.integer;
-	}
-	if (g_elimination_flame.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_FLAMETHROWER );
-		client->ps.ammo[WP_FLAMETHROWER] = g_elimination_flame.integer;
-	}
-	if (g_elimination_antimatter.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ANTIMATTER );
-		client->ps.ammo[WP_ANTIMATTER] = g_elimination_antimatter.integer;
-	}
-	if(g_elimination_quad.integer) {
-       client->ps.powerups[PW_QUAD] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_QUAD] +=  g_elimination_quad.integer * 1000;
-	}
-    if(g_elimination_regen.integer) {
-       client->ps.powerups[PW_REGEN] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_REGEN] +=  g_elimination_regen.integer * 1000;
-	}
-	if(g_elimination_haste.integer) {
-       client->ps.powerups[PW_HASTE] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_HASTE] +=  g_elimination_haste.integer * 1000;
-	}
-	if(g_elimination_bsuit.integer) {
-       client->ps.powerups[PW_BATTLESUIT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_BATTLESUIT] +=  g_elimination_bsuit.integer * 1000;
-	}
-	if(g_elimination_invis.integer) {
-       client->ps.powerups[PW_INVIS] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_INVIS] +=  g_elimination_invis.integer * 1000;
-	}
-	if(g_elimination_flight.integer) {
-       client->ps.powerups[PW_FLIGHT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_FLIGHT] +=  g_elimination_flight.integer * 1000;
-	}
-	if(g_elimination_holdable.integer == 1) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_TELEPORTER);
-	}
-	if(g_elimination_holdable.integer == 2) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_MEDKIT);
-	}
-	if(g_elimination_holdable.integer == 3) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_KAMIKAZE);
-		client->ps.eFlags |= EF_KAMIKAZE;
-	}
-	if(g_elimination_holdable.integer == 4) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_INVULNERABILITY);
-	}
-	if(g_elimination_holdable.integer == 5) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_PORTAL);
-	}
-
-
-	ent->health = client->ps.stats[STAT_ARMOR] = g_elimination_startArmor.integer;
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer;
-	if(ent->botskill == 6){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 1.5;
-	}
-	if(ent->botskill == 7){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 2;
-	}
-	if(ent->botskill == 8){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 3;
-	}
-	if(ent->botskill == 9){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 5;
-	}
-	if(ent->botskill == 10){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 10;
-	}
-	if(ent->botskill == 11){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 15;
-	}
-	if(ent->botskill == 12){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 20;
-	}
-	if(ent->botskill == 13){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 50;
-	}
-	if(ent->botskill == 14){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 100;
-	}
-	ent->helpme = 0;
-	ent->client->ps.stats[STAT_FLASH] = g_flightlimit.integer/2;
-}
-
-if	(client->sess.sessionTeam == TEAM_RED ) {
-	if (g_eliminationred_gauntlet.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GAUNTLET );
-	}
-	if (g_eliminationred_machinegun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_MACHINEGUN );
-		client->ps.ammo[WP_MACHINEGUN] = g_eliminationred_machinegun.integer;
-	}
-	if (g_eliminationred_shotgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SHOTGUN );
-		client->ps.ammo[WP_SHOTGUN] = g_eliminationred_shotgun.integer;
-	}
-	if (g_eliminationred_grenade.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRENADE_LAUNCHER );
-		client->ps.ammo[WP_GRENADE_LAUNCHER] = g_eliminationred_grenade.integer;
-	}
-	if (g_eliminationred_rocket.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ROCKET_LAUNCHER );
-		client->ps.ammo[WP_ROCKET_LAUNCHER] = g_eliminationred_rocket.integer;
-	}
-	if (g_eliminationred_lightning.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_LIGHTNING );
-		client->ps.ammo[WP_LIGHTNING] = g_eliminationred_lightning.integer;
-	}
-	if (g_eliminationred_railgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_RAILGUN );
-		client->ps.ammo[WP_RAILGUN] = g_eliminationred_railgun.integer;
-	}
-	if (g_eliminationred_plasmagun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PLASMAGUN );
-		client->ps.ammo[WP_PLASMAGUN] = g_eliminationred_plasmagun.integer;
-	}
-	if (g_eliminationred_bfg.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_BFG );
-		client->ps.ammo[WP_BFG] = g_eliminationred_bfg.integer;
-	}
-    if (g_eliminationred_grapple.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRAPPLING_HOOK );
-	}
-	if (g_eliminationred_nail.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_NAILGUN );
-		client->ps.ammo[WP_NAILGUN] = g_eliminationred_nail.integer;
-	}
-	if (g_eliminationred_mine.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PROX_LAUNCHER );
-		client->ps.ammo[WP_PROX_LAUNCHER] = g_eliminationred_mine.integer;
-	}
-	if (g_eliminationred_chain.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_CHAINGUN );
-		client->ps.ammo[WP_CHAINGUN] = g_eliminationred_chain.integer;
-	}
-	if (g_eliminationred_flame.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_FLAMETHROWER );
-		client->ps.ammo[WP_FLAMETHROWER] = g_eliminationred_flame.integer;
-	}
-	if (g_eliminationred_antimatter.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ANTIMATTER );
-		client->ps.ammo[WP_ANTIMATTER] = g_eliminationred_antimatter.integer;
-	}
-	if(g_eliminationred_quad.integer) {
-       client->ps.powerups[PW_QUAD] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_QUAD] +=  g_eliminationred_quad.integer * 1000;
-	}
-    if(g_eliminationred_regen.integer) {
-       client->ps.powerups[PW_REGEN] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_REGEN] +=  g_eliminationred_regen.integer * 1000;
-	}
-	if(g_eliminationred_haste.integer) {
-       client->ps.powerups[PW_HASTE] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_HASTE] +=  g_eliminationred_haste.integer * 1000;
-	}
-	if(g_eliminationred_bsuit.integer) {
-       client->ps.powerups[PW_BATTLESUIT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_BATTLESUIT] +=  g_eliminationred_bsuit.integer * 1000;
-	}
-	if(g_eliminationred_invis.integer) {
-       client->ps.powerups[PW_INVIS] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_INVIS] +=  g_eliminationred_invis.integer * 1000;
-	}
-	if(g_eliminationred_flight.integer) {
-       client->ps.powerups[PW_FLIGHT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_FLIGHT] +=  g_eliminationred_flight.integer * 1000;
-	}
-	if(g_eliminationred_holdable.integer == 1) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_TELEPORTER);
-	}
-	if(g_eliminationred_holdable.integer == 2) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_MEDKIT);
-	}
-	if(g_eliminationred_holdable.integer == 3) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_KAMIKAZE);
-		client->ps.eFlags |= EF_KAMIKAZE;
-	}
-	if(g_eliminationred_holdable.integer == 4) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_INVULNERABILITY);
-	}
-	if(g_eliminationred_holdable.integer == 5) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_PORTAL);
-	}
-
-
-	ent->health = client->ps.stats[STAT_ARMOR] = g_eliminationred_startArmor.integer;
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer;
-	if(ent->botskill == 6){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 1.5;
-	}
-	if(ent->botskill == 7){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 2;
-	}
-	if(ent->botskill == 8){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 3;
-	}
-	if(ent->botskill == 9){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 5;
-	}
-	if(ent->botskill == 10){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 10;
-	}
-	if(ent->botskill == 11){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 15;
-	}
-	if(ent->botskill == 12){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 20;
-	}
-	if(ent->botskill == 13){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 50;
-	}
-	if(ent->botskill == 14){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 100;
-	}
-	ent->helpme = 0;
-	ent->client->ps.stats[STAT_FLASH] = g_flightlimit.integer/2;
-}
-	}
-	
-}
 
 	G_SetOrigin( ent, spawn_origin );
 	VectorCopy( spawn_origin, client->ps.origin );
@@ -2583,7 +2135,7 @@ if	(client->sess.sessionTeam == TEAM_RED ) {
 		ent->swep_id = 1;
 		ent->client->ps.stats[STAT_SWEP] = 1;
 		for ( i = WP_NUM_WEAPONS - 1 ; i > 0 ; i-- ) {
-			if ( client->ps.stats[STAT_WEAPONS] & ( 1 << i ) && i !=WP_GRAPPLING_HOOK ) {
+			if ( client->ps.stats[STAT_WEAPONS] & ( 1 << i ) && i != WP_GRAPPLING_HOOK ) {
 				client->ps.weapon = i;
 				ent->swep_id = i;
 				ent->client->ps.stats[STAT_SWEP] = i;
@@ -2745,10 +2297,10 @@ if	(client->sess.sessionTeam == TEAM_RED ) {
 	health = atoi( Info_ValueForKey( userinfo, "handicap" ) );
 	client->pers.maxHealth = health;
 	if (!(ent->r.svFlags & SVF_BOT)){
-			if ( client->pers.maxHealth < 1 || client->pers.maxHealth > 100 ) {
-				client->pers.maxHealth = 100;
+		if ( client->pers.maxHealth < 1 || client->pers.maxHealth > 100 ) {
+			client->pers.maxHealth = 100;
+		}
 	}
-			}
 
 	// clear entity values
 	client->ps.stats[STAT_MAX_HEALTH] = client->pers.maxHealth;
@@ -2766,8 +2318,6 @@ if	(client->sess.sessionTeam == TEAM_RED ) {
 	ent->watertype = 0;
 	ent->flags = 0;
 
-
-
     //Sago: No one has hit the client yet!
     client->lastSentFlying = -1;
 
@@ -2776,439 +2326,13 @@ if	(client->sess.sessionTeam == TEAM_RED ) {
 
 	client->ps.clientNum = index;
 
-if(g_gametype.integer != GT_ELIMINATION && g_gametype.integer != GT_CTF_ELIMINATION && g_gametype.integer != GT_LMS && !g_elimination_allgametypes.integer && g_spawnselect.integer != 1)
-{
+	SetUnlimitedWeapons(ent);
+	SetSandboxWeapons(ent);
 	if ( ent->botspawn ) {
 		SetupCustomBot( ent );
 	} else {
-	client->ps.stats[STAT_WEAPONS] = ( 1 << WP_MACHINEGUN );
-	if ( g_gametype.integer == GT_TEAM ) {
-		client->ps.ammo[WP_MACHINEGUN] = 50;
-	} else {
-		client->ps.ammo[WP_MACHINEGUN] = 100;
+		SetCustomWeapons( ent );
 	}
-
-	client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GAUNTLET );
-	client->ps.ammo[WP_GAUNTLET] = -1;
-	client->ps.ammo[WP_GRAPPLING_HOOK] = -1;
-
-	// health will count down towards max_health
-	ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH];
-	ent->helpme = 0;
-	ent->client->ps.stats[STAT_FLASH] = g_flightlimit.integer/2;
-	}
-}
-else
-{
-	client->ps.ammo[WP_GAUNTLET] = -1;
-	client->ps.ammo[WP_GRAPPLING_HOOK] = -1;
-	if ( ent->botspawn ) {
-		SetupCustomBot( ent );
-	} else {
-if	(client->sess.sessionTeam == TEAM_FREE) {
-	if (g_elimination_gauntlet.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GAUNTLET );
-	}
-	if (g_elimination_machinegun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_MACHINEGUN );
-		client->ps.ammo[WP_MACHINEGUN] = g_elimination_machinegun.integer;
-	}
-	if (g_elimination_shotgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SHOTGUN );
-		client->ps.ammo[WP_SHOTGUN] = g_elimination_shotgun.integer;
-	}
-	if (g_elimination_grenade.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRENADE_LAUNCHER );
-		client->ps.ammo[WP_GRENADE_LAUNCHER] = g_elimination_grenade.integer;
-	}
-	if (g_elimination_rocket.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ROCKET_LAUNCHER );
-		client->ps.ammo[WP_ROCKET_LAUNCHER] = g_elimination_rocket.integer;
-	}
-	if (g_elimination_lightning.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_LIGHTNING );
-		client->ps.ammo[WP_LIGHTNING] = g_elimination_lightning.integer;
-	}
-	if (g_elimination_railgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_RAILGUN );
-		client->ps.ammo[WP_RAILGUN] = g_elimination_railgun.integer;
-	}
-	if (g_elimination_plasmagun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PLASMAGUN );
-		client->ps.ammo[WP_PLASMAGUN] = g_elimination_plasmagun.integer;
-	}
-	if (g_elimination_bfg.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_BFG );
-		client->ps.ammo[WP_BFG] = g_elimination_bfg.integer;
-	}
-    if (g_elimination_grapple.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRAPPLING_HOOK );
-	}
-	if (g_elimination_nail.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_NAILGUN );
-		client->ps.ammo[WP_NAILGUN] = g_elimination_nail.integer;
-	}
-	if (g_elimination_mine.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PROX_LAUNCHER );
-		client->ps.ammo[WP_PROX_LAUNCHER] = g_elimination_mine.integer;
-	}
-	if (g_elimination_chain.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_CHAINGUN );
-		client->ps.ammo[WP_CHAINGUN] = g_elimination_chain.integer;
-	}
-	if (g_elimination_flame.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_FLAMETHROWER );
-		client->ps.ammo[WP_FLAMETHROWER] = g_elimination_flame.integer;
-	}
-	if (g_elimination_antimatter.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ANTIMATTER );
-		client->ps.ammo[WP_ANTIMATTER] = g_elimination_antimatter.integer;
-	}
-	if(g_elimination_quad.integer) {
-       client->ps.powerups[PW_QUAD] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_QUAD] +=  g_elimination_quad.integer * 1000;
-	}
-    if(g_elimination_regen.integer) {
-       client->ps.powerups[PW_REGEN] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_REGEN] +=  g_elimination_regen.integer * 1000;
-	}
-	if(g_elimination_haste.integer) {
-       client->ps.powerups[PW_HASTE] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_HASTE] +=  g_elimination_haste.integer * 1000;
-	}
-	if(g_elimination_bsuit.integer) {
-       client->ps.powerups[PW_BATTLESUIT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_BATTLESUIT] +=  g_elimination_bsuit.integer * 1000;
-	}
-	if(g_elimination_invis.integer) {
-       client->ps.powerups[PW_INVIS] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_INVIS] +=  g_elimination_invis.integer * 1000;
-	}
-	if(g_elimination_flight.integer) {
-       client->ps.powerups[PW_FLIGHT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_FLIGHT] +=  g_elimination_flight.integer * 1000;
-	}
-	if(g_elimination_holdable.integer == 1) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_TELEPORTER);
-	}
-	if(g_elimination_holdable.integer == 2) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_MEDKIT);
-	}
-	if(g_elimination_holdable.integer == 3) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_KAMIKAZE);
-		client->ps.eFlags |= EF_KAMIKAZE;
-	}
-	if(g_elimination_holdable.integer == 4) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_INVULNERABILITY);
-	}
-	if(g_elimination_holdable.integer == 5) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_PORTAL);
-	}
-
-
-	ent->health = client->ps.stats[STAT_ARMOR] = g_elimination_startArmor.integer;
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer;
-	if(ent->botskill == 6){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 1.5;
-	}
-	if(ent->botskill == 7){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 2;
-	}
-	if(ent->botskill == 8){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 3;
-	}
-	if(ent->botskill == 9){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 5;
-	}
-	if(ent->botskill == 10){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 10;
-	}
-	if(ent->botskill == 11){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 15;
-	}
-	if(ent->botskill == 12){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 20;
-	}
-	if(ent->botskill == 13){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 50;
-	}
-	if(ent->botskill == 14){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 100;
-	}
-	ent->helpme = 0;
-	ent->client->ps.stats[STAT_FLASH] = g_flightlimit.integer/2;
-}
-
-if	(client->sess.sessionTeam == TEAM_BLUE) {
-	if (g_elimination_gauntlet.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GAUNTLET );
-	}
-	if (g_elimination_machinegun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_MACHINEGUN );
-		client->ps.ammo[WP_MACHINEGUN] = g_elimination_machinegun.integer;
-	}
-	if (g_elimination_shotgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SHOTGUN );
-		client->ps.ammo[WP_SHOTGUN] = g_elimination_shotgun.integer;
-	}
-	if (g_elimination_grenade.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRENADE_LAUNCHER );
-		client->ps.ammo[WP_GRENADE_LAUNCHER] = g_elimination_grenade.integer;
-	}
-	if (g_elimination_rocket.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ROCKET_LAUNCHER );
-		client->ps.ammo[WP_ROCKET_LAUNCHER] = g_elimination_rocket.integer;
-	}
-	if (g_elimination_lightning.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_LIGHTNING );
-		client->ps.ammo[WP_LIGHTNING] = g_elimination_lightning.integer;
-	}
-	if (g_elimination_railgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_RAILGUN );
-		client->ps.ammo[WP_RAILGUN] = g_elimination_railgun.integer;
-	}
-	if (g_elimination_plasmagun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PLASMAGUN );
-		client->ps.ammo[WP_PLASMAGUN] = g_elimination_plasmagun.integer;
-	}
-	if (g_elimination_bfg.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_BFG );
-		client->ps.ammo[WP_BFG] = g_elimination_bfg.integer;
-	}
-    if (g_elimination_grapple.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRAPPLING_HOOK );
-	}
-	if (g_elimination_nail.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_NAILGUN );
-		client->ps.ammo[WP_NAILGUN] = g_elimination_nail.integer;
-	}
-	if (g_elimination_mine.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PROX_LAUNCHER );
-		client->ps.ammo[WP_PROX_LAUNCHER] = g_elimination_mine.integer;
-	}
-	if (g_elimination_chain.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_CHAINGUN );
-		client->ps.ammo[WP_CHAINGUN] = g_elimination_chain.integer;
-	}
-	if (g_elimination_flame.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_FLAMETHROWER );
-		client->ps.ammo[WP_FLAMETHROWER] = g_elimination_flame.integer;
-	}
-	if (g_elimination_antimatter.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ANTIMATTER );
-		client->ps.ammo[WP_ANTIMATTER] = g_elimination_antimatter.integer;
-	}
-	if(g_elimination_quad.integer) {
-       client->ps.powerups[PW_QUAD] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_QUAD] +=  g_elimination_quad.integer * 1000;
-	}
-    if(g_elimination_regen.integer) {
-       client->ps.powerups[PW_REGEN] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_REGEN] +=  g_elimination_regen.integer * 1000;
-	}
-	if(g_elimination_haste.integer) {
-       client->ps.powerups[PW_HASTE] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_HASTE] +=  g_elimination_haste.integer * 1000;
-	}
-	if(g_elimination_bsuit.integer) {
-       client->ps.powerups[PW_BATTLESUIT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_BATTLESUIT] +=  g_elimination_bsuit.integer * 1000;
-	}
-	if(g_elimination_invis.integer) {
-       client->ps.powerups[PW_INVIS] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_INVIS] +=  g_elimination_invis.integer * 1000;
-	}
-	if(g_elimination_flight.integer) {
-       client->ps.powerups[PW_FLIGHT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_FLIGHT] +=  g_elimination_flight.integer * 1000;
-	}
-	if(g_elimination_holdable.integer == 1) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_TELEPORTER);
-	}
-	if(g_elimination_holdable.integer == 2) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_MEDKIT);
-	}
-	if(g_elimination_holdable.integer == 3) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_KAMIKAZE);
-		client->ps.eFlags |= EF_KAMIKAZE;
-	}
-	if(g_elimination_holdable.integer == 4) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_INVULNERABILITY);
-	}
-	if(g_elimination_holdable.integer == 5) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_PORTAL);
-	}
-
-
-	ent->health = client->ps.stats[STAT_ARMOR] = g_elimination_startArmor.integer;
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer;
-	if(ent->botskill == 6){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 1.5;
-	}
-	if(ent->botskill == 7){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 2;
-	}
-	if(ent->botskill == 8){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 3;
-	}
-	if(ent->botskill == 9){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 5;
-	}
-	if(ent->botskill == 10){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 10;
-	}
-	if(ent->botskill == 11){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 15;
-	}
-	if(ent->botskill == 12){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 20;
-	}
-	if(ent->botskill == 13){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 50;
-	}
-	if(ent->botskill == 14){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 100;
-	}
-	ent->helpme = 0;
-	ent->client->ps.stats[STAT_FLASH] = g_flightlimit.integer/2;
-}
-
-if	(client->sess.sessionTeam == TEAM_RED ) {
-	if (g_eliminationred_gauntlet.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GAUNTLET );
-	}
-	if (g_eliminationred_machinegun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_MACHINEGUN );
-		client->ps.ammo[WP_MACHINEGUN] = g_eliminationred_machinegun.integer;
-	}
-	if (g_eliminationred_shotgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SHOTGUN );
-		client->ps.ammo[WP_SHOTGUN] = g_eliminationred_shotgun.integer;
-	}
-	if (g_eliminationred_grenade.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRENADE_LAUNCHER );
-		client->ps.ammo[WP_GRENADE_LAUNCHER] = g_eliminationred_grenade.integer;
-	}
-	if (g_eliminationred_rocket.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ROCKET_LAUNCHER );
-		client->ps.ammo[WP_ROCKET_LAUNCHER] = g_eliminationred_rocket.integer;
-	}
-	if (g_eliminationred_lightning.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_LIGHTNING );
-		client->ps.ammo[WP_LIGHTNING] = g_eliminationred_lightning.integer;
-	}
-	if (g_eliminationred_railgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_RAILGUN );
-		client->ps.ammo[WP_RAILGUN] = g_eliminationred_railgun.integer;
-	}
-	if (g_eliminationred_plasmagun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PLASMAGUN );
-		client->ps.ammo[WP_PLASMAGUN] = g_eliminationred_plasmagun.integer;
-	}
-	if (g_eliminationred_bfg.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_BFG );
-		client->ps.ammo[WP_BFG] = g_eliminationred_bfg.integer;
-	}
-    if (g_eliminationred_grapple.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRAPPLING_HOOK );
-	}
-	if (g_eliminationred_nail.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_NAILGUN );
-		client->ps.ammo[WP_NAILGUN] = g_eliminationred_nail.integer;
-	}
-	if (g_eliminationred_mine.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PROX_LAUNCHER );
-		client->ps.ammo[WP_PROX_LAUNCHER] = g_eliminationred_mine.integer;
-	}
-	if (g_eliminationred_chain.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_CHAINGUN );
-		client->ps.ammo[WP_CHAINGUN] = g_eliminationred_chain.integer;
-	}
-	if (g_eliminationred_flame.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_FLAMETHROWER );
-		client->ps.ammo[WP_FLAMETHROWER] = g_eliminationred_flame.integer;
-	}
-	if (g_eliminationred_antimatter.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ANTIMATTER );
-		client->ps.ammo[WP_ANTIMATTER] = g_eliminationred_antimatter.integer;
-	}
-	if(g_eliminationred_quad.integer) {
-       client->ps.powerups[PW_QUAD] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_QUAD] +=  g_eliminationred_quad.integer * 1000;
-	}
-    if(g_eliminationred_regen.integer) {
-       client->ps.powerups[PW_REGEN] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_REGEN] +=  g_eliminationred_regen.integer * 1000;
-	}
-	if(g_eliminationred_haste.integer) {
-       client->ps.powerups[PW_HASTE] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_HASTE] +=  g_eliminationred_haste.integer * 1000;
-	}
-	if(g_eliminationred_bsuit.integer) {
-       client->ps.powerups[PW_BATTLESUIT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_BATTLESUIT] +=  g_eliminationred_bsuit.integer * 1000;
-	}
-	if(g_eliminationred_invis.integer) {
-       client->ps.powerups[PW_INVIS] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_INVIS] +=  g_eliminationred_invis.integer * 1000;
-	}
-	if(g_eliminationred_flight.integer) {
-       client->ps.powerups[PW_FLIGHT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_FLIGHT] +=  g_eliminationred_flight.integer * 1000;
-	}
-	if(g_eliminationred_holdable.integer == 1) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_TELEPORTER);
-	}
-	if(g_eliminationred_holdable.integer == 2) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_MEDKIT);
-	}
-	if(g_eliminationred_holdable.integer == 3) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_KAMIKAZE);
-		client->ps.eFlags |= EF_KAMIKAZE;
-	}
-	if(g_eliminationred_holdable.integer == 4) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_INVULNERABILITY);
-	}
-	if(g_eliminationred_holdable.integer == 5) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_PORTAL);
-	}
-
-
-	ent->health = client->ps.stats[STAT_ARMOR] = g_eliminationred_startArmor.integer;
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer;
-	if(ent->botskill == 6){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 1.5;
-	}
-	if(ent->botskill == 7){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 2;
-	}
-	if(ent->botskill == 8){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 3;
-	}
-	if(ent->botskill == 9){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 5;
-	}
-	if(ent->botskill == 10){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 10;
-	}
-	if(ent->botskill == 11){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 15;
-	}
-	if(ent->botskill == 12){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 20;
-	}
-	if(ent->botskill == 13){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 50;
-	}
-	if(ent->botskill == 14){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 100;
-	}
-	ent->helpme = 0;
-	ent->client->ps.stats[STAT_FLASH] = g_flightlimit.integer/2;
-}
-	}
-	
-}
 
 	G_SetOrigin( ent, spawn_origin );
 	VectorCopy( spawn_origin, client->ps.origin );
@@ -3255,7 +2379,7 @@ if	(client->sess.sessionTeam == TEAM_RED ) {
 		ent->swep_id = 1;
 		ent->client->ps.stats[STAT_SWEP] = 1;
 		for ( i = WP_NUM_WEAPONS - 1 ; i > 0 ; i-- ) {
-			if ( client->ps.stats[STAT_WEAPONS] & ( 1 << i ) && i !=WP_GRAPPLING_HOOK ) {
+			if ( client->ps.stats[STAT_WEAPONS] & ( 1 << i ) && i != WP_GRAPPLING_HOOK ) {
 				client->ps.weapon = i;
 				ent->swep_id = i;
 				ent->client->ps.stats[STAT_SWEP] = i;
@@ -3457,10 +2581,10 @@ if	(client->sess.sessionTeam == TEAM_RED ) {
 	health = atoi( Info_ValueForKey( userinfo, "handicap" ) );
 	client->pers.maxHealth = health;
 	if (!(ent->r.svFlags & SVF_BOT)){
-			if ( client->pers.maxHealth < 1 || client->pers.maxHealth > 100 ) {
-				client->pers.maxHealth = 100;
+		if ( client->pers.maxHealth < 1 || client->pers.maxHealth > 100 ) {
+			client->pers.maxHealth = 100;
+		}
 	}
-			}
 
 	// clear entity values
 	client->ps.stats[STAT_MAX_HEALTH] = client->pers.maxHealth;
@@ -3478,445 +2602,21 @@ if	(client->sess.sessionTeam == TEAM_RED ) {
 	ent->watertype = 0;
 	ent->flags = 0;
 
-
-
-        //Sago: No one has hit the client yet!
-        client->lastSentFlying = -1;
+	//Sago: No one has hit the client yet!
+	client->lastSentFlying = -1;
 
 	VectorCopy (playerMins, ent->r.mins);
 	VectorCopy (playerMaxs, ent->r.maxs);
 
 	client->ps.clientNum = index;
 
-if(g_gametype.integer != GT_ELIMINATION && g_gametype.integer != GT_CTF_ELIMINATION && g_gametype.integer != GT_LMS && !g_elimination_allgametypes.integer && g_spawnselect.integer != 1)
-{
+	SetUnlimitedWeapons(ent);
+	SetSandboxWeapons(ent);
 	if ( ent->botspawn ) {
 		SetupCustomBot( ent );
 	} else {
-	client->ps.stats[STAT_WEAPONS] = ( 1 << WP_MACHINEGUN );
-	client->ps.ammo[WP_MACHINEGUN] = 100;
-
-	client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GAUNTLET );
-	client->ps.ammo[WP_GAUNTLET] = -1;
-	client->ps.ammo[WP_GRAPPLING_HOOK] = -1;
-
-	// health will count down towards max_health
-	ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH];
-	ent->helpme = 0;
-	ent->client->ps.stats[STAT_FLASH] = g_flightlimit.integer/2;
+		SetCustomWeapons( ent );
 	}
-}
-else
-{
-	client->ps.ammo[WP_GAUNTLET] = -1;
-	client->ps.ammo[WP_GRAPPLING_HOOK] = -1;
-	if ( ent->botspawn ) {
-		SetupCustomBot( ent );
-	} else {
-if	(client->sess.sessionTeam == TEAM_FREE) {
-	if (g_elimination_gauntlet.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GAUNTLET );
-	}
-	if (g_elimination_machinegun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_MACHINEGUN );
-		client->ps.ammo[WP_MACHINEGUN] = g_elimination_machinegun.integer;
-	}
-	if (g_elimination_shotgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SHOTGUN );
-		client->ps.ammo[WP_SHOTGUN] = g_elimination_shotgun.integer;
-	}
-	if (g_elimination_grenade.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRENADE_LAUNCHER );
-		client->ps.ammo[WP_GRENADE_LAUNCHER] = g_elimination_grenade.integer;
-	}
-	if (g_elimination_rocket.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ROCKET_LAUNCHER );
-		client->ps.ammo[WP_ROCKET_LAUNCHER] = g_elimination_rocket.integer;
-	}
-	if (g_elimination_lightning.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_LIGHTNING );
-		client->ps.ammo[WP_LIGHTNING] = g_elimination_lightning.integer;
-	}
-	if (g_elimination_railgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_RAILGUN );
-		client->ps.ammo[WP_RAILGUN] = g_elimination_railgun.integer;
-	}
-	if (g_elimination_plasmagun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PLASMAGUN );
-		client->ps.ammo[WP_PLASMAGUN] = g_elimination_plasmagun.integer;
-	}
-	if (g_elimination_bfg.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_BFG );
-		client->ps.ammo[WP_BFG] = g_elimination_bfg.integer;
-	}
-    if (g_elimination_grapple.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRAPPLING_HOOK );
-	}
-	if (g_elimination_nail.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_NAILGUN );
-		client->ps.ammo[WP_NAILGUN] = g_elimination_nail.integer;
-	}
-	if (g_elimination_mine.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PROX_LAUNCHER );
-		client->ps.ammo[WP_PROX_LAUNCHER] = g_elimination_mine.integer;
-	}
-	if (g_elimination_chain.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_CHAINGUN );
-		client->ps.ammo[WP_CHAINGUN] = g_elimination_chain.integer;
-	}
-	if (g_elimination_flame.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_FLAMETHROWER );
-		client->ps.ammo[WP_FLAMETHROWER] = g_elimination_flame.integer;
-	}
-	if (g_elimination_antimatter.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ANTIMATTER );
-		client->ps.ammo[WP_ANTIMATTER] = g_elimination_antimatter.integer;
-	}
-	if(g_elimination_quad.integer) {
-       client->ps.powerups[PW_QUAD] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_QUAD] +=  g_elimination_quad.integer * 1000;
-	}
-    if(g_elimination_regen.integer) {
-       client->ps.powerups[PW_REGEN] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_REGEN] +=  g_elimination_regen.integer * 1000;
-	}
-	if(g_elimination_haste.integer) {
-       client->ps.powerups[PW_HASTE] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_HASTE] +=  g_elimination_haste.integer * 1000;
-	}
-	if(g_elimination_bsuit.integer) {
-       client->ps.powerups[PW_BATTLESUIT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_BATTLESUIT] +=  g_elimination_bsuit.integer * 1000;
-	}
-	if(g_elimination_invis.integer) {
-       client->ps.powerups[PW_INVIS] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_INVIS] +=  g_elimination_invis.integer * 1000;
-	}
-	if(g_elimination_flight.integer) {
-       client->ps.powerups[PW_FLIGHT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_FLIGHT] +=  g_elimination_flight.integer * 1000;
-	}
-	if(g_elimination_holdable.integer == 1) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_TELEPORTER);
-	}
-	if(g_elimination_holdable.integer == 2) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_MEDKIT);
-	}
-	if(g_elimination_holdable.integer == 3) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_KAMIKAZE);
-		client->ps.eFlags |= EF_KAMIKAZE;
-	}
-	if(g_elimination_holdable.integer == 4) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_INVULNERABILITY);
-	}
-	if(g_elimination_holdable.integer == 5) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_PORTAL);
-	}
-
-
-	ent->health = client->ps.stats[STAT_ARMOR] = g_elimination_startArmor.integer;
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer;
-	if(ent->botskill == 6){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 1.5;
-	}
-	if(ent->botskill == 7){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 2;
-	}
-	if(ent->botskill == 8){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 3;
-	}
-	if(ent->botskill == 9){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 5;
-	}
-	if(ent->botskill == 10){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 10;
-	}
-	if(ent->botskill == 11){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 15;
-	}
-	if(ent->botskill == 12){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 20;
-	}
-	if(ent->botskill == 13){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 50;
-	}
-	if(ent->botskill == 14){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 100;
-	}
-	ent->helpme = 0;
-	ent->client->ps.stats[STAT_FLASH] = g_flightlimit.integer/2;
-}
-
-if	(client->sess.sessionTeam == TEAM_BLUE) {
-	if (g_elimination_gauntlet.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GAUNTLET );
-	}
-	if (g_elimination_machinegun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_MACHINEGUN );
-		client->ps.ammo[WP_MACHINEGUN] = g_elimination_machinegun.integer;
-	}
-	if (g_elimination_shotgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SHOTGUN );
-		client->ps.ammo[WP_SHOTGUN] = g_elimination_shotgun.integer;
-	}
-	if (g_elimination_grenade.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRENADE_LAUNCHER );
-		client->ps.ammo[WP_GRENADE_LAUNCHER] = g_elimination_grenade.integer;
-	}
-	if (g_elimination_rocket.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ROCKET_LAUNCHER );
-		client->ps.ammo[WP_ROCKET_LAUNCHER] = g_elimination_rocket.integer;
-	}
-	if (g_elimination_lightning.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_LIGHTNING );
-		client->ps.ammo[WP_LIGHTNING] = g_elimination_lightning.integer;
-	}
-	if (g_elimination_railgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_RAILGUN );
-		client->ps.ammo[WP_RAILGUN] = g_elimination_railgun.integer;
-	}
-	if (g_elimination_plasmagun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PLASMAGUN );
-		client->ps.ammo[WP_PLASMAGUN] = g_elimination_plasmagun.integer;
-	}
-	if (g_elimination_bfg.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_BFG );
-		client->ps.ammo[WP_BFG] = g_elimination_bfg.integer;
-	}
-    if (g_elimination_grapple.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRAPPLING_HOOK );
-	}
-	if (g_elimination_nail.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_NAILGUN );
-		client->ps.ammo[WP_NAILGUN] = g_elimination_nail.integer;
-	}
-	if (g_elimination_mine.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PROX_LAUNCHER );
-		client->ps.ammo[WP_PROX_LAUNCHER] = g_elimination_mine.integer;
-	}
-	if (g_elimination_chain.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_CHAINGUN );
-		client->ps.ammo[WP_CHAINGUN] = g_elimination_chain.integer;
-	}
-	if (g_elimination_flame.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_FLAMETHROWER );
-		client->ps.ammo[WP_FLAMETHROWER] = g_elimination_flame.integer;
-	}
-	if (g_elimination_antimatter.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ANTIMATTER );
-		client->ps.ammo[WP_ANTIMATTER] = g_elimination_antimatter.integer;
-	}
-	if(g_elimination_quad.integer) {
-       client->ps.powerups[PW_QUAD] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_QUAD] +=  g_elimination_quad.integer * 1000;
-	}
-    if(g_elimination_regen.integer) {
-       client->ps.powerups[PW_REGEN] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_REGEN] +=  g_elimination_regen.integer * 1000;
-	}
-	if(g_elimination_haste.integer) {
-       client->ps.powerups[PW_HASTE] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_HASTE] +=  g_elimination_haste.integer * 1000;
-	}
-	if(g_elimination_bsuit.integer) {
-       client->ps.powerups[PW_BATTLESUIT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_BATTLESUIT] +=  g_elimination_bsuit.integer * 1000;
-	}
-	if(g_elimination_invis.integer) {
-       client->ps.powerups[PW_INVIS] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_INVIS] +=  g_elimination_invis.integer * 1000;
-	}
-	if(g_elimination_flight.integer) {
-       client->ps.powerups[PW_FLIGHT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_FLIGHT] +=  g_elimination_flight.integer * 1000;
-	}
-	if(g_elimination_holdable.integer == 1) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_TELEPORTER);
-	}
-	if(g_elimination_holdable.integer == 2) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_MEDKIT);
-	}
-	if(g_elimination_holdable.integer == 3) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_KAMIKAZE);
-		client->ps.eFlags |= EF_KAMIKAZE;
-	}
-	if(g_elimination_holdable.integer == 4) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_INVULNERABILITY);
-	}
-	if(g_elimination_holdable.integer == 5) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_PORTAL);
-	}
-
-
-	ent->health = client->ps.stats[STAT_ARMOR] = g_elimination_startArmor.integer;
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer;
-	if(ent->botskill == 6){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 1.5;
-	}
-	if(ent->botskill == 7){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 2;
-	}
-	if(ent->botskill == 8){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 3;
-	}
-	if(ent->botskill == 9){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 5;
-	}
-	if(ent->botskill == 10){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 10;
-	}
-	if(ent->botskill == 11){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 15;
-	}
-	if(ent->botskill == 12){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 20;
-	}
-	if(ent->botskill == 13){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 50;
-	}
-	if(ent->botskill == 14){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer * 100;
-	}
-	ent->helpme = 0;
-	ent->client->ps.stats[STAT_FLASH] = g_flightlimit.integer/2;
-}
-
-if	(client->sess.sessionTeam == TEAM_RED ) {
-	if (g_eliminationred_gauntlet.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GAUNTLET );
-	}
-	if (g_eliminationred_machinegun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_MACHINEGUN );
-		client->ps.ammo[WP_MACHINEGUN] = g_eliminationred_machinegun.integer;
-	}
-	if (g_eliminationred_shotgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SHOTGUN );
-		client->ps.ammo[WP_SHOTGUN] = g_eliminationred_shotgun.integer;
-	}
-	if (g_eliminationred_grenade.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRENADE_LAUNCHER );
-		client->ps.ammo[WP_GRENADE_LAUNCHER] = g_eliminationred_grenade.integer;
-	}
-	if (g_eliminationred_rocket.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ROCKET_LAUNCHER );
-		client->ps.ammo[WP_ROCKET_LAUNCHER] = g_eliminationred_rocket.integer;
-	}
-	if (g_eliminationred_lightning.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_LIGHTNING );
-		client->ps.ammo[WP_LIGHTNING] = g_eliminationred_lightning.integer;
-	}
-	if (g_eliminationred_railgun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_RAILGUN );
-		client->ps.ammo[WP_RAILGUN] = g_eliminationred_railgun.integer;
-	}
-	if (g_eliminationred_plasmagun.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PLASMAGUN );
-		client->ps.ammo[WP_PLASMAGUN] = g_eliminationred_plasmagun.integer;
-	}
-	if (g_eliminationred_bfg.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_BFG );
-		client->ps.ammo[WP_BFG] = g_eliminationred_bfg.integer;
-	}
-    if (g_eliminationred_grapple.integer) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRAPPLING_HOOK );
-	}
-	if (g_eliminationred_nail.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_NAILGUN );
-		client->ps.ammo[WP_NAILGUN] = g_eliminationred_nail.integer;
-	}
-	if (g_eliminationred_mine.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PROX_LAUNCHER );
-		client->ps.ammo[WP_PROX_LAUNCHER] = g_eliminationred_mine.integer;
-	}
-	if (g_eliminationred_chain.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_CHAINGUN );
-		client->ps.ammo[WP_CHAINGUN] = g_eliminationred_chain.integer;
-	}
-	if (g_eliminationred_flame.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_FLAMETHROWER );
-		client->ps.ammo[WP_FLAMETHROWER] = g_eliminationred_flame.integer;
-	}
-	if (g_eliminationred_antimatter.integer > 0) {
-		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ANTIMATTER );
-		client->ps.ammo[WP_ANTIMATTER] = g_eliminationred_antimatter.integer;
-	}
-	if(g_eliminationred_quad.integer) {
-       client->ps.powerups[PW_QUAD] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_QUAD] +=  g_eliminationred_quad.integer * 1000;
-	}
-    if(g_eliminationred_regen.integer) {
-       client->ps.powerups[PW_REGEN] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_REGEN] +=  g_eliminationred_regen.integer * 1000;
-	}
-	if(g_eliminationred_haste.integer) {
-       client->ps.powerups[PW_HASTE] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_HASTE] +=  g_eliminationred_haste.integer * 1000;
-	}
-	if(g_eliminationred_bsuit.integer) {
-       client->ps.powerups[PW_BATTLESUIT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_BATTLESUIT] +=  g_eliminationred_bsuit.integer * 1000;
-	}
-	if(g_eliminationred_invis.integer) {
-       client->ps.powerups[PW_INVIS] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_INVIS] +=  g_eliminationred_invis.integer * 1000;
-	}
-	if(g_eliminationred_flight.integer) {
-       client->ps.powerups[PW_FLIGHT] =  level.time - ( level.time % 1000 );
-       client->ps.powerups[PW_FLIGHT] +=  g_eliminationred_flight.integer * 1000;
-	}
-	if(g_eliminationred_holdable.integer == 1) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_TELEPORTER);
-	}
-	if(g_eliminationred_holdable.integer == 2) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_MEDKIT);
-	}
-	if(g_eliminationred_holdable.integer == 3) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_KAMIKAZE);
-		client->ps.eFlags |= EF_KAMIKAZE;
-	}
-	if(g_eliminationred_holdable.integer == 4) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_INVULNERABILITY);
-	}
-	if(g_eliminationred_holdable.integer == 5) {
-		client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_PORTAL);
-	}
-
-
-	ent->health = client->ps.stats[STAT_ARMOR] = g_eliminationred_startArmor.integer;
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer;
-	if(ent->botskill == 6){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 1.5;
-	}
-	if(ent->botskill == 7){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 2;
-	}
-	if(ent->botskill == 8){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 3;
-	}
-	if(ent->botskill == 9){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 5;
-	}
-	if(ent->botskill == 10){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 10;
-	}
-	if(ent->botskill == 11){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 15;
-	}
-	if(ent->botskill == 12){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 20;
-	}
-	if(ent->botskill == 13){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 50;
-	}
-	if(ent->botskill == 14){
-	ent->health = client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer * 100;
-	}
-	ent->helpme = 0;
-	ent->client->ps.stats[STAT_FLASH] = g_flightlimit.integer/2;
-}
-	}
-	
-}
 
 	G_SetOrigin( ent, spawn_origin );
 	VectorCopy( spawn_origin, client->ps.origin );
@@ -3972,7 +2672,7 @@ if	(client->sess.sessionTeam == TEAM_RED ) {
 		ent->swep_id = 1;
 		ent->client->ps.stats[STAT_SWEP] = 1;
 		for ( i = WP_NUM_WEAPONS - 1 ; i > 0 ; i-- ) {
-			if ( client->ps.stats[STAT_WEAPONS] & ( 1 << i ) && i !=WP_GRAPPLING_HOOK ) {
+			if ( client->ps.stats[STAT_WEAPONS] & ( 1 << i ) && i != WP_GRAPPLING_HOOK ) {
 				client->ps.weapon = i;
 				ent->swep_id = i;
 				ent->client->ps.stats[STAT_SWEP] = i;
@@ -4141,7 +2841,7 @@ void DropClientSilently( int clientNum ) {
 	if ( 0 )
 		trap_DropClient( clientNum, " : removing dead bot" );
 	else
-		trap_DropClient( clientNum, "   " );
+		trap_DropClient( clientNum, "DR_SILENT_DROP" );
 }
 
 /*
@@ -4212,8 +2912,252 @@ void SetupCustomBot( gentity_t *bot ) {
 		G_UseTargets( bot->botspawn, bot);
 	}
 	
-	if(g_building.integer){
+	if(g_gametype.integer == GT_SANDBOX){
 	CopyAlloc(bot->target, bot->botspawn->target);
+	}
+}
+
+void SetUnlimitedWeapons( gentity_t *ent ) {
+	Set_Ammo(ent, WP_GAUNTLET, -1);
+	Set_Ammo(ent, WP_GRAPPLING_HOOK, -1);
+	Set_Ammo(ent, WP_TOOLGUN, -1);
+	Set_Ammo(ent, WP_PHYSGUN, -1);
+	Set_Ammo(ent, WP_GRAVITYGUN, -1);
+}
+
+void SetSandboxWeapons( gentity_t *ent ) {
+	if(g_gametype.integer == GT_SANDBOX){
+		if(g_allowtoolgun.integer){
+		Set_Weapon(ent, WP_TOOLGUN, 1);
+		}
+		if(g_allowphysgun.integer){
+		Set_Weapon(ent, WP_PHYSGUN, 1);
+		}
+		if(g_allowgravitygun.integer){
+		Set_Weapon(ent, WP_GRAVITYGUN, 1);
+		}
+	}
+}
+
+void SetCustomWeapons( gentity_t *ent ) {
+	Set_Ammo(ent, WP_GAUNTLET, -1);
+	Set_Ammo(ent, WP_GRAPPLING_HOOK, -1);
+	Set_Ammo(ent, WP_TOOLGUN, -1);
+	Set_Ammo(ent, WP_PHYSGUN, -1);
+	Set_Ammo(ent, WP_GRAVITYGUN, -1);
+	if (ent->client->sess.sessionTeam == TEAM_FREE || ent->client->sess.sessionTeam == TEAM_BLUE) {
+		if (g_elimination_gauntlet.integer) {
+			Set_Weapon(ent, WP_GAUNTLET, 1);
+		}
+		if (g_elimination_machinegun.integer > 0) {
+			Set_Weapon(ent, WP_MACHINEGUN, 1);
+			Set_Ammo(ent, WP_MACHINEGUN, g_elimination_machinegun.integer);
+		}
+		if (g_elimination_shotgun.integer > 0) {
+			Set_Weapon(ent, WP_SHOTGUN, 1);
+			Set_Ammo(ent, WP_SHOTGUN, g_elimination_shotgun.integer);
+		}
+		if (g_elimination_grenade.integer > 0) {
+			Set_Weapon(ent, WP_GRENADE_LAUNCHER, 1);
+			Set_Ammo(ent, WP_GRENADE_LAUNCHER, g_elimination_grenade.integer);
+		}
+		if (g_elimination_rocket.integer > 0) {
+			Set_Weapon(ent, WP_ROCKET_LAUNCHER, 1);
+			Set_Ammo(ent, WP_ROCKET_LAUNCHER, g_elimination_rocket.integer);
+		}
+		if (g_elimination_lightning.integer > 0) {
+			Set_Weapon(ent, WP_LIGHTNING, 1);
+			Set_Ammo(ent, WP_LIGHTNING, g_elimination_lightning.integer);
+		}
+		if (g_elimination_railgun.integer > 0) {
+			Set_Weapon(ent, WP_RAILGUN, 1);
+			Set_Ammo(ent, WP_RAILGUN, g_elimination_railgun.integer);
+		}
+		if (g_elimination_plasmagun.integer > 0) {
+			Set_Weapon(ent, WP_PLASMAGUN, 1);
+			Set_Ammo(ent, WP_PLASMAGUN, g_elimination_plasmagun.integer);
+		}
+		if (g_elimination_bfg.integer > 0) {
+			Set_Weapon(ent, WP_BFG, 1);
+			Set_Ammo(ent, WP_BFG, g_elimination_bfg.integer);
+		}
+		if (g_elimination_grapple.integer) {
+			Set_Weapon(ent, WP_GRAPPLING_HOOK, 1);
+		}
+		if (g_elimination_nail.integer > 0) {
+			Set_Weapon(ent, WP_NAILGUN, 1);
+			Set_Ammo(ent, WP_NAILGUN, g_elimination_nail.integer);
+		}
+		if (g_elimination_mine.integer > 0) {
+			Set_Weapon(ent, WP_PROX_LAUNCHER, 1);
+			Set_Ammo(ent, WP_PROX_LAUNCHER, g_elimination_mine.integer);
+		}
+		if (g_elimination_chain.integer > 0) {
+			Set_Weapon(ent, WP_CHAINGUN, 1);
+			Set_Ammo(ent, WP_CHAINGUN, g_elimination_chain.integer);
+		}
+		if (g_elimination_flame.integer > 0) {
+			Set_Weapon(ent, WP_FLAMETHROWER, 1);
+			Set_Ammo(ent, WP_FLAMETHROWER, g_elimination_flame.integer);
+		}
+		if (g_elimination_antimatter.integer > 0) {
+			Set_Weapon(ent, WP_ANTIMATTER, 1);
+			Set_Ammo(ent, WP_ANTIMATTER, g_elimination_antimatter.integer);
+		}
+		if(g_elimination_quad.integer) {
+			ent->client->ps.powerups[PW_QUAD] =  level.time - ( level.time % 1000 );
+			ent->client->ps.powerups[PW_QUAD] +=  g_elimination_quad.integer * 1000;
+		}
+		if(g_elimination_regen.integer) {
+			ent->client->ps.powerups[PW_REGEN] =  level.time - ( level.time % 1000 );
+			ent->client->ps.powerups[PW_REGEN] +=  g_elimination_regen.integer * 1000;
+		}
+		if(g_elimination_haste.integer) {
+			ent->client->ps.powerups[PW_HASTE] =  level.time - ( level.time % 1000 );
+			ent->client->ps.powerups[PW_HASTE] +=  g_elimination_haste.integer * 1000;
+		}
+		if(g_elimination_bsuit.integer) {
+			ent->client->ps.powerups[PW_BATTLESUIT] =  level.time - ( level.time % 1000 );
+			ent->client->ps.powerups[PW_BATTLESUIT] +=  g_elimination_bsuit.integer * 1000;
+		}
+		if(g_elimination_invis.integer) {
+			ent->client->ps.powerups[PW_INVIS] =  level.time - ( level.time % 1000 );
+			ent->client->ps.powerups[PW_INVIS] +=  g_elimination_invis.integer * 1000;
+		}
+		if(g_elimination_flight.integer) {
+			ent->client->ps.powerups[PW_FLIGHT] =  level.time - ( level.time % 1000 );
+			ent->client->ps.powerups[PW_FLIGHT] +=  g_elimination_flight.integer * 1000;
+		}
+		if(g_elimination_holdable.integer == 1) {
+			ent->client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_TELEPORTER);
+		}
+		if(g_elimination_holdable.integer == 2) {
+			ent->client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_MEDKIT);
+		}
+		if(g_elimination_holdable.integer == 3) {
+			ent->client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_KAMIKAZE);
+			ent->client->ps.eFlags |= EF_KAMIKAZE;
+		}
+		if(g_elimination_holdable.integer == 4) {
+			ent->client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_INVULNERABILITY);
+		}
+		if(g_elimination_holdable.integer == 5) {
+			ent->client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_PORTAL);
+		}
+
+		ent->health = ent->client->ps.stats[STAT_ARMOR] = g_elimination_startArmor.integer;
+		ent->health = ent->client->ps.stats[STAT_HEALTH] = g_elimination_startHealth.integer;
+		if(ent->botskill == 7){
+			ent->health = ent->client->ps.stats[STAT_HEALTH] = 65000;
+		}
+		ent->helpme = 0;
+	}
+	if (ent->client->sess.sessionTeam == TEAM_RED) {
+		if (g_eliminationred_gauntlet.integer) {
+			Set_Weapon(ent, WP_GAUNTLET, 1);
+		}
+		if (g_eliminationred_machinegun.integer > 0) {
+			Set_Weapon(ent, WP_MACHINEGUN, 1);
+			Set_Ammo(ent, WP_MACHINEGUN, g_eliminationred_machinegun.integer);
+		}
+		if (g_eliminationred_shotgun.integer > 0) {
+			Set_Weapon(ent, WP_SHOTGUN, 1);
+			Set_Ammo(ent, WP_SHOTGUN, g_eliminationred_shotgun.integer);
+		}
+		if (g_eliminationred_grenade.integer > 0) {
+			Set_Weapon(ent, WP_GRENADE_LAUNCHER, 1);
+			Set_Ammo(ent, WP_GRENADE_LAUNCHER, g_eliminationred_grenade.integer);
+		}
+		if (g_eliminationred_rocket.integer > 0) {
+			Set_Weapon(ent, WP_ROCKET_LAUNCHER, 1);
+			Set_Ammo(ent, WP_ROCKET_LAUNCHER, g_eliminationred_rocket.integer);
+		}
+		if (g_eliminationred_lightning.integer > 0) {
+			Set_Weapon(ent, WP_LIGHTNING, 1);
+			Set_Ammo(ent, WP_LIGHTNING, g_eliminationred_lightning.integer);
+		}
+		if (g_eliminationred_railgun.integer > 0) {
+			Set_Weapon(ent, WP_RAILGUN, 1);
+			Set_Ammo(ent, WP_RAILGUN, g_eliminationred_railgun.integer);
+		}
+		if (g_eliminationred_plasmagun.integer > 0) {
+			Set_Weapon(ent, WP_PLASMAGUN, 1);
+			Set_Ammo(ent, WP_PLASMAGUN, g_eliminationred_plasmagun.integer);
+		}
+		if (g_eliminationred_bfg.integer > 0) {
+			Set_Weapon(ent, WP_BFG, 1);
+			Set_Ammo(ent, WP_BFG, g_eliminationred_bfg.integer);
+		}
+		if (g_eliminationred_grapple.integer) {
+			Set_Weapon(ent, WP_GRAPPLING_HOOK, 1);
+		}
+		if (g_eliminationred_nail.integer > 0) {
+			Set_Weapon(ent, WP_NAILGUN, 1);
+			Set_Ammo(ent, WP_NAILGUN, g_eliminationred_nail.integer);
+		}
+		if (g_eliminationred_mine.integer > 0) {
+			Set_Weapon(ent, WP_PROX_LAUNCHER, 1);
+			Set_Ammo(ent, WP_PROX_LAUNCHER, g_eliminationred_mine.integer);
+		}
+		if (g_eliminationred_chain.integer > 0) {
+			Set_Weapon(ent, WP_CHAINGUN, 1);
+			Set_Ammo(ent, WP_CHAINGUN, g_eliminationred_chain.integer);
+		}
+		if (g_eliminationred_flame.integer > 0) {
+			Set_Weapon(ent, WP_FLAMETHROWER, 1);
+			Set_Ammo(ent, WP_FLAMETHROWER, g_eliminationred_flame.integer);
+		}
+		if (g_eliminationred_antimatter.integer > 0) {
+			Set_Weapon(ent, WP_ANTIMATTER, 1);
+			Set_Ammo(ent, WP_ANTIMATTER, g_eliminationred_antimatter.integer);
+		}
+		if(g_eliminationred_quad.integer) {
+			ent->client->ps.powerups[PW_QUAD] =  level.time - ( level.time % 1000 );
+			ent->client->ps.powerups[PW_QUAD] +=  g_eliminationred_quad.integer * 1000;
+		}
+		if(g_eliminationred_regen.integer) {
+			ent->client->ps.powerups[PW_REGEN] =  level.time - ( level.time % 1000 );
+			ent->client->ps.powerups[PW_REGEN] +=  g_eliminationred_regen.integer * 1000;
+		}
+		if(g_eliminationred_haste.integer) {
+			ent->client->ps.powerups[PW_HASTE] =  level.time - ( level.time % 1000 );
+			ent->client->ps.powerups[PW_HASTE] +=  g_eliminationred_haste.integer * 1000;
+		}
+		if(g_eliminationred_bsuit.integer) {
+			ent->client->ps.powerups[PW_BATTLESUIT] =  level.time - ( level.time % 1000 );
+			ent->client->ps.powerups[PW_BATTLESUIT] +=  g_eliminationred_bsuit.integer * 1000;
+		}
+		if(g_eliminationred_invis.integer) {
+			ent->client->ps.powerups[PW_INVIS] =  level.time - ( level.time % 1000 );
+			ent->client->ps.powerups[PW_INVIS] +=  g_eliminationred_invis.integer * 1000;
+		}
+		if(g_eliminationred_flight.integer) {
+			ent->client->ps.powerups[PW_FLIGHT] =  level.time - ( level.time % 1000 );
+			ent->client->ps.powerups[PW_FLIGHT] +=  g_eliminationred_flight.integer * 1000;
+		}
+		if(g_eliminationred_holdable.integer == 1) {
+			ent->client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_TELEPORTER);
+		}
+		if(g_eliminationred_holdable.integer == 2) {
+			ent->client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_MEDKIT);
+		}
+		if(g_eliminationred_holdable.integer == 3) {
+			ent->client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_KAMIKAZE);
+			ent->client->ps.eFlags |= EF_KAMIKAZE;
+		}
+		if(g_eliminationred_holdable.integer == 4) {
+			ent->client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_INVULNERABILITY);
+		}
+		if(g_eliminationred_holdable.integer == 5) {
+			ent->client->ps.stats[STAT_HOLDABLE_ITEM] |= (1 << HI_PORTAL);
+		}
+
+		ent->health = ent->client->ps.stats[STAT_ARMOR] = g_eliminationred_startArmor.integer;
+		ent->health = ent->client->ps.stats[STAT_HEALTH] = g_eliminationred_startHealth.integer;
+		if(ent->botskill == 7){
+			ent->health = ent->client->ps.stats[STAT_HEALTH] = 65000;
+		}
+		ent->helpme = 0;
 	}
 }
 

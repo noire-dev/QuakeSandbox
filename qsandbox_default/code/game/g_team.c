@@ -215,10 +215,6 @@ qboolean OnSameTeam( gentity_t *ent1, gentity_t *ent2 ) {
 		return qfalse;
 	}
 
-	/*if(g_gametype.integer == GT_FFA){
-	if(g_building.integer){ return 1; }
-	}*/
-
 	if ( g_gametype.integer < GT_TEAM || g_ffa_gt==1) {
 		return qfalse;
 	}

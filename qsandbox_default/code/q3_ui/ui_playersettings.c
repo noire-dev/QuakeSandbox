@@ -37,9 +37,6 @@
 #define ID_TOFLASHRED			23
 #define ID_TOFLASHGREEN			24
 #define ID_TOFLASHBLUE			25
-#define ID_HETEX			26
-#define ID_TOTEX			27
-#define ID_PTEX			        28
 
 #define MAX_NAMELENGTH	32
 
@@ -68,9 +65,6 @@ typedef struct {
 	menuslider_s  		toflashred;
 	menuslider_s  		toflashgreen;
 	menuslider_s  		toflashblue;
-	menuslider_s  		hetex;
-	menuslider_s  		totex;
-	menuslider_s  		ptex;
 	menubitmap_s		back;
 	menubitmap_s		model;
 	menubitmap_s		item_null;
@@ -428,12 +422,6 @@ s_playersettings.heflashred.curvalue  = trap_Cvar_VariableValue( "cg_helightred"
 	s_playersettings.flashgreen.curvalue  = trap_Cvar_VariableValue( "cg_plightgreen");
 	
 	s_playersettings.flashblue.curvalue  = trap_Cvar_VariableValue( "cg_plightblue");
-	
-	s_playersettings.hetex.curvalue  = trap_Cvar_VariableValue( "cg_hetex");
-	
-	s_playersettings.totex.curvalue  = trap_Cvar_VariableValue( "cg_totex");
-	
-	s_playersettings.ptex.curvalue  = trap_Cvar_VariableValue( "cg_ptex");
 
 	// model/skin
 	UIE_PlayerInfo_InitModel(&s_playersettings.player);
@@ -511,18 +499,6 @@ static void PlayerSettings_MenuEvent( void* ptr, int event ) {
 		
 	case ID_TOFLASHBLUE:
 		trap_Cvar_SetValue( "cg_tolightblue", s_playersettings.toflashblue.curvalue);
-		break;
-		
-	case ID_HETEX:
-		trap_Cvar_SetValue( "cg_hetex", s_playersettings.hetex.curvalue);
-		break;
-		
-	case ID_TOTEX:
-		trap_Cvar_SetValue( "cg_totex", s_playersettings.totex.curvalue);
-		break;
-		
-	case ID_PTEX:
-		trap_Cvar_SetValue( "cg_ptex", s_playersettings.ptex.curvalue);
 		break;
 		
 	case ID_HEFLASHRED:
@@ -820,54 +796,6 @@ y = 170;
 	s_playersettings.flashblue.generic.y			= y;
 	s_playersettings.flashblue.minvalue			= 0;
 	s_playersettings.flashblue.maxvalue			= 255;
-	
-    y += BIGCHAR_HEIGHT+2;
-    s_playersettings.hetex.generic.type		= MTYPE_SLIDER;
-	if(cl_language.integer == 0){
-	s_playersettings.hetex.generic.name		= "Head tex:";
-	}
-	if(cl_language.integer == 1){
-	s_playersettings.hetex.generic.name		= "Голова tex:";
-	}
-	s_playersettings.hetex.generic.flags		= QMF_PULSEIFFOCUS|QMF_SMALLFONT;
-	s_playersettings.hetex.generic.callback	= PlayerSettings_MenuEvent;
-	s_playersettings.hetex.generic.id		= ID_HETEX;
-	s_playersettings.hetex.generic.x			= 220;
-	s_playersettings.hetex.generic.y			= y;
-	s_playersettings.hetex.minvalue			= 0.0f;
-	s_playersettings.hetex.maxvalue			= 153;
-
-        y += BIGCHAR_HEIGHT+2;
-    s_playersettings.totex.generic.type		= MTYPE_SLIDER;
-	if(cl_language.integer == 0){
-	s_playersettings.totex.generic.name		= "Torso tex:";
-	}
-	if(cl_language.integer == 1){
-	s_playersettings.totex.generic.name		= "Торс tex:";
-	}
-	s_playersettings.totex.generic.flags		= QMF_PULSEIFFOCUS|QMF_SMALLFONT;
-	s_playersettings.totex.generic.callback	= PlayerSettings_MenuEvent;
-	s_playersettings.totex.generic.id			= ID_TOTEX;
-	s_playersettings.totex.generic.x			= 220;
-	s_playersettings.totex.generic.y			= y;
-	s_playersettings.totex.minvalue			= 0.0f;
-	s_playersettings.totex.maxvalue			= 153;
-
-        y += BIGCHAR_HEIGHT+2;
-    s_playersettings.ptex.generic.type		= MTYPE_SLIDER;
-	if(cl_language.integer == 0){
-	s_playersettings.ptex.generic.name		= "Legs tex:";
-	}
-	if(cl_language.integer == 1){
-	s_playersettings.ptex.generic.name		= "Ноги tex:";
-	}
-	s_playersettings.ptex.generic.flags		= QMF_PULSEIFFOCUS|QMF_SMALLFONT;
-	s_playersettings.ptex.generic.callback	= PlayerSettings_MenuEvent;
-	s_playersettings.ptex.generic.id		= ID_PTEX;
-	s_playersettings.ptex.generic.x			= 220;
-	s_playersettings.ptex.generic.y			= y;
-	s_playersettings.ptex.minvalue			= 0;
-	s_playersettings.ptex.maxvalue			= 153;
 
 	s_playersettings.back.generic.type			= MTYPE_BITMAP;
 	s_playersettings.back.generic.name			= ART_BACK0;
@@ -922,9 +850,6 @@ y = 170;
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.toflashred );
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.toflashgreen );
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.toflashblue );
-	/*Menu_AddItem( &s_playersettings.menu, &s_playersettings.hetex );
-	Menu_AddItem( &s_playersettings.menu, &s_playersettings.totex );
-	Menu_AddItem( &s_playersettings.menu, &s_playersettings.ptex );*/
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.modeltype );
 
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.player.bitmap );

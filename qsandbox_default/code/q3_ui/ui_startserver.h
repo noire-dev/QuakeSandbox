@@ -17,7 +17,7 @@ START SERVER MENU HEADER ( Q3 INTERFACE INDEPENDENT DEFINTIONS/DATA ) *****
 #endif
 
 
-#define NUM_GAMETYPES 12
+#define NUM_GAMETYPES 14
 
 
 
@@ -564,11 +564,6 @@ int singleskill;
 int kill;
 char damageModifier[32];
 char selectedmod[32];
-int flightlimit;
-int flightregen;
-int flightpower;
-int building;
-int spawnselect;
 int roundmode;
 int elimination;
 int obeliskHealth;
@@ -601,7 +596,6 @@ int forcerespawn;
 char vampire[32];
 int vampire_max_health;
 int regen;
-int locationdamage;
 int maxweaponpickup;
 int droppeditemtime;
 int autoflagreturn;
@@ -697,13 +691,10 @@ int elimination_regen;
 int elimination_flight;
 int elimination_items;
 int elimination_holdable;
-int portalgrabitems;
-int portallight;
 int minigame;
 int overlay;
 int randomItems;
 int slickmove;
-int music;
 int spawnprotect;
 int elimination_lockspectator;
 int awardpushing;
@@ -1053,12 +1044,8 @@ void UI_LoadMapTypeInfo(void);
 //
 
 extern const char* idmap_list[];
-extern int gametype_remap[NUM_GAMETYPES];
-extern int gametype_remap2[MAX_GAME_TYPE];
 extern const char *gametype_items[NUM_GAMETYPES + 1];
 extern const char *gametype_itemsru[NUM_GAMETYPES + 1];
-extern const char *gametypen_items[NUM_GAMETYPES + 2];
-extern const char *gametypen_itemsru[NUM_GAMETYPES + 2];
 extern const char* randommaptype_items[MAP_RND_MAX + MAX_MAPTYPES + 1];
 extern const char* randommaptype_itemsru[MAP_RND_MAX + MAX_MAPTYPES + 1];
 extern char* gametype_cvar_base[NUM_GAMETYPES];

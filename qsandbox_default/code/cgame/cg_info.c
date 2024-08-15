@@ -131,10 +131,6 @@ void CG_LoadingClient( int clientNum ) {
 	Q_strncpyz( personality, Info_ValueForKey( info, "n" ), sizeof(personality) );
 	Q_CleanStr( personality );
 
-	if( cgs.gametype == GT_SINGLE_PLAYER ) {
-		trap_S_RegisterSound_MiTech( va( "sound/player/announce/%s.wav", personality ), qtrue );
-	}
-
 	CG_LoadingString( personality );
 }
 
@@ -156,7 +152,7 @@ void CG_DrawInformation( void ) {
 	qhandle_t	detail;
 	char		buf[1024];
 
-    if(cl_blackloadscreen.integer){
+    if(cgs.gametype == GT_SINGLE){
 		return;
     }
 
@@ -259,10 +255,13 @@ void CG_DrawInformation( void ) {
 if(cl_language.integer == 0){
 	// game type
 	switch ( cgs.gametype ) {
+	case GT_SANDBOX:
+		s = "Sandbox";
+		break;
 	case GT_FFA:
 		s = "Free For All";
 		break;
-	case GT_SINGLE_PLAYER:
+	case GT_SINGLE:
 		s = "Single Player";
 		break;
 	case GT_TOURNAMENT:
@@ -306,11 +305,14 @@ if(cl_language.integer == 0){
 if(cl_language.integer == 1){
 	// game type
 	switch ( cgs.gametype ) {
+	case GT_SANDBOX:
+		s = "Песочница";
+		break;
 	case GT_FFA:
 		s = "Все против всех";
 		break;
-	case GT_SINGLE_PLAYER:
-		s = "Одиночная игра";
+	case GT_SINGLE:
+		s = "Одиночная Игра";
 		break;
 	case GT_TOURNAMENT:
 		s = "Турнир";

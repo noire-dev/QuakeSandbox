@@ -580,7 +580,7 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 	}
 	}
 
-	if(ent->botskill >= 6){
+	if(ent->botskill == 6){
 	{ client->ps.ammo[WP_ROCKET_LAUNCHER] = 9999; }
 	{ client->ps.ammo[WP_GRENADE_LAUNCHER] = 9999; }
 	{ client->ps.ammo[WP_PLASMAGUN] = 9999; }
@@ -626,25 +626,9 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 			}
 		} else {
 			// count down health when over max
+			if ( !ent->singlebot ){
 			if ( ent->health > client->ps.stats[STAT_MAX_HEALTH] ) {
 				ent->health--;
-			}
-			
-			if(ent->flashon == 0){
-			if ( client->ps.stats[STAT_FLASH] < g_flightlimit.integer ){
-			client->ps.stats[STAT_FLASH] += g_flightregen.integer;
-			}
-			}
-			
-			if(ent->flashon == 1){
-			if ( client->ps.stats[STAT_FLASH] >= g_flightpower.integer ){
-			client->ps.stats[STAT_FLASH] -= g_flightpower.integer;
-			}
-			}
-			
-			if(ent->flashon == 1){
-			if ( client->ps.stats[STAT_FLASH] < g_flightpower.integer ){
-			Cmd_FlashlightOff_f( ent );	
 			}
 			}
 			
@@ -665,11 +649,14 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 			}
 		}
 
-	G_SendWeaponProperties( ent );
+		G_SendWeaponProperties( ent );		//send game setting to client for sync
+		G_SendSwepWeapons( ent );				//send sweps list to client for sync
 
 		// count down armor when over max
+		if ( !ent->singlebot ){
 		if ( client->ps.stats[STAT_ARMOR] > client->ps.stats[STAT_MAX_HEALTH] ) {
 			client->ps.stats[STAT_ARMOR]--;
+		}
 		}
 		if ( client->ps.stats[STAT_ARMOR] < client->ps.stats[STAT_MAX_HEALTH] ) {
 			client->ps.stats[STAT_ARMOR]+=g_regenarmor.integer;
@@ -969,6 +956,172 @@ void SendPendingPredictableEvents( playerState_t *ps ) {
 	}
 }
 
+void PhysgunHold(gentity_t *player) {
+	gentity_t *findent;
+	vec3_t		end;
+	vec3_t		newvelocity;
+	
+	if(!g_allowphysgun.integer){
+		return; 
+	}
+
+	if (player->client->ps.weapon == WP_GRAVITYGUN){
+		return; 
+	}
+	
+    if (player->client->ps.weapon == WP_PHYSGUN && player->client->buttons & BUTTON_ATTACK && player->client->ps.stats[STAT_HEALTH] && player->client->ps.pm_type != PM_DEAD) {
+        if (!player->grabbedEntity) {
+            findent = FindEntityForPhysgun(player, PHYSGUN_RANGE);
+			if(findent && findent->isGrabbed == qfalse ){
+			if(!findent->client){
+			player->grabbedEntity = findent;
+			} else if (findent->singlebot) {
+			player->grabbedEntity = findent;
+			}
+			}
+            if (player->grabbedEntity) {
+                player->grabbedEntity->isGrabbed = qtrue;
+				if(!player->grabbedEntity->client){
+				player->grabbedEntity->grabNewPhys = 2;
+				player->grabbedEntity->s.pos.trType = TR_GRAVITY;
+				player->grabbedEntity->sb_phys = 2;
+				}
+            }
+        } else {
+			trap_UnlinkEntity( player->grabbedEntity );			//Unlink entity for check coll for other props
+			CrosshairPointPhys(player, player->grabDist, end);	//player->grabDist set in FindEntityForPhysgun()
+			trap_LinkEntity( player->grabbedEntity );			//Link entity for work prop-flight
+			VectorAdd(end, player->grabOffset, end);			//physgun offset
+			VectorCopy(player->grabbedEntity->r.currentOrigin, player->grabbedEntity->grabOldOrigin);	//save old frame for speed apply
+			if(!player->grabbedEntity->client){
+			VectorCopy(end, player->grabbedEntity->s.origin);
+			VectorCopy(end, player->grabbedEntity->s.pos.trBase);
+			VectorCopy(end, player->grabbedEntity->r.currentOrigin);
+			G_EnablePropPhysics(player->grabbedEntity);
+			} else {
+			VectorCopy ( end, player->grabbedEntity->client->ps.origin );
+			player->grabbedEntity->client->ps.origin[2] += 1;				//player not stuck
+			VectorCopy( player->grabbedEntity->client->ps.origin, player->grabbedEntity->r.currentOrigin );
+			}
+			VectorSubtract(player->grabbedEntity->r.currentOrigin, player->grabbedEntity->grabOldOrigin, newvelocity);		//calc speed with old frame
+			if(!player->grabbedEntity->client){
+			VectorScale(newvelocity, 45, newvelocity);																		//vector sens
+			VectorAdd(player->grabbedEntity->s.pos.trDelta, newvelocity, player->grabbedEntity->s.pos.trDelta);				//apply new speed
+			} else {
+			VectorScale(newvelocity, 5, newvelocity);																		//vector player sens
+			VectorAdd(player->grabbedEntity->client->ps.velocity, newvelocity, player->grabbedEntity->client->ps.velocity);		//apply new player speed	
+			}
+        }
+    } else if (player->grabbedEntity) {
+        player->grabbedEntity->isGrabbed = qfalse;				//start
+		if(player->grabbedEntity->grabNewPhys == 1){
+			if(!player->grabbedEntity->client){
+			player->grabbedEntity->s.pos.trType = TR_STATIONARY;	//phys 1 settings
+			player->grabbedEntity->physicsObject = qfalse;			//phys 1 settings
+			player->grabbedEntity->sb_phys = 1;						//phys 1 settings
+			VectorClear( player->grabbedEntity->s.pos.trDelta );	//clear speed
+			} else {
+			VectorClear( player->grabbedEntity->client->ps.velocity );	//clear speed
+			VectorSubtract(player->grabbedEntity->r.currentOrigin, player->grabbedEntity->grabOldOrigin, newvelocity);		//calc player speed with old frame
+			VectorScale(newvelocity, 5, newvelocity);																		//vector player sens
+			VectorAdd(player->grabbedEntity->client->ps.velocity, newvelocity, player->grabbedEntity->client->ps.velocity);		//apply new player speed	
+			}
+		}
+		if(player->grabbedEntity->grabNewPhys == 2){
+			if(!player->grabbedEntity->client){
+			player->grabbedEntity->s.pos.trType = TR_GRAVITY;		//phys 2 settings
+			player->grabbedEntity->s.pos.trTime = level.time;		//phys 2 settings
+			player->grabbedEntity->physicsObject = qtrue;			//phys 2 settings
+			player->grabbedEntity->sb_phys = 2;						//phys 2 settings
+			VectorClear( player->grabbedEntity->s.pos.trDelta );	//clear speed
+			} else {
+			VectorClear( player->grabbedEntity->client->ps.velocity );	//clear player speed	
+			}
+			VectorSubtract(player->grabbedEntity->r.currentOrigin, player->grabbedEntity->grabOldOrigin, newvelocity);		//calc speed with old frame
+			if(!player->grabbedEntity->client){
+			VectorScale(newvelocity, 15, newvelocity);																		//vector sens
+			VectorAdd(player->grabbedEntity->s.pos.trDelta, newvelocity, player->grabbedEntity->s.pos.trDelta);				//apply new speed
+			} else {
+			VectorScale(newvelocity, 5, newvelocity);																		//vector player sens
+			VectorAdd(player->grabbedEntity->client->ps.velocity, newvelocity, player->grabbedEntity->client->ps.velocity);		//apply new player speed
+			}
+		}
+		VectorClear( player->grabOffset );																				//clear offset
+		player->grabbedEntity = 0;																						//end
+    }
+}
+
+void GravitygunHold(gentity_t *player) {
+	gentity_t *findent;
+	vec3_t		end;
+	vec3_t		newvelocity;
+	
+	if(!g_allowgravitygun.integer){
+		return; 
+	}
+
+	if (player->client->ps.weapon == WP_PHYSGUN){
+		return; 
+	}
+	
+    if (player->client->ps.weapon == WP_GRAVITYGUN && player->client->buttons & BUTTON_ATTACK && player->client->ps.stats[STAT_HEALTH] && player->client->ps.pm_type != PM_DEAD) {
+        if (!player->grabbedEntity) {
+            findent = FindEntityForGravitygun(player, GRAVITYGUN_RANGE);
+			if(findent && findent->isGrabbed == qfalse ){
+			if(!findent->client){
+			player->grabbedEntity = findent;
+			} else if (findent->singlebot) {
+			player->grabbedEntity = findent;
+			}
+			}
+            if (player->grabbedEntity) {
+                player->grabbedEntity->isGrabbed = qtrue;
+				if(!player->grabbedEntity->client){
+				player->grabbedEntity->s.pos.trType = TR_GRAVITY;
+				player->grabbedEntity->sb_phys = 2;
+				}
+            }
+        } else {
+			trap_UnlinkEntity( player->grabbedEntity );			//Unlink entity for check coll for other props
+			CrosshairPointGravity(player, GRAVITYGUN_DIST, end);			//player->grabDist set in FindEntityForPhysgun()
+			trap_LinkEntity( player->grabbedEntity );			//Link entity for work prop-flight
+			VectorCopy(player->grabbedEntity->r.currentOrigin, player->grabbedEntity->grabOldOrigin);	//save old frame for speed apply
+			if(!player->grabbedEntity->client){
+			VectorCopy(end, player->grabbedEntity->s.origin);
+			VectorCopy(end, player->grabbedEntity->s.pos.trBase);
+			VectorCopy(end, player->grabbedEntity->r.currentOrigin);
+			VectorClear( player->grabbedEntity->s.pos.trDelta );	//clear speed
+			G_EnablePropPhysics(player->grabbedEntity);
+			} else {
+			VectorClear( player->grabbedEntity->client->ps.velocity );	//clear player speed	
+			VectorCopy ( end, player->grabbedEntity->client->ps.origin );
+			VectorCopy( player->grabbedEntity->client->ps.origin, player->grabbedEntity->r.currentOrigin );
+			}
+        }
+    } else if (player->grabbedEntity) {
+        player->grabbedEntity->isGrabbed = qfalse;				//start
+			if(!player->grabbedEntity->client){
+			player->grabbedEntity->physicsObject = qtrue;			//phys 2 settings
+			player->grabbedEntity->sb_phys = 2;						//phys 2 settings
+			G_EnablePropPhysics(player->grabbedEntity);				//turn phys
+			VectorClear( player->grabbedEntity->s.pos.trDelta );	//clear speed
+			} else {
+			VectorClear( player->grabbedEntity->client->ps.velocity );	//clear player speed	
+			}
+			VectorSubtract(player->grabbedEntity->r.currentOrigin, player->r.currentOrigin, newvelocity);		//calc speed with player pos and prop pos
+			if(!player->grabbedEntity->client){
+			VectorScale(newvelocity, 10, newvelocity);																		//vector sens
+			VectorAdd(player->grabbedEntity->s.pos.trDelta, newvelocity, player->grabbedEntity->s.pos.trDelta);				//apply new speed
+			} else {
+			VectorScale(newvelocity, 10, newvelocity);																			//vector player sens
+			VectorAdd(player->grabbedEntity->client->ps.velocity, newvelocity, player->grabbedEntity->client->ps.velocity);		//apply new player speed
+			}
+		VectorClear( player->grabOffset );																				//clear offset
+		player->grabbedEntity = 0;																						//end
+		G_AddEvent( player, EV_GRAVITYSOUND, 0 );
+    }
+}
+
 /*
 ==============
 ClientThink
@@ -1007,30 +1160,7 @@ void ClientThink_real( gentity_t *ent ) {
 //		G_Printf("serverTime >>>>>\n" );
 	}
 
-//Here comes the unlagged bit!
-//unlagged - backward reconciliation #4
-	// frameOffset should be about the number of milliseconds into a frame
-	// this command packet was received, depending on how fast the server
-	// does a G_RunFrame()
 	client->frameOffset = trap_Milliseconds() - level.frameStartTime;
-//unlagged - backward reconciliation #4
-
-
-//unlagged - lag simulation #3
-	// if the client wants to simulate outgoing packet loss
-/*	if ( client->pers.plOut ) {
-		// see if a random value is below the threshhold
-		float thresh = (float)client->pers.plOut / 100.0f;
-		if ( random() < thresh ) {
-			// do nothing at all if it is - this is a lost command
-			return;
-		}
-	}*/
-//unlagged - lag simulation #3
-
-
-//unlagged - true ping
-	// save the estimated ping in a queue for averaging later
 
 	// we use level.previousTime to account for 50ms lag correction
 	// besides, this will turn out numbers more like what players are used to
@@ -1055,73 +1185,16 @@ void ClientThink_real( gentity_t *ent ) {
 		// if g_truePing is off, use the normal ping
 		client->pers.realPing = client->ps.ping;
 	}
-//unlagged - true ping
-
-
-//unlagged - lag simulation #2
-	// keep a queue of past commands
-/*	client->pers.cmdqueue[client->pers.cmdhead] = client->pers.cmd;
-	client->pers.cmdhead++;
-	if ( client->pers.cmdhead >= MAX_LATENT_CMDS ) {
-		client->pers.cmdhead -= MAX_LATENT_CMDS;
-	}
-
-	// if the client wants latency in commands (client-to-server latency)
-	if ( client->pers.latentCmds ) {
-		// save the actual command time
-		int time = ucmd->serverTime;
-
-		// find out which index in the queue we want
-		int cmdindex = client->pers.cmdhead - client->pers.latentCmds - 1;
-		while ( cmdindex < 0 ) {
-			cmdindex += MAX_LATENT_CMDS;
-		}
-
-		// read in the old command
-		client->pers.cmd = client->pers.cmdqueue[cmdindex];
-
-		// adjust the real ping to reflect the new latency
-		client->pers.realPing += time - ucmd->serverTime;
-	}*/
-//unlagged - lag simulation #2
-
-
-//unlagged - backward reconciliation #4
-	// save the command time *before* pmove_fixed messes with the serverTime,
-	// and *after* lag simulation messes with it :)
-	// attackTime will be used for backward reconciliation later (time shift)
+	
 	client->attackTime = ucmd->serverTime;
-//unlagged - backward reconciliation #4
 
-
-//unlagged - smooth clients #1
-	// keep track of this for later - we'll use this to decide whether or not
-	// to send extrapolated positions for this client
 	client->lastUpdateFrame = level.framenum;
-//unlagged - smooth clients #1
 
-
-//unlagged - lag simulation #1
-	// if the client is adding latency to received snapshots (server-to-client latency)
-	/*if ( client->pers.latentSnaps ) {
-		// adjust the real ping
-		client->pers.realPing += client->pers.latentSnaps * (1000 / sv_fps.integer);
-		// adjust the attack time so backward reconciliation will work
-		client->attackTime -= client->pers.latentSnaps * (1000 / sv_fps.integer);
-	}*/
-//unlagged - lag simulation #1
-
-
-//unlagged - true ping
-	// make sure the true ping is over 0 - with cl_timenudge it can be less
 	if ( client->pers.realPing < 0 ) {
 		client->pers.realPing = 0;
 	}
-//unlagged - true ping
 
 	msec = ucmd->serverTime - client->ps.commandTime;
-	// following others may result in bad times, but we still want
-	// to check for follow toggles
 	if ( msec < 1 && client->sess.spectatorState != SPECTATOR_FOLLOW ) {
 		return;
 	}
@@ -1138,8 +1211,6 @@ void ClientThink_real( gentity_t *ent ) {
 
 	if ( pmove_fixed.integer || client->pers.pmoveFixed ) {
 		ucmd->serverTime = ((ucmd->serverTime + pmove_msec.integer-1) / pmove_msec.integer) * pmove_msec.integer;
-		//if (ucmd->serverTime - client->ps.commandTime <= 0)
-		//	return;
 	}
 
 	//
@@ -1245,32 +1316,8 @@ if ( !ent->speed ){
 	if ( client->ps.powerups[PW_HASTE] ) {
 		client->ps.speed *= g_speedfactor.value;
 	}
-	if ( ent->botskill == 6 ) {
-		client->ps.speed *= 1.50;
-	}
-	if ( ent->botskill == 7 ) {
-		client->ps.speed *= 2.00;
-	}
-	if ( ent->botskill == 8 ) {
-		client->ps.speed *= 2.50;
-	}
 	if ( ent->botskill == 9 ) {
-		client->ps.speed *= 3.00;
-	}
-	if ( ent->botskill == 10 ) {
-		client->ps.speed *= 3.50;
-	}
-	if ( ent->botskill == 11 ) {
-		client->ps.speed *= 4.00;
-	}
-	if ( ent->botskill == 12 ) {
-		client->ps.speed *= 4.50;
-	}
-	if ( ent->botskill == 13 ) {
-		client->ps.speed *= 5.00;
-	}
-	if ( ent->botskill == 14 ) {
-		client->ps.speed *= 5.50;
+		client->ps.speed *= 2.50;
 	}
 
 	// Let go of the hook if we aren't firing
@@ -1364,20 +1411,7 @@ if ( !ent->speed ){
 	if ( ent->client->ps.eventSequence != oldEventSequence ) {
 		ent->eventTime = level.time;
 	}
-//unlagged - smooth clients #2
-	// clients no longer do extrapolation if cg_smoothClients is 1, because
-	// skip correction is all handled server-side now
-	// since that's the case, it makes no sense to store the extra info
-	// in the client's snapshot entity, so let's save a little bandwidth
-/*
-	if (g_smoothClients.integer) {
-		BG_PlayerStateToEntityStateExtraPolate( &ent->client->ps, &ent->s, ent->client->ps.commandTime, qtrue );
-	}
-	else {
-*/
-		BG_PlayerStateToEntityState( &ent->client->ps, &ent->s, qtrue );
-//	}
-//unlagged - smooth clients #2
+	BG_PlayerStateToEntityState( &ent->client->ps, &ent->s, qtrue );
 	SendPendingPredictableEvents( &ent->client->ps );
 
 	if ( !( ent->client->ps.eFlags & EF_FIRING ) ) {
@@ -1430,6 +1464,9 @@ if ( !ent->speed ){
 	client->buttons = ucmd->buttons;
 	client->latched_buttons |= client->buttons & ~client->oldbuttons;
 
+	PhysgunHold( ent );
+	GravitygunHold( ent );
+
 	// check for respawning
 	if ( client->ps.stats[STAT_HEALTH] <= 0 ) {
 		// wait for the attack button to be pressed
@@ -1473,11 +1510,6 @@ void ClientThink( int clientNum ) {
 
 	ent = g_entities + clientNum;
 	trap_GetUsercmd( clientNum, &ent->client->pers.cmd );
-
-	//Unlagged: commented out
-	// mark the time we got info, so we can display the
-	// phone jack if they don't get any for a while
-	//ent->client->lastCmdTime = level.time;
 
 	if ( !(ent->r.svFlags & SVF_BOT) && !g_synchronousClients.integer ) {
 		ClientThink_real( ent );

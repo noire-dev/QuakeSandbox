@@ -175,6 +175,7 @@ field_t fields[] = {
 	{"sb_ettype", FOFS(sb_ettype), F_INT},
 	{"sb_takedamage", FOFS(sb_takedamage), F_INT},
 	{"sb_takedamage2", FOFS(sb_takedamage2), F_INT},
+	{"objectType", FOFS(objectType), F_INT},
 	
 	{"distance", FOFS(distance), F_FLOAT},
 	{"type", FOFS(type), F_INT},
@@ -506,7 +507,7 @@ qboolean G_CallSpawn( gentity_t *ent ) {
 				Com_sprintf(itemname, sizeof(itemname), "%s", "team_neutralobelisk");
 			}
 		}	
-		if( g_gametype.integer == GT_ELIMINATION || g_gametype.integer == GT_FFA || g_gametype.integer == GT_TEAM || g_gametype.integer == GT_LMS || g_gametype.integer == GT_DOMINATION ) {
+		if( g_gametype.integer == GT_ELIMINATION || g_gametype.integer == GT_FFA || g_gametype.integer == GT_SANDBOX || g_gametype.integer == GT_TEAM || g_gametype.integer == GT_LMS || g_gametype.integer == GT_DOMINATION ) {
 			if( strcmp(itemname, "team_CTF_redplayer") == 0 ) {
 				Com_sprintf(itemname, sizeof(itemname), "%s", "info_player_deathmatch");
 			}
@@ -716,7 +717,7 @@ void G_SpawnGEntityFromSpawnVars( void ) {
 	int			i;
 	gentity_t	*ent;
 	char		*s, *value, *gametypeName;
-	static char *gametypeNames[] = {"ffa", "tournament", "single", "team", "ctf", "oneflag", "obelisk", "harvester", "elimination", "ctf", "lms", "dd", "dom"};
+	static char *gametypeNames[] = {"sandbox", "ffa", "single", "tournament", "team", "ctf", "oneflag", "obelisk", "harvester", "elimination", "ctf", "lms", "dd", "dom"};
 
 	// get the next free entity
 	ent = G_Spawn();
@@ -726,7 +727,7 @@ void G_SpawnGEntityFromSpawnVars( void ) {
 	}
 
 	// check for "notsingle" flag
-	if ( g_gametype.integer == GT_SINGLE_PLAYER ) {
+	if ( g_gametype.integer == GT_SINGLE ) {
 		G_SpawnInt( "notsingle", "0", &i );
 		if ( i ) {
 			G_FreeEntity( ent );
@@ -754,7 +755,7 @@ void G_SpawnGEntityFromSpawnVars( void ) {
 	}
 
         if( G_SpawnString( "!gametype", NULL, &value ) ) {
-		if( g_gametype.integer >= GT_FFA && g_gametype.integer < GT_MAX_GAME_TYPE ) {
+		if( g_gametype.integer >= GT_SANDBOX && g_gametype.integer < GT_MAX_GAME_TYPE ) {
 			gametypeName = gametypeNames[g_gametype.integer];
 
 			s = strstr( value, gametypeName );
@@ -766,7 +767,7 @@ void G_SpawnGEntityFromSpawnVars( void ) {
 	}
 
 	if( G_SpawnString( "gametype", NULL, &value ) ) {
-		if( g_gametype.integer >= GT_FFA && g_gametype.integer < GT_MAX_GAME_TYPE ) {
+		if( g_gametype.integer >= GT_SANDBOX && g_gametype.integer < GT_MAX_GAME_TYPE ) {
 			gametypeName = gametypeNames[g_gametype.integer];
 
 			s = strstr( value, gametypeName );

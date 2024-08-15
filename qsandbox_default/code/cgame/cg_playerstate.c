@@ -49,7 +49,10 @@ void CG_CheckAmmo( void ) {
 
 	total = 0;
 	for ( i = WP_MACHINEGUN ; i < WP_NUM_WEAPONS ; i++ ) {
-		if ( ! ( weapons & ( 1 << i ) ) || i == WP_GRAPPLING_HOOK ) {
+		if ( ! ( weapons & ( 1 << i ) ) ) {
+			continue;
+		}
+		if(cg.snap->ps.ammo[i] == -1){
 			continue;
 		}
 		switch ( i ) {
@@ -204,7 +207,7 @@ void CG_Respawn( void ) {
 	// select the weapon the server says we are using
 	cg.weaponSelect = cg.snap->ps.weapon;
 	
-	for(i = 1 ; i <= WEAPONS_NUM-15 ; i++){
+	for(i = 1 ; i < WEAPONS_NUM-15 ; i++){
 		cg.swep_listcl[i+15] = 0; 
 	}
 }

@@ -199,8 +199,6 @@ struct gentity_s {
 	qboolean	takedamage2;
 	
 	int			sandboxObject;
-	int			sandboxInteract;
-	float		InteractDist;
 	
 	int			sb_coltype;
 	float		sb_colscale0;
@@ -257,25 +255,16 @@ struct gentity_s {
 	float		random;
 
 	gitem_t		*item;			// for bonus items
-	int		wait_to_pickup;
-	int			gmodmod_one;
-	int			gmodmod_two;
+	int			wait_to_pickup;
 	int			singlebot;
-	int			gmodtool;
-	int			gmodtoolmode;
-	char		gmodmodifiers[MAX_INFO_STRING];
+	int			tool_id;
 	char		text;
 	int			botskill;
-vec3_t		home1;
-vec3_t		home2;
-vec3_t		home3;
-//	int			oasbhp;
-//	int			oasbphys;
-//	int			oasbphysbounce;
 	
 	float		distance;
 	int			type;
 	int			vehicle;
+	int			objectType;
 	int			vehicleclient;
 
 	//entityplus variables
@@ -313,6 +302,13 @@ vec3_t		home3;
 	int			swep_list[WEAPONS_NUM];
 	int			swep_ammo[WEAPONS_NUM];
 	int			swep_id;
+	
+	gentity_t 	*grabbedEntity;		//physgun object for player
+	qboolean	isGrabbed;			//object is grabbed by player for prop
+	float		grabDist;			//physgun distance for player
+	vec3_t		grabOffset;			//physgun offset for player
+	vec3_t		grabOldOrigin;		//physgun old origin for prop
+	int			grabNewPhys;		//for freeze prop for prop
 };
 
 
@@ -505,6 +501,8 @@ struct gclient_s {
 	int			buttons;
 	int			oldbuttons;
 	int			latched_buttons;
+	
+	int         vehiclenum;
 
 	vec3_t		oldOrigin;
 
@@ -525,7 +523,6 @@ struct gclient_s {
 	int			lastkilled_client;	// last client that this client killed
 	int			lasthurt_client;	// last client that damaged this client
 	int			lasthurt_mod;		// type of damage the client did
-	int			lasthurt_location;	// Where the client was hit.
 
 	// timers
 	int			respawnTime;		// can respawn when time > this, force after g_forcerespwan
@@ -586,8 +583,6 @@ struct gclient_s {
 	qboolean        spawnprotected;
 	
 	int			accuracy[WP_NUM_WEAPONS][2];
-	
-    int         vehiclenum;
 };
 
 //
@@ -801,7 +796,8 @@ void FinishSpawningItem( gentity_t *ent );
 void Think_Weapon (gentity_t *ent);
 int ArmorIndex (gentity_t *ent);
 void	Add_Ammo (gentity_t *ent, int weapon, int count);
-void	Add_Weapon (gentity_t *ent, int weapon, int count);
+void	Set_Ammo (gentity_t *ent, int weapon, int count);
+void	Set_Weapon (gentity_t *ent, int weapon, int count);
 void Touch_Item (gentity_t *ent, gentity_t *other, trace_t *trace );
 void Touch_Item2(gentity_t *ent, gentity_t *other, trace_t *trace, qboolean allowBot);
 
@@ -833,7 +829,10 @@ void	G_FadeIn( float duration, int clientn );
 playerscore_t G_CalculatePlayerScore( gentity_t *ent );
 void botsandbox_check (gentity_t *self);
 void VehiclePhys( gentity_t *self );
-void VehicleTouchBot( gentity_t *self, gentity_t *other, trace_t *trace );
+gentity_t *FindEntityForPhysgun( gentity_t *ent, int range );
+gentity_t *FindEntityForGravitygun( gentity_t *ent, int range );
+void CrosshairPointPhys(gentity_t *ent, int range, vec3_t outPoint);
+void CrosshairPointGravity(gentity_t *ent, int range, vec3_t outPoint);
 
 void	G_InitGentity( gentity_t *e );
 gentity_t *findradius (gentity_t *ent, vec3_t org, float rad);
@@ -871,6 +870,7 @@ void target_finish_use (gentity_t *self, gentity_t *other, gentity_t *activator)
 qboolean CanDamage (gentity_t *targ, vec3_t origin);
 void G_Damage (gentity_t *targ, gentity_t *inflictor, gentity_t *attacker, vec3_t dir, vec3_t point, int damage, int dflags, int mod);
 void G_CollDamage (int targNum, int attackerNum, int speed, int mod, vec3_t velocity);
+void G_PropDamage (gentity_t *targ, int damage);
 void G_ExitVehicle (int num);
 qboolean G_RadiusDamage (vec3_t origin, gentity_t *attacker, float damage, float radius, gentity_t *ignore, int mod);
 int G_InvulnerabilityEffect( gentity_t *targ, vec3_t dir, vec3_t point, vec3_t impactpoint, vec3_t bouncedir );
@@ -904,8 +904,6 @@ gentity_t *fire_nail( gentity_t *self, vec3_t start, vec3_t forward, vec3_t righ
 gentity_t *fire_prox( gentity_t *self, vec3_t start, vec3_t aimdir );
 gentity_t *fire_flame (gentity_t *self, vec3_t start, vec3_t aimdir);
 gentity_t *fire_antimatter (gentity_t *self, vec3_t start, vec3_t aimdir);
-gentity_t *fire_special1 ( gentity_t *self, vec3_t start, vec3_t forward, vec3_t right, vec3_t up );
-gentity_t *fire_special2 ( gentity_t *self, vec3_t start, vec3_t forward, vec3_t right, vec3_t up );
 
 //
 // g_mover.c
@@ -927,8 +925,7 @@ void lock_touch( gentity_t *self, gentity_t *other, trace_t *trace );
 void TeleportPlayer( gentity_t *player, vec3_t origin, vec3_t angles );
 void DropPortalSource( gentity_t *ent );
 void DropPortalDestination( gentity_t *ent );
-void G_ModProp( gentity_t *targ, gentity_t *attacker );
-void Svcmd_RCM( void );
+void G_ModProp( gentity_t *targ, gentity_t *attacker, char *arg01, char *arg02, char *arg03, char *arg04, char *arg05, char *arg06, char *arg07, char *arg08, char *arg09, char *arg10, char *arg11, char *arg12, char *arg13, char *arg14, char *arg15, char *arg16, char *arg17, char *arg18, char *arg19 );
 void G_RunProp( gentity_t *ent );
 void G_BounceProp( gentity_t *ent, trace_t *trace );
 void G_HideObjects();
@@ -1075,6 +1072,9 @@ void ClientCommand( int clientNum );
 void DropClientSilently( int clientNum );
 void LinkBotSpawnEntity( gentity_t *bot, char parentid[] );
 void SetupCustomBot( gentity_t *bot );
+void SetUnlimitedWeapons( gentity_t *ent );
+void SetSandboxWeapons( gentity_t *ent );
+void SetCustomWeapons( gentity_t *ent );
 void PrecacheBotAssets();
 
 //
@@ -1123,7 +1123,6 @@ void G_WriteSessionData( void );
 //
 void UpdateTournamentInfo( void );
 void SpawnModelsOnVictoryPads( void );
-void Svcmd_AbortPodium_f( void );
 
 //
 // g_bot.c
@@ -1229,8 +1228,6 @@ int BotAISetupClient(int client, struct bot_settings_s *settings, qboolean resta
 int BotAIShutdownClient( int client, qboolean restart );
 int BotAIStartFrame( int time );
 void BotTestAAS(vec3_t origin);
-void SandboxObject( gentity_t *ent );
-void G_AddItem( char *name, vec3_t origin, int wait, int count, char *target, int sf  );
 
 #include "g_team.h" // teamplay specific stuff
 
@@ -1243,6 +1240,7 @@ extern	gentity_t		g_entities[MAX_GENTITIES];
 
 //CVARS
 void G_SendWeaponProperties( gentity_t *ent );
+void G_SendSwepWeapons( gentity_t *ent );
 void plasma_think( gentity_t *ent );
 void rocket_think( gentity_t *ent );
 void grenade_think( gentity_t *ent );
@@ -1296,9 +1294,6 @@ extern	int			mod_teleporterinf;
 extern	int			mod_portalinf;
 extern	int			mod_kamikazeinf;
 extern	int			mod_invulinf;
-extern	int sl_px;
-extern	int sl_py;
-extern	int sl_pz;
 extern	int 		mod_teamblue_damage;
 extern	int 		mod_teamred_damage;
 extern	int			mod_accelerate;
@@ -1307,9 +1302,7 @@ extern	int			mod_overlay;
 extern	int			mod_roundmode;
 extern	int			mod_zround;
 extern	int			mod_zsround;
-extern	int	mod_gravity;
-extern	int	mod_dayangle;
-extern	int	mod_daydefault;
+extern	int			mod_gravity;
 
 extern	vmCvar_t 	cl_propsmallsizescale;
 extern	vmCvar_t 	cl_propheight;
@@ -1322,11 +1315,12 @@ extern	vmCvar_t 	cl_bigcharheight;
 extern	vmCvar_t 	cl_giantcharwidth;
 extern	vmCvar_t 	cl_giantcharheight;
 
-//122 setting
-extern	vmCvar_t	g_portalgrabitems;
-extern	vmCvar_t	g_portallight;
-extern	vmCvar_t	g_building;
-extern	vmCvar_t	g_buildingtime;
+extern	vmCvar_t	g_physimpact;
+extern	vmCvar_t	g_physimpulse;
+extern	vmCvar_t	g_physdamage;
+extern	vmCvar_t	g_physdamagestart;
+
+//QS settings
 extern	vmCvar_t	g_minigame;
 //gh set
 extern	vmCvar_t	g_ghspeed;
@@ -1613,20 +1607,13 @@ extern	vmCvar_t	g_allownpc;
 extern	vmCvar_t	g_allowitems;
 extern	vmCvar_t	g_allownoclip;
 extern	vmCvar_t	g_allowtoolgun;
-extern	vmCvar_t	g_toolplayers;
+extern	vmCvar_t	g_allowphysgun;
+extern	vmCvar_t	g_allowgravitygun;
 extern	vmCvar_t	g_safe;
 extern	vmCvar_t	g_npcdrop;
-extern	vmCvar_t	g_singlemode;
-extern	vmCvar_t	cg_singlemode;
 extern	vmCvar_t	g_maxEntities;
 extern	vmCvar_t	cl_selectedmod;
 extern  vmCvar_t	cl_language;
-extern	vmCvar_t	g_flightlimit;
-extern	vmCvar_t	g_flightregen;
-extern	vmCvar_t	g_flightpower;
-extern	vmCvar_t	g_daytime;
-extern	vmCvar_t	g_dayangle;
-extern	vmCvar_t	g_daydefault;
 extern	vmCvar_t	g_tests;
 extern	vmCvar_t	g_currentmap;
 extern	vmCvar_t	g_connectmsg;
@@ -1645,7 +1632,6 @@ extern	vmCvar_t	g_slickmove;
 extern	vmCvar_t	g_accelerate;
 extern	vmCvar_t	g_randomItems;
 extern	vmCvar_t	info_zombie;
-extern	vmCvar_t	g_locationdamage;
 extern 	vmCvar_t	g_mapcycle;
 extern 	vmCvar_t	g_useMapcycle;
 extern	vmCvar_t	g_mapcycleposition;
@@ -1681,7 +1667,6 @@ extern	vmCvar_t	g_armorprotect;
 extern	vmCvar_t	g_respawnwait;
 extern	vmCvar_t	g_jumpheight;
 extern	vmCvar_t	g_speedfactor;
-extern  vmCvar_t	g_spawnselect;
 extern  vmCvar_t	g_drowndamage;
 extern  vmCvar_t	g_ammolimit;
 extern  vmCvar_t	g_armorrespawn;
@@ -2139,8 +2124,6 @@ void Svcmd_MessageWrapper( void );
 //ArenaScript
 void Svcmd_Condition_f( void );
 void Svcmd_Operation_f( void );
-void Svcmd_QvmWrite_f( void );
-void Svcmd_QvmRead_f( void );
 void Svcmd_Cvar_f( void );
 void Svcmd_Random_f( void );
 void Svcmd_Editline_f( void );
@@ -2156,10 +2139,6 @@ char *G_ArenaScriptAutoChar( char *name );
 char *G_ArenaScriptAutoNonPointChar( char *name );
 float G_ArenaScriptAutoFloat( char *name );
 int G_ArenaScriptRandom(int min, int max);
-char *G_QvmRead_LevelVariable(char *name);
-char *G_QvmRead_EntityVariable(char *name, gentity_t *ent);
-void G_QvmWrite_LevelVariable(char *name, char *value);
-void G_QvmWrite_EntityVariable(char *name, char *value, gentity_t *ent);
 char	*AU_Cvar_VariableString( const char *var_name );
 
 #include "g_killspree.h"

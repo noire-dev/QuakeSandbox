@@ -215,9 +215,6 @@ if(ent->type == 9){
 activator->client->ps.stats[STAT_MONEY] += ent->count;
 activator->client->pers.oldmoney += ent->count;
 }
-if(ent->type == 10){
-activator->client->ps.stats[STAT_FLASH] += ent->count;
-}
 return;
 }
 if(ent->type == 1){
@@ -248,9 +245,6 @@ if(ent->type == 8){
 if(ent->type == 9){
 activator->client->ps.stats[STAT_MONEY] = ent->count;
 activator->client->pers.oldmoney = ent->count;
-}
-if(ent->type == 10){
-activator->client->ps.stats[STAT_FLASH] = ent->count;
 }
 }
 
@@ -786,7 +780,7 @@ void target_mapchange_use (gentity_t *self, gentity_t *other, gentity_t *activat
 	//store session data to persist health/armor/weapons/ammo and variables to next level (only in SP mode)
 	G_UpdateClientSessionDataForMapChange( activator->client );
 	G_UpdateGlobalSessionDataForMapChange();
-
+	
 	G_FadeOut( FADEOUT_TIME / 1000, -1 );
 }
 
@@ -794,8 +788,8 @@ void target_mapchange_think (gentity_t *self) {
 	char	*cmd;	
 
 	//determine map switch command to use
-	if ( g_cheats.integer )
-		cmd = "devmap";		//keep cheats enabled
+	if ( g_gametype.integer == GT_SINGLE )
+		cmd = "spmap";		//keep single player enabled
 	else
 		cmd = "map";
 
@@ -1082,6 +1076,7 @@ void target_effect_use (gentity_t *self, gentity_t *other, gentity_t *activator)
 		ent2->s.constantLight = self->s.constantLight;	//constantLight is used to determine particle color
 		ent2->s.eventParm = self->count; //eventParm is used to determine the number of particles
 		ent2->s.generic1 = self->speed; //generic1 is used to determine the speed of the particles
+		ent2->s.generic2 = atoi(self->value); //generic2 is used to determine the size of the particles
 	}
 
 	//particles_linear
@@ -1090,6 +1085,7 @@ void target_effect_use (gentity_t *self, gentity_t *other, gentity_t *activator)
 		ent3->s.constantLight = self->s.constantLight;	//constantLight is used to determine particle color
 		ent3->s.eventParm = self->count; //eventParm is used to determine the number of particles
 		ent3->s.generic1 = self->speed; //generic1 is used to determine the speed of the particles
+		ent2->s.generic2 = atoi(self->value); //generic2 is used to determine the size of the particles
 	}
 
 	//particles_linear_up
@@ -1098,6 +1094,7 @@ void target_effect_use (gentity_t *self, gentity_t *other, gentity_t *activator)
 		ent4->s.constantLight = self->s.constantLight;	//constantLight is used to determine particle color
 		ent4->s.eventParm = self->count; //eventParm is used to determine the number of particles
 		ent4->s.generic1 = self->speed; //generic1 is used to determine the speed of the particles
+		ent2->s.generic2 = atoi(self->value); //generic2 is used to determine the size of the particles
 	}
 
 	//particles_linear_down
@@ -1106,6 +1103,7 @@ void target_effect_use (gentity_t *self, gentity_t *other, gentity_t *activator)
 		ent5->s.constantLight = self->s.constantLight;	//constantLight is used to determine particle color
 		ent5->s.eventParm = self->count; //eventParm is used to determine the number of particles
 		ent5->s.generic1 = self->speed; //generic1 is used to determine the speed of the particles
+		ent2->s.generic2 = atoi(self->value); //generic2 is used to determine the size of the particles
 	}
 
 	//overlay
@@ -1186,6 +1184,7 @@ void SP_target_effect (gentity_t *self) {
 		self->spawnflags & SF_EFFECT_SMOKEPUFF
 	) {
 		G_SpawnVector( "color", "1 1 1", color );
+		G_SpawnInt( "value", "3", &self->s.generic2 );		//particle size
 
 		r = color[0] * 255;
 		if ( r > 255 ) {
@@ -1823,7 +1822,6 @@ static void target_location_linkup(gentity_t *ent)
 {
 	int i;
 	int n;
-        //static char *gametypeNames[] = {"ffa", "tournament", "single", "team", "ctf", "oneflag", "obelisk", "harvester", "elimination", "ctf", "lms", "dd", "dom"};
 
 	if (level.locationLinked) 
 		return;

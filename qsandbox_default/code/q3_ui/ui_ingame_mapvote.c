@@ -70,7 +70,7 @@ static ingame_mapvote_t s_mapvote;
 
 
 static int filter_gametype[] = {
-	-1, GT_FFA, GT_TOURNAMENT, GT_TEAM, GT_CTF, GT_1FCTF, GT_OBELISK, GT_HARVESTER, GT_ELIMINATION, GT_CTF_ELIMINATION, GT_LMS, GT_DOUBLE_D, GT_DOMINATION
+	-1, GT_SANDBOX, GT_FFA, GT_SINGLE, GT_TOURNAMENT, GT_TEAM, GT_CTF, GT_1FCTF, GT_OBELISK, GT_HARVESTER, GT_ELIMINATION, GT_CTF_ELIMINATION, GT_LMS, GT_DOUBLE_D, GT_DOMINATION
 };
 
 
@@ -79,7 +79,9 @@ static int filter_gametype_size = sizeof(filter_gametype)/sizeof(filter_gametype
 
 static const char* filter_gametype_list[] = {
 	"All",
+	"Sandbox",
 	"Free for All",
+	"Single Player",
 	"Tournament",
 	"Team DM",
 	"Capture the Flag",
@@ -95,6 +97,8 @@ static const char* filter_gametype_list[] = {
 };
 static const char* filter_gametype_listru[] = {
 	"Все",
+	"Песочница",
+	"Одиночная Игра",
 	"Все Против Всех",
 	"Турнир",
 	"Командный Бой",
@@ -450,8 +454,6 @@ static void MapVote_MenuInit( void ) {
 	Menu_AddItem( &s_mapvote.menu, &s_mapvote.filter);
 
 	gametype = DynamicMenu_ServerGametype();
-	if (gametype == GT_SINGLE_PLAYER)
-		gametype = GT_FFA;
 	MapVote_SetFilter(gametype);
 }
 

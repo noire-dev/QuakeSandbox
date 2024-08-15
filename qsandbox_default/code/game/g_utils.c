@@ -1753,9 +1753,6 @@ int G_ArenaScriptAutoInt( char *name ) {
 	if(trap_Cvar_VariableIntegerValue(name)){
 		return trap_Cvar_VariableIntegerValue(name);
 	}
-	if(Q_stricmp (G_QvmRead_LevelVariable(name), "qvm_variable_no_found") != 0){
-		return atoi(va("%s", G_QvmRead_LevelVariable(name) ));
-	}
 		return atoi(name);
 }
 
@@ -1772,10 +1769,7 @@ trap_Cvar_VariableStringBuffer(name, finaltext, sizeof( finaltext ));
 	if(Q_stricmp (finaltext, "") != 0){
 		return va("%s", finaltext );
 	}
-	if(Q_stricmp (G_QvmRead_LevelVariable(name), "qvm_variable_no_found") != 0){
-		return va("%s", G_QvmRead_LevelVariable(name) );
-	}
-		return va("%s", name );
+	return va("%s", name );
 }
 
 /*
@@ -1789,10 +1783,7 @@ float G_ArenaScriptAutoFloat( char *name ) {
 	if(trap_Cvar_VariableValue(name)){
 		return trap_Cvar_VariableValue(name);
 	}
-	if(Q_stricmp (G_QvmRead_LevelVariable(name), "qvm_variable_no_found") != 0){
-		return atof(va("%s", G_QvmRead_LevelVariable(name) ));
-	}
-		return atof(name);
+	return atof(name);
 }
 
 /*
@@ -1808,84 +1799,6 @@ int G_ArenaScriptRandom(int min, int max)
 	return number;
 }
 
-/*
-==================
-G_QvmRead_LevelVariable
-Return qvm variable
-==================
-*/
-char *G_QvmRead_LevelVariable(char *name)
-{
-	if(!Q_stricmp (name, "TeamRedScore")){
-	return va("%i", level.teamScores[TEAM_RED] );	
-	}
-	if(!Q_stricmp (name, "TeamBlueScore")){
-	return va("%i", level.teamScores[TEAM_BLUE] );	
-	}
-	return "qvm_variable_no_found";
-}
-
-/*
-==================
-G_QvmWrite_LevelVariable
-Write qvm variable
-==================
-*/
-void G_QvmWrite_LevelVariable(char *name, char *value){
-	if(!Q_stricmp (name, "TeamRedScore")){
-	level.teamScores[TEAM_RED] = G_ArenaScriptAutoInt( value );	
-	}
-	if(!Q_stricmp (name, "TeamBlueScore")){
-	level.teamScores[TEAM_BLUE] = G_ArenaScriptAutoInt( value );	
-	}
-}
-
-/*
-==================
-G_QvmWrite_EntityVariable
-Write qvm variable
-==================
-*/
-void G_QvmWrite_EntityVariable(char *name, char *value, gentity_t *ent){
-	if(!Q_stricmp (name, "health")){
-	ent->health = G_ArenaScriptAutoInt( value );	
-	ent->client->ps.stats[STAT_HEALTH] = G_ArenaScriptAutoInt( value );	
-	}
-	if(!Q_stricmp (name, "armor")){	
-	ent->client->ps.stats[STAT_ARMOR] = G_ArenaScriptAutoInt( value );	
-	}
-	if(!Q_stricmp (name, "maxhealth")){
-	ent->client->pers.maxHealth = G_ArenaScriptAutoInt( value );
-	ent->client->ps.stats[STAT_MAX_HEALTH] = G_ArenaScriptAutoInt( value );	
-	}
-	if(!Q_stricmp (name, "holdableitem")){
-	ent->client->ps.stats[STAT_HOLDABLE_ITEM] = G_ArenaScriptAutoInt( value );	
-	}
-}
-
-/*
-==================
-G_QvmRead_EntityVariable
-Read qvm entity variable
-==================
-*/
-char *G_QvmRead_EntityVariable(char *name, gentity_t *ent){
-	if(!Q_stricmp (name, "health")){
-	return va("%i", ent->client->ps.stats[STAT_HEALTH] );
-	}
-	if(!Q_stricmp (name, "armor")){	
-	return va("%i", ent->client->ps.stats[STAT_ARMOR] );
-	}
-	if(!Q_stricmp (name, "maxhealth")){
-	return va("%i", ent->client->ps.stats[STAT_MAX_HEALTH] );
-	}
-	if(!Q_stricmp (name, "holdableitem")){
-	return va("%i", ent->client->ps.stats[STAT_HOLDABLE_ITEM] );	
-	}
-	return "666";
-}
-
-
 char *AU_Cvar_VariableString( const char *var_name ) {
 	static char	buffer[MAX_STRING_CHARS];
 
@@ -1894,3 +1807,132 @@ char *AU_Cvar_VariableString( const char *var_name ) {
 	return buffer;
 }
 
+/*
+==================
+FindEntityForPhysgun
+Added for QSandbox.
+==================
+*/
+gentity_t *FindEntityForPhysgun( gentity_t *ent, int range ){
+	vec3_t		end, start, forward, up, right;
+	trace_t		tr;
+	gentity_t	*traceEnt;
+	
+	//Set Aiming Directions
+	AngleVectors(ent->client->ps.viewangles, forward, right, up);
+	CalcMuzzlePoint(ent, forward, right, up, start);
+	VectorMA (start, range, forward, end);
+
+	//Trace Position
+	trap_Trace (&tr, start, NULL, NULL, end, ent->s.number, MASK_SELECT );
+	
+	ent->grabDist = Distance(start, tr.endpos);
+	
+	traceEnt = &g_entities[ tr.entityNum ];		//entity for return
+	
+	VectorSubtract(traceEnt->r.currentOrigin, tr.endpos, ent->grabOffset);
+	
+	if(traceEnt && tr.entityNum != ENTITYNUM_NONE && tr.entityNum != ENTITYNUM_WORLD){
+	return traceEnt;
+	} else {
+	return NULL;	
+	}
+}
+
+gentity_t *FindEntityForGravitygun( gentity_t *ent, int range ){
+	vec3_t		end, start, forward, up, right;
+	trace_t		tr;
+	gentity_t	*traceEnt;
+	
+	//Set Aiming Directions
+	AngleVectors(ent->client->ps.viewangles, forward, right, up);
+	CalcMuzzlePoint(ent, forward, right, up, start);
+	VectorMA (start, range, forward, end);
+
+	//Trace Position
+	trap_Trace (&tr, start, NULL, NULL, end, ent->s.number, MASK_SELECT );
+	
+	ent->grabDist = 128;
+	
+	traceEnt = &g_entities[ tr.entityNum ];		//entity for return
+	
+	VectorSubtract(traceEnt->r.currentOrigin, tr.endpos, ent->grabOffset);
+	
+	if(traceEnt && tr.entityNum != ENTITYNUM_NONE && tr.entityNum != ENTITYNUM_WORLD){
+	return traceEnt;
+	} else {
+	return NULL;	
+	}
+}
+
+/*
+==================
+CrosshairPointPhys
+Added for QSandbox.
+==================
+*/
+void CrosshairPointPhys(gentity_t *ent, int range, vec3_t outPoint) {
+    vec3_t end, start, forward, up, right;
+    trace_t tr;
+    vec3_t adjustedMins, adjustedMaxs;
+    vec3_t adjustedOffset;
+	
+	VectorNegate ( ent->grabOffset, adjustedOffset );
+	
+	VectorSubtract(ent->grabbedEntity->r.mins, adjustedOffset, adjustedMins);
+    VectorSubtract(ent->grabbedEntity->r.maxs, adjustedOffset, adjustedMaxs);
+
+    AngleVectors(ent->client->ps.viewangles, forward, right, up);
+    CalcMuzzlePoint(ent, forward, right, up, start);
+    VectorMA(start, range, forward, end);
+
+    trap_Trace(&tr, start, adjustedMins, adjustedMaxs, end, ent->s.number, MASK_OBJECTS);
+
+    VectorCopy(tr.endpos, outPoint);
+}
+
+void CrosshairPointGravity(gentity_t *ent, int range, vec3_t outPoint) {
+    vec3_t end, start, forward, up, right;
+    trace_t tr;
+
+    AngleVectors(ent->client->ps.viewangles, forward, right, up);
+    CalcMuzzlePoint(ent, forward, right, up, start);
+    VectorMA(start, range, forward, end);
+
+    trap_Trace(&tr, start, ent->grabbedEntity->r.mins, ent->grabbedEntity->r.maxs, end, ent->s.number, MASK_OBJECTS);
+
+    VectorCopy(tr.endpos, outPoint);
+}
+
+/*
+================
+G_DisablePropPhysics
+
+Disables prop physics
+================
+*/
+void G_DisablePropPhysics( gentity_t *ent, vec3_t origin ) {
+	VectorCopy( origin, ent->s.pos.trBase );
+	ent->s.pos.trType = TR_STATIONARY;
+	ent->s.pos.trTime = 0;
+	ent->s.pos.trDuration = 0;
+	VectorClear( ent->s.pos.trDelta );
+	
+	VectorCopy( origin, ent->r.currentOrigin );
+}
+
+/*
+================
+G_EnablePropPhysics
+
+Enables prop physics
+================
+*/
+void G_EnablePropPhysics( gentity_t *ent ) {
+	if(ent->sb_phys != 2){	//if it's static object, not turn phys
+		return;	
+	}
+	ent->s.pos.trType = TR_GRAVITY;
+	VectorCopy( ent->r.currentOrigin, ent->s.pos.trBase );
+	ent->s.pos.trTime = level.time;
+}

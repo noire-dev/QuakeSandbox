@@ -359,9 +359,6 @@ static qboolean MapSelect_MapSupportsGametype(const char* mapname) {
 		count = MAX_MAPS_LIST;
 
 	matchbits = 1 << s_mapselect.gametype;
-	if( s_mapselect.gametype == GT_FFA ) {
-		matchbits |= ( 1 << GT_SINGLE_PLAYER );
-	}
 	for( i = 0; i < count; i++ ) {
 		info = UI_GetArenaInfoByNumber( i );
 
@@ -513,9 +510,6 @@ static void MapSelect_LoadMaps(const char* mapname, qboolean cache) {
 
 	s_mapselect.nummaps = 0;
 	matchbits = 1 << s_mapselect.gametype;
-	if( s_mapselect.gametype == GT_FFA ) {
-		matchbits |= ( 1 << GT_SINGLE_PLAYER );
-	}
 
 	for( i = 0; i < count; i++ ) {
 		info = UI_GetArenaInfoByNumber( i );
@@ -1752,7 +1746,7 @@ static void MapSelect_MenuInit(int gametype, int index, const char* mapname)
 	s_mapselect.multisel.generic.name = "Multi-select:";
 	s_mapselect.listview.generic.name = "List view:";
 	s_mapselect.mapicons.itemnames  = mapicons_items;
-	s_mapselect.maptype.string        = (char*)gametype_items[gametype_remap2[gametype]];
+	s_mapselect.maptype.string        = (char*)gametype_items[gametype];
 	}
 	if(cl_language.integer == 1){
 	s_mapselect.banner.string        = "ВЫБОР КАРТЫ";
@@ -1764,7 +1758,7 @@ static void MapSelect_MenuInit(int gametype, int index, const char* mapname)
 	s_mapselect.multisel.generic.name = "Мульти-выбор:";
 	s_mapselect.listview.generic.name = "Список:";
 	s_mapselect.mapicons.itemnames  = mapicons_itemsru;
-	s_mapselect.maptype.string        = (char*)gametype_itemsru[gametype_remap2[gametype]];
+	s_mapselect.maptype.string        = (char*)gametype_itemsru[gametype];
 	}
 
 	// register for display

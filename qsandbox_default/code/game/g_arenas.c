@@ -352,20 +352,3 @@ void SpawnModelsOnVictoryPads( void ) {
 		}
 	}
 }
-
-
-/*
-===============
-Svcmd_AbortPodium_f
-===============
-*/
-void Svcmd_AbortPodium_f( void ) {
-	if( g_gametype.integer != GT_SINGLE_PLAYER ) {
-		return;
-	}
-
-	if( podium1 ) {
-		podium1->nextthink = level.time;
-		podium1->think = CelebrateStop;
-	}
-}
