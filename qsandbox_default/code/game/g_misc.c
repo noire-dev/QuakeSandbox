@@ -1642,7 +1642,7 @@ void G_RunProp(gentity_t *ent) {
 			G_PropSmoke( ent, impactForceAll*0.5);
 			}
 			if(ent->objectType == OT_TNT){
-			G_AddEvent( ent, EV_CRASH25, 0 );
+			G_AddEvent( ent, EV_OT1_IMPACT, 0 );
 			G_PropSmoke( ent, impactForceAll*0.5);
 			}
 			}
