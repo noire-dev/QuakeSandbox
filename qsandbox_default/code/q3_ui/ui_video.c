@@ -755,15 +755,15 @@ static void GraphicsOptions_ApplyChanges( void *unused, int notification )
 
 	if ( s_graphicsoptions.geometry.curvalue == 2 )
 	{
-		trap_Cvar_SetValue( "r_bloom_intensity", 0.20 );
+		trap_Cvar_SetValue( "r_bloom_intensity", 0.16 );
 	}
 	else if ( s_graphicsoptions.geometry.curvalue == 1 )
 	{
-		trap_Cvar_SetValue( "r_bloom_intensity", 0.15 );
+		trap_Cvar_SetValue( "r_bloom_intensity", 0.12 );
 	}
 	else
 	{
-		trap_Cvar_SetValue( "r_bloom_intensity", 0.10 );
+		trap_Cvar_SetValue( "r_bloom_intensity", 0.06 );
 	}
 
 	if ( s_graphicsoptions.filter.curvalue )
@@ -959,11 +959,11 @@ static void GraphicsOptions_SetMenuItems( void )
 		s_graphicsoptions.filter.curvalue = 1;
 	}
 	
-	if ( trap_Cvar_VariableValue( "r_bloom_intensity" ) == 0.20 )
+	if ( trap_Cvar_VariableValue( "r_bloom_intensity" ) == 0.16 )
 	{
 		s_graphicsoptions.geometry.curvalue = 2;
 	}
-	else if ( trap_Cvar_VariableValue( "r_bloom_intensity" ) == 0.15 )
+	else if ( trap_Cvar_VariableValue( "r_bloom_intensity" ) == 0.12 )
 	{
 		s_graphicsoptions.geometry.curvalue = 1;
 	}
