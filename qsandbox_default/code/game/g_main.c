@@ -53,7 +53,6 @@ vmCvar_t 	cl_giantcharheight;
 vmCvar_t	g_physimpact;
 vmCvar_t	g_physimpulse;
 vmCvar_t	g_physdamage;
-vmCvar_t	g_physdamagestart;
 
 //QS settings
 vmCvar_t	g_minigame;
@@ -703,8 +702,7 @@ static cvarTable_t		gameCvarTable[] = {
 	
 	{ &g_physimpact, "g_physimpact", "0.95", 0, 0, qtrue  },
 	{ &g_physimpulse, "g_physimpulse", "30", 0, 0, qtrue  },
-	{ &g_physdamage, "g_physdamage", "1", 0, 0, qtrue  },
-	{ &g_physdamagestart, "g_physdamagestart", "10", 0, 0, qtrue  },
+	{ &g_physdamage, "g_physdamage", "0.25", 0, 0, qtrue  },
 	
 	//QS setting
 	{ &g_minigame, "g_minigame", "0", 0, 0, qtrue  },

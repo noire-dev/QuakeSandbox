@@ -419,7 +419,7 @@ char	*modNames[] = {
 	"MOD_GRAPPLE",
 	"MOD_CAR",
 	"MOD_CAREXPLODE",
-	"MOD_COLL",
+	"MOD_PROP",
 	"MOD_BREAKABLE_SPLASH"
 };
 
@@ -613,9 +613,7 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 		obit = modNames[meansOfDeath];
 	}
 
-	G_LogPrintf("Kill: %i %i %i: %s killed %s by %s\n",
-		killer, self->s.number, meansOfDeath, killerName,
-		self->client->pers.netname, obit );
+	//G_Printf("Kill: %i %i %i: %s killed %s by %s\n", killer, self->s.number, meansOfDeath, killerName, self->client->pers.netname, obit );
 
 	// broadcast the death event to everyone
 	ent = G_TempEntity( self->r.currentOrigin, EV_OBITUARY );
@@ -1026,6 +1024,7 @@ void VehiclePhys( gentity_t *self ) {
 	VectorSet( self->parent->client->ps.origin, self->r.currentOrigin[0], self->r.currentOrigin[1], self->r.currentOrigin[2] + 40);
 	self->parent->client->vehiclenum = 0;
 	self->s.generic3 = 0;
+	self->s.generic1 = 0; 		//smooth vehicles
 	self->parent->client->ps.gravity = (g_gravity.value*g_gravityModifier.value);
 	return;
 	}
@@ -1041,15 +1040,18 @@ void VehiclePhys( gentity_t *self ) {
 	
 	VectorCopy(self->parent->s.origin, self->s.origin);
 	VectorCopy(self->parent->s.pos.trBase, self->s.pos.trBase);
+	if (VectorLength(self->parent->client->ps.velocity) > 5) {
 	self->s.apos.trBase[1] = self->parent->s.apos.trBase[1];
-	if(BG_VehicleCheckClass(self->parent->client->ps.stats[STAT_VEHICLE]) == VCLASS_CAR){ //VEHICLE-SYSTEM: turn vehicle fake phys
-	self->s.apos.trBase[0] = angle45hook(self->parent->client->ps.velocity[2], 0, 900); //900 is car speed
 	}
+	/*if(BG_VehicleCheckClass(self->parent->client->ps.stats[STAT_VEHICLE]) == VCLASS_CAR){ //VEHICLE-SYSTEM: turn vehicle fake phys
+	self->s.apos.trBase[0] = angle45hook(self->parent->client->ps.velocity[2], 0, 900); //900 is car speed
+	}*/
 	if(engine10hook(sqrt(self->parent->client->ps.velocity[0] * self->parent->client->ps.velocity[0] + self->parent->client->ps.velocity[1] * self->parent->client->ps.velocity[1]), 0, 900) <= 10){ //900 is car speed
 	self->s.generic3 = engine10hook(sqrt(self->parent->client->ps.velocity[0] * self->parent->client->ps.velocity[0] + self->parent->client->ps.velocity[1] * self->parent->client->ps.velocity[1]), 0, 900); //900 is car speed
 	}
 	VectorCopy(self->parent->r.currentOrigin, self->r.currentOrigin);
 	self->parent->client->ps.stats[STAT_VEHICLEHP] = self->health; //VEHICLE-SYSTEM: vehicle's hp instead player
+	self->s.generic1 = self->parent->s.clientNum+1; 		//smooth vehicles
 	
 	trap_LinkEntity( self );
 	
@@ -1133,7 +1135,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 
         //Sago: See if the client was sent flying
         //Check if damage is by somebody who is not a player!
-        if( (!attacker || attacker->s.eType != ET_PLAYER) && client && client->lastSentFlying>-1 && ( mod==MOD_FALLING || mod==MOD_LAVA || mod==MOD_SLIME || mod==MOD_TRIGGER_HURT || mod==MOD_SUICIDE) )  {
+        if( (!attacker || (attacker->s.eType != ET_PLAYER && attacker->s.eType != ET_GENERAL)) && client && client->lastSentFlying>-1 && ( mod==MOD_FALLING || mod==MOD_LAVA || mod==MOD_SLIME || mod==MOD_TRIGGER_HURT || mod==MOD_SUICIDE) )  {
             if( client->lastSentFlyingTime+5000<level.time) {
                 client->lastSentFlying = -1; //More than 5 seconds, not a kill!
             } else {
@@ -1201,8 +1203,8 @@ if ( attacker && attacker->singlebot){
 	knockback = damage+1;
 
 	if ( mod == MOD_CAR )
-	knockback *= 2.50;
-	if ( mod == MOD_COLL )
+	knockback *= 1.00;
+	if ( mod == MOD_PROP )
 	knockback *= 1.00;
 	if ( mod == MOD_GAUNTLET )
 	knockback *= g_gknockback.value;
@@ -1267,6 +1269,7 @@ if ( attacker && attacker->singlebot){
 		}
 		if(targ->sandboxObject){
 		G_EnablePropPhysics( targ );
+		targ->lastPlayer = attacker;
 		VectorAdd (targ->s.pos.trDelta, kvel, targ->s.pos.trDelta);
 		}
 
@@ -1346,10 +1349,7 @@ if ( attacker && attacker->singlebot){
 	}
 
 	// add to the attacker's hit counter (if the target isn't a general entity like a prox mine)
-	if ( attacker->client && client
-			&& targ != attacker && targ->health > 0
-			&& targ->s.eType != ET_MISSILE
-			&& targ->s.eType != ET_GENERAL) {
+	if ( attacker->client && client && targ != attacker && targ->health > 0 && targ->s.eType != ET_MISSILE && targ->s.eType != ET_GENERAL) {
 		if ( OnSameTeam( targ, attacker ) ) {
 			attacker->client->ps.persistant[PERS_HITS]--;
 		} else {
@@ -1386,10 +1386,6 @@ if ( attacker && attacker->singlebot){
 	// save some from armor
 	asave = CheckArmor (targ, take, dflags);
 	take -= asave;
-	
-	if ( mod == MOD_COLL ){
-	take *= 0.20;
-	}
 
 	if ( g_debugDamage.integer ) {
 		G_Printf( "%i: client:%i health:%i damage:%i armor:%i\n", level.time, targ->s.number,
@@ -1601,22 +1597,12 @@ if ( attacker && attacker->singlebot){
 	}
 }
 
-void G_CollDamage (int targNum, int attackerNum, int speed, int mod, vec3_t velocity){
-	vec3_t velocitynew;
-	
-	velocitynew[0] = velocity[0];
-	velocitynew[1] = velocity[1];
-	velocitynew[2] = speed*0.20;
-
-	if (speed >= 200){
-	G_Damage( G_FindEntityForEntityNum(targNum), NULL, NULL, velocitynew, NULL, speed*0.20, 0, mod );
-	} else {
-	G_Damage( G_FindEntityForEntityNum(targNum), NULL, NULL, velocitynew, NULL, 0, 0, mod );
-	}
+void G_PropDamage (gentity_t *targ, gentity_t *attacker, int damage){
+	G_Damage( targ, attacker, attacker, NULL, NULL, damage, 0, MOD_PROP );
 }
 
-void G_PropDamage (gentity_t *targ, int damage){
-	G_Damage( targ, NULL, NULL, NULL, NULL, damage, 0, MOD_COLL );
+void G_CarDamage (gentity_t *targ, gentity_t *attacker, int damage){
+	G_Damage( targ, attacker, attacker, NULL, NULL, damage, 0, MOD_CAR );
 }
 
 void G_ExitVehicle (int num){

@@ -1890,10 +1890,18 @@ void CG_DrawWeaponSelect( void ) {
 	if( cg_weaponBarActiveWidth.integer != count * 20 ) {
 		char weapons[256] = "";
 		trap_Cvar_Set("cg_weaponBarActiveWidth", va("%d", count * 20)); // Weapon bar width, counting from the center
-		for ( i = 0 ; i < WEAPONS_NUM ; i++ ) {
-			if ( bits & ( 1 << i ) )
+		for ( i = 0 ; i < MAX_WEAPONS ; i++ ) { //Q3 WEAPON SYSTEM
+			if ( bits & ( 1 << i ) ) {
 				strcat( weapons, va("%d/", i) );
+			}
 		}
+		
+		for ( i = MAX_WEAPONS ; i < WEAPONS_NUM ; i++ ) { //NEW WEAPON SYSTEM
+			if(cg.swep_listcl[i] >= 1){
+				strcat( weapons, va("%d/", i) );
+			}
+		}		
+		
 		trap_Cvar_Set("cg_weaponBarActiveWeapons", weapons); // Weapon list to select from
 	}
 	return;

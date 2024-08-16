@@ -803,7 +803,7 @@ typedef enum {
 	MOD_GRAPPLE,
 	MOD_CAR,
 	MOD_CAREXPLODE,
-	MOD_COLL,
+	MOD_PROP,
 	MOD_BREAKABLE_SPLASH
 } meansOfDeath_t;
 

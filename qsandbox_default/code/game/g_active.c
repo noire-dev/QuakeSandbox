@@ -993,6 +993,7 @@ void PhysgunHold(gentity_t *player) {
 			trap_LinkEntity( player->grabbedEntity );			//Link entity for work prop-flight
 			VectorAdd(end, player->grabOffset, end);			//physgun offset
 			VectorCopy(player->grabbedEntity->r.currentOrigin, player->grabbedEntity->grabOldOrigin);	//save old frame for speed apply
+			player->grabbedEntity->lastPlayer = player;		//for save attacker
 			if(!player->grabbedEntity->client){
 			VectorCopy(end, player->grabbedEntity->s.origin);
 			VectorCopy(end, player->grabbedEntity->s.pos.trBase);
@@ -1086,6 +1087,7 @@ void GravitygunHold(gentity_t *player) {
 			CrosshairPointGravity(player, GRAVITYGUN_DIST, end);			//player->grabDist set in FindEntityForPhysgun()
 			trap_LinkEntity( player->grabbedEntity );			//Link entity for work prop-flight
 			VectorCopy(player->grabbedEntity->r.currentOrigin, player->grabbedEntity->grabOldOrigin);	//save old frame for speed apply
+			player->grabbedEntity->lastPlayer = player;		//for save attacker
 			if(!player->grabbedEntity->client){
 			VectorCopy(end, player->grabbedEntity->s.origin);
 			VectorCopy(end, player->grabbedEntity->s.pos.trBase);
@@ -1119,6 +1121,66 @@ void GravitygunHold(gentity_t *player) {
 		VectorClear( player->grabOffset );																				//clear offset
 		player->grabbedEntity = 0;																						//end
 		G_AddEvent( player, EV_GRAVITYSOUND, 0 );
+    }
+}
+
+void CheckCarCollisions(gentity_t *ent) {
+	vec3_t newMins, newMaxs;
+    trace_t tr;
+	gentity_t *hit;
+	float impactForce;
+	vec3_t impactVector;
+	vec3_t end, start, forward, up, right;
+	
+	if(BG_VehicleCheckClass(ent->client->ps.stats[STAT_VEHICLE]) != VCLASS_CAR){
+	return;
+	}
+	
+	//Set Aiming Directions
+	AngleVectors(ent->client->ps.viewangles, forward, right, up);
+	CalcMuzzlePoint(ent, forward, right, up, start);
+	VectorMA (start, 1, forward, end);
+	
+	VectorCopy(ent->r.mins, newMins);
+	VectorCopy(ent->r.maxs, newMaxs);
+	VectorScale(newMins, 1.15, newMins);
+	VectorScale(newMaxs, 1.15, newMaxs);
+	newMins[2] *= 0.20;
+	newMaxs[2] *= 0.20;
+	trap_Trace(&tr, ent->r.currentOrigin, newMins, newMaxs, end, ent->s.number, MASK_PLAYERSOLID);
+	
+	if (tr.fraction < 1.0f && tr.entityNum != ENTITYNUM_NONE) {
+        hit = &g_entities[tr.entityNum];
+
+        if (hit->s.number != ent->s.number) {  // Ignore self
+            // Calculate the impact force
+            impactForce = sqrt(ent->client->ps.velocity[0] * ent->client->ps.velocity[0] + ent->client->ps.velocity[1] * ent->client->ps.velocity[1]);
+
+            // Optionally apply a force or velocity to the hit entity to simulate the push
+			if (impactForce > PHYS_SENS) {
+			if (!hit->client){
+			G_EnablePropPhysics(hit);
+			}
+			VectorCopy(ent->client->ps.velocity, impactVector);
+			VectorScale(impactVector, 2.50, impactVector);	
+			if (!hit->client){
+			hit->lastPlayer = ent;		//for save attacker
+            VectorAdd(hit->s.pos.trDelta, impactVector, hit->s.pos.trDelta);  // Transfer velocity from the prop to the hit entity
+			} else {
+			VectorAdd(hit->client->ps.velocity, impactVector, hit->client->ps.velocity);  // Transfer velocity from the prop to the hit player
+			}
+			}
+			if(impactForce > PHYS_SENS){
+			if(hit->grabbedEntity != ent){
+			G_CarDamage(hit, ent, (int)(impactForce * PHYS_DAMAGE*0.30));
+			}
+			}
+			/*if(impactForce > PHYS_SENS*18){
+			G_CarDamage(ent, ent, (int)(impactForce * PHYS_DAMAGE*0.02));
+			G_AddEvent( ent, EV_CRASH25, 0 );
+			G_PropSmoke( ent, impactForce*0.25);
+			}*/
+        }
     }
 }
 
@@ -1466,6 +1528,8 @@ if ( !ent->speed ){
 
 	PhysgunHold( ent );
 	GravitygunHold( ent );
+	
+	CheckCarCollisions( ent );
 
 	// check for respawning
 	if ( client->ps.stats[STAT_HEALTH] <= 0 ) {

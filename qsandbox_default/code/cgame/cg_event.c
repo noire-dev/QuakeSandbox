@@ -219,11 +219,23 @@ if(cl_language.integer == 0){
 		case MOD_KAMIKAZE:
 			message = "goes out with a bang";
 			break;
-		case MOD_CAREXPLODE:
+		case MOD_CAR:
 		if ( gender == GENDER_FEMALE )
 			message = "exploded in her car";
 		else
 			message = "exploded in his car";
+			break;
+		case MOD_CAREXPLODE:
+		if ( gender == GENDER_FEMALE )
+			message = "exploded by her car";
+		else
+			message = "exploded by his car";
+			break;
+		case MOD_PROP:
+		if ( gender == GENDER_FEMALE )
+			message = "was crushed by an object she threw herself";
+		else
+			message = "was crushed by an object he threw himself";
 			break;
 		case MOD_GRENADE_SPLASH:
 			if ( gender == GENDER_FEMALE )
@@ -294,11 +306,23 @@ if(cl_language.integer == 1){
 		case MOD_KAMIKAZE:
 			message = "выходит с треском";
 			break;
+		case MOD_CAR:
+		if ( gender == GENDER_FEMALE )
+			message = "взорвалась в своей машине";
+		else
+			message = "взорвался в своей машине";
+			break;
 		case MOD_CAREXPLODE:
 		if ( gender == GENDER_FEMALE )
-			message = "взорвана в своей машине";
+			message = "взорвала себя своей машиной";
 		else
-			message = "взорван в своей машине";
+			message = "взорвал себя своей машиной";
+			break;
+		case MOD_PROP:
+		if ( gender == GENDER_FEMALE )
+			message = "была раздавлена предметом, который она бросила сама";
+		else
+			message = "был раздавлен предметом, который он бросил сам";
 			break;
 		case MOD_GRENADE_SPLASH:
 			if ( gender == GENDER_FEMALE )
@@ -511,16 +535,19 @@ if(cl_language.integer == 0){
 			message = "falls to";
 			message2 = "'s Kamikaze blast";
 			break;
-		case MOD_CAREXPLODE:
-			message = "exploded by";
-			message = "'s car";
-			break;
 		case MOD_JUICED:
 			message = "was juiced by";
 			break;
 		case MOD_CAR:
 			message = "was hit by";
 			message2 = "'s car";
+			break;
+		case MOD_CAREXPLODE:
+			message = "exploded by";
+			message2 = "'s car";
+			break;
+		case MOD_PROP:
+			message = "was crushed by an object thrown by";
 			break;
 		case MOD_TELEFRAG:
 			message = "tried to invade";
@@ -672,12 +699,6 @@ if(cl_language.integer == 1){
 			message = "упал от взрывной волны";
 			message2 = " ";
 			break;
-		case MOD_CAREXPLODE:
-		if ( gender == GENDER_FEMALE )
-			message = "взорвана машиной";
-		else
-			message = "взорван машиной";
-			break;
 		case MOD_JUICED:
 			if ( gender == GENDER_FEMALE )
 			message = "была выжата благодаря";
@@ -689,6 +710,18 @@ if(cl_language.integer == 1){
 			message = "была сбита машиной";
 			else
 			message = "был сбит машиной";
+			break;
+		case MOD_CAREXPLODE:
+		if ( gender == GENDER_FEMALE )
+			message = "взорвана машиной";
+		else
+			message = "взорван машиной";
+			break;
+		case MOD_PROP:
+		if ( gender == GENDER_FEMALE )
+			message = "была раздавлена брошенным предметом от";
+		else
+			message = "был раздавлен брошенным предметом от";
 			break;
 		case MOD_TELEFRAG:
 			if ( gender == GENDER_FEMALE )

@@ -80,6 +80,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define SF_EFFECT_SMOKEPUFF				128
 #define SF_EFFECT_ACTIVATOR				256
 
+// physics engine
+#define		PHYS_ROTATING 0.020
+#define		PHYS_PROP_IMPACT g_physimpact.value
+#define		PHYS_SENS g_physimpulse.integer
+#define		PHYS_DAMAGE g_physdamage.value
+
 // movers are things like doors, plats, buttons, etc
 typedef enum {
 	MOVER_POS1,
@@ -309,6 +315,7 @@ struct gentity_s {
 	vec3_t		grabOffset;			//physgun offset for player
 	vec3_t		grabOldOrigin;		//physgun old origin for prop
 	int			grabNewPhys;		//for freeze prop for prop
+	gentity_t 	*lastPlayer;		//for damage and killfeed
 };
 
 
@@ -869,8 +876,8 @@ void target_finish_use (gentity_t *self, gentity_t *other, gentity_t *activator)
 //
 qboolean CanDamage (gentity_t *targ, vec3_t origin);
 void G_Damage (gentity_t *targ, gentity_t *inflictor, gentity_t *attacker, vec3_t dir, vec3_t point, int damage, int dflags, int mod);
-void G_CollDamage (int targNum, int attackerNum, int speed, int mod, vec3_t velocity);
-void G_PropDamage (gentity_t *targ, int damage);
+void G_PropDamage (gentity_t *targ, gentity_t *attacker, int damage);
+void G_CarDamage (gentity_t *targ, gentity_t *attacker, int damage);
 void G_ExitVehicle (int num);
 qboolean G_RadiusDamage (vec3_t origin, gentity_t *attacker, float damage, float radius, gentity_t *ignore, int mod);
 int G_InvulnerabilityEffect( gentity_t *targ, vec3_t dir, vec3_t point, vec3_t impactpoint, vec3_t bouncedir );
@@ -1318,7 +1325,6 @@ extern	vmCvar_t 	cl_giantcharheight;
 extern	vmCvar_t	g_physimpact;
 extern	vmCvar_t	g_physimpulse;
 extern	vmCvar_t	g_physdamage;
-extern	vmCvar_t	g_physdamagestart;
 
 //QS settings
 extern	vmCvar_t	g_minigame;

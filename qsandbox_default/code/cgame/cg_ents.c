@@ -174,6 +174,8 @@ static void CG_General( centity_t *cent ) {
 	int					isVehicle = 0;
 	char 				str[MAX_QPATH];
 	entityState_t		*s1;
+	int					i;
+	centity_t 			*player;
 
 	s1 = &cent->currentState;
 
@@ -231,11 +233,21 @@ static void CG_General( centity_t *cent ) {
 	if(s1->scales[2] != 0.0){
 	VectorScale( ent.axis[2], s1->scales[2], ent.axis[2] );}
 
+	if(isVehicle){
+    if (s1->generic1 && s1->generic1-1 == cg.predictedPlayerState.clientNum) {  
+		if(VectorLength(cg.predictedPlayerState.velocity) > 5){
+        VectorCopy(cg.predictedPlayerState.origin, ent.origin);
+        VectorCopy(cg.predictedPlayerState.origin, ent.oldorigin);
+        VelocityToAxis(cg.predictedPlayerState.velocity, ent.axis, 1.00f);
+		}
+    }
+	}
+
 	// add to refresh list
 	trap_R_AddRefEntityToScene (&ent);
 	
 	if(isVehicle){
-		
+	
 	trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.carengine[s1->generic3] );
 		
 	wheelfr.frame = s1->frame;
@@ -260,7 +272,6 @@ static void CG_General( centity_t *cent ) {
 	VectorScale( wheelfr.axis[2], s1->scales[2], wheelfr.axis[2] );}
 	
 	CG_PositionEntityOnTag( &wheelfr, &ent, ent.hModel, "tag_wheelfr");
-	trap_R_AddRefEntityToScene (&wheelfr);
 
 
 	wheelfl.frame = s1->frame;
@@ -285,7 +296,6 @@ static void CG_General( centity_t *cent ) {
 	VectorScale( wheelfl.axis[2], s1->scales[2], wheelfl.axis[2] );}
 	
 	CG_PositionEntityOnTag( &wheelfl, &ent, ent.hModel, "tag_wheelfl");
-	trap_R_AddRefEntityToScene (&wheelfl);
 	
 
 	wheelrr.frame = s1->frame;
@@ -310,7 +320,6 @@ static void CG_General( centity_t *cent ) {
 	VectorScale( wheelrr.axis[2], s1->scales[2], wheelrr.axis[2] );}
 	
 	CG_PositionEntityOnTag( &wheelrr, &ent, ent.hModel, "tag_wheelrr");
-	trap_R_AddRefEntityToScene (&wheelrr);
 
 
 	wheelrl.frame = s1->frame;
@@ -335,6 +344,10 @@ static void CG_General( centity_t *cent ) {
 	VectorScale( wheelrl.axis[2], s1->scales[2], wheelrl.axis[2] );}
 	
 	CG_PositionEntityOnTag( &wheelrl, &ent, ent.hModel, "tag_wheelrl");
+	
+	trap_R_AddRefEntityToScene (&wheelfr);
+	trap_R_AddRefEntityToScene (&wheelfl);
+	trap_R_AddRefEntityToScene (&wheelrr);
 	trap_R_AddRefEntityToScene (&wheelrl);
 	}
 }

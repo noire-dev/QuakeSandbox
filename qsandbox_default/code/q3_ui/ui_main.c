@@ -453,7 +453,7 @@ void UI_RegisterCvars( void ) {
 	}
 	trap_Cvar_SetValue( "r_bloom_passes", 6 );
 	trap_Cvar_SetValue( "r_bloom_modulate", 0 );
-	trap_Cvar_SetValue( "r_bloom_reflection", 0 );
+	trap_Cvar_SetValue( "r_bloom_reflection", 0.25 );
 	trap_Cvar_SetValue( "r_bloom_threshold", 0.10 );
 	trap_Cvar_SetValue( "r_bloom_threshold_mode", 0 );
 	trap_Cvar_SetValue( "r_bloom_filter_size", 2 );

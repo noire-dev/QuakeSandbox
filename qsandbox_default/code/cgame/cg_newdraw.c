@@ -1357,7 +1357,7 @@ void CG_DrawNewTeamInfo(rectDef_t *rect, float text_x, float text_y, float scale
 
 			trap_R_SetColor(NULL);
                         if(ci->isDead) {
-                                h = cgs.media.deathShader;
+                            h = cgs.media.deathShader;
                         } else
 			if (cgs.orderPending) {
 				// blink the icon

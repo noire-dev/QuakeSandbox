@@ -1509,12 +1509,6 @@ void G_ModProp( gentity_t *targ, gentity_t *attacker, char *arg01, char *arg02, 
 	}
 }
 
-#define		PHYS_ROTATING 0.020
-#define		PHYS_PROP_IMPACT g_physimpact.value
-#define		PHYS_SENS g_physimpulse.integer
-#define		PHYS_DAMAGE g_physdamage.value
-#define		PHYS_DAMAGESTART g_physdamagestart.integer
-
 void G_PropSmoke( gentity_t *ent, float impact ){
 	gentity_t   *temp;
 	
@@ -1625,25 +1619,24 @@ void G_RunProp(gentity_t *ent) {
 			}
 			}
 			}
-			if(impactForceAll > PHYS_DAMAGESTART){
-			if(hit->grabbedEntity != ent){
-			G_PropDamage(hit, (int)(impactForceAll * PHYS_DAMAGE));
-			}
-			G_PropDamage(ent, (int)(impactForceAll * (PHYS_DAMAGE*0.50)));
-			}
 			if(impactForceAll > PHYS_SENS){
+			if(hit->grabbedEntity != ent){
+			G_PropDamage(hit, ent->lastPlayer, (int)(impactForceAll * PHYS_DAMAGE));
+			}
+			G_PropDamage(ent, NULL, (int)(impactForceAll * PHYS_DAMAGE));
+			
 			if(hit->grabbedEntity != ent){
 			if(ent->objectType == OT_BASIC){
 			G_AddEvent( ent, EV_OT1_IMPACT, 0 );
-			G_PropSmoke( ent, impactForceAll*0.5);
+			G_PropSmoke( ent, impactForceAll*0.25);
 			}
 			if(ent->objectType == OT_VEHICLE){
 			G_AddEvent( ent, EV_CRASH25, 0 );
-			G_PropSmoke( ent, impactForceAll*0.5);
+			G_PropSmoke( ent, impactForceAll*0.25);
 			}
 			if(ent->objectType == OT_TNT){
 			G_AddEvent( ent, EV_OT1_IMPACT, 0 );
-			G_PropSmoke( ent, impactForceAll*0.5);
+			G_PropSmoke( ent, impactForceAll*0.25);
 			}
 			}
 			}

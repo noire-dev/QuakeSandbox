@@ -422,6 +422,47 @@ void AnglesToAxis( const vec3_t angles, vec3_t axis[3] ) {
 	VectorSubtract( vec3_origin, right, axis[1] );
 }
 
+void VelocityToAxis( const vec3_t velocity, vec3_t axis[3], float lerpFactor ) {
+    vec3_t forward, right, up, targetForward, targetRight, targetUp;
+	int i;
+
+    // Если скорость равна нулю, оставляем текущие оси без изменений
+    if (VectorLength(velocity) == 0) {
+        return;
+    }
+
+    // Нормализуем вектор скорости, чтобы получить направление "вперед"
+    VectorNormalize2(velocity, targetForward);
+
+    // Определяем ось "вверх" как (0, 0, 1)
+    VectorSet(up, 0, 0, 1);
+
+    // Вычисляем ось "вправо" как крестовое произведение "вверх" и "вперед"
+    CrossProduct(up, targetForward, targetRight);
+    VectorNormalize(targetRight);
+
+    // Пересчитываем "вверх" как крестовое произведение "вперед" и "вправо"
+    CrossProduct(targetForward, targetRight, targetUp);
+
+    // Линейная интерполяция между текущими осями и новыми целевыми осями
+    for (i = 0; i < 3; i++) {
+        axis[0][i] = Lerp(axis[0][i], targetForward[i], lerpFactor);  // вперед
+        axis[1][i] = Lerp(axis[1][i], targetRight[i], lerpFactor);    // вправо
+        axis[2][i] = Lerp(axis[2][i], targetUp[i], lerpFactor);       // вверх
+    }
+
+    // Нормализуем оси после интерполяции, чтобы убедиться, что они остались ортогональными
+    VectorNormalize(axis[0]);
+    CrossProduct(axis[2], axis[0], axis[1]);
+    VectorNormalize(axis[1]);
+    CrossProduct(axis[0], axis[1], axis[2]);
+    VectorNormalize(axis[2]);
+}
+
+float Lerp(float a, float b, float f) {
+    return a + f * (b - a);
+}
+
 void AxisClear( vec3_t axis[3] ) {
 	axis[0][0] = 1;
 	axis[0][1] = 0;

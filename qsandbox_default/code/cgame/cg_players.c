@@ -1551,10 +1551,8 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 
 	camereyes = 0;
 	if ( cent->currentState.number == cg.snap->ps.clientNum) {
-			camereyes = 1; // it's me!
-
-
-		}
+		camereyes = 1; // it's me!
+	}
 
 	// leilei -- new third person camera prep
 	cent->newcamrunning = 0;
@@ -1579,11 +1577,7 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 
 	}
 
-
-
-
 	// etc
-
 	if(cent->newcamrunning){
 	// lean towards the direction of travel
 		VectorCopy( cent->currentState.pos.trDelta, velocity );
@@ -2682,7 +2676,7 @@ void CG_Player( centity_t *cent ) {
 
 	if (cg_cameraEyes.integer){
 			legs.renderfx &= RF_FIRST_PERSON;
-		}
+	}
 
 
 	CG_AddRefEntityWithPowerups( &legs, &cent->currentState, ci->team, qfalse );

@@ -40,13 +40,13 @@ float	pm_ladderScale = 0.50;
 
 float	pm_accelerate = 10.0f;
 float	pm_airaccelerate = 1.0f;
-float	pm_veh00001accelerate = 10.0f*0.060; //VEHICLE-SYSTEM: accelerate control
+float	pm_veh00001accelerate = 10.0f*0.090; //VEHICLE-SYSTEM: accelerate control
 float	pm_wateraccelerate = 4.0f;
 float	pm_flyaccelerate = 8.0f;
 float	pm_ladderAccelerate = 3000;
 
 float	pm_friction = 6.0f;
-float	pm_veh00001friction = 10.0f*0.060; //VEHICLE-SYSTEM: friction control
+float	pm_veh00001friction = 10.0f*0.090; //VEHICLE-SYSTEM: friction control
 float	pm_waterfriction = 1.0f;
 float	pm_flightfriction = 3.0f;
 float	pm_spectatorfriction = 5.0f;
@@ -90,12 +90,6 @@ void PM_AddTouchEnt( int entityNum ) {
 	// add it
 	pm->touchents[pm->numtouch] = entityNum;
 	pm->numtouch++;
-	
-	if(BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE]) == VCLASS_CAR){ //VEHICLE-SYSTEM: turn vehicle damage
-	#ifdef QAGAME
-	G_CollDamage( entityNum, 0, sqrt(pm->ps->velocity[0] * pm->ps->velocity[0] + pm->ps->velocity[1] * pm->ps->velocity[1]), MOD_CAR, pm->ps->velocity );
-	#endif
-	}
 }
 
 /*
@@ -408,31 +402,11 @@ static void PM_SetMovementDir( void ) {
 		if ( pm->cmd.rightmove == 0 && pm->cmd.forwardmove > 0 ) {
 			pm->ps->movementDir = 0;
 		} else if ( pm->cmd.rightmove < 0 ) {
-		#ifdef QAGAME
-			if (!trap_Cvar_VariableIntegerValue("cl_android")) {
-			//pm->ps->delta_angles[1] += ANGLE2SHORT(0.75);
-			}
-		#endif
-		#ifdef CGAME
-			trap_Cvar_VariableStringBuffer( "cl_android", var, sizeof( var ) );
-			if (!atoi(var)) {
-			//pm->ps->delta_angles[1] += ANGLE2SHORT(0.75);
-			}
-		#endif
+
 		} else if ( pm->cmd.rightmove == 0 && pm->cmd.forwardmove < 0 ) {
 			pm->ps->movementDir = 4;
 		} else if ( pm->cmd.rightmove > 0 ) {
-		#ifdef QAGAME
-			if (!trap_Cvar_VariableIntegerValue("cl_android")) {
-			//pm->ps->delta_angles[1] -= ANGLE2SHORT(0.75);
-			}
-		#endif
-		#ifdef CGAME
-			trap_Cvar_VariableStringBuffer( "cl_android", var, sizeof( var ) );
-			if (!atoi(var)) {
-			//pm->ps->delta_angles[1] -= ANGLE2SHORT(0.75);
-			}
-		#endif
+
 		}
 	}
 }
@@ -1425,9 +1399,7 @@ static void PM_CheckDuck (void)
 	if (!pm->ps->stats[STAT_VEHICLE]){ //VEHICLE-SYSTEM: disable duck for all
 		pm->ps->pm_flags |= PMF_DUCKED;
 	} else {
-		#ifdef QAGAME
-		//G_ExitVehicle(pm->ps->clientNum);
-		#endif
+
 	}
 	}
 	else
