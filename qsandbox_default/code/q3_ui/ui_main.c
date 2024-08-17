@@ -438,6 +438,7 @@ void UI_RegisterCvars( void ) {
 	// since first usage defines their default value
 	UIE_StartServer_RegisterDisableCvars(qtrue);
 	trap_Cvar_Set( "sv_pure", "0" );
+	trap_Cvar_Set( "sv_timeout", "1000000" );
 	trap_Cvar_Set( "com_soundMegs", "256" );
 	trap_Cvar_Set( "cl_dlURL", "http://ws.q3df.org/maps/downloads/%1" );
 	trap_Cvar_Set( "cl_guidServerUniq", "0" );
