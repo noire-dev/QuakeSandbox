@@ -539,8 +539,7 @@ if(cl_language.integer == 0){
 			message = "was juiced by";
 			break;
 		case MOD_CAR:
-			message = "was hit by";
-			message2 = "'s car";
+			message = "could not withstand a collision with";
 			break;
 		case MOD_CAREXPLODE:
 			message = "exploded by";
@@ -707,9 +706,9 @@ if(cl_language.integer == 1){
 			break;
 		case MOD_CAR:
 			if ( gender == GENDER_FEMALE )
-			message = "была сбита машиной";
+			message = "не выдержала столкновения с";
 			else
-			message = "был сбит машиной";
+			message = "не выдержал столкновения с";
 			break;
 		case MOD_CAREXPLODE:
 		if ( gender == GENDER_FEMALE )

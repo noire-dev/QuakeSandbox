@@ -80,6 +80,8 @@ void UI_PushMenu( menuframework_s *menu )
 	trap_Cvar_SetValue( "in_nativetouch", 1 );
 	trap_Cvar_SetValue( "cg_alwaysWeaponBar", 1 );
 	trap_Cvar_SetValue( "cl_voip", 0 );
+	trap_Cvar_SetValue( "r_ambientScale", 0 );
+	trap_Cvar_SetValue( "r_intensity", 1.75 );
 	}
 	
 	uis.menuscroll = 0;

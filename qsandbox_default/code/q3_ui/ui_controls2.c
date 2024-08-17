@@ -105,32 +105,28 @@ typedef struct
 #define ID_BOTMENU		40
 #define ID_FLASHLIGHT		41
 #define ID_THIRDPERSON		42
-#define ID_DAMMO		43
-#define ID_DHEALTH		44
-#define ID_DWEAPON		45
-#define ID_DARMOR		46
-#define ID_DFLAG		47
-#define ID_DHOLDABLE		48
-#define ID_ACC		49
-#define ID_VTAUNT		50
-#define ID_CLRUN		51
-#define ID_SANDBOX		52
-#define ID_SANDBOXMODE		53
-#define ID_NEWSANDBOX		54
-#define ID_ACTIONMENU		55
-#define ID_EXITVEHICLE		56
+#define ID_DWEAPON		43
+#define ID_DHOLDABLE		44
+#define ID_ACC		45
+#define ID_VTAUNT		46
+#define ID_CLRUN		47
+#define ID_SANDBOX		48
+#define ID_SANDBOXMODE		49
+#define ID_NEWSANDBOX		50
+#define ID_ACTIONMENU		51
+#define ID_EXITVEHICLE		52
 
 
 // all others
-#define ID_FREELOOK		57
-#define ID_INVERTMOUSE	58
-#define ID_ALWAYSRUN	59
-#define ID_AUTOSWITCH	60
-#define ID_MOUSESPEED	61
-#define ID_JOYENABLE	62
-#define ID_JOYTHRESHOLD	63
-#define ID_SMOOTHMOUSE	64
-#define ID_MOUSESTYLE	65
+#define ID_FREELOOK		53
+#define ID_INVERTMOUSE	54
+#define ID_ALWAYSRUN	55
+#define ID_AUTOSWITCH	56
+#define ID_MOUSESPEED	57
+#define ID_JOYENABLE	58
+#define ID_JOYTHRESHOLD	59
+#define ID_SMOOTHMOUSE	60
+#define ID_MOUSESTYLE	61
 
 
 typedef struct
@@ -200,11 +196,7 @@ typedef struct
 	menuaction_s		botmenu;
 	menuaction_s		flashlight;
 	menuaction_s		thirdperson;
-	menuaction_s		dammo;
-	menuaction_s		dhealth;
 	menuaction_s		dweapon;
-	menuaction_s		darmor;
-	menuaction_s		dflag;
 	menuaction_s		dholdable;
 	menuaction_s		acc;
 	menuaction_s		vtaunt;
@@ -274,11 +266,7 @@ static bind_t g_bindings[] =
 	{"ui_teamorders", 	"bot command menu",	ID_BOTMENU,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"flashlight", 	"flashlight",	ID_FLASHLIGHT,		ANIM_CHAT,		'f',				-1,		-1, -1},
 	{"toggle cg_thirdperson", 	"third person toggle",	ID_THIRDPERSON,		ANIM_CHAT,		-1,				-1,		-1, -1},
-	{"ammo", 	"drop ammo",	ID_DAMMO,		ANIM_CHAT,		-1,				-1,		-1, -1},
-	{"health", 	"drop health",	ID_DHEALTH,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"dropweapon", 	"drop weapon",	ID_DWEAPON,		ANIM_CHAT,		-1,				-1,		-1, -1},
-	{"droparmor", 	"drop armor",	ID_DARMOR,		ANIM_CHAT,		-1,				-1,		-1, -1},
-	{"dropflag", 	"drop flag",	ID_DFLAG,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"dropholdable", 	"drop holdable",	ID_DHOLDABLE,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"+acc", 	"accuracy",	ID_ACC,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vtaunt", 	"voice taunt",	ID_VTAUNT,		ANIM_CHAT,		-1,				-1,		-1, -1},
@@ -336,11 +324,7 @@ static bind_t g_bindingsrus[] =
 	{"ui_teamorders", 	"меню командных приказов",	ID_BOTMENU,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"flashlight", 	"фонарик / фары",	ID_FLASHLIGHT,		ANIM_CHAT,		'f',				-1,		-1, -1},
 	{"toggle cg_thirdperson", 	"переключение третьего лица",	ID_THIRDPERSON,		ANIM_CHAT,		-1,				-1,		-1, -1},
-	{"ammo", 	"выбросить пули",	ID_DAMMO,		ANIM_CHAT,		-1,				-1,		-1, -1},
-	{"health", 	"выбросить жизни",	ID_DHEALTH,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"dropweapon", 	"выбросить оружие",	ID_DWEAPON,		ANIM_CHAT,		-1,				-1,		-1, -1},
-	{"droparmor", 	"выбросить броню",	ID_DARMOR,		ANIM_CHAT,		-1,				-1,		-1, -1},
-	{"dropflag", 	"выбросить флаг",	ID_DFLAG,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"dropholdable", 	"выбросить предмет",	ID_DHOLDABLE,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"+acc", 	"точность",	ID_ACC,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vtaunt", 	"фраза",	ID_VTAUNT,		ANIM_CHAT,		-1,				-1,		-1, -1},
@@ -435,11 +419,7 @@ static menucommon_s *g_misc_controls[] = {
 	(menucommon_s *)&s_controls.botmenu,
 	(menucommon_s *)&s_controls.flashlight,
 	(menucommon_s *)&s_controls.thirdperson,
-	(menucommon_s *)&s_controls.dammo,
-	(menucommon_s *)&s_controls.dhealth,
 	(menucommon_s *)&s_controls.dweapon,
-	(menucommon_s *)&s_controls.darmor,
-	(menucommon_s *)&s_controls.dflag,
 	(menucommon_s *)&s_controls.dholdable,
 	(menucommon_s *)&s_controls.acc,
 	(menucommon_s *)&s_controls.vtaunt,
@@ -1724,35 +1704,11 @@ static void Controls_MenuInit( void )
 	s_controls.thirdperson.generic.ownerdraw = Controls_DrawKeyBinding;
 	s_controls.thirdperson.generic.id        = ID_THIRDPERSON;
 	
-	s_controls.dammo.generic.type	   = MTYPE_ACTION;
-	s_controls.dammo.generic.flags     = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_GRAYED|QMF_HIDDEN;
-	s_controls.dammo.generic.callback  = Controls_ActionEvent;
-	s_controls.dammo.generic.ownerdraw = Controls_DrawKeyBinding;
-	s_controls.dammo.generic.id        = ID_DAMMO;
-	
-	s_controls.dhealth.generic.type	   = MTYPE_ACTION;
-	s_controls.dhealth.generic.flags     = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_GRAYED|QMF_HIDDEN;
-	s_controls.dhealth.generic.callback  = Controls_ActionEvent;
-	s_controls.dhealth.generic.ownerdraw = Controls_DrawKeyBinding;
-	s_controls.dhealth.generic.id        = ID_DHEALTH;
-	
 	s_controls.dweapon.generic.type	   = MTYPE_ACTION;
 	s_controls.dweapon.generic.flags     = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_GRAYED|QMF_HIDDEN;
 	s_controls.dweapon.generic.callback  = Controls_ActionEvent;
 	s_controls.dweapon.generic.ownerdraw = Controls_DrawKeyBinding;
 	s_controls.dweapon.generic.id        = ID_DWEAPON;
-
-	s_controls.darmor.generic.type	   = MTYPE_ACTION;
-	s_controls.darmor.generic.flags     = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_GRAYED|QMF_HIDDEN;
-	s_controls.darmor.generic.callback  = Controls_ActionEvent;
-	s_controls.darmor.generic.ownerdraw = Controls_DrawKeyBinding;
-	s_controls.darmor.generic.id        = ID_DARMOR;
-	
-	s_controls.dflag.generic.type	   = MTYPE_ACTION;
-	s_controls.dflag.generic.flags     = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_GRAYED|QMF_HIDDEN;
-	s_controls.dflag.generic.callback  = Controls_ActionEvent;
-	s_controls.dflag.generic.ownerdraw = Controls_DrawKeyBinding;
-	s_controls.dflag.generic.id        = ID_DFLAG;
 	
 	s_controls.dholdable.generic.type	   = MTYPE_ACTION;
 	s_controls.dholdable.generic.flags     = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_GRAYED|QMF_HIDDEN;
@@ -1920,11 +1876,7 @@ if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &s_controls.menu, &s_controls.botmenu );
 	Menu_AddItem( &s_controls.menu, &s_controls.flashlight );
 	Menu_AddItem( &s_controls.menu, &s_controls.thirdperson );
-	Menu_AddItem( &s_controls.menu, &s_controls.dammo );
-	Menu_AddItem( &s_controls.menu, &s_controls.dhealth );
 	Menu_AddItem( &s_controls.menu, &s_controls.dweapon );
-	Menu_AddItem( &s_controls.menu, &s_controls.darmor );
-	Menu_AddItem( &s_controls.menu, &s_controls.dflag );
 	Menu_AddItem( &s_controls.menu, &s_controls.dholdable );
 	Menu_AddItem( &s_controls.menu, &s_controls.acc );
 	Menu_AddItem( &s_controls.menu, &s_controls.vtaunt );

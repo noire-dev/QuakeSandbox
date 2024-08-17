@@ -327,7 +327,7 @@ void	G_TouchTriggers( gentity_t *ent ) {
 	}
 }
 
-void	G_KillVoid( gentity_t *ent ) {
+void G_KillVoid( gentity_t *ent ) {
 	vec3_t		orig;
 
 	if ( !ent->client || ent->client->ps.pm_type == PM_CUTSCENE ) {
@@ -340,7 +340,7 @@ void	G_KillVoid( gentity_t *ent ) {
 	}
 
 	VectorCopy( ent->client->ps.origin, orig );
-	if(orig[2] <= -66666){
+	if(orig[2] <= -70000){
 	G_Damage (ent, NULL, NULL, NULL, NULL, 1000, 0, MOD_UNKNOWN);	
 	}
 
@@ -1132,7 +1132,7 @@ void CheckCarCollisions(gentity_t *ent) {
 	vec3_t impactVector;
 	vec3_t end, start, forward, up, right;
 	
-	if(BG_VehicleCheckClass(ent->client->ps.stats[STAT_VEHICLE]) != VCLASS_CAR){
+	if(BG_VehicleCheckClass(ent->client->ps.stats[STAT_VEHICLE]) != VCLASS_CAR && ent->botskill != 9){
 	return;
 	}
 	
@@ -1162,7 +1162,8 @@ void CheckCarCollisions(gentity_t *ent) {
 			G_EnablePropPhysics(hit);
 			}
 			VectorCopy(ent->client->ps.velocity, impactVector);
-			VectorScale(impactVector, 2.50, impactVector);	
+			VectorScale(impactVector, 2.50, impactVector);
+			impactVector[2] = impactForce*0.50;
 			if (!hit->client){
 			hit->lastPlayer = ent;		//for save attacker
             VectorAdd(hit->s.pos.trDelta, impactVector, hit->s.pos.trDelta);  // Transfer velocity from the prop to the hit entity
@@ -1172,14 +1173,18 @@ void CheckCarCollisions(gentity_t *ent) {
 			}
 			if(impactForce > PHYS_SENS){
 			if(hit->grabbedEntity != ent){
-			G_CarDamage(hit, ent, (int)(impactForce * PHYS_DAMAGE*0.30));
+			if(BG_VehicleCheckClass(ent->client->ps.stats[STAT_VEHICLE]) == VCLASS_CAR){
+			G_CarDamage(hit, ent, (int)(impactForce * PHYS_DAMAGE*0.60));
+			} else {
+			G_CarDamage(hit, ent, (int)(impactForce * PHYS_DAMAGE*1.50));
 			}
 			}
-			/*if(impactForce > PHYS_SENS*18){
-			G_CarDamage(ent, ent, (int)(impactForce * PHYS_DAMAGE*0.02));
-			G_AddEvent( ent, EV_CRASH25, 0 );
-			G_PropSmoke( ent, impactForce*0.25);
-			}*/
+			}
+			if(impactForce > PHYS_SENS*18){
+				if(BG_VehicleCheckClass(ent->client->ps.stats[STAT_VEHICLE]) == VCLASS_CAR){
+					G_PropSmoke( ent, impactForce*0.25);
+				}
+			}
         }
     }
 }
@@ -1379,7 +1384,7 @@ if ( !ent->speed ){
 		client->ps.speed *= g_speedfactor.value;
 	}
 	if ( ent->botskill == 9 ) {
-		client->ps.speed *= 2.50;
+		client->ps.speed *= 2.75;
 	}
 
 	// Let go of the hook if we aren't firing

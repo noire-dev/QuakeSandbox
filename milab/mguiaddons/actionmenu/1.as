@@ -2,7 +2,7 @@ set mitem100_type 3
 set mitem100_acttype 1
 set mitem100_xtype 1
 set mitem100_ytype 1
-set mitem100_x 2
+set mitem100_x 6
 set mitem100_y 1
 set mitem100_wtype 3
 set mitem100_htype 3
@@ -37,7 +37,7 @@ set mitem101_type 3
 set mitem101_acttype 1
 set mitem101_xtype 1
 set mitem101_ytype 1
-set mitem101_x 8
+set mitem101_x 12
 set mitem101_y 1
 set mitem101_wtype 3
 set mitem101_htype 3

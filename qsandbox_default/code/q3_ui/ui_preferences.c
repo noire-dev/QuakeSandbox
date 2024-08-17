@@ -256,6 +256,7 @@ static menucommon_s* g_hud_controls[] = {
 	(menucommon_s*) &s_preferences.teamchatheight,
 	(menucommon_s*) &s_preferences.teamchattime,
 	(menucommon_s*) &s_preferences.drawfps,
+	(menucommon_s*) &s_preferences.synceveryframe,
 	(menucommon_s*) &s_preferences.drawtimer,
 	(menucommon_s*) &s_preferences.drawlagometer,
 	(menucommon_s*) &s_preferences.drawgun,
@@ -271,7 +272,6 @@ static menucommon_s* g_render_controls[] = {
 	(menucommon_s*) &s_preferences.blood,
 	(menucommon_s*) &s_preferences.fov,
 	(menucommon_s*) &s_preferences.zoomfov,
-	(menucommon_s*) &s_preferences.synceveryframe,
 	NULL
 };
 
@@ -330,7 +330,7 @@ static void Preferences_SetMenuItems( void ) {
 	s_preferences.identifytarget.curvalue	= trap_Cvar_VariableValue( "cg_drawCrosshairNames" ) != 0;
 	s_preferences.dynamiclights.curvalue	= trap_Cvar_VariableValue( "r_dynamiclight" ) != 0;
 	s_preferences.highqualitysky.curvalue	= trap_Cvar_VariableValue ( "r_fastsky" ) == 0;
-	s_preferences.synceveryframe.curvalue	= trap_Cvar_VariableValue( "r_finish" ) != 0;
+	s_preferences.synceveryframe.curvalue	= trap_Cvar_VariableValue( "r_swapInterval" ) != 0;
 	s_preferences.forcemodel.curvalue		= trap_Cvar_VariableValue( "cg_forcemodel" ) != 0;
 	s_preferences.drawteamoverlay.curvalue	= Com_Clamp( 0, 3, trap_Cvar_VariableValue( "cg_drawTeamOverlay" ) );
 	s_preferences.allowdownload.curvalue	= trap_Cvar_VariableValue( "cl_allowDownload" ) != 0;
@@ -597,7 +597,7 @@ static void Preferences_Event( void* ptr, int notification ) {
 		break;
 
 	case ID_SYNCEVERYFRAME:
-		trap_Cvar_SetValue( "r_finish", s_preferences.synceveryframe.curvalue );
+		trap_Cvar_SetValue( "r_swapInterval", s_preferences.synceveryframe.curvalue );
 		break;
 
 	case ID_FORCEMODEL:
@@ -1194,7 +1194,7 @@ s_preferences.oldplasma.generic.name	  = "Old Plasma effect:";
 s_preferences.oldrocket.generic.name	  = "Old Rocket effect:";
 s_preferences.truelightning.generic.name	  = "True lightning:";
 s_preferences.deferplayer.generic.name	   = "Defer model loading:";
-s_preferences.synceveryframe.generic.name	  = "Sync Every Frame:";
+s_preferences.synceveryframe.generic.name	  = "V-Sync:";
 s_preferences.allowdownload.generic.name	   = "Automatic Downloading:";
 s_preferences.botmenu.generic.name	  = "AutoClose Bot Menu:";
 s_preferences.newESCmenu.generic.name	   = "Dynamic Escape Menu:";

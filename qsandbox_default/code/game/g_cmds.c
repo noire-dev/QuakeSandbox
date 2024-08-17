@@ -744,129 +744,6 @@ void BroadcastTeamChange( gclient_t *client, int oldTeam )
 	}
 }
 
-// oatmeal begin
-
-void ThrowArmor( gentity_t *ent ) {
-	gclient_t	*client;
-	usercmd_t	*ucmd;
-	gitem_t		*xr_item;
-	gentity_t	*xr_drop;
-	byte i;
-	int amount;
-
-//	if(om_drop_armor.integer==0){ return; }
-
-	client = ent->client;
-	ucmd = &ent->client->pers.cmd;
-
-	if(client->ps.stats[STAT_ARMOR]>50){
-		client->ps.stats[STAT_ARMOR] -= 50;
-		xr_item = BG_FindItem( "Armor" );
-		xr_drop = Throw_Item( ent, xr_item, 0 );
-		xr_drop->count = 50;
-	} else if(client->ps.stats[STAT_ARMOR]>5){
-		client->ps.stats[STAT_ARMOR] -= 5;
-		xr_item = BG_FindItem( "Armor Shard" );
-		xr_drop = Throw_Item( ent, xr_item, 0 );
-		xr_drop->count = 5;
-	}
-}
-
-void Cmd_DropArmor_f( gentity_t *ent ) {
-	ThrowArmor( ent );
-}
-
-void ThrowHealth( gentity_t *ent ) {
-	gclient_t	*client;
-	usercmd_t	*ucmd;
-	gitem_t		*xr_item;
-	gentity_t	*xr_drop;
-	byte i;
-	int amount;
-
-//	if(om_drop_health.integer==0){ return; }
-
-	client = ent->client;
-	ucmd = &ent->client->pers.cmd;
-
-	if(ent->health>5){
-		ent->health -= 5;
-		xr_item = BG_FindItem( "5 Health" );
-		xr_drop = Throw_Item( ent, xr_item, 0 );
-		xr_drop->count = 5;
-	}
-}
-
-void Cmd_DropHealth_f( gentity_t *ent ) {
-	ThrowHealth( ent );
-}
-
-void ThrowFlag( gentity_t *ent ) {
-	gclient_t	*client;
-	usercmd_t	*ucmd;
-	gitem_t		*xr_item;
-	gentity_t	*xr_drop;
-	byte i;
-	int amount;
-
-//	if(om_drop_health.integer==0){ return; }
-
-	client = ent->client;
-	ucmd = &ent->client->pers.cmd;
-
-	if ( ent->client->ps.powerups[PW_NEUTRALFLAG] ) {		// only happens in One Flag CTF
-		Throw_Item( ent, BG_FindItemForPowerup( PW_NEUTRALFLAG ), 0 );
-		ent->client->ps.powerups[PW_NEUTRALFLAG] = 0;
-	}
-	else if ( ent->client->ps.powerups[PW_REDFLAG] ) {		// only happens in standard CTF
-		Throw_Item( ent, BG_FindItemForPowerup( PW_REDFLAG ), 0 );
-		ent->client->ps.powerups[PW_REDFLAG] = 0;
-	}
-	else if ( ent->client->ps.powerups[PW_BLUEFLAG] ) {	// only happens in standard CTF
-		Throw_Item( ent, BG_FindItemForPowerup( PW_BLUEFLAG ), 0 );
-		ent->client->ps.powerups[PW_BLUEFLAG] = 0;
-	}
-}
-
-void Cmd_DropFlag_f( gentity_t *ent ) {
-	ThrowFlag( ent );
-}
-
-void ThrowRune( gentity_t *ent ) {
-	gclient_t	*client;
-	usercmd_t	*ucmd;
-	gitem_t		*xr_item;
-	gentity_t	*xr_drop;
-	byte i;
-	int amount;
-
-	if(1==1){ return; }
-
-	client = ent->client;
-	ucmd = &ent->client->pers.cmd;
-
-	if ( ent->client->ps.stats[STAT_PERSISTANT_POWERUP] == PW_GUARD ) {		// only happens in One Flag CTF
-		Throw_Item( ent, BG_FindItem( "Guard" ), 0 );
-		ent->client->ps.stats[STAT_PERSISTANT_POWERUP] = 0;
-	}
-	else if ( ent->client->ps.stats[STAT_PERSISTANT_POWERUP] == PW_DOUBLER ) {		// only happens in standard CTF
-		Throw_Item( ent, BG_FindItem( "Doubler" ), 0 );
-		ent->client->ps.stats[STAT_PERSISTANT_POWERUP] = 0;
-	}
-	else if ( ent->client->ps.stats[STAT_PERSISTANT_POWERUP] == PW_AMMOREGEN ) {	// only happens in standard CTF
-		Throw_Item( ent, BG_FindItem( "Ammo Regen" ), 0 );
-		ent->client->ps.stats[STAT_PERSISTANT_POWERUP] = 0;
-	}
-	else if ( ent->client->ps.stats[STAT_PERSISTANT_POWERUP] == PW_SCOUT ) {	// only happens in standard CTF
-		Throw_Item( ent, BG_FindItem( "Scout" ), 0 );
-		ent->client->ps.stats[STAT_PERSISTANT_POWERUP] = 0;
-	}
-}
-
-void Cmd_DropRune_f( gentity_t *ent ) {
-	ThrowRune( ent );
-}
-
 void ThrowHoldable( gentity_t *ent ) {
 	gclient_t	*client;
 	usercmd_t	*ucmd;
@@ -874,8 +751,6 @@ void ThrowHoldable( gentity_t *ent ) {
 	gentity_t	*xr_drop;
 	byte i;
 	int amount;
-
-//	if(om_drop_health.integer==0){ return; }
 
 	client = ent->client;
 	ucmd = &ent->client->pers.cmd;
@@ -904,54 +779,6 @@ void ThrowHoldable( gentity_t *ent ) {
 
 void Cmd_DropHoldable_f( gentity_t *ent ) {
 	ThrowHoldable( ent );
-}
-
-void ThrowAmmo( gentity_t *ent ) {
-	gclient_t	*client;
-	gitem_t		*xr_item;
-	gentity_t	*xr_drop;
-	int amount;
-	int weapon;
-
-	weapon = ent->swep_id;
-
-	client = ent->client;
-
-if(weapon == WP_GAUNTLET){ return; }
-if(weapon == WP_GRAPPLING_HOOK){ return; }
-
-if(weapon <= 15){
-	if(!(client->ps.stats[STAT_WEAPONS] & (1 << weapon ))){ return; }
-	amount = client->ps.ammo[weapon];
-	if(amount < 50){
-	client->ps.ammo[weapon] = 0;
-	} else {
-	amount = 50;
-	client->ps.ammo[weapon] -= 50;
-	}
-	xr_item = BG_FindSwepAmmo( weapon );
-	if(!xr_item->classname){ return; }
-	xr_drop = Throw_Item( ent, xr_item, 0 );
-	xr_drop->count = amount;
-} else {
-	if(!ent->swep_list[weapon]){ return; }
-	amount = ent->swep_ammo[weapon];
-	if(amount < 50){
-	ent->swep_ammo[weapon] = 0;
-	} else {
-	amount = 50;
-	ent->swep_ammo[weapon] -= 50;
-	}
-	xr_item = BG_FindSwepAmmo( weapon );
-	if(!xr_item->classname){ return; }
-	xr_drop = Throw_Item( ent, xr_item, 0 );
-	xr_drop->count = amount;
-}
-
-}
-
-void Cmd_DropAmmo_f( gentity_t *ent ) {
-	ThrowAmmo( ent );
 }
 
 void ThrowWeapon( gentity_t *ent ) {
@@ -1000,8 +827,6 @@ if(weapon <= 15){
 void Cmd_DropWeapon_f( gentity_t *ent ) {
 	ThrowWeapon( ent );
 }
-
-// oatmeal end
 
 /*
 =================
@@ -3538,12 +3363,7 @@ commands_t cmds[ ] =
   { "create", 0, Cmd_PropNpc_AS_f },
   { "physgun_dist", CMD_LIVING, Cmd_PhysgunDist_f },
   { "flashlight", CMD_LIVING, Cmd_Flashlight_f },
-  { "ammo", CMD_TEAM|CMD_LIVING, Cmd_DropAmmo_f },
-  { "health", CMD_TEAM|CMD_LIVING, Cmd_DropHealth_f },
-  { "armor", CMD_TEAM|CMD_LIVING, Cmd_DropArmor_f },
   { "dropweapon", CMD_TEAM|CMD_LIVING, Cmd_DropWeapon_f },
-  { "dropflag", CMD_TEAM|CMD_LIVING, Cmd_DropFlag_f },
-  { "droprune", CMD_TEAM|CMD_LIVING, Cmd_DropRune_f },
   { "dropholdable", CMD_TEAM|CMD_LIVING, Cmd_DropHoldable_f },
   { "usetarget", CMD_LIVING, Cmd_UseTarget_f },
   { "usecvar", 0, Cmd_UseCvar_f },

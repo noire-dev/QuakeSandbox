@@ -1565,6 +1565,11 @@ void G_RunProp(gentity_t *ent) {
 	float impactForce;
 	float impactForceAll;
 	vec3_t impactVector;
+	
+	if(ent->r.currentOrigin[2] <= -70000){
+		G_FreeEntity(ent);
+		return;
+	}
 
     // Unlink the entity so that it won't interact with other entities during the calculation
     trap_UnlinkEntity(ent);
@@ -1614,7 +1619,7 @@ void G_RunProp(gentity_t *ent) {
 			if (!hit->client){
             VectorAdd(hit->s.pos.trDelta, impactVector, hit->s.pos.trDelta);  // Transfer velocity from the prop to the hit entity
 			} else {
-			if(hit->grabbedEntity != ent){
+			if(hit->grabbedEntity != ent && hit->botskill != 9){
 			VectorAdd(hit->client->ps.velocity, impactVector, hit->client->ps.velocity);  // Transfer velocity from the prop to the hit player
 			}
 			}

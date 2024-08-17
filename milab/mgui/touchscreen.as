@@ -178,6 +178,111 @@ set mitem23_min 0
 set mitem23_max 100
 set mitem23_savecvar "mgui_none"
 
+set mitem24_type 1
+set mitem24_acttype 1
+set mitem24_xtype 1
+set mitem24_ytype 1
+set mitem24_x 45
+set mitem24_y 65
+set mitem24_wtype 3
+set mitem24_htype 3
+set mitem24_w 180
+set mitem24_h 90
+set mitem24_text "third person"
+set mitem24_cmd "toggle cg_thirdperson"
+set mitem24_cmd2 "menuback"
+set mitem24_1arg	0
+set mitem24_2arg	0
+set mitem24_3arg	0
+set mitem24_file	""
+set mitem24_value ""
+set mitem24_colorR 1.0
+set mitem24_colorG 1.0
+set mitem24_colorB 1.0
+set mitem24_colorA 1.0
+set mitem24_colorinnerR 0.1
+set mitem24_colorinnerG 0.1
+set mitem24_colorinnerB 0.1
+set mitem24_colorinnerA 0.80
+set mitem24_fontsize	1.25
+set mitem24_corner 5
+set mitem24_col 1
+set mitem24_mode	0
+set mitem24_style 0
+set mitem24_min 0
+set mitem24_max 100
+set mitem24_savecvar "mgui_none"
+
+set mitem1_type 1
+set mitem1_acttype 1
+set mitem1_xtype 1
+set mitem1_ytype 1
+set mitem1_x 5
+set mitem1_y 30
+set mitem1_wtype 3
+set mitem1_htype 3
+set mitem1_w 180
+set mitem1_h 90
+set mitem1_text "drop weapon"
+set mitem1_cmd "dropweapon"
+set mitem1_cmd2 ""
+set mitem1_1arg	0
+set mitem1_2arg	0
+set mitem1_3arg	0
+set mitem1_file	""
+set mitem1_value ""
+set mitem1_colorR 1.0
+set mitem1_colorG 1.0
+set mitem1_colorB 1.0
+set mitem1_colorA 1.0
+set mitem1_colorinnerR 0.1
+set mitem1_colorinnerG 0.1
+set mitem1_colorinnerB 0.1
+set mitem1_colorinnerA 0.80
+set mitem1_fontsize	1.25
+set mitem1_corner 5
+set mitem1_col 1
+set mitem1_mode	0
+set mitem1_style 0
+set mitem1_min 0
+set mitem1_max 100
+set mitem1_savecvar "mgui_none"
+
+set mitem2_type 1
+set mitem2_acttype 1
+set mitem2_xtype 1
+set mitem2_ytype 1
+set mitem2_x 15
+set mitem2_y 30
+set mitem2_wtype 3
+set mitem2_htype 3
+set mitem2_w 180
+set mitem2_h 90
+set mitem2_text "drop holdable"
+set mitem2_cmd "dropholdable"
+set mitem2_cmd2 ""
+set mitem2_1arg	0
+set mitem2_2arg	0
+set mitem2_3arg	0
+set mitem2_file	""
+set mitem2_value ""
+set mitem2_colorR 1.0
+set mitem2_colorG 1.0
+set mitem2_colorB 1.0
+set mitem2_colorA 1.0
+set mitem2_colorinnerR 0.1
+set mitem2_colorinnerG 0.1
+set mitem2_colorinnerB 0.1
+set mitem2_colorinnerA 0.80
+set mitem2_fontsize	1.25
+set mitem2_corner 5
+set mitem2_col 1
+set mitem2_mode	0
+set mitem2_style 0
+set mitem2_min 0
+set mitem2_max 100
+set mitem2_savecvar "mgui_none"
+
 exec "mguiaddons/actionmenu/1.as"
 exec "mguiaddons/actionmenu/2.as"
 exec "mguiaddons/actionmenu/3.as"
