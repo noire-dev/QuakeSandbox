@@ -22,11 +22,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "g_local.h"
 
-#define MAX_MAPFILE_LENGTH 2500000*8
+#define MAX_MAPFILE_LENGTH 2500000*6
 
-#define MAX_TOKENNUM 524288*8
+#define MAX_TOKENNUM 524288*6
 
-static char 		mapbuffer[ 2500000*8 ];
+static char 		mapbuffer[ 2500000*6 ];
 
 typedef enum {
 	TOT_LPAREN,
@@ -402,8 +402,8 @@ void G_LoadMapfile( char *filename ){
 		return;
 	}
 
-	if ( len >= 2500000*8 ) {
-		trap_Error( va( S_COLOR_RED "map file too large: %s is %i, max allowed is %i", filename, len, 2500000*8 ) );
+	if ( len >= 2500000*6 ) {
+		trap_Error( va( S_COLOR_RED "map file too large: %s is %i, max allowed is %i", filename, len, 2500000*6 ) );
 		trap_FS_FCloseFile( f );
 		return;
 	}
@@ -494,8 +494,8 @@ void G_LoadMapfileAll( char *filename ){
 		return;
 	}
 
-	if ( len >= 2500000*8 ) {
-		trap_Error( va( S_COLOR_RED "map file too large: %s is %i, max allowed is %i", filename, len, 2500000*8 ) );
+	if ( len >= 2500000*6 ) {
+		trap_Error( va( S_COLOR_RED "map file too large: %s is %i, max allowed is %i", filename, len, 2500000*6 ) );
 		trap_FS_FCloseFile( f );
 		return;
 	}
