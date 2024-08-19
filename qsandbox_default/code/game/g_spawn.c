@@ -261,6 +261,7 @@ void SP_target_playerstats (gentity_t *ent);
 void SP_target_variable (gentity_t *ent);
 void SP_target_cutscene (gentity_t *ent);
 void SP_target_botremove (gentity_t *ent);
+void SP_target_music (gentity_t *ent);
 void SP_target_stats (gentity_t *ent);
 
 void SP_script_variable (gentity_t *ent);
@@ -392,6 +393,7 @@ spawn_t	spawns[] = {
 	{"target_variable", SP_target_variable},
 	{"target_cutscene", SP_target_cutscene},
 	{"target_botremove", SP_target_botremove},
+	{"target_music", SP_target_music},
 	{"target_stats", SP_target_stats},
 	
 	{"script_variable", SP_script_variable},
@@ -884,20 +886,20 @@ void SP_worldspawn( void ) {
 	
 	number = rand() % 14 + 1;
 	
-	if(number == 1){ music = "music/fla22k_01_intro"; }
-	if(number == 2){ music = "music/fla22k_01_loop"; }
-	if(number == 3){ music = "music/fla22k_02"; }
-	if(number == 4){ music = "music/fla22k_03"; }
-	if(number == 5){ music = "music/fla22k_04_intro"; }
-	if(number == 6){ music = "music/fla22k_04_loop"; }
-	if(number == 7){ music = "music/fla22k_05"; }
-	if(number == 8){ music = "music/fla22k_06"; }
-	if(number == 9){ music = "music/sonic1"; }
-	if(number == 10){ music = "music/sonic2"; }
-	if(number == 11){ music = "music/sonic3"; }
-	if(number == 12){ music = "music/sonic4"; }
-	if(number == 13){ music = "music/sonic5"; }
-	if(number == 14){ music = "music/sonic6"; }
+	if(number == 1){ music = "music/soundtrack1"; }
+	if(number == 2){ music = "music/soundtrack2"; }
+	if(number == 3){ music = "music/soundtrack3"; }
+	if(number == 4){ music = "music/soundtrack4"; }
+	if(number == 5){ music = "music/soundtrack5"; }
+	if(number == 6){ music = "music/soundtrack6"; }
+	if(number == 7){ music = "music/soundtrack7"; }
+	if(number == 8){ music = "music/soundtrack8"; }
+	if(number == 9){ music = "music/soundtrack9"; }
+	if(number == 10){ music = "music/soundtrack10"; }
+	if(number == 11){ music = "music/soundtrack11"; }
+	if(number == 12){ music = "music/soundtrack12"; }
+	if(number == 13){ music = "music/soundtrack13"; }
+	if(number == 14){ music = "music/soundtrack14"; }
 
 
 	G_SpawnString( "classname", "", &s );

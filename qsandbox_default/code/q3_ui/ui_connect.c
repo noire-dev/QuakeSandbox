@@ -161,7 +161,7 @@ void UI_DrawConnectScreen( qboolean overlay ) {
 	char			info[MAX_INFO_VALUE];
 	int strWidth;
 
-if(DynamicMenu_ServerGametype() != GT_SINGLE){
+if(!cl_sprun.integer){
 
 	Menu_Cache();
 
@@ -251,7 +251,7 @@ if(DynamicMenu_ServerGametype() != GT_SINGLE){
 
 	// password required / connection rejected information goes here
 }
-if(DynamicMenu_ServerGametype() == GT_SINGLE){
+if(cl_sprun.integer){
 
 	Menu_Cache();
 

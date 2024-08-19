@@ -527,6 +527,7 @@ void G_UseDeathTargets( gentity_t *ent, gentity_t *activator ) {
 	}
 
 	if ( !ent->deathTarget ) {
+		G_Printf("G_UseDeathTargets: !ent->deathTarget\n");
 		return;
 	}
 
@@ -537,6 +538,7 @@ void G_UseDeathTargets( gentity_t *ent, gentity_t *activator ) {
 			G_Printf ("WARNING: Entity used itself.\n");
 		} else {
 			if ( t->use ) {
+				G_Printf("G_UseDeathTargets: t->use\n");
 				t->use (t, ent, activator);
 			}
 		}
@@ -1932,7 +1934,8 @@ void G_EnablePropPhysics( gentity_t *ent ) {
 	if(ent->sb_phys != 2){	//if it's static object, not turn phys
 		return;	
 	}
-	ent->s.pos.trType = TR_GRAVITY;
 	VectorCopy( ent->r.currentOrigin, ent->s.pos.trBase );
+	ent->s.pos.trType = TR_GRAVITY;
 	ent->s.pos.trTime = level.time;
+	ent->s.pos.trDuration = level.time;
 }

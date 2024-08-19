@@ -525,6 +525,8 @@ typedef struct serverparameters_s {
 	int forceRespawn;
 	int allowWarmup;
 	int warmupTime;
+	
+	int viewdistance;
 
 	int friendlyFire;
 	int teamBalance;

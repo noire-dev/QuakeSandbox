@@ -132,6 +132,8 @@ vmCvar_t	toolgun_disabledarg2;
 vmCvar_t	toolgun_disabledarg3;
 vmCvar_t	toolgun_disabledarg4;
 
+vmCvar_t	cl_sprun;
+
 vmCvar_t	mgui_api_active;
 vmCvar_t	mgui_none;
 
@@ -301,6 +303,8 @@ static cvarTable_t		cvarTable[] = {
 	{ &toolgun_disabledarg3, "toolgun_disabledarg3", "0", 0 },
 	{ &toolgun_disabledarg4, "toolgun_disabledarg4", "0", 0 },
 
+	{ &cl_sprun, "cl_sprun", "0", 0 },
+
 	{ &mgui_api_active, "mgui_api_active", "0", 0 },
 	{ &mgui_none, "mgui_none", "0", 0 },
 	
@@ -438,6 +442,7 @@ void UI_RegisterCvars( void ) {
 	// since first usage defines their default value
 	UIE_StartServer_RegisterDisableCvars(qtrue);
 	trap_Cvar_Set( "sv_pure", "0" );
+	trap_Cvar_Set( "cl_sprun", "0" );
 	trap_Cvar_Set( "sv_timeout", "1000000" );
 	trap_Cvar_Set( "com_soundMegs", "256" );
 	trap_Cvar_Set( "cl_dlURL", "http://ws.q3df.org/maps/downloads/%1" );

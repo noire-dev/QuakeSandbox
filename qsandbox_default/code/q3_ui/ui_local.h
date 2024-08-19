@@ -122,6 +122,8 @@ extern vmCvar_t	toolgun_disabledarg2;
 extern vmCvar_t	toolgun_disabledarg3;
 extern vmCvar_t	toolgun_disabledarg4;
 
+extern vmCvar_t	cl_sprun;
+
 extern vmCvar_t	mgui_api_active;
 extern vmCvar_t	mgui_none;
 

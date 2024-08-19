@@ -973,6 +973,12 @@ void PhysgunHold(gentity_t *player) {
         if (!player->grabbedEntity) {
             findent = FindEntityForPhysgun(player, PHYSGUN_RANGE);
 			if(findent && findent->isGrabbed == qfalse ){
+			if(findent->owner != player->s.clientNum + 1){
+				if(findent->owner != 0){
+					trap_SendServerCommand( player->s.clientNum, va( "cp \"Owned by %s\n\"", findent->ownername ));
+					return;
+				}	
+			}
 			if(!findent->client){
 			player->grabbedEntity = findent;
 			} else if (findent->singlebot) {
@@ -984,7 +990,9 @@ void PhysgunHold(gentity_t *player) {
 				if(!player->grabbedEntity->client){
 				player->grabbedEntity->grabNewPhys = 2;
 				player->grabbedEntity->s.pos.trType = TR_GRAVITY;
+				player->grabbedEntity->physicsObject = qtrue;
 				player->grabbedEntity->sb_phys = 2;
+				G_EnablePropPhysics(player->grabbedEntity);
 				}
             }
         } else {
@@ -1069,6 +1077,12 @@ void GravitygunHold(gentity_t *player) {
         if (!player->grabbedEntity) {
             findent = FindEntityForGravitygun(player, GRAVITYGUN_RANGE);
 			if(findent && findent->isGrabbed == qfalse ){
+			if(findent->owner != player->s.clientNum + 1){
+				if(findent->owner != 0){
+					trap_SendServerCommand( player->s.clientNum, va( "cp \"Owned by %s\n\"", findent->ownername ));
+					return;
+				}	
+			}
 			if(!findent->client){
 			player->grabbedEntity = findent;
 			} else if (findent->singlebot) {
@@ -1079,7 +1093,9 @@ void GravitygunHold(gentity_t *player) {
                 player->grabbedEntity->isGrabbed = qtrue;
 				if(!player->grabbedEntity->client){
 				player->grabbedEntity->s.pos.trType = TR_GRAVITY;
+				player->grabbedEntity->physicsObject = qtrue;
 				player->grabbedEntity->sb_phys = 2;
+				G_EnablePropPhysics(player->grabbedEntity);
 				}
             }
         } else {

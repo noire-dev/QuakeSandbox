@@ -553,14 +553,6 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 	char			*headmodel;
 	char			userinfo[MAX_INFO_STRING];
 
-        // Mix3r_Durachok: remap ai character, if name has format name/aifile example: ( addbot sarge/amok_c )
-        // detect if this ai remapped or not
-        model = strchr(name,'/');
-        if (model) {
-                *model = 0;
-                headmodel = model+1;
-        }
-
 	// get the botinfo from bots.txt
 	botinfo = G_GetBotInfoByName( name );
 	if ( !botinfo ) {

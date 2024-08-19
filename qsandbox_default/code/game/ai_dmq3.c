@@ -2331,12 +2331,14 @@ BotAggression
 ==================
 */
 float BotAggression(bot_state_t *bs) {
-	//if the bot has quad
-        //return 100;
         if (trap_Characteristic_BFloat(bs->character, CHARACTERISTIC_AGGRESSION, 0, 2) > 1.999) {
                 // Mix3r_Durachok: rage, special character (Xen) attacks aggressively on sight
                 return 100;
         }
+        if(gametype == GT_SANDBOX || gametype == GT_SINGLE){
+            return 100;
+        }
+	//if the bot has quad
 	if (bs->inventory[INVENTORY_QUAD]) {
 		//if the bot is not holding the gauntlet or the enemy is really nearby
 		//if (bs->weaponnum != WP_GAUNTLET ||
@@ -2396,9 +2398,6 @@ float BotFeelingBad(bot_state_t *bs) {
 	}
 	if (bs->weaponnum == WP_MACHINEGUN) {
 		return 0;
-	}
-	if (bs->inventory[INVENTORY_HEALTH] < 10) {
-		return 80;
 	}
 	return 0;
 }
@@ -3109,7 +3108,10 @@ int BotFindEnemy(bot_state_t *bs, int curenemy) {
 	float squaredist, cursquaredist;
 	aas_entityinfo_t entinfo, curenemyinfo;
 	vec3_t dir, angles;
-    
+
+	if (g_entities[bs->client].parent->spawnflags & 2048)
+		return qfalse;
+
 	alertness = trap_Characteristic_BFloat(bs->character, CHARACTERISTIC_ALERTNESS, 0, 1);
 	easyfragger = trap_Characteristic_BFloat(bs->character, CHARACTERISTIC_EASY_FRAGGER, 0, 1);
 	//check if the health decreased
@@ -3157,6 +3159,8 @@ int BotFindEnemy(bot_state_t *bs, int curenemy) {
 		if (i == bs->client) continue;
 		//if it's the current enemy
 		if (i == curenemy) continue;
+		//
+		if (g_entities[i].flags & FL_NOTARGET) continue;
 		//
 		BotEntityInfo(i, &entinfo);
 		//

@@ -619,6 +619,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_sandbox_fraglimit", "0" },
 	{ "uie_sandbox_timelimit", "0" },
 	{ "uie_sandbox_weaponrespawn", "5" },
+	{ "uie_sandbox_viewdistance", "16" },
 	
 	{ "uie_single_fragtype", "0" },
 	{ "uie_single_timetype", "0" },
@@ -651,6 +652,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_single_fraglimit", "0" },
 	{ "uie_single_timelimit", "0" },
 	{ "uie_single_weaponrespawn", "5" },
+	{ "uie_single_viewdistance", "90" },
 
 	{ "uie_ffa_fragtype", "0" },
 	{ "uie_ffa_timetype", "0" },
@@ -683,6 +685,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_ffa_fraglimit", "30" },
 	{ "uie_ffa_timelimit", "20" },
 	{ "uie_ffa_weaponrespawn", "5" },
+	{ "uie_ffa_viewdistance", "90" },
 
 	{ "uie_tourney_fragtype", "0" },
 	{ "uie_tourney_timetype", "0" },
@@ -715,6 +718,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_tourney_fraglimit", "0" },
 	{ "uie_tourney_timelimit", "15" },
 	{ "uie_tourney_weaponrespawn", "5" },
+	{ "uie_tourney_viewdistance", "90" },
 
 	{ "uie_team_fragtype", "0" },
 	{ "uie_team_timetype", "0" },
@@ -752,6 +756,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_team_fraglimit", "0" },
 	{ "uie_team_timelimit", "20" },
 	{ "uie_team_weaponrespawn", "30" },
+	{ "uie_team_viewdistance", "90" },
 
 	{ "uie_ctf_capturetype", "0" },
 	{ "uie_ctf_timetype", "0" },
@@ -787,6 +792,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_ctf_capturelimit", "0" },
 	{ "uie_ctf_timelimit", "20" },
 	{ "uie_ctf_weaponrespawn", "5" },
+	{ "uie_ctf_viewdistance", "90" },
 	
 	{ "uie_oneflag_capturetype", "0" },
 	{ "uie_oneflag_timetype", "0" },
@@ -822,6 +828,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_oneflag_capturelimit", "0" },
 	{ "uie_oneflag_timelimit", "20" },
 	{ "uie_oneflag_weaponrespawn", "5" },
+	{ "uie_oneflag_viewdistance", "90" },
 	
 	{ "uie_overload_capturetype", "0" },
 	{ "uie_overload_timetype", "0" },
@@ -857,6 +864,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_overload_capturelimit", "0" },
 	{ "uie_overload_timelimit", "20" },
 	{ "uie_overload_weaponrespawn", "5" },
+	{ "uie_overload_viewdistance", "90" },
 	
 	{ "uie_harvester_capturetype", "0" },
 	{ "uie_harvester_timetype", "0" },
@@ -892,6 +900,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_harvester_capturelimit", "0" },
 	{ "uie_harvester_timelimit", "20" },
 	{ "uie_harvester_weaponrespawn", "5" },
+	{ "uie_harvester_viewdistance", "90" },
 	
 	{ "uie_elim_capturetype", "0" },
 	{ "uie_elim_timetype", "0" },
@@ -927,6 +936,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_elim_capturelimit", "0" },
 	{ "uie_elim_timelimit", "20" },
 	{ "uie_elim_weaponrespawn", "5" },
+	{ "uie_elim_viewdistance", "90" },
 	
 	{ "uie_ctfelim_capturetype", "0" },
 	{ "uie_ctfelim_timetype", "0" },
@@ -962,6 +972,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_ctfelim_capturelimit", "0" },
 	{ "uie_ctfelim_timelimit", "20" },
 	{ "uie_ctfelim_weaponrespawn", "5" },
+	{ "uie_ctfelim_viewdistance", "90" },
 	
 	{ "uie_lms_fragtype", "0" },
 	{ "uie_lms_timetype", "0" },
@@ -997,6 +1008,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_lms_capturelimit", "0" },
 	{ "uie_lms_timelimit", "20" },
 	{ "uie_lms_weaponrespawn", "5" },
+	{ "uie_lms_viewdistance", "90" },
 	
 	{ "uie_doubledom_capturetype", "0" },
 	{ "uie_doubledom_timetype", "0" },
@@ -1032,6 +1044,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_doubledom_capturelimit", "0" },
 	{ "uie_doubledom_timelimit", "20" },
 	{ "uie_doubledom_weaponrespawn", "5" },
+	{ "uie_doubledom_viewdistance", "90" },
 	
 	{ "uie_domination_capturetype", "0" },
 	{ "uie_domination_timetype", "0" },
@@ -1067,6 +1080,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_domination_capturelimit", "0" },
 	{ "uie_domination_timelimit", "20" },
 	{ "uie_domination_weaponrespawn", "5" },
+	{ "uie_domination_viewdistance", "90" },
 };
 
 
@@ -3662,6 +3676,7 @@ UIE_GetSkirmishCvar(NULL, "uie_amknockback",s_scriptdata.server.g_amknockback, 3
 	//s_scriptdata.server.forceRespawn = UIE_GetSkirmishCvarIntClamp(0, 999, s, "ForceRespawn" );
 	s_scriptdata.server.allowWarmup = UIE_GetSkirmishCvarIntClamp(0, 1, s, "doWarmUp" );
 	s_scriptdata.server.warmupTime = UIE_GetSkirmishCvarIntClamp(0, 999, s, "WarmUp" );
+	s_scriptdata.server.viewdistance = UIE_GetSkirmishCvarIntClamp(1, 90, s, "viewdistance" );
 
 	if (gametype >= GT_TEAM && !(gametype == GT_LMS) ) {
 		t = 0;
@@ -4116,6 +4131,7 @@ UIE_SetSkirmishCvarInt( NULL, "uie_amguided", s_scriptdata.server.g_amguided);
 
 	UIE_SetSkirmishCvarInt(s, "doWarmup", s_scriptdata.server.allowWarmup);
 	UIE_SetSkirmishCvarInt(s, "WarmUp", s_scriptdata.server.warmupTime);
+	UIE_SetSkirmishCvarInt(s, "viewdistance", s_scriptdata.server.viewdistance);
 
 	if (gametype >= GT_TEAM && !(gametype == GT_LMS) ) {
 		// ff is an existing cvar, so we use the existing cvar 

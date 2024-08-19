@@ -344,7 +344,7 @@ void G_CheckForSpree( gentity_t *ent, int streak2Test, qboolean checkKillSpree )
     qboolean    isSpree = qfalse;
     int         divisionHolder;
 	
-	if(g_gametype.integer == GT_SINGLE){
+	if(g_gametype.integer == GT_SINGLE || g_gametype.integer == GT_SANDBOX){
 		return;
 	}
     

@@ -1747,9 +1747,9 @@ void target_cutscene_use (gentity_t *self, gentity_t *other, gentity_t *activato
 	level.player->client->ps.velocity[2] = 0;
 
 	//set player's orgOrigin so we can move the player back to its original location when the cutscene ends
-	if (level.player->client->ps.pm_type != PM_CUTSCENE) {
+	//if (level.player->client->ps.pm_type != PM_CUTSCENE) {
 	VectorCopy(level.player->client->ps.origin, level.player->orgOrigin);
-	}
+	//}
 
 	//disable synchronousClients to prevent "CVAR_Update: handle out of range" error. See issue 162.
 	if (g_allowSyncCutscene.integer == 0) {
@@ -1798,6 +1798,22 @@ void SP_target_botremove (gentity_t *self) {
 }
 
 //==========================================================
+
+/*QUAKED target_music (0 .7 .7) (-8 -8 -8) (8 8 8)
+When triggered, starts playing specified music track
+*/
+void target_music_use (gentity_t *self, gentity_t *other, gentity_t *activator) {
+	trap_SetConfigstring( CS_MUSIC, self->music );
+}
+
+void SP_target_music (gentity_t *self) {
+	char	*s;
+	char	buffer[MAX_INFO_STRING];
+	G_SpawnString( "music", "", &s );
+	Q_strncpyz( self->music, s, sizeof(self->music) );
+
+	self->use = target_music_use;
+}
 
 
 /*QUAKED target_kill (.5 .5 .5) (-8 -8 -8) (8 8 8)

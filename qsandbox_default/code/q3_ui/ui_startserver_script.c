@@ -414,7 +414,7 @@ static const char* saveparam_list[] = {
 	"*botname", "*botexclude", "*botskill", "*BotSelection", "*BotCount",
 	"*BotChange", "*OpenSlotCount", "*BotSkillType", "*BotSkillValue",
 	"*BotSkillBias", "*PlayerJoinAs", "*hostname", "*ForceRespawn",
-	"*itemGroups", "*itemsHidden", "*Warmup", "*doWarmup", "*weaponrespawn",
+	"*itemGroups", "*itemsHidden", "*Warmup", "*doWarmup", "*weaponrespawn", "*viewdistance",
 
 	// many of these are specific to a gametype, but since we
 	// check for the existance of the Cvar they won't appear in
@@ -1063,6 +1063,8 @@ AddScript(va("set g_amguided %i\n", s_scriptdata.server.g_amguided));
 	else {
 		AddScript(va("set g_doWarmup 0\n"));
 	}
+	
+	AddScript(va("set sv_viewdistance %i\n", s_scriptdata.server.viewdistance));
 
 
 	// special server parameters
@@ -2259,8 +2261,10 @@ static qboolean StartServer_WriteMapParams( void )
 		}
 		
 		if (s_scriptdata.gametype != GT_SINGLE){
+		AddScript("set cl_sprun 0; ");
 		AddScript(va("map %s; ", mapname));
 		} else {
+		AddScript("set cl_sprun 1; ");
 		AddScript(va("spmap %s; ", mapname));
 		}
 

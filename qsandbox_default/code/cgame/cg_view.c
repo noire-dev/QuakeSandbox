@@ -515,9 +515,6 @@ static int CG_CalcFov( void ) {
 			} else if ( fov_x > 160 ) {
 				fov_x = 160;
 			}
-                        if( (cgs.videoflags & VF_LOCK_CVARS_BASIC) && fov_x>140 )
-                            fov_x = 140;
-
 		}
 
                 if ( cgs.dmflags & DF_FIXED_FOV ) {

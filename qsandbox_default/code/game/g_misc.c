@@ -372,9 +372,9 @@ void Use_Camera (gentity_t *self, gentity_t *other, gentity_t *activator) {
 	//G_Printf("%s\n", variableInfo);
 	trap_SetConfigstring( CS_CUTSCENE, variableInfo );
 
-	if(activator->client->ps.pm_type != PM_CUTSCENE){
+	/*if(activator->client->ps.pm_type != PM_CUTSCENE){
 	VectorCopy(activator->client->ps.origin, activator->orgOrigin);
-	}
+	}*/
 	activator->client->ps.pm_type = PM_CUTSCENE;
 	self->activator = activator;
 	self->nextthink = level.time + (self->wait * 1000);
