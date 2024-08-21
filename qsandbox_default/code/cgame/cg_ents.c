@@ -154,7 +154,7 @@ static void CG_EntityEffects( centity_t *cent ) {
 		g = (float) ((cl >> 8) & 0xFF) / 255.0;
 		b = (float) ((cl >> 16) & 0xFF) / 255.0;
 		i = (float) ((cl >> 24) & 0xFF) * 4.0;
-		trap_R_AddLightToScene(cent->lerpOrigin, i*100, r, g, b);
+		trap_R_AddLightToScene(cent->lerpOrigin, i*8, r, g, b);
 	}
 
 }
@@ -176,6 +176,8 @@ static void CG_General( centity_t *cent ) {
 	entityState_t		*s1;
 	int					i;
 	centity_t 			*player;
+	int		cl;
+	int		r, g, b;
 
 	s1 = &cent->currentState;
 
@@ -211,6 +213,15 @@ static void CG_General( centity_t *cent ) {
 	ent.customShader = cgs.media.ptexShader[1];
 	}
 	}
+
+	cl = cent->currentState.constantLight;
+	r = (cl & 0xFF);
+	g = ((cl >> 8) & 0xFF);
+	b = ((cl >> 16) & 0xFF);
+	ent.shaderRGBA[0] = r;
+	ent.shaderRGBA[1] = g;
+	ent.shaderRGBA[2] = b;
+	ent.shaderRGBA[3] = 255;
 	
 	Com_sprintf(str, sizeof(str), CG_ConfigString(CS_MODELS + s1->modelindex));
 	
@@ -765,6 +776,8 @@ static void CG_Mover(centity_t *cent) {
     entityState_t *s1;
     char modelname[MAX_QPATH];
     int len;
+	int		cl;
+	int		r, g, b;
 
     s1 = &cent->currentState;
 
@@ -782,6 +795,15 @@ static void CG_Mover(centity_t *cent) {
     } else {
         ent.hModel = cgs.gameModels[s1->modelindex];
     }
+	
+	cl = cent->currentState.constantLight;
+	r = (cl & 0xFF);
+	g = ((cl >> 8) & 0xFF);
+	b = ((cl >> 16) & 0xFF);
+	ent.shaderRGBA[0] = r;
+	ent.shaderRGBA[1] = g;
+	ent.shaderRGBA[2] = b;
+	ent.shaderRGBA[3] = 255;
 
     // Get the model name
     Q_strncpyz(modelname, CG_ConfigString(CS_MODELS + s1->modelindex), sizeof(modelname));

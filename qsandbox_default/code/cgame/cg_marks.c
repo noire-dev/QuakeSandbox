@@ -124,8 +124,8 @@ temporary marks will not be stored or randomly oriented, but immediately
 passed to the renderer.
 =================
 */
-#define	MAX_MARK_FRAGMENTS	496
-#define	MAX_MARK_POINTS		1424
+#define	MAX_MARK_FRAGMENTS	512
+#define	MAX_MARK_POINTS		2048
 
 void CG_ImpactMark( qhandle_t markShader, const vec3_t origin, const vec3_t dir, 
 				   float orientation, float red, float green, float blue, float alpha,
@@ -149,8 +149,7 @@ void CG_ImpactMark( qhandle_t markShader, const vec3_t origin, const vec3_t dir,
 	}
 
 	//paintball mode
-	if (
-		cg_paintballMode.integer && (
+	if ( cg_paintballMode.integer && (
 		markShader == cgs.media.bulletMarkShader ||				//MG, SG
 		markShader == cgs.media.burnMarkShader ||				//RL, GL, BFG
 		markShader == cgs.media.energyMarkShader ||				//PG, RG

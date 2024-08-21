@@ -1571,6 +1571,21 @@ extern	vmCvar_t	g_teamred_infammo;
 extern	vmCvar_t	g_teamred_respawnwait;
 extern	vmCvar_t	g_teamred_pickupitems;
 //cvars
+
+extern	vmCvar_t	g_fogModel;
+extern	vmCvar_t	g_fogShader;
+extern	vmCvar_t	g_fogDistance;
+extern	vmCvar_t	g_fogInterval;
+extern	vmCvar_t	g_fogColorR;
+extern	vmCvar_t	g_fogColorG;
+extern	vmCvar_t	g_fogColorB;
+extern	vmCvar_t	g_fogColorA;
+extern	vmCvar_t	g_skyShader;
+extern	vmCvar_t	g_skyColorR;
+extern	vmCvar_t	g_skyColorG;
+extern	vmCvar_t	g_skyColorB;
+extern	vmCvar_t	g_skyColorA;
+
 extern	vmCvar_t	save_curmap;
 extern	vmCvar_t	save1_curmap;
 extern	vmCvar_t	save2_curmap;

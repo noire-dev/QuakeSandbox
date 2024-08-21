@@ -351,11 +351,7 @@ static void CG_RainParticleRender( int type, cg_atmosphericParticle_t *particle 
 		len = particle->height - particle->minz + start[2];
 		VectorMA( start, len - particle->height, particle->deltaNormalized, start );
 
-// Q3Rally Code Start - replaced with a single cvar
-//		if( !cg_lowEffects.integer )
-		if( cg_atmosphericLevel.integer == 2 )
-// END
-		{
+		if( cg_atmosphericLevel.integer == 2 ){
 			frac = (ATMOSPHERIC_CUTHEIGHT - particle->minz + start[2]) / (float) ATMOSPHERIC_CUTHEIGHT;
 			// Splash effects on different surfaces
 			if( particle->contents & (CONTENTS_WATER|CONTENTS_SLIME) )

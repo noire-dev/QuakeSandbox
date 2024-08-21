@@ -2223,6 +2223,10 @@ void UI_DrawHandleModel( float x, float y, float w, float h, const char* model, 
 	VectorSet( angles, 0, 180 - 15, 0 );
 	AnglesToAxis( angles, ent.axis );
 	ent.hModel = trap_R_RegisterModel( model );
+	ent.shaderRGBA[0] = 128;
+	ent.shaderRGBA[1] = 128;
+	ent.shaderRGBA[2] = 128;
+	ent.shaderRGBA[3] = 255;
 	VectorCopy( origin, ent.origin );
 	VectorCopy( origin, ent.lightingOrigin );
 	ent.renderfx = RF_LIGHTING_ORIGIN | RF_NOSHADOW;

@@ -226,6 +226,79 @@ static void CG_CalcVrect (void) {
 
 extern vec3_t headpos;
 extern vec3_t headang;
+
+/*
+===============
+CG_ViewFog
+
+===============
+*/
+static void CG_ViewFog( void ) {
+	int i;
+	float scale;
+	
+	if(!mod_fogColorA){
+		return;
+	}
+
+	cg.viewfog[0].hModel = trap_R_RegisterModel_MiTech( va("models/fog%i", mod_fogModel) );
+	cg.viewfog[0].customShader = trap_R_RegisterShader(va("models/fogtex%i", mod_fogShader));
+
+	for(i = 0; i < 16; i++){
+		cg.viewfog[i].hModel = cg.viewfog[0].hModel;
+		cg.viewfog[i].customShader = cg.viewfog[0].customShader;
+
+		VectorCopy(cg.refdef.vieworg, cg.viewfog[i].origin);
+		VectorCopy(cg.refdef.viewaxis[0], cg.viewfog[i].axis[0]);
+		VectorCopy(cg.refdef.viewaxis[1], cg.viewfog[i].axis[1]);
+		VectorCopy(cg.refdef.viewaxis[2], cg.viewfog[i].axis[2]);
+
+		cg.viewfog[i].shaderRGBA[0] = mod_fogColorR;
+		cg.viewfog[i].shaderRGBA[1] = mod_fogColorG;
+		cg.viewfog[i].shaderRGBA[2] = mod_fogColorB;
+		cg.viewfog[i].shaderRGBA[3] = (mod_fogColorA / 16) + (i * (mod_fogColorA - (mod_fogColorA / 16)) / 15);
+
+		scale = (mod_fogDistance * 0.50) + i * (mod_fogInterval * 0.50);
+		VectorScale(cg.viewfog[i].axis[0], scale, cg.viewfog[i].axis[0]);
+		VectorScale(cg.viewfog[i].axis[1], scale, cg.viewfog[i].axis[1]);
+		VectorScale(cg.viewfog[i].axis[2], scale, cg.viewfog[i].axis[2]);
+
+		trap_R_AddRefEntityToScene(&cg.viewfog[i]);
+	}
+}
+
+static void CG_ViewSky( void ) {
+	int i;
+	float scale;
+	
+	if(!mod_skyColorA){
+		return;
+	}
+
+	cg.viewsky.hModel = trap_R_RegisterModel_MiTech( "models/fog1" );
+	cg.viewsky.customShader = trap_R_RegisterShader(va("models/skytex%i", mod_skyShader));
+
+	VectorCopy(cg.refdef.vieworg, cg.viewsky.origin);
+	VectorCopy(cg.refdef.viewaxis[0], cg.viewsky.axis[0]);
+	VectorCopy(cg.refdef.viewaxis[1], cg.viewsky.axis[1]);
+	VectorCopy(cg.refdef.viewaxis[2], cg.viewsky.axis[2]);
+
+	cg.viewsky.shaderRGBA[0] = mod_skyColorR;
+	cg.viewsky.shaderRGBA[1] = mod_skyColorG;
+	cg.viewsky.shaderRGBA[2] = mod_skyColorB;
+	cg.viewsky.shaderRGBA[3] = mod_skyColorA;
+
+	scale = 4;
+	VectorScale(cg.viewsky.axis[0], scale, cg.viewsky.axis[0]);
+	VectorScale(cg.viewsky.axis[1], scale, cg.viewsky.axis[1]);
+	VectorScale(cg.viewsky.axis[2], scale, cg.viewsky.axis[2]);
+	
+	cg.viewsky.renderfx = RF_FIRST_PERSON;
+
+	trap_R_AddRefEntityToScene(&cg.viewsky);
+}
+
+
 /*
 ===============
 CG_OffsetThirdPersonView
@@ -1002,6 +1075,8 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 		CG_AddLocalEntities();
 		// used for q3f atmospheric effects
 		CG_AddAtmosphericEffects();
+		CG_ViewFog();
+		CG_ViewSky();
 	//}
 	cg.hyperspace = qfalse;
 	CG_AddViewWeapon( &cg.predictedPlayerState );

@@ -1730,7 +1730,7 @@ static void CG_DrawLowerRight( void ) {
 		y = CG_DrawTeamOverlay( y, qtrue, qfalse );
 	}
 
-	if(cg.scoreBoardShowing){
+	if(cgs.gametype != GT_SANDBOX && cgs.gametype != GT_SINGLE){
 	y = CG_DrawScores( y );
 	}
 	y = CG_DrawPowerups( y );

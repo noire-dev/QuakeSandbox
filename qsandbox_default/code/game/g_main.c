@@ -326,6 +326,20 @@ vmCvar_t	save8_session0;
 vmCvar_t	save8_session0_lvl;
 vmCvar_t	save8_epsession;
 
+vmCvar_t	g_fogModel;
+vmCvar_t	g_fogShader;
+vmCvar_t	g_fogDistance;
+vmCvar_t	g_fogInterval;
+vmCvar_t	g_fogColorR;
+vmCvar_t	g_fogColorG;
+vmCvar_t	g_fogColorB;
+vmCvar_t	g_fogColorA;
+vmCvar_t	g_skyShader;
+vmCvar_t	g_skyColorR;
+vmCvar_t	g_skyColorG;
+vmCvar_t	g_skyColorB;
+vmCvar_t	g_skyColorA;
+
 vmCvar_t	save_curmap;
 vmCvar_t	save1_curmap;
 vmCvar_t	save2_curmap;
@@ -882,16 +896,16 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_scoutdamagefactor, "g_scoutdamagefactor", "1", 0, 0, qtrue  },
 	{ &g_scoutgravitymodifier, "g_scoutgravitymodifier", "1", 0, 0, qtrue  },
 	{ &g_scout_infammo, "g_scout_infammo", "0", 0, 0, qtrue  },
-	{ &g_scouthealthmodifier, "g_scouthealthmodifier", "-1", 0, 0, qtrue  },
+	{ &g_scouthealthmodifier, "g_scouthealthmodifier", "1", 0, 0, qtrue  },
 	//rune d set
 	{ &g_doublerfirespeed, "g_doublerfirespeed", "1", 0, 0, qtrue  },
 	{ &g_doublerdamagefactor, "g_doublerdamagefactor", "2", 0, 0, qtrue  },
 	{ &g_doublerspeedfactor, "g_doublerspeedfactor", "1", 0, 0, qtrue  },
 	{ &g_doublergravitymodifier, "g_doublergravitymodifier", "1", 0, 0, qtrue  },
 	{ &g_doubler_infammo, "g_doubler_infammo", "0", 0, 0, qtrue  },
-	{ &g_doublerhealthmodifier, "g_doublerhealthmodifier", "-1", 0, 0, qtrue  },
+	{ &g_doublerhealthmodifier, "g_doublerhealthmodifier", "1", 0, 0, qtrue  },
 	//rune g set
-	{ &g_guardhealthmodifier, "g_guardhealthmodifier", "-1", 0, 0, qtrue  },
+	{ &g_guardhealthmodifier, "g_guardhealthmodifier", "2", 0, 0, qtrue  },
 	{ &g_guardfirespeed, "g_guardfirespeed", "1", 0, 0, qtrue  },
 	{ &g_guarddamagefactor, "g_guarddamagefactor", "1", 0, 0, qtrue  },
 	{ &g_guardspeedfactor, "g_guardspeedfactor", "1", 0, 0, qtrue  },
@@ -903,7 +917,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_ammoregendamagefactor, "g_ammoregendamagefactor", "1", 0, 0, qtrue  },
 	{ &g_ammoregenspeedfactor, "g_ammoregenspeedfactor", "1", 0, 0, qtrue  },
 	{ &g_ammoregengravitymodifier, "g_ammoregengravitymodifier", "1", 0, 0, qtrue  },
-	{ &g_ammoregenhealthmodifier, "g_ammoregenhealthmodifier", "-1", 0, 0, qtrue  },
+	{ &g_ammoregenhealthmodifier, "g_ammoregenhealthmodifier", "1", 0, 0, qtrue  },
 	//ammocount,s
 	{ &g_mgammocount, "g_mgammocount", "-1", 0, 0, qtrue  },
 	{ &g_sgammocount, "g_sgammocount", "-1", 0, 0, qtrue  },
@@ -948,6 +962,20 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_teamblue_respawnwait, "g_teamblue_respawnwait", "3000", 0, 0, qtrue  },
 	{ &g_teamblue_pickupitems, "g_teamblue_pickupitems", "1", 0, 0, qtrue  },
 	// change anytime vars
+	{ &g_fogModel, "g_fogModel", "1", 0, 0, qtrue  },
+	{ &g_fogShader, "g_fogShader", "1", 0, 0, qtrue  },
+	{ &g_fogDistance, "g_fogDistance", "4096", 0, 0, qtrue  },
+	{ &g_fogInterval, "g_fogInterval", "32", 0, 0, qtrue  },
+	{ &g_fogColorR, "g_fogColorR", "210", 0, 0, qtrue  },
+	{ &g_fogColorG, "g_fogColorG", "245", 0, 0, qtrue  },
+	{ &g_fogColorB, "g_fogColorB", "255", 0, 0, qtrue  },
+	{ &g_fogColorA, "g_fogColorA", "0", 0, 0, qtrue  },
+	{ &g_skyShader, "g_skyShader", "1", 0, 0, qtrue  },
+	{ &g_skyColorR, "g_skyColorR", "255", 0, 0, qtrue  },
+	{ &g_skyColorG, "g_skyColorG", "255", 0, 0, qtrue  },
+	{ &g_skyColorB, "g_skyColorB", "255", 0, 0, qtrue  },
+	{ &g_skyColorA, "g_skyColorA", "0", 0, 0, qtrue  },
+	
 	{ &save_session0, "save_session0", "", CVAR_ARCHIVE, 0, qtrue  },
 	{ &save_session0_lvl, "save_session0_lvl", "", CVAR_ARCHIVE, 0, qtrue  },
 	{ &save_epsession, "save_epsession", "", CVAR_ARCHIVE, 0, qtrue  },

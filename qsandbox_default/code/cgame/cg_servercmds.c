@@ -364,6 +364,19 @@ static void CG_ParseWeaponProperties(void) {
 	mod_roundmode     = atoi(CG_Argv(40));
 	mod_zround     = atoi(CG_Argv(41));
 	mod_gravity     = atoi(CG_Argv(42));
+	mod_fogModel     = atoi(CG_Argv(43));
+	mod_fogShader     = atoi(CG_Argv(44));
+	mod_fogDistance     = atoi(CG_Argv(45));
+	mod_fogInterval     = atoi(CG_Argv(46));
+	mod_fogColorR     = atoi(CG_Argv(47));
+	mod_fogColorG     = atoi(CG_Argv(48));
+	mod_fogColorB     = atoi(CG_Argv(49));
+	mod_fogColorA     = atoi(CG_Argv(50));
+	mod_skyShader     = atoi(CG_Argv(51));
+	mod_skyColorR     = atoi(CG_Argv(52));
+	mod_skyColorG     = atoi(CG_Argv(53));
+	mod_skyColorB     = atoi(CG_Argv(54));
+	mod_skyColorA     = atoi(CG_Argv(55));
 }
 
 static void CG_ParseSweps(void) {

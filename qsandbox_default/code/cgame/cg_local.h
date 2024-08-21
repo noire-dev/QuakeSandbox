@@ -739,6 +739,9 @@ typedef struct {
 	int			bobcycle;
 	float		xyspeed;
 	int     nextOrbitTime;
+	
+	refEntity_t		viewfog[16];
+	refEntity_t		viewsky;
 
 	//qboolean cameraMode;		// if rendering from a loaded camera
 
@@ -1460,6 +1463,19 @@ extern	int 	mod_overlay;
 extern	int 	mod_roundmode;
 extern	int 	mod_gravity;
 extern	int 	mod_zround;
+extern	int 	mod_fogModel;
+extern	int 	mod_fogShader;
+extern	int 	mod_fogDistance;
+extern	int 	mod_fogInterval;
+extern	int 	mod_fogColorR;
+extern	int 	mod_fogColorG;
+extern	int 	mod_fogColorB;
+extern	int 	mod_fogColorA;
+extern	int 	mod_skyShader;
+extern	int 	mod_skyColorR;
+extern	int 	mod_skyColorG;
+extern	int 	mod_skyColorB;
+extern	int 	mod_skyColorA;
 
 extern	vmCvar_t 	g_gametype;
 

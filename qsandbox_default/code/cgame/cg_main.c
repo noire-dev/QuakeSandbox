@@ -435,6 +435,19 @@ int mod_overlay;
 int mod_gravity;
 int mod_roundmode;
 int mod_zround;
+int mod_fogModel;
+int mod_fogShader;
+int mod_fogDistance;
+int mod_fogInterval;
+int mod_fogColorR;
+int mod_fogColorG;
+int mod_fogColorB;
+int mod_fogColorA;
+int mod_skyShader;
+int mod_skyColorR;
+int mod_skyColorG;
+int mod_skyColorB;
+int mod_skyColorA;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -1373,6 +1386,19 @@ void CG_SetDefaultWeaponProperties(void) {
 	mod_gravity = 800;
 	mod_roundmode = 0;
 	mod_zround = 0;
+    mod_fogModel = 0;
+    mod_fogShader = 0;
+    mod_fogDistance = 0;
+    mod_fogInterval = 0;
+    mod_fogColorR = 0;
+    mod_fogColorG = 0;
+    mod_fogColorB = 0;
+    mod_fogColorA = 0;
+    mod_skyShader = 0;
+    mod_skyColorR = 0;
+    mod_skyColorG = 0;
+    mod_skyColorB = 0;
+    mod_skyColorA = 0;
 }
 
 

@@ -602,7 +602,7 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 
 		// regenerate
 		if( bg_itemlist[client->ps.stats[STAT_PERSISTANT_POWERUP]].giTag == PW_GUARD ) {
-			maxHealth = client->ps.stats[STAT_MAX_HEALTH] / 2;
+			maxHealth = client->ps.stats[STAT_MAX_HEALTH];
 		}
 		else if ( client->ps.powerups[PW_REGEN] ) {
 			maxHealth = client->ps.stats[STAT_MAX_HEALTH];
@@ -1358,7 +1358,11 @@ if ( !client->ps.gravity ){
 
 	// set speed
 if ( !ent->speed ){
+	if ( !ent->client->noclip ) {
 	client->ps.speed = g_speed.value;
+	} else {
+	client->ps.speed = g_speed.value*2;	
+	}
 	if(client->sess.sessionTeam == TEAM_BLUE){
 	client->ps.speed = g_teamblue_speed.integer;
 	}

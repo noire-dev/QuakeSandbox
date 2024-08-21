@@ -159,24 +159,6 @@ int Pickup_PersistantPowerup( gentity_t *ent, gentity_t *other ) {
 
 	switch( ent->item->giTag ) {
 	case PW_GUARD:
-		if(g_guardhealthmodifier.value < 0){
-		clientNum = other->client->ps.clientNum;
-		trap_GetUserinfo( clientNum, userinfo, sizeof(userinfo) );
-		handicap = atof( Info_ValueForKey( userinfo, "handicap" ) );
-if (!(other->r.svFlags & SVF_BOT)){
-		if( handicap<=0.0f || handicap>100.0f) {
-			handicap = 100.0f;
-		}
-}
-		max = (int)(2 *  handicap * 1);
-
-		other->health = max;
-		other->client->ps.stats[STAT_HEALTH] = max;
-		other->client->ps.stats[STAT_MAX_HEALTH] = max;
-		other->client->ps.stats[STAT_ARMOR] = max;
-		other->client->pers.maxHealth = max;
-		}
-
 		if (g_guardhealthmodifier.value > 0){
 		clientNum = other->client->ps.clientNum;
 		trap_GetUserinfo( clientNum, userinfo, sizeof(userinfo) );
@@ -187,7 +169,7 @@ if (!(other->r.svFlags & SVF_BOT)){
 				}
 		}
 
-		max = (int)(g_guardhealthmodifier.value *  handicap * 1);
+		max = (int)(g_guardhealthmodifier.value * handicap * 1);
 
 		other->health = max;
 		other->client->ps.stats[STAT_HEALTH] = max;
@@ -199,19 +181,6 @@ if (!(other->r.svFlags & SVF_BOT)){
 		break;
 
 	case PW_SCOUT:
-		if(g_scouthealthmodifier.value < 0){
-		clientNum = other->client->ps.clientNum;
-		trap_GetUserinfo( clientNum, userinfo, sizeof(userinfo) );
-		handicap = atof( Info_ValueForKey( userinfo, "handicap" ) );
-		if (!(other->r.svFlags & SVF_BOT)){
-				if( handicap<=0.0f || handicap>100.0f) {
-					handicap = 100.0f;
-				}
-		}
-		other->client->pers.maxHealth = handicap;
-		other->client->ps.stats[STAT_ARMOR] = 0;
-		}
-
 		if (g_scouthealthmodifier.value > 0){
 		clientNum = other->client->ps.clientNum;
 		trap_GetUserinfo( clientNum, userinfo, sizeof(userinfo) );
@@ -234,18 +203,6 @@ if (!(other->r.svFlags & SVF_BOT)){
 		break;
 
 	case PW_DOUBLER:
-		if(g_doublerhealthmodifier.value < 0){
-		clientNum = other->client->ps.clientNum;
-		trap_GetUserinfo( clientNum, userinfo, sizeof(userinfo) );
-		handicap = atof( Info_ValueForKey( userinfo, "handicap" ) );
-		if (!(other->r.svFlags & SVF_BOT)){
-				if( handicap<=0.0f || handicap>100.0f) {
-					handicap = 100.0f;
-				}
-		}
-		other->client->pers.maxHealth = handicap;
-		}
-
 		if(g_doublerhealthmodifier.value > 0){
 		clientNum = other->client->ps.clientNum;
 		trap_GetUserinfo( clientNum, userinfo, sizeof(userinfo) );
@@ -266,22 +223,7 @@ if (!(other->r.svFlags & SVF_BOT)){
 		}
 
 		break;
-
 	case PW_AMMOREGEN:
-		if(g_ammoregenhealthmodifier.value < 0){
-		clientNum = other->client->ps.clientNum;
-		trap_GetUserinfo( clientNum, userinfo, sizeof(userinfo) );
-		handicap = atof( Info_ValueForKey( userinfo, "handicap" ) );
-		if (!(other->r.svFlags & SVF_BOT)){
-				if( handicap<=0.0f || handicap>100.0f) {
-					handicap = 100.0f;
-				}
-		}
-		other->client->pers.maxHealth = handicap;
-		memset(other->client->ammoTimes, 0, sizeof(other->client->ammoTimes));
-		break;
-		}
-
 		if(g_ammoregenhealthmodifier.value > 0){
 		clientNum = other->client->ps.clientNum;
 		trap_GetUserinfo( clientNum, userinfo, sizeof(userinfo) );
