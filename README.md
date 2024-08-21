@@ -10,6 +10,7 @@ Open-Source sandbox game on [MiTech Engine](https://github.com/noire-dev/MiTech)
 
 * Expandable spawn menu
 * Spawn props
+* Colorable props
 * Spawn entities
 * Spawn NPCs
 * Spawn vehicles
@@ -64,7 +65,12 @@ Open-Source sandbox game on [MiTech Engine](https://github.com/noire-dev/MiTech)
 * Sandbox gametype with spawn menu
 * Singleplayer gametype with cutscenes, NPCs and enemies (like quake 1, quake 2, half-life)
 * All Quake 3, Quake 3 Team Arena, OpenArena game modes
-* Improved physics
+* Simple physics engine
+* Physgun
+* Toolgun
+* Gravitygun
+* Custom fog
+* Custom sky
 
 ## Engine:
 
