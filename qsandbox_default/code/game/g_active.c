@@ -1173,13 +1173,13 @@ void CheckCarCollisions(gentity_t *ent) {
             impactForce = sqrt(ent->client->ps.velocity[0] * ent->client->ps.velocity[0] + ent->client->ps.velocity[1] * ent->client->ps.velocity[1]);
 
             // Optionally apply a force or velocity to the hit entity to simulate the push
-			if (impactForce > PHYS_SENS) {
+			if (impactForce > VEHICLE_SENS) {
 			if (!hit->client){
 			G_EnablePropPhysics(hit);
 			}
 			VectorCopy(ent->client->ps.velocity, impactVector);
-			VectorScale(impactVector, 2.50, impactVector);
-			impactVector[2] = impactForce*0.50;
+			VectorScale(impactVector, VEHICLE_PROP_IMPACT, impactVector);
+			impactVector[2] = impactForce*0.15;
 			if (!hit->client){
 			hit->lastPlayer = ent;		//for save attacker
             VectorAdd(hit->s.pos.trDelta, impactVector, hit->s.pos.trDelta);  // Transfer velocity from the prop to the hit entity
@@ -1187,16 +1187,16 @@ void CheckCarCollisions(gentity_t *ent) {
 			VectorAdd(hit->client->ps.velocity, impactVector, hit->client->ps.velocity);  // Transfer velocity from the prop to the hit player
 			}
 			}
-			if(impactForce > PHYS_SENS){
+			if(impactForce > VEHICLE_DAMAGESENS){
 			if(hit->grabbedEntity != ent){
 			if(BG_VehicleCheckClass(ent->client->ps.stats[STAT_VEHICLE]) == VCLASS_CAR){
-			G_CarDamage(hit, ent, (int)(impactForce * PHYS_DAMAGE*0.60));
+			G_CarDamage(hit, ent, (int)(impactForce * VEHICLE_DAMAGESENS*0.60));
 			} else {
-			G_CarDamage(hit, ent, (int)(impactForce * PHYS_DAMAGE*1.50));
+			G_CarDamage(hit, ent, (int)(impactForce * VEHICLE_DAMAGESENS*1.50));
 			}
 			}
 			}
-			if(impactForce > PHYS_SENS*18){
+			if(impactForce > VEHICLE_DAMAGESENS*6){
 				if(BG_VehicleCheckClass(ent->client->ps.stats[STAT_VEHICLE]) == VCLASS_CAR){
 					G_PropSmoke( ent, impactForce*0.25);
 				}

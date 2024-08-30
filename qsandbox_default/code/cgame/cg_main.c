@@ -227,7 +227,6 @@ vmCvar_t	cg_gun_z;
 vmCvar_t	cg_tracerChance;
 vmCvar_t	cg_tracerWidth;
 vmCvar_t	cg_tracerLength;
-vmCvar_t	cg_autoswitch;
 vmCvar_t	cg_ignore;
 vmCvar_t	cg_simpleItems;
 vmCvar_t	cg_fov;
@@ -540,7 +539,6 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &team_legsskin, "team_legsskin", "sarge/default", CVAR_USERINFO | CVAR_ARCHIVE },
 	{ &cg_thirdPersonRotating, "cg_thirdPersonRotating", "0", CVAR_ARCHIVE },
 	{ &cg_oldscoreboard, "cg_oldscoreboard", "0", CVAR_ARCHIVE },
-	{ &cg_autoswitch, "cg_autoswitch", "0", CVAR_ARCHIVE },
 	{ &cg_hudfullscreen, "cg_hudfullscreen", "0", CVAR_ARCHIVE },
 	{ &cg_gibtime, "cg_gibtime", "30", CVAR_ARCHIVE },
 	{ &cg_gibjump, "cg_gibjump", "350", CVAR_ARCHIVE },

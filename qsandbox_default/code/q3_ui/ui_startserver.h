@@ -195,7 +195,7 @@ BOT DATA *****
 #define PLAYER_SLOTS 24
 #define PLAYER_SLOTS_PERCOL (PLAYER_SLOTS/2)
 
-#define MAX_SKILL 14
+#define MAX_SKILL 9
 
 
 // note restrictions on ordering below

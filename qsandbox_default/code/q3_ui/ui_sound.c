@@ -26,17 +26,21 @@ SOUND OPTIONS MENU
 #define ID_EFFECTSVOLUME	14
 #define ID_MUSICVOLUME		15
 #define ID_QUALITY			16
-//#define ID_A3D				17
+#define ID_SDRIVER			17
 #define ID_BACK				18
 #define ID_ANIMSFX			19
 
 
 static const char *quality_items[] = {
-	"Low", "Medium", "High", 0
+	"Low", "Medium", "High", "Ultra", 0
 };
 
 static const char *quality_itemsru[] = {
-	"Низкое", "Среднее", "Высокое", 0
+	"Низкое", "Среднее", "Высокое", "Ультра", 0
+};
+
+static const char *sdriver_items[] = {
+	"DirectSound", "WASAPI", 0
 };
 
 typedef struct {
@@ -54,7 +58,7 @@ typedef struct {
 	menuslider_s		sfxvolume;
 	menuslider_s		musicvolume;
 	menulist_s			quality;
-//	menuradiobutton_s	a3d;
+	menulist_s			sdriver;
 	menuradiobutton_s	animsfx;
 
 	menubitmap_s		back;
@@ -103,30 +107,31 @@ static void UI_SoundOptionsMenu_Event( void* ptr, int event ) {
 	case ID_QUALITY:
 		if( soundOptionsInfo.quality.curvalue == 0 ) {
 			trap_Cvar_SetValue( "s_khz", 11 );
-			trap_Cvar_SetValue( "s_compression", 1 );
 		}
 		if( soundOptionsInfo.quality.curvalue == 1 ) {
 			trap_Cvar_SetValue( "s_khz", 22 );
-			trap_Cvar_SetValue( "s_compression", 0 );
 		}
 		if( soundOptionsInfo.quality.curvalue == 2 ) {
 			trap_Cvar_SetValue( "s_khz", 44 );
-			trap_Cvar_SetValue( "s_compression", 0 );
+		}
+		if( soundOptionsInfo.quality.curvalue == 3 ) {
+			trap_Cvar_SetValue( "s_khz", 48 );
 		}
 		UI_ForceMenuOff();
 		trap_Cmd_ExecuteText( EXEC_APPEND, "snd_restart\n" );
 		break;
-/*
-	case ID_A3D:
-		if( soundOptionsInfo.a3d.curvalue ) {
-			trap_Cmd_ExecuteText( EXEC_NOW, "s_enable_a3d\n" );
+
+	case ID_SDRIVER:
+		if( soundOptionsInfo.sdriver.curvalue == 0 ) {
+			trap_Cvar_Set( "s_driver", "dsound" );
 		}
-		else {
-			trap_Cmd_ExecuteText( EXEC_NOW, "s_disable_a3d\n" );
+		if( soundOptionsInfo.sdriver.curvalue == 1 ) {
+			trap_Cvar_Set( "s_driver", "wasapi" );
 		}
-		soundOptionsInfo.a3d.curvalue = (int)trap_Cvar_VariableValue( "s_usingA3D" );
+		UI_ForceMenuOff();
+		trap_Cmd_ExecuteText( EXEC_APPEND, "snd_restart\n" );
 		break;
-*/
+
 
 	case ID_ANIMSFX:
 		trap_Cvar_SetValue("uie_s_animsfx", soundOptionsInfo.animsfx.curvalue);
@@ -145,6 +150,7 @@ UI_SoundOptionsMenu_Init
 */
 static void UI_SoundOptionsMenu_Init( void ) {
 	int				y;
+	char 			drivername[MAX_QPATH];
 
 	memset( &soundOptionsInfo, 0, sizeof(soundOptionsInfo) );
 
@@ -239,16 +245,14 @@ static void UI_SoundOptionsMenu_Init( void ) {
 	soundOptionsInfo.quality.generic.id			= ID_QUALITY;
 	soundOptionsInfo.quality.generic.x			= 400;
 	soundOptionsInfo.quality.generic.y			= y;
-/*
+
 	y += BIGCHAR_HEIGHT+2;
-	soundOptionsInfo.a3d.generic.type			= MTYPE_RADIOBUTTON;
-	soundOptionsInfo.a3d.generic.name			= "A3D:";
-	soundOptionsInfo.a3d.generic.flags			= QMF_PULSEIFFOCUS|QMF_SMALLFONT;
-	soundOptionsInfo.a3d.generic.callback		= UI_SoundOptionsMenu_Event;
-	soundOptionsInfo.a3d.generic.id				= ID_A3D;
-	soundOptionsInfo.a3d.generic.x				= 400;
-	soundOptionsInfo.a3d.generic.y				= y;
-*/
+	soundOptionsInfo.sdriver.generic.type			= MTYPE_SPINCONTROL;
+	soundOptionsInfo.sdriver.generic.flags			= QMF_PULSEIFFOCUS|QMF_SMALLFONT;
+	soundOptionsInfo.sdriver.generic.callback		= UI_SoundOptionsMenu_Event;
+	soundOptionsInfo.sdriver.generic.id				= ID_SDRIVER;
+	soundOptionsInfo.sdriver.generic.x				= 400;
+	soundOptionsInfo.sdriver.generic.y				= y;
 
 	y += BIGCHAR_HEIGHT+2;
 	soundOptionsInfo.animsfx.generic.type			= MTYPE_RADIOBUTTON;
@@ -279,6 +283,8 @@ static void UI_SoundOptionsMenu_Init( void ) {
 	soundOptionsInfo.musicvolume.generic.name		= "Music Volume:";
 	soundOptionsInfo.quality.generic.name		= "Sound Quality:";
 	soundOptionsInfo.quality.itemnames			= quality_items;
+	soundOptionsInfo.sdriver.generic.name		= "Sound Driver:";
+	soundOptionsInfo.sdriver.itemnames			= sdriver_items;
 	soundOptionsInfo.animsfx.generic.name			= "UI Animation sfx:";
 	}
 	
@@ -292,6 +298,8 @@ static void UI_SoundOptionsMenu_Init( void ) {
 	soundOptionsInfo.musicvolume.generic.name		= "Громкость Музыки:";
 	soundOptionsInfo.quality.generic.name		= "Качество Звука:";
 	soundOptionsInfo.quality.itemnames			= quality_itemsru;
+	soundOptionsInfo.sdriver.generic.name		= "Драйвер звука:";
+	soundOptionsInfo.sdriver.itemnames			= sdriver_items;
 	soundOptionsInfo.animsfx.generic.name			= "UI Звуки Анимации:";
 	}
 
@@ -307,14 +315,12 @@ static void UI_SoundOptionsMenu_Init( void ) {
 	if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &soundOptionsInfo.menu, ( void * ) &soundOptionsInfo.quality );
 	}
-//	Menu_AddItem( &soundOptionsInfo.menu, ( void * ) &soundOptionsInfo.a3d );
+	Menu_AddItem( &soundOptionsInfo.menu, ( void * ) &soundOptionsInfo.sdriver );
 	Menu_AddItem( &soundOptionsInfo.menu, ( void * ) &soundOptionsInfo.animsfx );
 	Menu_AddItem( &soundOptionsInfo.menu, ( void * ) &soundOptionsInfo.back );
 
 	soundOptionsInfo.sfxvolume.curvalue = trap_Cvar_VariableValue( "s_volume" ) * 10;
 	soundOptionsInfo.musicvolume.curvalue = trap_Cvar_VariableValue( "s_musicvolume" ) * 10;
-//	soundOptionsInfo.quality.curvalue = !trap_Cvar_VariableValue( "s_compression" );
-//	soundOptionsInfo.a3d.curvalue = (int)trap_Cvar_VariableValue( "s_usingA3D" );
 	soundOptionsInfo.animsfx.curvalue = (int)trap_Cvar_VariableValue( "uie_s_animsfx" );
 	
 	if( trap_Cvar_VariableValue( "s_khz" ) == 11 ) {
@@ -325,6 +331,18 @@ static void UI_SoundOptionsMenu_Init( void ) {
 	}
 	if( trap_Cvar_VariableValue( "s_khz" ) == 44 ) {
 	soundOptionsInfo.quality.curvalue = 2;
+	}
+	if( trap_Cvar_VariableValue( "s_khz" ) == 48 ) {
+	soundOptionsInfo.quality.curvalue = 3;
+	}
+	
+	trap_Cvar_VariableStringBuffer( "s_driver", drivername, MAX_QPATH );
+	
+	if( Q_stricmp (drivername, "dsound") == 0 ){
+	soundOptionsInfo.sdriver.curvalue = 0;
+	}
+	if( Q_stricmp (drivername, "wasapi") == 0 ){
+	soundOptionsInfo.sdriver.curvalue = 1;
 	}
 }
 

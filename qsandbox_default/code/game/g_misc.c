@@ -1624,7 +1624,7 @@ void G_RunProp(gentity_t *ent) {
 			}
 			}
 			}
-			if(impactForceAll > PHYS_SENS){
+			if(impactForceAll > PHYS_DAMAGESENS){
 			if(hit->grabbedEntity != ent){
 			G_PropDamage(hit, ent->lastPlayer, (int)(impactForceAll * PHYS_DAMAGE));
 			}

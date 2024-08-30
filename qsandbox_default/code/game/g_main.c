@@ -714,9 +714,9 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &cl_giantcharwidth, "cl_giantcharwidth", "20", 0, 0, qtrue  },
 	{ &cl_giantcharheight, "cl_giantcharheight", "32", 0, 0, qtrue  },
 	
-	{ &g_physimpact, "g_physimpact", "0.95", 0, 0, qtrue  },
-	{ &g_physimpulse, "g_physimpulse", "30", 0, 0, qtrue  },
-	{ &g_physdamage, "g_physdamage", "0.25", 0, 0, qtrue  },
+	{ &g_physimpact, "g_physimpact", "0.70", 0, 0, qtrue  },
+	{ &g_physimpulse, "g_physimpulse", "450", 0, 0, qtrue  },
+	{ &g_physdamage, "g_physdamage", "0.60", 0, 0, qtrue  },
 	
 	//QS setting
 	{ &g_minigame, "g_minigame", "0", 0, 0, qtrue  },

@@ -85,6 +85,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define		PHYS_PROP_IMPACT g_physimpact.value
 #define		PHYS_SENS g_physimpulse.integer
 #define		PHYS_DAMAGE g_physdamage.value
+#define		PHYS_DAMAGESENS 30
+
+#define		VEHICLE_PROP_IMPACT g_physimpact.value
+#define		VEHICLE_SENS 30
+#define		VEHICLE_DAMAGE 0.25
+#define		VEHICLE_DAMAGESENS 30
 
 // movers are things like doors, plats, buttons, etc
 typedef enum {

@@ -567,27 +567,27 @@ static qboolean	CG_RegisterClientSkin( clientInfo_t *ci, const char *teamName, c
 		ci->legsSkin = trap_R_RegisterSkin( filename );
 	}
 	if (!ci->legsSkin) {
-		Com_Printf( "Leg skin load failure: %s\n", filename );
+		//Com_Printf( "Leg skin load failure: %s\n", filename );
 	}
 
 	if ( CG_FindClientModelFile( filename, sizeof(filename), ci, NULL, modelName, skinName, "upper", "skin" ) ) {
 		ci->torsoSkin = trap_R_RegisterSkin( filename );
 	}
 	if (!ci->torsoSkin) {
-		Com_Printf( "Torso skin load failure: %s\n", filename );
+		//Com_Printf( "Torso skin load failure: %s\n", filename );
 	}
 
 	if ( CG_FindClientHeadFile( filename, sizeof(filename), ci, NULL, headModelName, headSkinName, "head", "skin" ) ) {
 		ci->headSkin = trap_R_RegisterSkin( filename );
 	}
 	if (!ci->headSkin) {
-		Com_Printf( "Head skin load failure: %s\n", filename );
+		//Com_Printf( "Head skin load failure: %s\n", filename );
 	}
 
 	// if any skins failed to load
-	if ( !ci->legsSkin || !ci->torsoSkin || !ci->headSkin ) {
+	/*if ( !ci->legsSkin || !ci->torsoSkin || !ci->headSkin ) {
 		return qfalse;
-	}
+	}*/
 	return qtrue;
 }
 	if(cg_forceModel.integer == 0){
@@ -595,7 +595,7 @@ static qboolean	CG_RegisterClientSkin( clientInfo_t *ci, const char *teamName, c
 		ci->legsSkin = trap_R_RegisterSkin( filename );
 	}
 	if (!ci->legsSkin) {
-		Com_Printf( "Leg skin load failure using default: %s\n", filename );
+		//Com_Printf( "Leg skin load failure using default: %s\n", filename );
 	if ( CG_FindClientModelFile( filename, sizeof(filename), ci, NULL, modelName, skinName, "lower", "skin" ) ) {
 		ci->legsSkin = trap_R_RegisterSkin( filename );
 	}
@@ -605,20 +605,20 @@ static qboolean	CG_RegisterClientSkin( clientInfo_t *ci, const char *teamName, c
 		ci->torsoSkin = trap_R_RegisterSkin( filename );
 	}
 	if (!ci->torsoSkin) {
-		Com_Printf( "Torso skin load failure: %s\n", filename );
+		//Com_Printf( "Torso skin load failure: %s\n", filename );
 	}
 
 	if ( CG_FindClientHeadFile( filename, sizeof(filename), ci, NULL, headModelName, headSkinName, "head", "skin" ) ) {
 		ci->headSkin = trap_R_RegisterSkin( filename );
 	}
 	if (!ci->headSkin) {
-		Com_Printf( "Head skin load failure: %s\n", filename );
+		//Com_Printf( "Head skin load failure: %s\n", filename );
 	}
 
 	// if any skins failed to load
-	if ( !ci->legsSkin || !ci->torsoSkin || !ci->headSkin ) {
+	/*if ( !ci->legsSkin || !ci->torsoSkin || !ci->headSkin ) {
 		return qfalse;
-}
+	}*/
 }
 return qtrue;
 }

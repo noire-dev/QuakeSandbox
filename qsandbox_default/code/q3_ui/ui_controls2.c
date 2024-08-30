@@ -121,12 +121,11 @@ typedef struct
 #define ID_FREELOOK		53
 #define ID_INVERTMOUSE	54
 #define ID_ALWAYSRUN	55
-#define ID_AUTOSWITCH	56
-#define ID_MOUSESPEED	57
-#define ID_JOYENABLE	58
-#define ID_JOYTHRESHOLD	59
-#define ID_SMOOTHMOUSE	60
-#define ID_MOUSESTYLE	61
+#define ID_MOUSESPEED	56
+#define ID_JOYENABLE	57
+#define ID_JOYTHRESHOLD	58
+#define ID_SMOOTHMOUSE	59
+#define ID_MOUSESTYLE	60
 
 
 typedef struct
@@ -185,7 +184,6 @@ typedef struct
 	menuradiobutton_s	smoothmouse;
 	menuradiobutton_s	alwaysrun;
 	menuaction_s		showscores;
-	menuradiobutton_s	autoswitch;
 	menuaction_s		useitem;
 	playerInfo_t		playerinfo;
 	qboolean			changesmade;
@@ -341,7 +339,6 @@ static configcvar_t g_configcvars[] =
 {
 	{"cl_run",			0,					0},
 	{"m_pitch",			0,					0},
-	{"cg_autoswitch",	0,					0},
 	{"sensitivity",		0,					0},
 	{"in_joystick",		0,					0},
 	{"joy_threshold",	0,					0},
@@ -378,8 +375,7 @@ static menucommon_s *g_movement_controls[] =
 static menucommon_s *g_weapons_controls[] = {
 	(menucommon_s *)&s_controls.attack,           
 	(menucommon_s *)&s_controls.nextweapon,
-	(menucommon_s *)&s_controls.prevweapon,
-	(menucommon_s *)&s_controls.autoswitch,    
+	(menucommon_s *)&s_controls.prevweapon, 
 	(menucommon_s *)&s_controls.chainsaw,         
 	(menucommon_s *)&s_controls.machinegun,
 	(menucommon_s *)&s_controls.shotgun,          
@@ -818,7 +814,6 @@ static void Controls_GetConfig( void )
 	s_controls.invertmouse.curvalue  = Controls_GetCvarValue( "m_pitch" ) < 0;
 	s_controls.smoothmouse.curvalue  = UI_ClampCvar( 0, 1, Controls_GetCvarValue( "m_filter" ) );
 	s_controls.alwaysrun.curvalue    = UI_ClampCvar( 0, 1, Controls_GetCvarValue( "cl_run" ) );
-	s_controls.autoswitch.curvalue   = UI_ClampCvar( 0, 1, Controls_GetCvarValue( "cg_autoswitch" ) );
 	s_controls.sensitivity.curvalue  = UI_ClampCvar( 2, 30, Controls_GetCvarValue( "sensitivity" ) );
 	s_controls.joyenable.curvalue    = UI_ClampCvar( 0, 1, Controls_GetCvarValue( "in_joystick" ) );
 	s_controls.joythreshold.curvalue = UI_ClampCvar( 0.05f, 0.75f, Controls_GetCvarValue( "joy_threshold" ) );
@@ -861,7 +856,6 @@ static void Controls_SetConfig( void )
 
 	trap_Cvar_SetValue( "m_filter", s_controls.smoothmouse.curvalue );
 	trap_Cvar_SetValue( "cl_run", s_controls.alwaysrun.curvalue );
-	trap_Cvar_SetValue( "cg_autoswitch", s_controls.autoswitch.curvalue );
 	trap_Cvar_SetValue( "sensitivity", s_controls.sensitivity.curvalue );
 	trap_Cvar_SetValue( "in_joystick", s_controls.joyenable.curvalue );
 	trap_Cvar_SetValue( "joy_threshold", s_controls.joythreshold.curvalue );
@@ -896,7 +890,6 @@ static void Controls_SetDefaults( void )
 	s_controls.invertmouse.curvalue  = Controls_GetCvarDefault( "m_pitch" ) < 0;
 	s_controls.smoothmouse.curvalue  = Controls_GetCvarDefault( "m_filter" );
 	s_controls.alwaysrun.curvalue    = Controls_GetCvarDefault( "cl_run" );
-	s_controls.autoswitch.curvalue   = Controls_GetCvarDefault( "cg_autoswitch" );
 	s_controls.sensitivity.curvalue  = Controls_GetCvarDefault( "sensitivity" );
 	s_controls.joyenable.curvalue    = Controls_GetCvarDefault( "in_joystick" );
 	s_controls.joythreshold.curvalue = Controls_GetCvarDefault( "joy_threshold" );
@@ -1149,7 +1142,6 @@ static void Controls_MenuEvent( void* ptr, int event )
 		case ID_INVERTMOUSE:
 		case ID_SMOOTHMOUSE:
 		case ID_ALWAYSRUN:
-		case ID_AUTOSWITCH:
 		case ID_JOYENABLE:
 		case ID_JOYTHRESHOLD:
 			if (event == QM_ACTIVATED)
@@ -1628,19 +1620,6 @@ static void Controls_MenuInit( void )
 	s_controls.alwaysrun.generic.callback  = Controls_MenuEvent;
 	s_controls.alwaysrun.generic.statusbar = Controls_StatusBar;
 
-	s_controls.autoswitch.generic.type      = MTYPE_RADIOBUTTON;
-	s_controls.autoswitch.generic.flags	    = QMF_SMALLFONT;
-	s_controls.autoswitch.generic.x	        = SCREEN_WIDTH/2;
-	if(cl_language.integer == 0){
-	s_controls.autoswitch.generic.name	    = "autoswitch weapons";
-	}
-	if(cl_language.integer == 1){
-	s_controls.autoswitch.generic.name	    = "автопереключение оружия";
-	}
-	s_controls.autoswitch.generic.id        = ID_AUTOSWITCH;
-	s_controls.autoswitch.generic.callback  = Controls_MenuEvent;
-	s_controls.autoswitch.generic.statusbar = Controls_StatusBar;
-
 	s_controls.sensitivity.generic.type	     = MTYPE_SLIDER;
 	s_controls.sensitivity.generic.x		 = SCREEN_WIDTH/2;
 	s_controls.sensitivity.generic.flags	 = QMF_SMALLFONT;
@@ -1848,7 +1827,6 @@ if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &s_controls.menu, &s_controls.nextweapon );
 	Menu_AddItem( &s_controls.menu, &s_controls.prevweapon );
 }
-	Menu_AddItem( &s_controls.menu, &s_controls.autoswitch );
 if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &s_controls.menu, &s_controls.chainsaw );
 	Menu_AddItem( &s_controls.menu, &s_controls.machinegun );

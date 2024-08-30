@@ -902,29 +902,6 @@ static void CG_ItemPickup( int itemNum ) {
 	}
 	if ( bg_itemlist[itemNum].giType == IT_WEAPON ) {
 		cg.swep_listcl[bg_itemlist[itemNum].giTag] = 1;
-		// select it immediately
-                /* always*/
-		if ( cg_autoswitch.integer == 1 && bg_itemlist[itemNum].giTag != WP_MACHINEGUN ) {
-			cg.weaponSelectTime = cg.time;
-			cg.weaponSelect = bg_itemlist[itemNum].giTag;
-		}
-                /* if new */
-                if ( cg_autoswitch.integer == 2 && 0 == (cg.snap->ps.stats[ STAT_WEAPONS ] & (1 << bg_itemlist[itemNum].giTag) ) ) {
-                        cg.weaponSelectTime = cg.time;
-			cg.weaponSelect = bg_itemlist[itemNum].giTag;
-                }
-                /* if better */
-                if ( cg_autoswitch.integer == 3 && CG_WeaponHigher(cg.weaponSelect,bg_itemlist[itemNum].giTag)) {
-                        cg.weaponSelectTime = cg.time;
-			cg.weaponSelect = bg_itemlist[itemNum].giTag;
-                }
-                /* if new and better */
-                if ( cg_autoswitch.integer == 4 && 0 == (cg.snap->ps.stats[ STAT_WEAPONS ] & (1 << bg_itemlist[itemNum].giTag) ) 
-                        && CG_WeaponHigher(cg.weaponSelect,bg_itemlist[itemNum].giTag)) {
-                        cg.weaponSelectTime = cg.time;
-			cg.weaponSelect = bg_itemlist[itemNum].giTag;
-                }
-                //
 	}
 
 }
