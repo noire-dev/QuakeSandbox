@@ -2538,7 +2538,7 @@ static void CG_DrawCenter1FctfString( void ) {
 		if(cl_language.integer == 0){
             line = va("Flag dropped!");
 		}
-		if(cl_language.integer == 0){
+		if(cl_language.integer == 1){
 			line = va("Флаг потерян!");
 		}
             color = colorWhite;

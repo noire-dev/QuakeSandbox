@@ -32,7 +32,7 @@ for /d %%D in (*) do (
         echo Archive %%D in !archive_path!
         powershell.exe -Command "Compress-Archive -Path '%%D\*' -DestinationPath '!archive_path!'"
         ren "!archive_path!" "!temp_archive_name!"
-		rm "!archive_done!"
+		Remove-item "!archive_done!"
         ren "!temp_archive_path!" "!archive_done!"
     )
 )

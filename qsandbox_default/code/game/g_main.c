@@ -652,12 +652,12 @@ int	mod_cgspread;
 int	mod_ftdelay;
 int	mod_amdelay;
 int	mod_vampire_max_health;
-int mod_hastefirespeed;
-int mod_ammoregenfirespeed;
-int mod_scoutfirespeed;
+float mod_hastefirespeed;
+float mod_ammoregenfirespeed;
+float mod_scoutfirespeed;
 int	mod_poweruptime;
-int	mod_guardfirespeed;
-int	mod_doublerfirespeed;
+float	mod_guardfirespeed;
+float	mod_doublerfirespeed;
 int	mod_quadtime;
 int	mod_bsuittime;
 int	mod_hastetime;
@@ -667,8 +667,8 @@ int	mod_flighttime;
 int mod_noplayerclip;
 int	mod_ammolimit;
 int mod_invulmove;
-int mod_teamblue_firespeed;
-int mod_teamred_firespeed;
+float mod_teamblue_firespeed;
+float mod_teamred_firespeed;
 int mod_medkitlimit;
 int	mod_medkitinf;
 int	mod_teleporterinf;
@@ -892,27 +892,27 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_amguided, "g_amguided", "0", 0, 0, qtrue  },
 	//rune s set
 	{ &g_scoutspeedfactor, "g_scoutspeedfactor", "1.5", 0, 0, qtrue  },
-	{ &g_scoutfirespeed, "g_scoutfirespeed", "1.5", 0, 0, qtrue  },
+	{ &g_scoutfirespeed, "g_scoutfirespeed", "0.60", 0, 0, qtrue  },
 	{ &g_scoutdamagefactor, "g_scoutdamagefactor", "1", 0, 0, qtrue  },
 	{ &g_scoutgravitymodifier, "g_scoutgravitymodifier", "1", 0, 0, qtrue  },
 	{ &g_scout_infammo, "g_scout_infammo", "0", 0, 0, qtrue  },
 	{ &g_scouthealthmodifier, "g_scouthealthmodifier", "1", 0, 0, qtrue  },
 	//rune d set
 	{ &g_doublerfirespeed, "g_doublerfirespeed", "1", 0, 0, qtrue  },
-	{ &g_doublerdamagefactor, "g_doublerdamagefactor", "2", 0, 0, qtrue  },
+	{ &g_doublerdamagefactor, "g_doublerdamagefactor", "2.5", 0, 0, qtrue  },
 	{ &g_doublerspeedfactor, "g_doublerspeedfactor", "1", 0, 0, qtrue  },
 	{ &g_doublergravitymodifier, "g_doublergravitymodifier", "1", 0, 0, qtrue  },
 	{ &g_doubler_infammo, "g_doubler_infammo", "0", 0, 0, qtrue  },
 	{ &g_doublerhealthmodifier, "g_doublerhealthmodifier", "1", 0, 0, qtrue  },
 	//rune g set
-	{ &g_guardhealthmodifier, "g_guardhealthmodifier", "2", 0, 0, qtrue  },
+	{ &g_guardhealthmodifier, "g_guardhealthmodifier", "1.5", 0, 0, qtrue  },
 	{ &g_guardfirespeed, "g_guardfirespeed", "1", 0, 0, qtrue  },
 	{ &g_guarddamagefactor, "g_guarddamagefactor", "1", 0, 0, qtrue  },
 	{ &g_guardspeedfactor, "g_guardspeedfactor", "1", 0, 0, qtrue  },
 	{ &g_guardgravitymodifier, "g_guardgravitymodifier", "1", 0, 0, qtrue  },
 	{ &g_guard_infammo, "g_guard_infammo", "0", 0, 0, qtrue  },
 	//rune a set
-	{ &g_ammoregenfirespeed, "g_ammoregenfirespeed", "1.3", 0, 0, qtrue  },
+	{ &g_ammoregenfirespeed, "g_ammoregenfirespeed", "0.65", 0, 0, qtrue  },
 	{ &g_ammoregen_infammo, "g_ammoregen_infammo", "0", 0, 0, qtrue  },
 	{ &g_ammoregendamagefactor, "g_ammoregendamagefactor", "1", 0, 0, qtrue  },
 	{ &g_ammoregenspeedfactor, "g_ammoregenspeedfactor", "1", 0, 0, qtrue  },
@@ -1076,7 +1076,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_slowhealthregen, "g_slowhealthregen", "5", 0, 0, qtrue  },
 	{ &g_droppeditemtime, "g_droppeditemtime", "30", 0, 0, qtrue  },
 	{ &g_autoflagreturn, "g_autoflagreturn", "30", 0, 0, qtrue  },
-	{ &g_hastefirespeed, "g_hastefirespeed", "1.3", 0, 0, qtrue  },
+	{ &g_hastefirespeed, "g_hastefirespeed", "0.65", 0, 0, qtrue  },
 	{ &g_medkitmodifier, "g_medkitmodifier", "100", 0, 0, qtrue  },
 	{ &g_armorprotect, "g_armorprotect", "0.66", 0, 0, qtrue  },
 	{ &g_respawnwait, "g_respawnwait", "3000", 0, 0, qtrue  },

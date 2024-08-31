@@ -1374,82 +1374,70 @@ StartServer_WriteSelectedBotParams
 */
 static void StartServer_WriteSelectedBotParams( void )
 {
-	int i;
-	int team;
-   const char* skill;
-	qboolean custom;
-	int left,right;
-	botskill_t* skillrange;
+    int i;
+    const char* skill;
+    qboolean custom;
+    botskill_t* skillrange;
 
-	skillrange = &s_scriptdata.bot.globalSkill;
+    skillrange = &s_scriptdata.bot.globalSkill;
 
-	custom = qfalse;
-	if (s_scriptdata.bot.skillType >= BOTSKILL_CUSTOMSINGLE)
-		custom = qtrue;
+    custom = qfalse;
+    if (s_scriptdata.bot.skillType >= BOTSKILL_CUSTOMSINGLE)
+        custom = qtrue;
 
-	if (s_scriptdata.gametype >= GT_TEAM) {
-		// team game
-		// we must interleave red and blue in case
-		// we have team_forcebalance enabled
-		team = StartServer_GetPlayerTeam();
+    if (s_scriptdata.gametype >= GT_TEAM && s_scriptdata.gametype != GT_LMS) {
+        // team game
 
-		left = 0;
-		right = PLAYER_SLOTS_PERCOL;
-		do {
-			// find first free left bot
-			for ( ; left < PLAYER_SLOTS_PERCOL; left++) {
-				if (s_scriptdata.bot.slotType[left] != SLOTTYPE_BOT)
-					continue;
-				if (s_scriptdata.bot.name[left][0] == '\0')
-					continue;
-				break;
-			}
+        int playerTeam = StartServer_GetPlayerTeam();
+        int otherTeam = 1 - playerTeam;
 
-			// find next free right bot
-			for ( ; right < PLAYER_SLOTS; right++) {
-				if (s_scriptdata.bot.slotType[right] != SLOTTYPE_BOT)
-					continue;
-				if (s_scriptdata.bot.name[right][0] == '\0')
-					continue;
-				break;
-			}
+        for (i = 0; i < PLAYER_SLOTS_PERCOL; i++) {
+            if (s_scriptdata.bot.slotType[i] != SLOTTYPE_BOT)
+                continue;
+            if (s_scriptdata.bot.name[i][0] == '\0')
+                continue;
 
-			if (left < PLAYER_SLOTS_PERCOL) {
-				if (custom)
-					skillrange = &s_scriptdata.bot.skill[left];
-				skill = StartServer_GetBotSkill(skillrange);
-				AddScript(va("addbot %s %s %s; ", s_scriptdata.bot.name[left], skill, bot_teamname[team]));
-				left++;
-			}
+            if (custom)
+                skillrange = &s_scriptdata.bot.skill[i];
 
-			if (right < PLAYER_SLOTS) {
-				if (custom)
-					skillrange = &s_scriptdata.bot.skill[right];
-				skill = StartServer_GetBotSkill(skillrange);
-				AddScript(va("addbot %s %s %s; ", s_scriptdata.bot.name[right], skill, bot_teamname[1 - team]));
-				right++;
-			}
-		} while (left < PLAYER_SLOTS_PERCOL && right < PLAYER_SLOTS);
-	}
-	else {
-		// single player game
-		for (i = 0; i < PLAYER_SLOTS; i++) {
-			if (s_scriptdata.bot.slotType[i] != SLOTTYPE_BOT)
-				continue;
+            skill = StartServer_GetBotSkill(skillrange);
 
-			// no blank bot fields
-			if (s_scriptdata.bot.name[i][0] == '\0')
-				continue;
+            AddScript(va("addbot %s %s %s; ", s_scriptdata.bot.name[i], skill, bot_teamname[playerTeam]));
+        }
 
-			if (custom)
-				skillrange = &s_scriptdata.bot.skill[i];
+        for (i = PLAYER_SLOTS_PERCOL; i < PLAYER_SLOTS; i++) {
+            if (s_scriptdata.bot.slotType[i] != SLOTTYPE_BOT)
+                continue;
+            if (s_scriptdata.bot.name[i][0] == '\0')
+                continue;
 
-			skill = StartServer_GetBotSkill(skillrange);
+            if (custom)
+                skillrange = &s_scriptdata.bot.skill[i];
 
-			AddScript(va("addbot %s %s; ", s_scriptdata.bot.name[i], skill));
-		}
-	}
+            skill = StartServer_GetBotSkill(skillrange);
+
+            AddScript(va("addbot %s %s %s; ", s_scriptdata.bot.name[i], skill, bot_teamname[otherTeam]));
+        }
+    }
+    else {
+        // single player
+        for (i = 0; i < PLAYER_SLOTS; i++) {
+            if (s_scriptdata.bot.slotType[i] != SLOTTYPE_BOT)
+                continue;
+
+            if (s_scriptdata.bot.name[i][0] == '\0')
+                continue;
+
+            if (custom)
+                skillrange = &s_scriptdata.bot.skill[i];
+
+            skill = StartServer_GetBotSkill(skillrange);
+
+            AddScript(va("addbot %s %s; ", s_scriptdata.bot.name[i], skill));
+        }
+    }
 }
+
 
 
 /*

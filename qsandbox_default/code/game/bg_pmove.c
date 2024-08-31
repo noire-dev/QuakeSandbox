@@ -2004,28 +2004,28 @@ PM_AddEvent( EV_FIRE_WEAPON );
 	}
 
 	if( bg_itemlist[pm->ps->stats[STAT_PERSISTANT_POWERUP]].giTag == PW_SCOUT ) {
-		addTime /= mod_scoutfirespeed;
+		addTime *= mod_scoutfirespeed;
 	}
 	else if( bg_itemlist[pm->ps->stats[STAT_PERSISTANT_POWERUP]].giTag == PW_GUARD ) {
-		addTime /= mod_guardfirespeed;
+		addTime *= mod_guardfirespeed;
 	}
 	else if( bg_itemlist[pm->ps->stats[STAT_PERSISTANT_POWERUP]].giTag == PW_AMMOREGEN ) {
-		addTime /= mod_ammoregenfirespeed;
+		addTime *= mod_ammoregenfirespeed;
 	}
 	else if( bg_itemlist[pm->ps->stats[STAT_PERSISTANT_POWERUP]].giTag == PW_DOUBLER ) {
-		addTime /= mod_doublerfirespeed;
+		addTime *= mod_doublerfirespeed;
 	}
 	else if( bg_itemlist[pm->ps->stats[STAT_PERSISTANT_POWERUP]].giTag == PW_GUARD ) {
-		addTime /= mod_guardfirespeed;
+		addTime *= mod_guardfirespeed;
 	}
 	if ( pm->ps->powerups[PW_HASTE] ) {
-		addTime /= mod_hastefirespeed;
+		addTime *= mod_hastefirespeed;
 	}
 	if ( pm->ps->persistant[PERS_TEAM] == TEAM_BLUE ) {
-		addTime /= mod_teamblue_firespeed;
+		addTime *= mod_teamblue_firespeed;
 	}
 	if ( pm->ps->persistant[PERS_TEAM] == TEAM_RED ) {
-		addTime /= mod_teamred_firespeed;
+		addTime *= mod_teamred_firespeed;
 	}
 
 if(!BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE])){

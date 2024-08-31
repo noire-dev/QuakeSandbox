@@ -2223,13 +2223,6 @@ static void PlayerModel_MenuInit( void )
 	s_playermodel.model.bNoIdleAnim = qtrue;
 	s_playermodel.model.bNoAutoUpdate = qtrue;
 	s_playermodel.model.allowCursorFire = qtrue;
-	
-	/*s_playermodel.modelChange.generic.left			*= 1.50;
-	s_playermodel.modelChange.generic.right			/= 1.25;
-	s_playermodel.teamModel.generic.left			*= 2.00;
-	s_playermodel.teamModel.generic.right			/= 1.50;
-	s_playermodel.forceHeadMatch.generic.left			*= 1.50;
-	s_playermodel.forceHeadMatch.generic.right			/= 1.25;*/
 
 	PlayerModel_SetMenuItems();
 	PlayerModel_ShowControls();

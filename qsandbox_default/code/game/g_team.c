@@ -1989,7 +1989,7 @@ static void ObeliskTouch( gentity_t *self, gentity_t *other, trace_t *trace ) {
 	other->client->ps.generic1 = 0;
 	CalculateRanks();
 
-	Team_CaptureFlagSound( self, !self->spawnflags );
+	Team_CaptureFlagSound( self, self->spawnflags );
 }
 
 static void ObeliskPain( gentity_t *self, gentity_t *attacker, int damage ) {
