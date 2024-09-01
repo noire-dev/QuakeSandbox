@@ -1449,16 +1449,14 @@ ent->wait_to_pickup = 100000000;
 
 	// set max health
 	if (client->ps.powerups[PW_GUARD]) {
-    client->pers.maxHealth = 200;
-	} else
+		client->pers.maxHealth = 200*g_guardhealthmodifier.value;
+	} else {
 		health = atoi( Info_ValueForKey( userinfo, "handicap" ) );
 		client->pers.maxHealth = health;
-if (!(ent->r.svFlags & SVF_BOT)){
 		if ( client->pers.maxHealth < 1 || client->pers.maxHealth > 100 ) {
 			client->pers.maxHealth = 100;
-}
 		}
-		
+	}
 	client->ps.stats[STAT_MAX_HEALTH] = client->pers.maxHealth;
 
 	// set model
