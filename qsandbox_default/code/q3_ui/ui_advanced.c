@@ -96,7 +96,6 @@ static void UI_Advanced_MenuEvent2( void *ptr, int event ) {
 char* 			advanced_items[] = {
 "cg_leiChibi",
 "cg_hudfullscreen",
-"cl_screencustomoffset",
 "cl_propsmallsizescale",
 "cl_propheight",
 "cl_propgapwidth",
@@ -186,7 +185,7 @@ UI_Advanced_ParseInfos
 	int advanced_i = 0;
 	int advanced_j = 0;
 void UI_Advanced_ParseInfos( void ) {
-	for (advanced_i = 0; advanced_i < 81; advanced_i++) {
+	for (advanced_i = 0; advanced_i < 80; advanced_i++) {
 	if(Q_stricmp (s_advanced.filter.field.buffer, "")){
 	if ( !Q_stristr( advanced_items[advanced_i], s_advanced.filter.field.buffer ) ) {
 		continue;
@@ -297,7 +296,7 @@ static void UI_Advanced_MenuInit( void ) {
 	s_advanced.back.generic.flags		= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_advanced.back.generic.id			= ID_BACK;
 	s_advanced.back.generic.callback	= UI_Advanced_MenuEvent;
-	s_advanced.back.generic.x			= 0 - cl_screenoffset.integer;
+	s_advanced.back.generic.x			= 0 - uis.wideoffset;
 	s_advanced.back.generic.y			= 480-64;
 	s_advanced.back.width				= 128;
 	s_advanced.back.height				= 64;
@@ -308,7 +307,7 @@ static void UI_Advanced_MenuInit( void ) {
 	s_advanced.go.generic.flags			= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_advanced.go.generic.id			= ID_GO;
 	s_advanced.go.generic.callback		= UI_Advanced_MenuEvent;
-	s_advanced.go.generic.x				= 640 + cl_screenoffset.integer;
+	s_advanced.go.generic.x				= 640 + uis.wideoffset;
 	s_advanced.go.generic.y				= 480-64;
 	s_advanced.go.width					= 128;
 	s_advanced.go.height				= 64;

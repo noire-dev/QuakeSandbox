@@ -1279,7 +1279,7 @@ static void UI_BotSelect_Init( char *bot , int index) {
 	botSelectInfo.back.generic.flags	= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	botSelectInfo.back.generic.callback	= UI_BotSelect_Event;
 	botSelectInfo.back.generic.id = ID_BOTSELECT_BACK;
-	botSelectInfo.back.generic.x		= 0 - cl_screenoffset.integer;
+	botSelectInfo.back.generic.x		= 0 - uis.wideoffset;
 	botSelectInfo.back.generic.y		= 480-64;
 	botSelectInfo.back.width			= 128;
 	botSelectInfo.back.height			= 64;
@@ -1290,7 +1290,7 @@ static void UI_BotSelect_Init( char *bot , int index) {
 	botSelectInfo.go.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	botSelectInfo.go.generic.callback	= UI_BotSelect_Event;
 	botSelectInfo.go.generic.id = ID_BOTSELECT_ACCEPT;
-	botSelectInfo.go.generic.x			= 640 + cl_screenoffset.integer;
+	botSelectInfo.go.generic.x			= 640 + uis.wideoffset;
 	botSelectInfo.go.generic.y			= 480-64;
 	botSelectInfo.go.width				= 128;
 	botSelectInfo.go.height				= 64;

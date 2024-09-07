@@ -2975,6 +2975,10 @@ void MField_Draw( mfield_t *edit, int x, int y, int style, vec4_t color ) {
 	{
 		charw =	GIANTCHAR_WIDTH;
 	}
+	else if (style & UI_TINYFONT)
+	{
+		charw =	TINYCHAR_WIDTH;
+	}
 	else
 	{
 		charw =	BIGCHAR_WIDTH;
@@ -3056,6 +3060,10 @@ void MField_DrawCustom( mfield_t *edit, int x, int y, int style, vec4_t color, f
 	if (style & UI_SMALLFONT)
 	{
 		charw =	SMALLCHAR_WIDTH;
+	}
+	else if (style & UI_TINYFONT)
+	{
+		charw =	TINYCHAR_WIDTH;
 	}
 	else if (style & UI_GIANTFONT)
 	{

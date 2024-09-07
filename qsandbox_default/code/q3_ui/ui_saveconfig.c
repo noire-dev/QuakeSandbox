@@ -152,7 +152,7 @@ static void UI_SaveConfigMenu_Init( void ) {
 	saveConfig.back.generic.flags		= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	saveConfig.back.generic.id			= ID_BACK;
 	saveConfig.back.generic.callback	= UI_SaveConfigMenu_BackEvent;
-	saveConfig.back.generic.x			= 0 - cl_screenoffset.integer;
+	saveConfig.back.generic.x			= 0 - uis.wideoffset;
 	saveConfig.back.generic.y			= 480-64;
 	saveConfig.back.width				= 128;
 	saveConfig.back.height				= 64;
@@ -163,7 +163,7 @@ static void UI_SaveConfigMenu_Init( void ) {
 	saveConfig.save.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	saveConfig.save.generic.id			= ID_SAVE;
 	saveConfig.save.generic.callback	= UI_SaveConfigMenu_SaveEvent;
-	saveConfig.save.generic.x			= 640 + cl_screenoffset.integer;
+	saveConfig.save.generic.x			= 640 + uis.wideoffset;
 	saveConfig.save.generic.y			= 480-64;
 	saveConfig.save.width  				= 128;
 	saveConfig.save.height  		    = 64;

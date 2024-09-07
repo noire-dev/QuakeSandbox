@@ -96,18 +96,17 @@ CG_SmokePuff
 Adds a smoke puff or blood trail localEntity.
 =====================
 */
-localEntity_t *CG_SmokePuff( const vec3_t p, const vec3_t vel, 
-				   float radius,
-				   float r, float g, float b, float a,
-				   float duration,
-				   int startTime,
-				   int fadeInTime,
-				   int leFlags,
-				   qhandle_t hShader ) {
+localEntity_t *CG_SmokePuff(const vec3_t p, const vec3_t vel, 
+							float radius,
+							float r, float g, float b, float a,
+							float duration,
+							int startTime,
+							int fadeInTime,
+							int leFlags,
+							qhandle_t hShader) {
 	static int	seed = 0x92;
 	localEntity_t	*le;
 	refEntity_t		*re;
-//	int fadeInTime = startTime + duration / 2;
 
 	le = CG_AllocLocalEntity();
 	le->leFlags = leFlags;
@@ -142,19 +141,10 @@ localEntity_t *CG_SmokePuff( const vec3_t p, const vec3_t vel,
 	VectorCopy( p, re->origin );
 	re->customShader = hShader;
 
-	// rage pro can't alpha fade, so use a different shader
-	if ( cgs.glconfig.hardwareType == GLHW_RAGEPRO ) {
-		re->customShader = cgs.media.smokePuffRageProShader;
-		re->shaderRGBA[0] = 0xff;
-		re->shaderRGBA[1] = 0xff;
-		re->shaderRGBA[2] = 0xff;
-		re->shaderRGBA[3] = 0xff;
-	} else {
-		re->shaderRGBA[0] = le->color[0] * 0xff;
-		re->shaderRGBA[1] = le->color[1] * 0xff;
-		re->shaderRGBA[2] = le->color[2] * 0xff;
-		re->shaderRGBA[3] = 0xff;
-	}
+	re->shaderRGBA[0] = le->color[0] * 0xff;
+	re->shaderRGBA[1] = le->color[1] * 0xff;
+	re->shaderRGBA[2] = le->color[2] * 0xff;
+	re->shaderRGBA[3] = 0xff;
 
 	re->reType = RT_SPRITE;
 	re->radius = le->radius;
@@ -208,19 +198,10 @@ localEntity_t *CG_SlowPuff( const vec3_t p, const vec3_t vel,
 	VectorCopy( p, re->origin );
 	re->customShader = hShader;
 
-	// rage pro can't alpha fade, so use a different shader
-	if ( cgs.glconfig.hardwareType == GLHW_RAGEPRO ) {
-		re->customShader = cgs.media.smokePuffRageProShader;
-		re->shaderRGBA[0] = 0xff;
-		re->shaderRGBA[1] = 0xff;
-		re->shaderRGBA[2] = 0xff;
-		re->shaderRGBA[3] = 0xff;
-	} else {
-		re->shaderRGBA[0] = le->color[0] * 0xff;
-		re->shaderRGBA[1] = le->color[1] * 0xff;
-		re->shaderRGBA[2] = le->color[2] * 0xff;
-		re->shaderRGBA[3] = 0xff;
-	}
+	re->shaderRGBA[0] = le->color[0] * 0xff;
+	re->shaderRGBA[1] = le->color[1] * 0xff;
+	re->shaderRGBA[2] = le->color[2] * 0xff;
+	re->shaderRGBA[3] = 0xff;
 
 	re->reType = RT_SPRITE;
 	re->radius = le->radius;

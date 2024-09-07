@@ -2047,7 +2047,7 @@ static void PlayerModel_MenuInit( void )
 	s_playermodel.back.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_playermodel.back.generic.callback = PlayerModel_MenuEvent;
 	s_playermodel.back.generic.id	    = ID_BACK;
-	s_playermodel.back.generic.x		= 0 - cl_screenoffset.integer;
+	s_playermodel.back.generic.x		= 0 - uis.wideoffset;
 	s_playermodel.back.generic.y		= 480-64;
 	s_playermodel.back.width  		    = 128;
 	s_playermodel.back.height  		    = 64;
@@ -2057,7 +2057,7 @@ static void PlayerModel_MenuInit( void )
 	s_playermodel.animate.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_playermodel.animate.generic.callback = PlayerModel_MenuEvent;
 	s_playermodel.animate.generic.id	    = ID_ANIMATE;
-	s_playermodel.animate.generic.x		= 630 - 128 + cl_screenoffset.integer;
+	s_playermodel.animate.generic.x		= 630 - 128 + uis.wideoffset;
 	s_playermodel.animate.generic.y		= 480-64;
 	s_playermodel.animate.width  		    = 128;
 	s_playermodel.animate.height  		    = 64;

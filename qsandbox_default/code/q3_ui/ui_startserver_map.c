@@ -32,10 +32,10 @@ START SERVER MAP SELECT MENU *****
 #define ID_MAP_ACTIONTYPE 217
 
 // screen positions
-#define MAPCOLUMN_LEFTX 	COLUMN_LEFT - cl_screenoffset.integer
-#define MAPCOLUMN_RIGHTX 	COLUMN_RIGHT + cl_screenoffset.integer
-#define MAPBUTTONS_X 		(SMALLCHAR_WIDTH ) - cl_screenoffset.integer
-#define MAPARRAYCOLUMN_X 	(SMALLCHAR_WIDTH * 13) - cl_screenoffset.integer
+#define MAPCOLUMN_LEFTX 	COLUMN_LEFT - uis.wideoffset
+#define MAPCOLUMN_RIGHTX 	COLUMN_RIGHT + uis.wideoffset
+#define MAPBUTTONS_X 		(SMALLCHAR_WIDTH ) - uis.wideoffset
+#define MAPARRAYCOLUMN_X 	(SMALLCHAR_WIDTH * 13) - uis.wideoffset
 #define MAPLONGNAME_DX 		(SMALLCHAR_WIDTH * (SHORTMAP_BUFFER + 1))
 #define MAPFRAGS_DX 		(MAPLONGNAME_DX + SMALLCHAR_WIDTH * (LONGMAP_BUFFER + 4))
 #define MAPTIME_DX 			(MAPFRAGS_DX + SMALLCHAR_WIDTH * 8)
@@ -1495,10 +1495,10 @@ static void StartServer_MapPage_MenuDraw(void)
 		fading_red[3] = f;
 
 		trap_R_SetColor( fading_red );
-		UI_DrawNamedPic(640 -12 - 134 + cl_screenoffset.integer, 24 - 7,  144, 106, MAPSELECT_SELECT);
+		UI_DrawNamedPic(640 -12 - 134 + uis.wideoffset, 24 - 7,  144, 106, MAPSELECT_SELECT);
 		trap_R_SetColor( NULL );
 
-		StartServer_DrawMapPicture( 640 -12 -124 + cl_screenoffset.integer, 24, 124, 85, &s_mapcontrols.mappic, pulsecolor);
+		StartServer_DrawMapPicture( 640 -12 -124 + uis.wideoffset, 24, 124, 85, &s_mapcontrols.mappic, pulsecolor);
 	}
 
 	// draw the controls

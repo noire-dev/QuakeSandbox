@@ -3787,6 +3787,14 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 
 	// draw 3D view
 	trap_R_RenderScene( &cg.refdef );
+	
+	if ( Q_stricmp (cgs.mapname, "maps/uimap_1.bsp") == 0 ) {
+	if ( trap_Key_GetCatcher() == KEYCATCH_UI || trap_Key_GetCatcher() & KEYCATCH_CONSOLE) {
+
+	} else {
+	trap_SendConsoleCommand("ui_menu");
+	}
+	}
 
 	// draw overlay for target_effect
 	CG_DrawOverlay();

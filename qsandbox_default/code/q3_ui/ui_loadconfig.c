@@ -560,7 +560,7 @@ static void LoadConfig_MenuInit( qboolean load, const char* title,  configCallba
 	s_configs.back.generic.flags	= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_configs.back.generic.id		= ID_BACK;
 	s_configs.back.generic.callback	= LoadConfig_MenuEvent;
-	s_configs.back.generic.x		= 0 - cl_screenoffset.integer;
+	s_configs.back.generic.x		= 0 - uis.wideoffset;
 	s_configs.back.generic.y		= 480-64;
 	s_configs.back.width			= 128;
 	s_configs.back.height			= 64;
@@ -570,7 +570,7 @@ static void LoadConfig_MenuInit( qboolean load, const char* title,  configCallba
 	s_configs.go.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_configs.go.generic.id			= ID_GO;
 	s_configs.go.generic.callback	= LoadConfig_MenuEvent;
-	s_configs.go.generic.x			= 640 + cl_screenoffset.integer;
+	s_configs.go.generic.x			= 640 + uis.wideoffset;
 	s_configs.go.generic.y			= 480-64;
 	s_configs.go.width				= 128;
 	s_configs.go.height				= 64;

@@ -581,6 +581,7 @@ typedef enum {
 	EV_PARTICLES_LINEAR_DOWN,
 	EV_OVERLAY,
 	EV_SMOKEPUFF,
+	EV_WATERPUFF,
 	
 	EV_SILENT_ITEM_PICKUP,		// item pickup without pickup sound
 

@@ -171,7 +171,7 @@ static void UI_saveMapEdMenu_Init( void ) {
 	saveMapEd.back.generic.flags		= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	saveMapEd.back.generic.id			= ID_BACK;
 	saveMapEd.back.generic.callback	= UI_saveMapEdMenu_BackEvent;
-	saveMapEd.back.generic.x			= 0 - cl_screenoffset.integer;
+	saveMapEd.back.generic.x			= 0 - uis.wideoffset;
 	saveMapEd.back.generic.y			= 480-64;
 	saveMapEd.back.width				= 128;
 	saveMapEd.back.height				= 64;
@@ -182,7 +182,7 @@ static void UI_saveMapEdMenu_Init( void ) {
 	saveMapEd.save.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	saveMapEd.save.generic.id			= ID_SAVE;
 	saveMapEd.save.generic.callback	= UI_saveMapEdMenu_SaveEvent;
-	saveMapEd.save.generic.x			= 640 + cl_screenoffset.integer;
+	saveMapEd.save.generic.x			= 640 + uis.wideoffset;
 	saveMapEd.save.generic.y			= 480-64;
 	saveMapEd.save.width  				= 128;
 	saveMapEd.save.height  		    = 64;

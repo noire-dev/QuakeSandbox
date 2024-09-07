@@ -2254,7 +2254,7 @@ void StartServer_ServerPage_MenuInit(void)
 		s_servercontrols.pageList[i].menutext->generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 		s_servercontrols.pageList[i].menutext->generic.id	     = s_servercontrols.pageList[i].id;
 		s_servercontrols.pageList[i].menutext->generic.callback = StartServer_ServerPage_TabEvent;
-		s_servercontrols.pageList[i].menutext->generic.x	     = 140 - cl_screenoffset.integer/2;
+		s_servercontrols.pageList[i].menutext->generic.x	     = 140 - uis.wideoffset/2;
 		s_servercontrols.pageList[i].menutext->generic.y	     = y_base + i*PROP_HEIGHT*scale;
 		s_servercontrols.pageList[i].menutext->string			= s_servercontrols.pageList[i].title;
 		s_servercontrols.pageList[i].menutext->style			= style;

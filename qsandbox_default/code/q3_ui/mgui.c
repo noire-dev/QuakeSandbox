@@ -257,7 +257,7 @@ void UI_MGUI( void ) {
 	memset( &s_mgui, 0 ,sizeof(mgui_t) );
 	
 	s_mgui.menu.draw = MGUI_MenuDraw;
-	if(UI_ArenaScriptAutoInt("mgui_ingame") <= 0){
+	if(!uis.onmap){
 	s_mgui.menu.fullscreen = qtrue;
 	} else {
 	s_mgui.menu.fullscreen = qfalse;	

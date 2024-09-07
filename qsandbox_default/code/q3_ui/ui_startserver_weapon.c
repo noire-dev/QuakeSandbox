@@ -1885,7 +1885,7 @@ void StartServer_WeaponPage_MenuInit(void)
 		s_weaponcontrols.pageList[i].menutext->generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 		s_weaponcontrols.pageList[i].menutext->generic.id	     = s_weaponcontrols.pageList[i].id;
 		s_weaponcontrols.pageList[i].menutext->generic.callback = StartServer_WeaponPage_TabEvent;
-		s_weaponcontrols.pageList[i].menutext->generic.x	     = 140 - cl_screenoffset.integer/2;
+		s_weaponcontrols.pageList[i].menutext->generic.x	     = 140 - uis.wideoffset/2;
 		s_weaponcontrols.pageList[i].menutext->generic.y	     = y_base + i*PROP_HEIGHT*scale;
 		s_weaponcontrols.pageList[i].menutext->string			= s_weaponcontrols.pageList[i].title;
 		s_weaponcontrols.pageList[i].menutext->style			= style;

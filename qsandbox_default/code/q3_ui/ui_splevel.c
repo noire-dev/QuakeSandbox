@@ -757,7 +757,7 @@ static void UI_SPLevelMenu_Init( void ) {
 	levelMenuInfo.item_back.generic.type			= MTYPE_BITMAP;
 	levelMenuInfo.item_back.generic.name			= ART_BACK0;
 	levelMenuInfo.item_back.generic.flags			= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
-	levelMenuInfo.item_back.generic.x				= 0 - cl_screenoffset.integer;
+	levelMenuInfo.item_back.generic.x				= 0 - uis.wideoffset;
 	levelMenuInfo.item_back.generic.y				= 480-64;
 	levelMenuInfo.item_back.generic.callback		= UI_SPLevelMenu_BackEvent;
 	levelMenuInfo.item_back.generic.id				= ID_BACK;
@@ -790,7 +790,7 @@ static void UI_SPLevelMenu_Init( void ) {
 	levelMenuInfo.item_next.generic.type			= MTYPE_BITMAP;
 	levelMenuInfo.item_next.generic.name			= ART_FIGHT0;
 	levelMenuInfo.item_next.generic.flags			= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
-	levelMenuInfo.item_next.generic.x				= 640 + cl_screenoffset.integer;
+	levelMenuInfo.item_next.generic.x				= 640 + uis.wideoffset;
 	levelMenuInfo.item_next.generic.y				= 480-64;
 	levelMenuInfo.item_next.generic.callback		= UI_SPLevelMenu_NextEvent;
 	levelMenuInfo.item_next.generic.id				= ID_NEXT;

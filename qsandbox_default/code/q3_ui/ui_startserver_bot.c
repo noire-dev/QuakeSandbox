@@ -1642,9 +1642,9 @@ static void StartServer_BotPage_MenuDraw(void)
 		if (pic)
 		{
 			trap_R_SetColor( pulsecolor );
-			UI_DrawHandlePic(640 - 64 - 64  + cl_screenoffset.integer, 48, 64, 64, pic);
+			UI_DrawHandlePic(640 - 64 - 64  + uis.wideoffset, 48, 64, 64, pic);
 			trap_R_SetColor( fading_red );
-			UI_DrawNamedPic(640 - 64 - 64 - 15  + cl_screenoffset.integer, 48 - 16, 128, 128, BOTSELECT_SELECT);
+			UI_DrawNamedPic(640 - 64 - 64 - 15  + uis.wideoffset, 48 - 16, 128, 128, BOTSELECT_SELECT);
 			trap_R_SetColor( NULL );
 		}
 	}

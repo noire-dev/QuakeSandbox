@@ -1653,7 +1653,7 @@ static void ArenaServers_MenuInit( void ) {
 	g_arenaservers.list.generic.flags			= QMF_HIGHLIGHT_IF_FOCUS;
 	g_arenaservers.list.generic.id				= ID_LIST;
 	g_arenaservers.list.generic.callback		= ArenaServers_Event;
-	g_arenaservers.list.generic.x				= 22 - cl_screenoffset.integer;
+	g_arenaservers.list.generic.x				= 22 - uis.wideoffset;
 	g_arenaservers.list.generic.y				= y;
 	g_arenaservers.list.width					= MAX_LISTBOXWIDTH;
 	g_arenaservers.list.height					= 11;
@@ -1664,7 +1664,7 @@ static void ArenaServers_MenuInit( void ) {
 
 	g_arenaservers.mappic.generic.type			= MTYPE_BITMAP;
 	g_arenaservers.mappic.generic.flags			= QMF_LEFT_JUSTIFY|QMF_INACTIVE;
-	g_arenaservers.mappic.generic.x				= 22-cl_screenoffset.integer;
+	g_arenaservers.mappic.generic.x				= 22-uis.wideoffset;
 	g_arenaservers.mappic.generic.y				= 80-12;
 	g_arenaservers.mappic.width					= 128;
 	g_arenaservers.mappic.height				= 96;
@@ -1674,7 +1674,7 @@ static void ArenaServers_MenuInit( void ) {
 	g_arenaservers.arrows.generic.name			= ART_ARROWS0;
 	g_arenaservers.arrows.generic.flags			= QMF_LEFT_JUSTIFY|QMF_INACTIVE;
 	g_arenaservers.arrows.generic.callback		= ArenaServers_Event;
-	g_arenaservers.arrows.generic.x				= 512+48+cl_screenoffset.integer;
+	g_arenaservers.arrows.generic.x				= 512+48+uis.wideoffset;
 	g_arenaservers.arrows.generic.y				= 240-64+16;
 	g_arenaservers.arrows.width					= 64;
 	g_arenaservers.arrows.height				= 128;
@@ -1683,7 +1683,7 @@ static void ArenaServers_MenuInit( void ) {
 	g_arenaservers.up.generic.flags				= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_MOUSEONLY;
 	g_arenaservers.up.generic.callback			= ArenaServers_Event;
 	g_arenaservers.up.generic.id				= ID_SCROLL_UP;
-	g_arenaservers.up.generic.x					= 512+48+cl_screenoffset.integer;
+	g_arenaservers.up.generic.x					= 512+48+uis.wideoffset;
 	g_arenaservers.up.generic.y					= 240-64+16;
 	g_arenaservers.up.width						= 64;
 	g_arenaservers.up.height					= 64;
@@ -1693,7 +1693,7 @@ static void ArenaServers_MenuInit( void ) {
 	g_arenaservers.down.generic.flags			= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_MOUSEONLY;
 	g_arenaservers.down.generic.callback		= ArenaServers_Event;
 	g_arenaservers.down.generic.id				= ID_SCROLL_DOWN;
-	g_arenaservers.down.generic.x				= 512+48+cl_screenoffset.integer;
+	g_arenaservers.down.generic.x				= 512+48+uis.wideoffset;
 	g_arenaservers.down.generic.y				= 240+16;
 	g_arenaservers.down.width					= 64;
 	g_arenaservers.down.height					= 64;
@@ -1720,7 +1720,7 @@ static void ArenaServers_MenuInit( void ) {
 	g_arenaservers.remove.generic.flags		= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	g_arenaservers.remove.generic.callback	= ArenaServers_Event;
 	g_arenaservers.remove.generic.id		= ID_REMOVE;
-	g_arenaservers.remove.generic.x			= 450 + cl_screenoffset.integer;
+	g_arenaservers.remove.generic.x			= 450 + uis.wideoffset;
 	g_arenaservers.remove.generic.y			= 86;
 	g_arenaservers.remove.width				= 96;
 	g_arenaservers.remove.height			= 48;
@@ -1742,7 +1742,7 @@ static void ArenaServers_MenuInit( void ) {
 	g_arenaservers.back.generic.flags		= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	g_arenaservers.back.generic.callback	= ArenaServers_Event;
 	g_arenaservers.back.generic.id			= ID_BACK;
-	g_arenaservers.back.generic.x			= 0 - cl_screenoffset.integer;
+	g_arenaservers.back.generic.x			= 0 - uis.wideoffset;
 	g_arenaservers.back.generic.y			= 480-64;
 	g_arenaservers.back.width				= 128;
 	g_arenaservers.back.height				= 64;
@@ -1753,7 +1753,7 @@ static void ArenaServers_MenuInit( void ) {
 	g_arenaservers.specify.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	g_arenaservers.specify.generic.callback = ArenaServers_Event;
 	g_arenaservers.specify.generic.id	    = ID_SPECIFY;
-	g_arenaservers.specify.generic.x		= 128 - cl_screenoffset.integer/2;
+	g_arenaservers.specify.generic.x		= 128 - uis.wideoffset/2;
 	g_arenaservers.specify.generic.y		= 480-64;
 	g_arenaservers.specify.width  		    = 128;
 	g_arenaservers.specify.height  		    = 64;
@@ -1775,7 +1775,7 @@ static void ArenaServers_MenuInit( void ) {
 	g_arenaservers.create.generic.flags		= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	g_arenaservers.create.generic.callback	= ArenaServers_Event;
 	g_arenaservers.create.generic.id		= ID_CREATE;
-	g_arenaservers.create.generic.x			= 384 + cl_screenoffset.integer/2;
+	g_arenaservers.create.generic.x			= 384 + uis.wideoffset/2;
 	g_arenaservers.create.generic.y			= 480-64;
 	g_arenaservers.create.width				= 128;
 	g_arenaservers.create.height			= 64;
@@ -1786,7 +1786,7 @@ static void ArenaServers_MenuInit( void ) {
 	g_arenaservers.go.generic.flags			= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	g_arenaservers.go.generic.callback		= ArenaServers_Event;
 	g_arenaservers.go.generic.id			= ID_CONNECT;
-	g_arenaservers.go.generic.x				= 640 + cl_screenoffset.integer;
+	g_arenaservers.go.generic.x				= 640 + uis.wideoffset;
 	g_arenaservers.go.generic.y				= 480-64;
 	g_arenaservers.go.width					= 128;
 	g_arenaservers.go.height				= 64;

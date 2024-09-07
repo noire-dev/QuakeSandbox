@@ -160,23 +160,27 @@ void UI_DrawConnectScreen( qboolean overlay ) {
 	uiClientState_t	cstate;
 	char			info[MAX_INFO_VALUE];
 	int strWidth;
+	
+	UI_ScreenOffset();
+	
+	// see what information we should display
+	trap_GetClientState( &cstate );
+	
+	info[0] = '\0';
+	trap_GetConfigString( CS_SERVERINFO, info, sizeof(info) );
 
-if(!cl_sprun.integer){
+	if(!cl_sprun.integer && Q_stricmp (Info_ValueForKey( info, "mapname" ), "uimap_1") != 0 && uis.onmap){
 
 	Menu_Cache();
 
 	if ( !overlay ) {
 		// draw the dialog background
 		UI_SetColor( color_white );
-		UI_DrawHandlePic( 0-cl_screenoffset.integer, 0, SCREEN_WIDTH+cl_screenoffset.integer*2, SCREEN_HEIGHT, uis.menuWallpapers );
-		UI_DrawHandlePic( 0-cl_screenoffset.integer, 0, SCREEN_WIDTH+cl_screenoffset.integer*2, SCREEN_HEIGHT, trap_R_RegisterShaderNoMip( "menu/art/blacktrans" ) );
+		UI_DrawHandlePic( 0-uis.wideoffset, 0, SCREEN_WIDTH+uis.wideoffset*2, SCREEN_HEIGHT, uis.menuWallpapers );
+		UI_DrawHandlePic( 0-uis.wideoffset, 0, SCREEN_WIDTH+uis.wideoffset*2, SCREEN_HEIGHT, trap_R_RegisterShaderNoMip( "menu/art/blacktrans" ) );
 	}
 
-	// see what information we should display
-	trap_GetClientState( &cstate );
-
-	info[0] = '\0';
-	if( trap_GetConfigString( CS_SERVERINFO, info, sizeof(info) ) ) {
+	if( strlen(info) ) {
 		if(cl_language.integer == 0){
 		UI_DrawString( 320, 16, va( "Loading %s", Info_ValueForKey( info, "mapname" ) ), UI_GIANTFONT|UI_CENTER|UI_DROPSHADOW, color_white );
 		}
@@ -250,8 +254,8 @@ if(!cl_sprun.integer){
 	UI_DrawString( 320, 128, s, UI_CENTER|UI_BIGFONT|UI_DROPSHADOW, color_white );
 
 	// password required / connection rejected information goes here
-}
-if(cl_sprun.integer){
+	}
+	if(cl_sprun.integer || Q_stricmp (Info_ValueForKey( info, "mapname" ), "uimap_1") == 0 || !uis.onmap){
 
 	Menu_Cache();
 
@@ -263,20 +267,22 @@ if(cl_sprun.integer){
 	}
 
 	UI_SetColor( color_white );
-	UI_DrawHandlePic( 0-(cl_screenoffset.integer+1), 0, SCREEN_WIDTH+(cl_screenoffset.integer*2)+2, SCREEN_HEIGHT, trap_R_RegisterShaderNoMip( "gfx/colors/black" ) );
+	UI_DrawHandlePic( 0-(uis.wideoffset+1), 0, SCREEN_WIDTH+(uis.wideoffset*2)+2, SCREEN_HEIGHT, trap_R_RegisterShaderNoMip( "gfx/colors/black" ) );
 	if(cl_language.integer == 0){
-	UI_DrawString( (SCREEN_WIDTH+cl_screenoffset.integer - strWidth) - 16, SCREEN_HEIGHT - 32, "Loading...", UI_SMALLFONT, color_white );
+	UI_DrawString( (SCREEN_WIDTH+uis.wideoffset - strWidth) - 16, SCREEN_HEIGHT - 32, "Loading...", UI_SMALLFONT, color_white );
 	}
 	if(cl_language.integer == 1){
-	UI_DrawString( (SCREEN_WIDTH+cl_screenoffset.integer - strWidth) - 16, SCREEN_HEIGHT - 32, "Загрузка...", UI_SMALLFONT, color_white );
+	UI_DrawString( (SCREEN_WIDTH+uis.wideoffset - strWidth) - 16, SCREEN_HEIGHT - 32, "Загрузка...", UI_SMALLFONT, color_white );
 	}
-	UI_DrawHandlePic( (SCREEN_WIDTH+cl_screenoffset.integer - strWidth) - 80, SCREEN_HEIGHT - 64, 64, 64, uis.menuLoadingIcon );
+	if(Q_stricmp (Info_ValueForKey( info, "mapname" ), "uimap_1") != 0 && uis.onmap){
+	UI_DrawHandlePic( (SCREEN_WIDTH+uis.wideoffset - strWidth) - 80, SCREEN_HEIGHT - 64, 64, 64, uis.menuLoadingIcon );
+	}
 
 	trap_GetClientState( &cstate );
 	if ( cstate.connState < CA_CONNECTED ) {
 		UI_DrawProportionalString_AutoWrapped( 320, 192, 630, 20, cstate.messageString, UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, menu_text_color );
 	}
-}
+	}
 }
 
 

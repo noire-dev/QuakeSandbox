@@ -253,7 +253,7 @@ void SpecifyLeague_MenuInit( void )
 	s_specifyleague.back.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_specifyleague.back.generic.callback = SpecifyLeague_Event;
 	s_specifyleague.back.generic.id	      = ID_SPECIFYLEAGUEBACK;
-	s_specifyleague.back.generic.x		  = 0 - cl_screenoffset.integer;
+	s_specifyleague.back.generic.x		  = 0 - uis.wideoffset;
 	s_specifyleague.back.generic.y		  = 480-64;
 	s_specifyleague.back.width  		  = 128;
 	s_specifyleague.back.height  		  = 64;

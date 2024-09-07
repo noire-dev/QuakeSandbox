@@ -883,7 +883,7 @@ static void Preferences_MenuInit( void )
 	s_preferences.hud.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_preferences.hud.generic.id	    = ID_HUD;
 	s_preferences.hud.generic.callback	= Preferences_Event;
-	s_preferences.hud.generic.x	    = 152 - cl_screenoffset.integer;
+	s_preferences.hud.generic.x	    = 152 - uis.wideoffset;
 	s_preferences.hud.generic.y	    = 240 - 2 * PROP_HEIGHT;
 	s_preferences.hud.style			= UI_RIGHT;
 	s_preferences.hud.color			= color_red;
@@ -892,7 +892,7 @@ static void Preferences_MenuInit( void )
 	s_preferences.render.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_preferences.render.generic.id	    = ID_RENDER;
 	s_preferences.render.generic.callback	= Preferences_Event;
-	s_preferences.render.generic.x	    = 152 - cl_screenoffset.integer;
+	s_preferences.render.generic.x	    = 152 - uis.wideoffset;
 	s_preferences.render.generic.y	    = 240 - PROP_HEIGHT;
 	s_preferences.render.style			= UI_RIGHT;
 	s_preferences.render.color			= color_red;
@@ -901,7 +901,7 @@ static void Preferences_MenuInit( void )
 	s_preferences.objects.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_preferences.objects.generic.id	    = ID_OBJECTS;
 	s_preferences.objects.generic.callback	= Preferences_Event;
-	s_preferences.objects.generic.x	    = 152 - cl_screenoffset.integer;
+	s_preferences.objects.generic.x	    = 152 - uis.wideoffset;
 	s_preferences.objects.generic.y	    = 240;
 	s_preferences.objects.style			= UI_RIGHT;
 	s_preferences.objects.color			= color_red;
@@ -910,7 +910,7 @@ static void Preferences_MenuInit( void )
 	s_preferences.misc.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_preferences.misc.generic.id	    = ID_MISC;
 	s_preferences.misc.generic.callback	= Preferences_Event;
-	s_preferences.misc.generic.x	    = 152 - cl_screenoffset.integer;
+	s_preferences.misc.generic.x	    = 152 - uis.wideoffset;
 	s_preferences.misc.generic.y	    = 240 + PROP_HEIGHT;
 	s_preferences.misc.style			= UI_RIGHT;
 	s_preferences.misc.color			= color_red;
@@ -920,7 +920,7 @@ static void Preferences_MenuInit( void )
 	s_preferences.back.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_preferences.back.generic.callback = Preferences_Event;
 	s_preferences.back.generic.id	    = ID_BACK;
-	s_preferences.back.generic.x		= 0 - cl_screenoffset.integer;
+	s_preferences.back.generic.x		= 0 - uis.wideoffset;
 	s_preferences.back.generic.y		= 480-64;
 	s_preferences.back.width  		    = 128;
 	s_preferences.back.height  		    = 64;

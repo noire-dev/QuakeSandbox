@@ -1850,6 +1850,11 @@ void BG_EvaluateTrajectory( const trajectory_t *tr, int atTime, vec3_t result ) 
 			deltaTime = ( atTime - tr->trTime ) * 0.001;
 		VectorMA( tr->trBase, deltaTime, tr->trDelta, result );
 		break;
+	case TR_GRAVITY_WATER:
+		deltaTime = ( atTime - tr->trTime ) * 0.001;	// milliseconds to seconds
+		VectorMA( tr->trBase, deltaTime, tr->trDelta, result );
+		result[2] -= 0.5 * (mod_gravity*0.50) * deltaTime * deltaTime;		// FIXME: local gravity...
+		break;
 	default:
 		//Com_Error( ERR_DROP, "BG_EvaluateTrajectory: unknown trType: %i", tr->trTime );
 		break;
@@ -1893,6 +1898,11 @@ void BG_EvaluateTrajectoryDelta( const trajectory_t *tr, int atTime, vec3_t resu
 		deltaTime = ( atTime - tr->trTime ) * 0.001;	// milliseconds to seconds
 		VectorCopy( tr->trDelta, result );
 		result[2] -= mod_gravity * deltaTime;		// FIXME: local gravity...
+		break;
+	case TR_GRAVITY_WATER:
+		deltaTime = ( atTime - tr->trTime ) * 0.001;	// milliseconds to seconds
+		VectorCopy( tr->trDelta, result );
+		result[2] -= (mod_gravity*0.50) * deltaTime;		// FIXME: local gravity...
 		break;
 	default:
 		//Com_Error( ERR_DROP, "BG_EvaluateTrajectoryDelta: unknown trType: %i", tr->trTime );
@@ -2001,6 +2011,7 @@ char *eventnames[] = {
 	"EV_PARTICLES_LINEAR_DOWN",
 	"EV_OVERLAY",
 	"EV_SMOKEPUFF",
+	"EV_WATERPUFF",
 	"EV_SILENT_ITEM_PICKUP",		// item pickup without pickup sound
 	"EV_FOOTSTEP_FLESH",
 	"EV_HORN",		//VEHICLES

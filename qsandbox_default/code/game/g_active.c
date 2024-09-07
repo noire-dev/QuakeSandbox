@@ -1190,15 +1190,13 @@ void CheckCarCollisions(gentity_t *ent) {
 			if(impactForce > VEHICLE_DAMAGESENS){
 			if(hit->grabbedEntity != ent){
 			if(BG_VehicleCheckClass(ent->client->ps.stats[STAT_VEHICLE]) == VCLASS_CAR){
-			G_CarDamage(hit, ent, (int)(impactForce * VEHICLE_DAMAGESENS*0.60));
-			} else {
-			G_CarDamage(hit, ent, (int)(impactForce * VEHICLE_DAMAGESENS*1.50));
+			G_CarDamage(hit, ent, (int)(impactForce * VEHICLE_DAMAGE));
 			}
 			}
 			}
 			if(impactForce > VEHICLE_DAMAGESENS*6){
 				if(BG_VehicleCheckClass(ent->client->ps.stats[STAT_VEHICLE]) == VCLASS_CAR){
-					G_PropSmoke( ent, impactForce*0.25);
+					G_PropSmoke( ent, impactForce*0.20);
 				}
 			}
         }

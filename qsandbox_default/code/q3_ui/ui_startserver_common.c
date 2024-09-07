@@ -193,7 +193,7 @@ void StartServer_CommonControls_Init(
 	common->back.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	common->back.generic.callback = callback;
 	common->back.generic.id	    = ID_SERVERCOMMON_BACK;
-	common->back.generic.x		= 0 - cl_screenoffset.integer;
+	common->back.generic.x		= 0 - uis.wideoffset;
 	common->back.generic.y		= 480-64;
 	common->back.width  		    = 128;
 	common->back.height  		    = 64;
@@ -204,7 +204,7 @@ void StartServer_CommonControls_Init(
 	common->fight.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	common->fight.generic.callback = callback;
 	common->fight.generic.id	    = ID_SERVERCOMMON_FIGHT;
-	common->fight.generic.x		= 640-128 + cl_screenoffset.integer;
+	common->fight.generic.x		= 640-128 + uis.wideoffset;
 	common->fight.generic.y		= 480-64;
 	common->fight.width  		    = 128;
 	common->fight.height  		    = 64;
@@ -215,7 +215,7 @@ void StartServer_CommonControls_Init(
 	common->maps.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	common->maps.generic.callback = callback;
 	common->maps.generic.id	    = ID_SERVERCOMMON_MAPS;
-	common->maps.generic.x		= 0 - cl_screenoffset.integer;
+	common->maps.generic.x		= 0 - uis.wideoffset;
 	common->maps.generic.y		= 0;
 	common->maps.width  		    = 128;
 	common->maps.height  		    = 64;
@@ -226,7 +226,7 @@ void StartServer_CommonControls_Init(
 	common->bots.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	common->bots.generic.callback = callback;
 	common->bots.generic.id	    = ID_SERVERCOMMON_BOTS;
-	common->bots.generic.x		= 128 - cl_screenoffset.integer;
+	common->bots.generic.x		= 128 - uis.wideoffset;
 	common->bots.generic.y		= 0;
 	common->bots.width  		    = 128;
 	common->bots.height  		    = 64;
@@ -237,7 +237,7 @@ void StartServer_CommonControls_Init(
 	common->items.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	common->items.generic.callback = callback;
 	common->items.generic.id	    = ID_SERVERCOMMON_ITEMS;
-	common->items.generic.x		= 256 - cl_screenoffset.integer;
+	common->items.generic.x		= 256 - uis.wideoffset;
 	common->items.generic.y		= 0;
 	common->items.width  		    = 128;
 	common->items.height  		    = 64;
@@ -248,7 +248,7 @@ void StartServer_CommonControls_Init(
 	common->server.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	common->server.generic.callback = callback;
 	common->server.generic.id	    = ID_SERVERCOMMON_SERVER;
-	common->server.generic.x		= 384 - cl_screenoffset.integer;
+	common->server.generic.x		= 384 - uis.wideoffset;
 	common->server.generic.y		= 0;
 	common->server.width  		    = 128;
 	common->server.height  		    = 64;
@@ -259,7 +259,7 @@ void StartServer_CommonControls_Init(
 	common->weapon.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	common->weapon.generic.callback = callback;
 	common->weapon.generic.id	    = ID_SERVERCOMMON_WEAPON;
-	common->weapon.generic.x		= 512 - cl_screenoffset.integer;
+	common->weapon.generic.x		= 512 - uis.wideoffset;
 	common->weapon.generic.y		= 0;
 	common->weapon.width  		    = 128;
 	common->weapon.height  		    = 64;
@@ -269,35 +269,35 @@ void StartServer_CommonControls_Init(
 	height = (64 - PROP_HEIGHT * scale)/2;
 
 	common->maptext.generic.type			= MTYPE_PTEXT;
-	common->maptext.generic.x			= 64 - cl_screenoffset.integer;
+	common->maptext.generic.x			= 64 - uis.wideoffset;
 	common->maptext.generic.y			= height;
 	common->maptext.generic.flags			= QMF_INACTIVE;
 	common->maptext.color  				= color_red;
 	common->maptext.style  				= UI_CENTER|UI_BIGFONT;
 
 	common->bottext.generic.type			= MTYPE_PTEXT;
-	common->bottext.generic.x			= 64 + 128 - cl_screenoffset.integer;
+	common->bottext.generic.x			= 64 + 128 - uis.wideoffset;
 	common->bottext.generic.y			= height;
 	common->bottext.generic.flags			= QMF_INACTIVE;
 	common->bottext.color  				= color_red;
 	common->bottext.style  				= UI_CENTER|UI_BIGFONT;
 
 	common->itemtext.generic.type			= MTYPE_PTEXT;
-	common->itemtext.generic.x			= 64 + 256 - cl_screenoffset.integer;
+	common->itemtext.generic.x			= 64 + 256 - uis.wideoffset;
 	common->itemtext.generic.y			= height;
 	common->itemtext.generic.flags			= QMF_INACTIVE;
 	common->itemtext.color  				= color_red;
 	common->itemtext.style  				= UI_CENTER|UI_BIGFONT;
 
 	common->servertext.generic.type			= MTYPE_PTEXT;
-	common->servertext.generic.x			= 64 + 384 - cl_screenoffset.integer;
+	common->servertext.generic.x			= 64 + 384 - uis.wideoffset;
 	common->servertext.generic.y			= height;
 	common->servertext.generic.flags			= QMF_INACTIVE;
 	common->servertext.color  				= color_red;
 	common->servertext.style  				= UI_CENTER|UI_BIGFONT;
 	
 	common->weapontext.generic.type			= MTYPE_PTEXT;
-	common->weapontext.generic.x			= 64 + 512 - cl_screenoffset.integer;
+	common->weapontext.generic.x			= 64 + 512 - uis.wideoffset;
 	common->weapontext.generic.y			= height;
 	common->weapontext.generic.flags			= QMF_INACTIVE;
 	common->weapontext.color  				= color_red;

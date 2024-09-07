@@ -283,7 +283,7 @@ static void UI_DisplayOptionsMenu_Init( void ) {
 	displayOptionsInfo.graphics.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	displayOptionsInfo.graphics.generic.id			= ID_GRAPHICS;
 	displayOptionsInfo.graphics.generic.callback	= UI_DisplayOptionsMenu_Event;
-	displayOptionsInfo.graphics.generic.x			= 140- cl_screenoffset.integer;
+	displayOptionsInfo.graphics.generic.x			= 140- uis.wideoffset;
 	displayOptionsInfo.graphics.generic.y			= 240 - 2 * PROP_HEIGHT;
 	if(cl_language.integer == 0){
 	displayOptionsInfo.graphics.string				= "GRAPHICS";
@@ -298,7 +298,7 @@ static void UI_DisplayOptionsMenu_Init( void ) {
 	displayOptionsInfo.display.generic.flags		= QMF_RIGHT_JUSTIFY;
 	displayOptionsInfo.display.generic.id			= ID_DISPLAY;
 	displayOptionsInfo.display.generic.callback		= UI_DisplayOptionsMenu_Event;
-	displayOptionsInfo.display.generic.x			= 140- cl_screenoffset.integer;
+	displayOptionsInfo.display.generic.x			= 140- uis.wideoffset;
 	displayOptionsInfo.display.generic.y			= 240 - PROP_HEIGHT;
 	if(cl_language.integer == 0){
 	displayOptionsInfo.display.string				= "DISPLAY";
@@ -313,7 +313,7 @@ static void UI_DisplayOptionsMenu_Init( void ) {
 	displayOptionsInfo.sound.generic.flags			= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	displayOptionsInfo.sound.generic.id				= ID_SOUND;
 	displayOptionsInfo.sound.generic.callback		= UI_DisplayOptionsMenu_Event;
-	displayOptionsInfo.sound.generic.x				= 140- cl_screenoffset.integer;
+	displayOptionsInfo.sound.generic.x				= 140- uis.wideoffset;
 	displayOptionsInfo.sound.generic.y				= 240;
 	if(cl_language.integer == 0){
 	displayOptionsInfo.sound.string					= "SOUND";
@@ -328,7 +328,7 @@ static void UI_DisplayOptionsMenu_Init( void ) {
 	displayOptionsInfo.network.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	displayOptionsInfo.network.generic.id			= ID_NETWORK;
 	displayOptionsInfo.network.generic.callback		= UI_DisplayOptionsMenu_Event;
-	displayOptionsInfo.network.generic.x			= 140- cl_screenoffset.integer;
+	displayOptionsInfo.network.generic.x			= 140- uis.wideoffset;
 	displayOptionsInfo.network.generic.y			= 240 + PROP_HEIGHT;
 	if(cl_language.integer == 0){
 	displayOptionsInfo.network.string				= "NETWORK";
@@ -554,7 +554,7 @@ static void UI_DisplayOptionsMenu_Init( void ) {
 	displayOptionsInfo.back.generic.flags		= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	displayOptionsInfo.back.generic.callback	= UI_DisplayOptionsMenu_Event;
 	displayOptionsInfo.back.generic.id			= ID_BACK;
-	displayOptionsInfo.back.generic.x			= 0 - cl_screenoffset.integer;
+	displayOptionsInfo.back.generic.x			= 0 - uis.wideoffset;
 	displayOptionsInfo.back.generic.y			= 480-64;
 	displayOptionsInfo.back.width				= 128;
 	displayOptionsInfo.back.height				= 64;

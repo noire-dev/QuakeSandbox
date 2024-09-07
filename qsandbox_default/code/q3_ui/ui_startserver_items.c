@@ -855,7 +855,7 @@ static void StartServer_BothItemMenus_SetupItemControls(int y)
 		s_itemcontrols.tabbedText[i].generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 		s_itemcontrols.tabbedText[i].generic.id	     = i;	// array index
 		s_itemcontrols.tabbedText[i].generic.callback = StartServer_BothItemMenus_TabbedEvent;
-		s_itemcontrols.tabbedText[i].generic.x	     = 140 - cl_screenoffset.integer/2;
+		s_itemcontrols.tabbedText[i].generic.x	     = 140 - uis.wideoffset/2;
 		s_itemcontrols.tabbedText[i].generic.y	     = y_base + i*PROP_HEIGHT * scale;
 		if(cl_language.integer == 0){
 		s_itemcontrols.tabbedText[i].string			= masterControl[i].tabbedTitle;
@@ -1235,7 +1235,7 @@ static void StartServer_BothItemMenus_MenuInit(qboolean ingame)
 		s_itemcontrols.ingame.cancel.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 		s_itemcontrols.ingame.cancel.generic.callback = StartServer_InGame_Event;
 		s_itemcontrols.ingame.cancel.generic.id	    = ID_ITEMINGAME_CANCEL;
-		s_itemcontrols.ingame.cancel.generic.x		= 0-cl_screenoffset.integer;
+		s_itemcontrols.ingame.cancel.generic.x		= 0-uis.wideoffset;
 		s_itemcontrols.ingame.cancel.generic.y		= 480-64;
 		s_itemcontrols.ingame.cancel.width  		    = 128;
 		s_itemcontrols.ingame.cancel.height  		    = 64;
@@ -1246,7 +1246,7 @@ static void StartServer_BothItemMenus_MenuInit(qboolean ingame)
 		s_itemcontrols.ingame.accept.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 		s_itemcontrols.ingame.accept.generic.callback = StartServer_InGame_Event;
 		s_itemcontrols.ingame.accept.generic.id	    = ID_ITEMINGAME_ACCEPT;
-		s_itemcontrols.ingame.accept.generic.x		= 640 - 128+cl_screenoffset.integer;
+		s_itemcontrols.ingame.accept.generic.x		= 640 - 128+uis.wideoffset;
 		s_itemcontrols.ingame.accept.generic.y		= 480-64;
 		s_itemcontrols.ingame.accept.width  		    = 128;
 		s_itemcontrols.ingame.accept.height  		    = 64;

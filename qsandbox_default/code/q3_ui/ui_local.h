@@ -147,6 +147,8 @@ extern vmCvar_t	sbt_wallpaper;
 
 extern vmCvar_t	ui_scrollbtnsize;
 
+extern vmCvar_t	ui_3dmap;
+
 extern vmCvar_t	ui_singlemode;
 extern vmCvar_t	legsskin;
 extern vmCvar_t	sensitivitymenu;
@@ -156,7 +158,6 @@ extern vmCvar_t	cl_language;
 extern vmCvar_t	cl_gamestyle;
 extern vmCvar_t	ui_loaded;
 extern vmCvar_t	cl_screenoffset;
-extern vmCvar_t	cl_screencustomoffset;
 extern vmCvar_t	ui_backcolors;
 extern vmCvar_t	ui_ffa_fraglimit;
 extern vmCvar_t	ui_ffa_timelimit;
@@ -941,11 +942,13 @@ typedef struct {
 	float				sh;
 	int					menuscroll;
 	int					sb_tab;
+	int					wideoffset;
 	char				theme;
 	int					spawnlist_folder;
 	int					texturelist_folder;
 	qboolean			demoversion;
 	qboolean			firstdraw;
+	qboolean			onmap;
 	qboolean       		punkbuster;
 } uiStatic_t;
 

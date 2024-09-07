@@ -186,7 +186,7 @@ static void UI_SoundOptionsMenu_Init( void ) {
 	soundOptionsInfo.graphics.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	soundOptionsInfo.graphics.generic.id		= ID_GRAPHICS;
 	soundOptionsInfo.graphics.generic.callback	= UI_SoundOptionsMenu_Event;
-	soundOptionsInfo.graphics.generic.x			= 140 - cl_screenoffset.integer;
+	soundOptionsInfo.graphics.generic.x			= 140 - uis.wideoffset;
 	soundOptionsInfo.graphics.generic.y			= 240 - 2 * PROP_HEIGHT;
 	soundOptionsInfo.graphics.style				= UI_RIGHT;
 	soundOptionsInfo.graphics.color				= color_red;
@@ -195,7 +195,7 @@ static void UI_SoundOptionsMenu_Init( void ) {
 	soundOptionsInfo.display.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	soundOptionsInfo.display.generic.id			= ID_DISPLAY;
 	soundOptionsInfo.display.generic.callback	= UI_SoundOptionsMenu_Event;
-	soundOptionsInfo.display.generic.x			= 140 - cl_screenoffset.integer;
+	soundOptionsInfo.display.generic.x			= 140 - uis.wideoffset;
 	soundOptionsInfo.display.generic.y			= 240 - PROP_HEIGHT;
 	soundOptionsInfo.display.style				= UI_RIGHT;
 	soundOptionsInfo.display.color				= color_red;
@@ -204,7 +204,7 @@ static void UI_SoundOptionsMenu_Init( void ) {
 	soundOptionsInfo.sound.generic.flags		= QMF_RIGHT_JUSTIFY;
 	soundOptionsInfo.sound.generic.id			= ID_SOUND;
 	soundOptionsInfo.sound.generic.callback		= UI_SoundOptionsMenu_Event;
-	soundOptionsInfo.sound.generic.x			= 140 - cl_screenoffset.integer;
+	soundOptionsInfo.sound.generic.x			= 140 - uis.wideoffset;
 	soundOptionsInfo.sound.generic.y			= 240;
 	soundOptionsInfo.sound.style				= UI_RIGHT;
 	soundOptionsInfo.sound.color				= color_red;
@@ -213,7 +213,7 @@ static void UI_SoundOptionsMenu_Init( void ) {
 	soundOptionsInfo.network.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	soundOptionsInfo.network.generic.id			= ID_NETWORK;
 	soundOptionsInfo.network.generic.callback	= UI_SoundOptionsMenu_Event;
-	soundOptionsInfo.network.generic.x			= 140 - cl_screenoffset.integer;
+	soundOptionsInfo.network.generic.x			= 140 - uis.wideoffset;
 	soundOptionsInfo.network.generic.y			= 240 + PROP_HEIGHT;
 	soundOptionsInfo.network.style				= UI_RIGHT;
 	soundOptionsInfo.network.color				= color_red;
@@ -267,7 +267,7 @@ static void UI_SoundOptionsMenu_Init( void ) {
 	soundOptionsInfo.back.generic.flags			= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	soundOptionsInfo.back.generic.callback		= UI_SoundOptionsMenu_Event;
 	soundOptionsInfo.back.generic.id			= ID_BACK;
-	soundOptionsInfo.back.generic.x				= 0 - cl_screenoffset.integer;
+	soundOptionsInfo.back.generic.x				= 0 - uis.wideoffset;
 	soundOptionsInfo.back.generic.y				= 480-64;
 	soundOptionsInfo.back.width					= 128;
 	soundOptionsInfo.back.height				= 64;

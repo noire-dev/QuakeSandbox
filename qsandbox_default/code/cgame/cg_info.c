@@ -152,14 +152,13 @@ void CG_DrawInformation( void ) {
 	qhandle_t	detail;
 	char		buf[1024];
 
-    if(cgs.gametype == GT_SINGLE){
-		return;
-    }
-
 	info = CG_ConfigString( CS_SERVERINFO );
 	sysInfo = CG_ConfigString( CS_SYSTEMINFO );
 
 	s = Info_ValueForKey( info, "mapname" );
+    if(cgs.gametype == GT_SINGLE || Q_stricmp (s, "uimap_1") == 0){
+		return;
+    }
 	levelshot = trap_R_RegisterShaderNoMip( va( "levelshots/%s.tga", s ) );
 	if ( !levelshot ) {
 		levelshot = trap_R_RegisterShaderNoMip( "menu/art/unknownmap" );

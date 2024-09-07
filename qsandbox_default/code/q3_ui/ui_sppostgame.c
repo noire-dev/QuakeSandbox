@@ -480,7 +480,7 @@ static void UI_SPPostgameMenu_Init( void ) {
 	postgameMenuInfo.item_menu.generic.type			= MTYPE_BITMAP;
 	postgameMenuInfo.item_menu.generic.name			= ART_MENU0;
 	postgameMenuInfo.item_menu.generic.flags		= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_INACTIVE;
-	postgameMenuInfo.item_menu.generic.x			= 0 - cl_screenoffset.integer;
+	postgameMenuInfo.item_menu.generic.x			= 0 - uis.wideoffset;
 	postgameMenuInfo.item_menu.generic.y			= 480-64;
 	postgameMenuInfo.item_menu.generic.callback		= UI_SPPostgameMenu_MenuEvent;
 	postgameMenuInfo.item_menu.generic.id			= ID_MENU;
@@ -502,7 +502,7 @@ static void UI_SPPostgameMenu_Init( void ) {
 	postgameMenuInfo.item_next.generic.type			= MTYPE_BITMAP;
 	postgameMenuInfo.item_next.generic.name			= ART_NEXT0;
 	postgameMenuInfo.item_next.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_INACTIVE;
-	postgameMenuInfo.item_next.generic.x			= 640 + cl_screenoffset.integer;
+	postgameMenuInfo.item_next.generic.x			= 640 + uis.wideoffset;
 	postgameMenuInfo.item_next.generic.y			= 480-64;
 	postgameMenuInfo.item_next.generic.callback		= UI_SPPostgameMenu_NextEvent;
 	postgameMenuInfo.item_next.generic.id			= ID_NEXT;

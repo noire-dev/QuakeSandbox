@@ -206,7 +206,7 @@ static void UI_Mods_MenuInit( void ) {
 	s_mods.back.generic.flags		= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_mods.back.generic.id			= ID_BACK;
 	s_mods.back.generic.callback	= UI_Mods_MenuEvent;
-	s_mods.back.generic.x			= 0 - cl_screenoffset.integer;
+	s_mods.back.generic.x			= 0 - uis.wideoffset;
 	s_mods.back.generic.y			= 480-64;
 	s_mods.back.width				= 128;
 	s_mods.back.height				= 64;
@@ -217,7 +217,7 @@ static void UI_Mods_MenuInit( void ) {
 	s_mods.go.generic.flags			= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_mods.go.generic.id			= ID_GO;
 	s_mods.go.generic.callback		= UI_Mods_MenuEvent;
-	s_mods.go.generic.x				= 640 + cl_screenoffset.integer;
+	s_mods.go.generic.x				= 640 + uis.wideoffset;
 	s_mods.go.generic.y				= 480-64;
 	s_mods.go.width					= 128;
 	s_mods.go.height				= 64;

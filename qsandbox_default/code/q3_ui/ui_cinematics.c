@@ -294,7 +294,7 @@ static void UI_CinematicsMenu_Init( int load ) {
 	cinematicsMenuInfo.back.generic.flags		= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	cinematicsMenuInfo.back.generic.id			= ID_BACK;
 	cinematicsMenuInfo.back.generic.callback	= UI_CinematicsMenu_BackEvent;
-	cinematicsMenuInfo.back.generic.x			= 0 - cl_screenoffset.integer;
+	cinematicsMenuInfo.back.generic.x			= 0 - uis.wideoffset;
 	cinematicsMenuInfo.back.generic.y			= 480-64;
 	cinematicsMenuInfo.back.width				= 128;
 	cinematicsMenuInfo.back.height				= 64;

@@ -1520,6 +1520,15 @@ void G_PropSmoke( gentity_t *ent, float impact ){
 	VectorCopy(ent->s.angles, temp->s.angles);
 }
 
+void G_PropWaterSplash( gentity_t *ent, float impact ){
+	gentity_t   *temp;
+	
+	temp = G_TempEntity(ent->r.currentOrigin, EV_WATERPUFF);
+	temp->s.eventParm = 1;	//eventParm is used to determine the amount of time the smoke puff exists
+	temp->s.generic1 = 100;	//generic1 is used to determine the movement speed of the smoke puff
+	temp->s.otherEntityNum = (int)impact; //otherEntityNum is used to determine the size of the smokepuff. The default is 32.
+}
+
 /*
 ================
 G_BounceProp
@@ -1564,6 +1573,7 @@ void G_RunProp(gentity_t *ent) {
 	gentity_t *hit;
 	float impactForce;
 	float impactForceAll;
+	float impactForceFixed;
 	vec3_t impactVector;
 	
 	if(ent->r.currentOrigin[2] <= -70000){
@@ -1599,16 +1609,37 @@ void G_RunProp(gentity_t *ent) {
 	
     // Link the entity back into the world
     trap_LinkEntity(ent);
+	
+	// Calculate the impact force
+	impactForce = sqrt(ent->s.pos.trDelta[0] * ent->s.pos.trDelta[0] + ent->s.pos.trDelta[1] * ent->s.pos.trDelta[1]);
+	impactForceAll = sqrt(ent->s.pos.trDelta[0] * ent->s.pos.trDelta[0] + ent->s.pos.trDelta[1] * ent->s.pos.trDelta[1] + ent->s.pos.trDelta[2] * ent->s.pos.trDelta[2]);
+	impactForceFixed = sqrt(ent->s.pos.trDelta[0] * ent->s.pos.trDelta[0] + ent->s.pos.trDelta[1] * ent->s.pos.trDelta[1] + g_gravity.integer*g_gravityModifier.value * g_gravity.integer*g_gravityModifier.value);
+	
+	if(ent->s.pos.trType == TR_GRAVITY || ent->s.pos.trType == TR_GRAVITY_WATER){
+		if(trap_PointContents(tr.endpos, ent->s.number) & MASK_WATER){
+			if(ent->s.pos.trType != TR_GRAVITY_WATER){
+			ent->s.pos.trType = TR_GRAVITY_WATER;
+			G_PropWaterSplash( ent, impactForceFixed);
+			G_EnablePropPhysics(ent);
+			ent->s.pos.trDelta[0] *= 0.50;
+			ent->s.pos.trDelta[1] *= 0.50;
+			if(ent->s.pos.trDelta[2]){
+			ent->s.pos.trDelta[2] = 0;
+			}
+			}
+		} else {
+			if(ent->s.pos.trType != TR_GRAVITY){
+			ent->s.pos.trType = TR_GRAVITY;
+			G_EnablePropPhysics(ent);
+			}
+		}
+	}
 
     // If there's a collision, handle it
     if (tr.fraction < 1.0f && tr.entityNum != ENTITYNUM_NONE) {
         hit = &g_entities[tr.entityNum];
 
         if (hit->s.number != ent->s.number) {  // Ignore self
-            // Calculate the impact force
-            impactForce = sqrt(ent->s.pos.trDelta[0] * ent->s.pos.trDelta[0] + ent->s.pos.trDelta[1] * ent->s.pos.trDelta[1]);
-			impactForceAll = sqrt(ent->s.pos.trDelta[0] * ent->s.pos.trDelta[0] + ent->s.pos.trDelta[1] * ent->s.pos.trDelta[1] + ent->s.pos.trDelta[2] * ent->s.pos.trDelta[2]);
-
             // Optionally apply a force or velocity to the hit entity to simulate the push
 			if (impactForce > PHYS_SENS) {
 			if (!hit->client){
@@ -1631,17 +1662,19 @@ void G_RunProp(gentity_t *ent) {
 			G_PropDamage(ent, NULL, (int)(impactForceAll * PHYS_DAMAGE));
 			
 			if(hit->grabbedEntity != ent){
+			if(ent->s.pos.trType != TR_GRAVITY_WATER){
 			if(ent->objectType == OT_BASIC){
 			G_AddEvent( ent, EV_OT1_IMPACT, 0 );
-			G_PropSmoke( ent, impactForceAll*0.25);
+			G_PropSmoke( ent, impactForceAll*0.20);
 			}
 			if(ent->objectType == OT_VEHICLE){
 			G_AddEvent( ent, EV_CRASH25, 0 );
-			G_PropSmoke( ent, impactForceAll*0.25);
+			G_PropSmoke( ent, impactForceAll*0.20);
 			}
 			if(ent->objectType == OT_TNT){
 			G_AddEvent( ent, EV_OT1_IMPACT, 0 );
-			G_PropSmoke( ent, impactForceAll*0.25);
+			G_PropSmoke( ent, impactForceAll*0.20);
+			}
 			}
 			}
 			}
@@ -1650,12 +1683,21 @@ void G_RunProp(gentity_t *ent) {
 
     // Rotate entity during movement (optional physics feature)
 	if (!ent->isGrabbed){
+	if(ent->s.pos.trType != TR_GRAVITY_WATER){
     if (ent->s.pos.trDelta[1] != 0) {
         ent->s.apos.trBase[1] -= ent->s.pos.trDelta[1] * PHYS_ROTATING;
     }
     if (ent->s.pos.trDelta[0] != 0) {
         ent->s.apos.trBase[0] += ent->s.pos.trDelta[0] * PHYS_ROTATING;
     }
+	} else {
+    if (ent->s.pos.trDelta[1] != 0) {
+        ent->s.apos.trBase[1] -= ent->s.pos.trDelta[1] * PHYS_ROTATING * 0.50;
+    }
+    if (ent->s.pos.trDelta[0] != 0) {
+        ent->s.apos.trBase[0] += ent->s.pos.trDelta[0] * PHYS_ROTATING * 0.50;
+    }
+	}
 	}
 
     // Save rotation

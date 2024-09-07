@@ -313,7 +313,7 @@ static void UI_SetupMenu_Init( void ) {
 	setupMenuInfo.back.generic.flags				= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	setupMenuInfo.back.generic.id					= ID_BACK;
 	setupMenuInfo.back.generic.callback				= UI_SetupMenu_Event;
-	setupMenuInfo.back.generic.x					= 0 - cl_screenoffset.integer;
+	setupMenuInfo.back.generic.x					= 0 - uis.wideoffset;
 	setupMenuInfo.back.generic.y					= 480-64;
 	setupMenuInfo.back.width						= 128;
 	setupMenuInfo.back.height						= 64;

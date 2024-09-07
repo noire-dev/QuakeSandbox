@@ -667,47 +667,47 @@ static void SandboxMain_MenuDraw( void ) {
 	s_sandboxmain_color1[2] = sbt_color3_2.value;
 	s_sandboxmain_color1[3] = sbt_color3_3.value;
 
-	UI_DrawHandlePic( -2.0-cl_screenoffset.integer, 0.0, 644+cl_screenoffset.integer*2, 480, trap_R_RegisterShaderNoMip( va( "%s", sbt_wallpaper.string ) ) );
+	UI_DrawHandlePic( -2.0-uis.wideoffset, 0.0, 644+uis.wideoffset*2, 480, trap_R_RegisterShaderNoMip( va( "%s", sbt_wallpaper.string ) ) );
 
-	UI_DrawRoundedRect(20-cl_screenoffset.integer, 40, 600+cl_screenoffset.integer*2, 435, 10, sbcolor1);
-	UI_DrawRoundedRect(372-5+cl_screenoffset.integer, 70-25, 225+10, (160*2)+50+55, 12, sbcolor2);	//tools
+	UI_DrawRoundedRect(20-uis.wideoffset, 40, 600+uis.wideoffset*2, 435, 10, sbcolor1);
+	UI_DrawRoundedRect(372-5+uis.wideoffset, 70-25, 225+10, (160*2)+50+55, 12, sbcolor2);	//tools
 	
 	if(uis.sb_tab == 1){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), 160+50, 12, sbcolor2);//props
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+100+(cl_screenoffset.integer*2), 160+50, 12, sbcolor2);//classes
+	UI_DrawRoundedRect(40-5-uis.wideoffset, 70-25, 225+100+(uis.wideoffset*2), 160+50, 12, sbcolor2);//props
+	UI_DrawRoundedRect(40-5-uis.wideoffset, 215+70-25, 225+100+(uis.wideoffset*2), 160+50, 12, sbcolor2);//classes
 	}
 	if(uis.sb_tab == 2){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), (160*2)+50+55, 12, sbcolor2);//props
+	UI_DrawRoundedRect(40-5-uis.wideoffset, 70-25, 225+100+(uis.wideoffset*2), (160*2)+50+55, 12, sbcolor2);//props
 	}
 	if(uis.sb_tab == 3){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), 160+50, 12, sbcolor2);//props
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+100+(cl_screenoffset.integer*2), 160+50, 12, sbcolor2);//classes
+	UI_DrawRoundedRect(40-5-uis.wideoffset, 70-25, 225+100+(uis.wideoffset*2), 160+50, 12, sbcolor2);//props
+	UI_DrawRoundedRect(40-5-uis.wideoffset, 215+70-25, 225+100+(uis.wideoffset*2), 160+50, 12, sbcolor2);//classes
 	}
 	if(uis.sb_tab == 4){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), (160*2)+50+55, 12, sbcolor2);//props
+	UI_DrawRoundedRect(40-5-uis.wideoffset, 70-25, 225+100+(uis.wideoffset*2), (160*2)+50+55, 12, sbcolor2);//props
 	}
 	if(uis.sb_tab == 5){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), (160*2)+50+55, 12, sbcolor2);//props
+	UI_DrawRoundedRect(40-5-uis.wideoffset, 70-25, 225+100+(uis.wideoffset*2), (160*2)+50+55, 12, sbcolor2);//props
 	}
 	if(uis.sb_tab == 6){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), 160+50, 12, sbcolor2);//props
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 215+70-25, 225+100+(cl_screenoffset.integer*2), 160+50, 12, sbcolor2);//classes
+	UI_DrawRoundedRect(40-5-uis.wideoffset, 70-25, 225+100+(uis.wideoffset*2), 160+50, 12, sbcolor2);//props
+	UI_DrawRoundedRect(40-5-uis.wideoffset, 215+70-25, 225+100+(uis.wideoffset*2), 160+50, 12, sbcolor2);//classes
 	}
 	if(uis.sb_tab == 7){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), (160*2)+50+55, 12, sbcolor2);//props
+	UI_DrawRoundedRect(40-5-uis.wideoffset, 70-25, 225+100+(uis.wideoffset*2), (160*2)+50+55, 12, sbcolor2);//props
 	}
 	if(uis.sb_tab == 8){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), (160*2)+50+55, 12, sbcolor2);//props
+	UI_DrawRoundedRect(40-5-uis.wideoffset, 70-25, 225+100+(uis.wideoffset*2), (160*2)+50+55, 12, sbcolor2);//props
 	}
 	if(uis.sb_tab == 9){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), (160*2)+50+55, 12, sbcolor2);//props
+	UI_DrawRoundedRect(40-5-uis.wideoffset, 70-25, 225+100+(uis.wideoffset*2), (160*2)+50+55, 12, sbcolor2);//props
 	}
 	if(uis.sb_tab == 10){
-	UI_DrawRoundedRect(40-5-cl_screenoffset.integer, 70-25, 225+100+(cl_screenoffset.integer*2), (160*2)+50+55, 12, sbcolor2);//props
+	UI_DrawRoundedRect(40-5-uis.wideoffset, 70-25, 225+100+(uis.wideoffset*2), (160*2)+50+55, 12, sbcolor2);//props
 	}
 	
 	for (i = 1; i <= 10; i++) {
-		int xOffset = ((-53 * 0.5) + (110 * 0.5) * i) - cl_screenoffset.integer;
+		int xOffset = ((-53 * 0.5) + (110 * 0.5) * i) - uis.wideoffset;
 		if (uis.sb_tab == i) {
 			UI_DrawRoundedRect(xOffset, 10, 105 * 0.5, 30 * 0.5, 30, sbcolor3);
 		} else {
@@ -715,10 +715,10 @@ static void SandboxMain_MenuDraw( void ) {
 		}
 	}
 	
-	UI_DrawRoundedRect((640-(110*0.5))+cl_screenoffset.integer, 10, 105*0.5, 30*0.5, 30, sbcolor2);
+	UI_DrawRoundedRect((640-(110*0.5))+uis.wideoffset, 10, 105*0.5, 30*0.5, 30, sbcolor2);
 	
 	if(uis.sb_tab == 1 || uis.sb_tab == 8){
-	UI_DrawRoundedRect( 540 + cl_screenoffset.integer, 55, 105*0.5, 30*0.5, 30, sbcolor3);
+	UI_DrawRoundedRect( 540 + uis.wideoffset, 55, 105*0.5, 30*0.5, 30, sbcolor3);
 	}
 
 	Menu_Draw( &s_sandboxmain.menu );
@@ -1050,7 +1050,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.close.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_sandboxmain.close.generic.id       	= ID_CLOSE;
 	s_sandboxmain.close.generic.callback 	= SandboxMain_MenuEvent;
-	s_sandboxmain.close.generic.x        	= (640 - (110*0.25)) + cl_screenoffset.integer;
+	s_sandboxmain.close.generic.x        	= (640 - (110*0.25)) + uis.wideoffset;
 	s_sandboxmain.close.generic.y        	= 15;
 	s_sandboxmain.close.color			    = s_sandboxmain_color1;
 	s_sandboxmain.close.style			    = UI_CENTER;
@@ -1061,7 +1061,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.switchtab.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_sandboxmain.switchtab.generic.id       	= ID_SWITCHTAB;
 	s_sandboxmain.switchtab.generic.callback 	= SandboxMain_MenuEvent;
-	s_sandboxmain.switchtab.generic.x        	= 566 + cl_screenoffset.integer;
+	s_sandboxmain.switchtab.generic.x        	= 566 + uis.wideoffset;
 	s_sandboxmain.switchtab.generic.y        	= 60;
 	s_sandboxmain.switchtab.color			    = s_sandboxmain_color1;
 	s_sandboxmain.switchtab.style			    = UI_CENTER;
@@ -1072,7 +1072,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab1.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_sandboxmain.tab1.generic.id       	= ID_TAB1;
 	s_sandboxmain.tab1.generic.callback 	= SandboxMain_MenuEvent;
-	s_sandboxmain.tab1.generic.x        	= (110*0.5)*1 - cl_screenoffset.integer;
+	s_sandboxmain.tab1.generic.x        	= (110*0.5)*1 - uis.wideoffset;
 	s_sandboxmain.tab1.generic.y        	= 15;
 	s_sandboxmain.tab1.color			    = s_sandboxmain_color1;
 	s_sandboxmain.tab1.style			    = UI_CENTER;
@@ -1083,7 +1083,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab2.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_sandboxmain.tab2.generic.id       	= ID_TAB2;
 	s_sandboxmain.tab2.generic.callback 	= SandboxMain_MenuEvent;
-	s_sandboxmain.tab2.generic.x        	= (110*0.5)*2 - cl_screenoffset.integer;
+	s_sandboxmain.tab2.generic.x        	= (110*0.5)*2 - uis.wideoffset;
 	s_sandboxmain.tab2.generic.y        	= 15;
 	s_sandboxmain.tab2.color			    = s_sandboxmain_color1;
 	s_sandboxmain.tab2.style			    = UI_CENTER;
@@ -1094,7 +1094,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab3.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_sandboxmain.tab3.generic.id       	= ID_TAB3;
 	s_sandboxmain.tab3.generic.callback 	= SandboxMain_MenuEvent;
-	s_sandboxmain.tab3.generic.x        	= (110*0.5)*3 - cl_screenoffset.integer;
+	s_sandboxmain.tab3.generic.x        	= (110*0.5)*3 - uis.wideoffset;
 	s_sandboxmain.tab3.generic.y        	= 15;
 	s_sandboxmain.tab3.color			    = s_sandboxmain_color1;
 	s_sandboxmain.tab3.style			    = UI_CENTER;
@@ -1105,7 +1105,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab4.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_sandboxmain.tab4.generic.id       	= ID_TAB4;
 	s_sandboxmain.tab4.generic.callback 	= SandboxMain_MenuEvent;
-	s_sandboxmain.tab4.generic.x        	= (110*0.5)*4 - cl_screenoffset.integer;
+	s_sandboxmain.tab4.generic.x        	= (110*0.5)*4 - uis.wideoffset;
 	s_sandboxmain.tab4.generic.y        	= 15;
 	s_sandboxmain.tab4.color			    = s_sandboxmain_color1;
 	s_sandboxmain.tab4.style			    = UI_CENTER;
@@ -1116,7 +1116,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab5.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_sandboxmain.tab5.generic.id       	= ID_TAB5;
 	s_sandboxmain.tab5.generic.callback 	= SandboxMain_MenuEvent;
-	s_sandboxmain.tab5.generic.x        	= (110*0.5)*5 - cl_screenoffset.integer;
+	s_sandboxmain.tab5.generic.x        	= (110*0.5)*5 - uis.wideoffset;
 	s_sandboxmain.tab5.generic.y        	= 15;
 	s_sandboxmain.tab5.color			    = s_sandboxmain_color1;
 	s_sandboxmain.tab5.style			    = UI_CENTER;
@@ -1127,7 +1127,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab6.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_sandboxmain.tab6.generic.id       	= ID_TAB6;
 	s_sandboxmain.tab6.generic.callback 	= SandboxMain_MenuEvent;
-	s_sandboxmain.tab6.generic.x        	= (110*0.5)*6 - cl_screenoffset.integer;
+	s_sandboxmain.tab6.generic.x        	= (110*0.5)*6 - uis.wideoffset;
 	s_sandboxmain.tab6.generic.y        	= 15;
 	s_sandboxmain.tab6.color			    = s_sandboxmain_color1;
 	s_sandboxmain.tab6.style			    = UI_CENTER;
@@ -1138,7 +1138,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab7.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_sandboxmain.tab7.generic.id       	= ID_TAB7;
 	s_sandboxmain.tab7.generic.callback 	= SandboxMain_MenuEvent;
-	s_sandboxmain.tab7.generic.x        	= (110*0.5)*7 - cl_screenoffset.integer;
+	s_sandboxmain.tab7.generic.x        	= (110*0.5)*7 - uis.wideoffset;
 	s_sandboxmain.tab7.generic.y        	= 15;
 	s_sandboxmain.tab7.color			    = s_sandboxmain_color1;
 	s_sandboxmain.tab7.style			    = UI_CENTER;
@@ -1149,7 +1149,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab8.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_sandboxmain.tab8.generic.id       	= ID_TAB8;
 	s_sandboxmain.tab8.generic.callback 	= SandboxMain_MenuEvent;
-	s_sandboxmain.tab8.generic.x        	= (110*0.5)*8 - cl_screenoffset.integer;
+	s_sandboxmain.tab8.generic.x        	= (110*0.5)*8 - uis.wideoffset;
 	s_sandboxmain.tab8.generic.y        	= 15;
 	s_sandboxmain.tab8.color			    = s_sandboxmain_color1;
 	s_sandboxmain.tab8.style			    = UI_CENTER;
@@ -1160,7 +1160,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab9.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_sandboxmain.tab9.generic.id       	= ID_TAB9;
 	s_sandboxmain.tab9.generic.callback 	= SandboxMain_MenuEvent;
-	s_sandboxmain.tab9.generic.x        	= (110*0.5)*9 - cl_screenoffset.integer;
+	s_sandboxmain.tab9.generic.x        	= (110*0.5)*9 - uis.wideoffset;
 	s_sandboxmain.tab9.generic.y        	= 15;
 	s_sandboxmain.tab9.color			    = s_sandboxmain_color1;
 	s_sandboxmain.tab9.style			    = UI_CENTER;
@@ -1171,7 +1171,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab10.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_sandboxmain.tab10.generic.id       	= ID_TAB10;
 	s_sandboxmain.tab10.generic.callback 	= SandboxMain_MenuEvent;
-	s_sandboxmain.tab10.generic.x        	= (110*0.5)*10 - cl_screenoffset.integer;
+	s_sandboxmain.tab10.generic.x        	= (110*0.5)*10 - uis.wideoffset;
 	s_sandboxmain.tab10.generic.y        	= 15;
 	s_sandboxmain.tab10.color			    = s_sandboxmain_color1;
 	s_sandboxmain.tab10.style			    = UI_CENTER;
@@ -1182,7 +1182,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.savemap.generic.flags    = QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_sandboxmain.savemap.generic.id       = ID_SAVEMAP;
 	s_sandboxmain.savemap.generic.callback = SandboxMain_MenuEvent;
-	s_sandboxmain.savemap.generic.x        = 440 + cl_screenoffset.integer;
+	s_sandboxmain.savemap.generic.x        = 440 + uis.wideoffset;
 	s_sandboxmain.savemap.generic.y        = 420 + 5;
 	s_sandboxmain.savemap.style            = UI_CENTER;
 	s_sandboxmain.savemap.color            = s_sandboxmain_color1;
@@ -1191,7 +1191,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.loadmap.generic.flags    = QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_sandboxmain.loadmap.generic.id       = ID_LOADMAP;
 	s_sandboxmain.loadmap.generic.callback = SandboxMain_MenuEvent;
-	s_sandboxmain.loadmap.generic.x        = 440 + cl_screenoffset.integer;
+	s_sandboxmain.loadmap.generic.x        = 440 + uis.wideoffset;
 	s_sandboxmain.loadmap.generic.y        = 420 + 25;
 	s_sandboxmain.loadmap.style            = UI_CENTER;
 	s_sandboxmain.loadmap.color            = s_sandboxmain_color1;
@@ -1201,7 +1201,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.priv.generic.flags		= QMF_PULSEIFFOCUS|QMF_SMALLFONT;
 	s_sandboxmain.priv.generic.callback		= SandboxMain_MenuEvent;
 	s_sandboxmain.priv.generic.id			= ID_PRIV;
-	s_sandboxmain.priv.generic.x			= 480 + cl_screenoffset.integer;
+	s_sandboxmain.priv.generic.x			= 480 + uis.wideoffset;
 	s_sandboxmain.priv.generic.y			= y;
 	s_sandboxmain.priv.color				= s_sandboxmain_color1;
 	y += 18;
@@ -1210,7 +1210,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.grid.generic.flags		= QMF_PULSEIFFOCUS|QMF_SMALLFONT|QMF_NUMBERSONLY;
 	s_sandboxmain.grid.field.widthInChars	= 4;
 	s_sandboxmain.grid.field.maxchars		= 4;
-	s_sandboxmain.grid.generic.x			= 480 + cl_screenoffset.integer;
+	s_sandboxmain.grid.generic.x			= 480 + uis.wideoffset;
 	s_sandboxmain.grid.generic.y			= y;
 	s_sandboxmain.grid.color				= s_sandboxmain_color1;
 	y += 18;
@@ -1220,7 +1220,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.modif[i].generic.flags		= QMF_PULSEIFFOCUS|QMF_SMALLFONT;
 	s_sandboxmain.modif[i].field.widthInChars	= 14;
 	s_sandboxmain.modif[i].field.maxchars		= 64;
-	s_sandboxmain.modif[i].generic.x			= 480 + cl_screenoffset.integer;
+	s_sandboxmain.modif[i].generic.x			= 480 + uis.wideoffset;
 	s_sandboxmain.modif[i].generic.y			= y;
 	s_sandboxmain.modif[i].color				= s_sandboxmain_color1;
 	y += 18;
@@ -1230,7 +1230,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.spawnobject.generic.flags    = QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_sandboxmain.spawnobject.generic.id       = ID_SPAWNOBJECT;
 	s_sandboxmain.spawnobject.generic.callback = SandboxMain_MenuEvent;
-	s_sandboxmain.spawnobject.generic.x        = 560 + cl_screenoffset.integer;
+	s_sandboxmain.spawnobject.generic.x        = 560 + uis.wideoffset;
 	s_sandboxmain.spawnobject.generic.y        = 448;
 	s_sandboxmain.spawnobject.color					= s_sandboxmain_color1;
 	s_sandboxmain.spawnobject.style					= UI_CENTER;
@@ -1239,14 +1239,14 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
 	s_sandboxmain.list.type				= 5;
 	s_sandboxmain.list.styles			= 2;
-	s_sandboxmain.list.columns			= 6+((2*cl_screenoffset.integer)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.list.columns			= 6+((2*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
 	s_sandboxmain.list.string			= "props";
 	s_sandboxmain.list.fontsize			= 0.4;
 	s_sandboxmain.list.corner			= 65;
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
-	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.list.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.list.generic.y		= 62;
 	s_sandboxmain.list.width			= 39/6;
 	s_sandboxmain.list.height			= 4;
@@ -1257,13 +1257,13 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.texturelist.generic.type		= MTYPE_UIOBJECT;
 	s_sandboxmain.texturelist.type				= 5;
 	s_sandboxmain.texturelist.styles			= 2;
-	s_sandboxmain.texturelist.columns			= 6+((2*cl_screenoffset.integer)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.texturelist.columns			= 6+((2*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
 	s_sandboxmain.texturelist.fontsize			= 0.4;
 	s_sandboxmain.texturelist.corner			= 65;
 	s_sandboxmain.texturelist.generic.flags		= QMF_PULSEIFFOCUS;
 	s_sandboxmain.texturelist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.texturelist.generic.id		= ID_TEXTURESLIST;
-	s_sandboxmain.texturelist.generic.x			= 40 - cl_screenoffset.integer;
+	s_sandboxmain.texturelist.generic.x			= 40 - uis.wideoffset;
 	s_sandboxmain.texturelist.generic.y			= 215 + 62;
 	s_sandboxmain.texturelist.width				= 39/6;
 	s_sandboxmain.texturelist.height			= 4;
@@ -1272,14 +1272,14 @@ void SandboxMain_MenuInit( void ) {
 	//y += 20;
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.propstext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= s_sandboxmain_color1;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classtext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= s_sandboxmain_color1;
@@ -1297,7 +1297,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
-	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.list.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.list.generic.y		= 70;
 	s_sandboxmain.list.width			= 28;
 	s_sandboxmain.list.height			= 15+18;
@@ -1309,14 +1309,14 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.classlist.generic.type		= MTYPE_UIOBJECT;
 	s_sandboxmain.classlist.type				= 5;
 	s_sandboxmain.classlist.styles			= 2;
-	s_sandboxmain.classlist.columns			= 6+((2*cl_screenoffset.integer)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.classlist.columns			= 6+((2*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
 	s_sandboxmain.classlist.string			= "";
 	s_sandboxmain.classlist.fontsize		= 0.4;
 	s_sandboxmain.classlist.corner			= 40;
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
-	s_sandboxmain.classlist.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classlist.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.classlist.generic.y		= 70;
 	s_sandboxmain.classlist.width			= 39/6;
 	s_sandboxmain.classlist.height			= 8;
@@ -1326,14 +1326,14 @@ void SandboxMain_MenuInit( void ) {
 	//y += 20;
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.propstext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= s_sandboxmain_color1;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classtext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.classtext.generic.y				= 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= s_sandboxmain_color1;
@@ -1347,14 +1347,14 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
 	s_sandboxmain.list.type				= 5;
 	s_sandboxmain.list.styles			= 2;
-	s_sandboxmain.list.columns			= 6+((2*cl_screenoffset.integer)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.list.columns			= 6+((2*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
 	s_sandboxmain.list.string			= "bots";
 	s_sandboxmain.list.fontsize			= 0.4;
 	s_sandboxmain.list.corner			= 65;
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
-	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.list.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.list.generic.y		= 62;
 	s_sandboxmain.list.width			= 39/6;
 	s_sandboxmain.list.height			= 4;
@@ -1369,9 +1369,9 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
-	s_sandboxmain.classlist.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classlist.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.classlist.generic.y		= 215 + 70;
-	s_sandboxmain.classlist.width			= 39+(2*cl_screenoffset.integer/SMALLCHAR_WIDTH);
+	s_sandboxmain.classlist.width			= 39+(2*uis.wideoffset/SMALLCHAR_WIDTH);
 	s_sandboxmain.classlist.height			= 15;
 	s_sandboxmain.classlist.numitems		= 5;
 	s_sandboxmain.classlist.itemnames		= (const char **)s_sandboxmain.classeslist;
@@ -1380,14 +1380,14 @@ void SandboxMain_MenuInit( void ) {
 	//y += 20;
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.propstext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= s_sandboxmain_color1;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classtext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= s_sandboxmain_color1;
@@ -1403,14 +1403,14 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
 	s_sandboxmain.list.type				= 5;
 	s_sandboxmain.list.styles			= 2;
-	s_sandboxmain.list.columns			= 6+((2*cl_screenoffset.integer)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.list.columns			= 6+((2*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
 	s_sandboxmain.list.string			= "";
 	s_sandboxmain.list.fontsize			= 0.4;
 	s_sandboxmain.list.corner			= 65;
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
-	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.list.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.list.generic.y		= 70;
 	s_sandboxmain.list.width			= 39/6;
 	s_sandboxmain.list.height			= 8;
@@ -1425,7 +1425,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
-	s_sandboxmain.classlist.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classlist.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.classlist.generic.y		= 215 + 70;
 	s_sandboxmain.classlist.width			= 28;
 	s_sandboxmain.classlist.height			= 15;
@@ -1436,14 +1436,14 @@ void SandboxMain_MenuInit( void ) {
 	//y += 20;
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.propstext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= s_sandboxmain_color1;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classtext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= s_sandboxmain_color1;
@@ -1461,9 +1461,9 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
-	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.list.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.list.generic.y		= 70;
-	s_sandboxmain.list.width			= 39+(2*cl_screenoffset.integer/SMALLCHAR_WIDTH);
+	s_sandboxmain.list.width			= 39+(2*uis.wideoffset/SMALLCHAR_WIDTH);
 	s_sandboxmain.list.height			= 15+18;
 	s_sandboxmain.list.numitems			= 8;
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.cvar_itemslist;
@@ -1477,7 +1477,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
-	s_sandboxmain.classlist.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classlist.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.classlist.generic.y		= 215 + 70;
 	s_sandboxmain.classlist.width			= 28;
 	s_sandboxmain.classlist.height			= 15;
@@ -1488,14 +1488,14 @@ void SandboxMain_MenuInit( void ) {
 	//y += 20;
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.propstext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= s_sandboxmain_color1;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classtext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= s_sandboxmain_color1;
@@ -1515,9 +1515,9 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
-	s_sandboxmain.classlist.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classlist.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.classlist.generic.y		= 215 + 70;
-	s_sandboxmain.classlist.width			= 39+(2*cl_screenoffset.integer/SMALLCHAR_WIDTH);
+	s_sandboxmain.classlist.width			= 39+(2*uis.wideoffset/SMALLCHAR_WIDTH);
 	s_sandboxmain.classlist.height			= 15;
 	s_sandboxmain.classlist.numitems		= trap_FS_GetFileList( va("spawnlists", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue]), "cfg", s_sandboxmain.names2, 524288 );
 	s_sandboxmain.classlist.itemnames		= (const char **)s_sandboxmain.classeslist;
@@ -1529,14 +1529,14 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
 	s_sandboxmain.list.type				= 5;
 	s_sandboxmain.list.styles			= 2;
-	s_sandboxmain.list.columns			= 6+((2*cl_screenoffset.integer)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.list.columns			= 6+((2*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
 	s_sandboxmain.list.string 			= (char *)UI_Alloc(256);
 	s_sandboxmain.list.fontsize			= 0.4;
 	s_sandboxmain.list.corner			= 65;
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
-	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.list.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.list.generic.y		= 62;
 	s_sandboxmain.list.width			= 39/6;
 	s_sandboxmain.list.height			= 4;
@@ -1545,14 +1545,14 @@ void SandboxMain_MenuInit( void ) {
 	//y += 20;
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.propstext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= s_sandboxmain_color1;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classtext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= s_sandboxmain_color1;
@@ -1570,9 +1570,9 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
-	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.list.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.list.generic.y		= 70;
-	s_sandboxmain.list.width			= 39+(2*cl_screenoffset.integer/SMALLCHAR_WIDTH);
+	s_sandboxmain.list.width			= 39+(2*uis.wideoffset/SMALLCHAR_WIDTH);
 	s_sandboxmain.list.height			= 15+18;
 	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "dscripts", "as", s_sandboxmain.names, 524288 );
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
@@ -1586,7 +1586,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
-	s_sandboxmain.classlist.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classlist.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.classlist.generic.y		= 215 + 70;
 	s_sandboxmain.classlist.width			= 28;
 	s_sandboxmain.classlist.height			= 15;
@@ -1597,14 +1597,14 @@ void SandboxMain_MenuInit( void ) {
 	//y += 20;
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.propstext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= s_sandboxmain_color1;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classtext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= s_sandboxmain_color1;
@@ -1622,9 +1622,9 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
-	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.list.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.list.generic.y		= 70;
-	s_sandboxmain.list.width			= 39+(2*cl_screenoffset.integer/SMALLCHAR_WIDTH);
+	s_sandboxmain.list.width			= 39+(2*uis.wideoffset/SMALLCHAR_WIDTH);
 	s_sandboxmain.list.height			= 15+18;
 	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "tools", "as", s_sandboxmain.names, 524288 );
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
@@ -1638,7 +1638,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
-	s_sandboxmain.classlist.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classlist.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.classlist.generic.y		= 215 + 70;
 	s_sandboxmain.classlist.width			= 28;
 	s_sandboxmain.classlist.height			= 15;
@@ -1649,14 +1649,14 @@ void SandboxMain_MenuInit( void ) {
 	//y += 20;
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.propstext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= s_sandboxmain_color1;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classtext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= s_sandboxmain_color1;
@@ -1674,9 +1674,9 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
-	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.list.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.list.generic.y		= 70;
-	s_sandboxmain.list.width			= 39+(2*cl_screenoffset.integer/SMALLCHAR_WIDTH);
+	s_sandboxmain.list.width			= 39+(2*uis.wideoffset/SMALLCHAR_WIDTH);
 	s_sandboxmain.list.height			= 15+18;
 	s_sandboxmain.list.numitems			= 338;
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.cvar_itemslist;
@@ -1690,7 +1690,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
-	s_sandboxmain.classlist.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classlist.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.classlist.generic.y		= 215 + 70;
 	s_sandboxmain.classlist.width			= 28;
 	s_sandboxmain.classlist.height			= 15;
@@ -1701,14 +1701,14 @@ void SandboxMain_MenuInit( void ) {
 	//y += 20;
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.propstext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= s_sandboxmain_color1;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classtext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= s_sandboxmain_color1;
@@ -1727,9 +1727,9 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
-	s_sandboxmain.list.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.list.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.list.generic.y		= 70;
-	s_sandboxmain.list.width			= 39+(2*cl_screenoffset.integer/SMALLCHAR_WIDTH);
+	s_sandboxmain.list.width			= 39+(2*uis.wideoffset/SMALLCHAR_WIDTH);
 	s_sandboxmain.list.height			= 15+18;
 	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "mgui", "as", s_sandboxmain.names, 524288 );
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
@@ -1743,7 +1743,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
-	s_sandboxmain.classlist.generic.x		= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classlist.generic.x		= 40 - uis.wideoffset;
 	s_sandboxmain.classlist.generic.y		= 215 + 70;
 	s_sandboxmain.classlist.width			= 28;
 	s_sandboxmain.classlist.height			= 15;
@@ -1754,14 +1754,14 @@ void SandboxMain_MenuInit( void ) {
 	//y += 20;
 	
 	s_sandboxmain.propstext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.propstext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.propstext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.propstext.generic.y				= 48;
 	s_sandboxmain.propstext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.propstext.color  					= s_sandboxmain_color1;
 	s_sandboxmain.propstext.style  					= UI_BIGFONT;
 	
 	s_sandboxmain.classtext.generic.type			= MTYPE_PTEXT;
-	s_sandboxmain.classtext.generic.x				= 40 - cl_screenoffset.integer;
+	s_sandboxmain.classtext.generic.x				= 40 - uis.wideoffset;
 	s_sandboxmain.classtext.generic.y				= 215 + 48;
 	s_sandboxmain.classtext.generic.flags			= QMF_INACTIVE;
 	s_sandboxmain.classtext.color  					= s_sandboxmain_color1;

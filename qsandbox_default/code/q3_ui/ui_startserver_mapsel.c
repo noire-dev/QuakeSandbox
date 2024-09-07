@@ -1335,13 +1335,13 @@ static void MapSelect_DrawListMapPic(void)
     MapSelect_MapCellSize(&colh, &colw);
 
 	trap_R_SetColor( fading_red );
-	UI_DrawNamedPic(x + cl_screenoffset.integer - ( colw - MAPPIC_WIDTH )/2, y - 8, colw, colh, MAPSELECT_SELECT);
+	UI_DrawNamedPic(x + uis.wideoffset - ( colw - MAPPIC_WIDTH )/2, y - 8, colw, colh, MAPSELECT_SELECT);
 	trap_R_SetColor( NULL );
 
-	StartServer_DrawMapPicture( x + cl_screenoffset.integer, y,
+	StartServer_DrawMapPicture( x + uis.wideoffset, y,
 		MAPPIC_WIDTH, MAPPIC_HEIGHT, &s_mapselect.mapinfo[index], colour);
 
-	UI_DrawString( 320 + cl_screenoffset.integer, y + MAPPIC_HEIGHT + 8, s_mapselect.maplongname[base + index],
+	UI_DrawString( 320 + uis.wideoffset, y + MAPPIC_HEIGHT + 8, s_mapselect.maplongname[base + index],
 		UI_CENTER|UI_SMALLFONT, colour);
 }
 
@@ -1650,7 +1650,7 @@ static void MapSelect_MenuInit(int gametype, int index, const char* mapname)
 	s_mapselect.cancel.generic.flags  = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_mapselect.cancel.generic.id  = ID_MAPSELECT_CANCEL;
 	s_mapselect.cancel.generic.callback  = MapSelect_MenuEvent;
-	s_mapselect.cancel.generic.x	   = 0 - cl_screenoffset.integer;
+	s_mapselect.cancel.generic.x	   = 0 - uis.wideoffset;
 	s_mapselect.cancel.generic.y	   = 480 - 64;
 	s_mapselect.cancel.width  	   = 128;
 	s_mapselect.cancel.height  	   = 64;
@@ -1661,7 +1661,7 @@ static void MapSelect_MenuInit(int gametype, int index, const char* mapname)
 	s_mapselect.accept.generic.flags  = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_mapselect.accept.generic.id = ID_MAPSELECT_OK;
 	s_mapselect.accept.generic.callback  = MapSelect_MenuEvent;
-	s_mapselect.accept.generic.x	   = 640 - 128 + cl_screenoffset.integer;
+	s_mapselect.accept.generic.x	   = 640 - 128 + uis.wideoffset;
 	s_mapselect.accept.generic.y	   = 480 - 64;
 	s_mapselect.accept.width  	   = 128;
 	s_mapselect.accept.height  	   = 64;

@@ -719,7 +719,7 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cl_timeNudge, "cl_timeNudge", "0", CVAR_ARCHIVE },
 //unlagged - client options
 	{ &cg_trueLightning, "cg_trueLightning", "0.9", CVAR_ARCHIVE},
-	{ &cg_letterBoxSize, "cg_letterBoxSize", "40", CVAR_ARCHIVE},
+	{ &cg_letterBoxSize, "cg_letterBoxSize", "0", CVAR_ARCHIVE},
         { &cg_music, "cg_music", "", CVAR_ARCHIVE},
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 
@@ -2885,15 +2885,6 @@ static qboolean do_vid_restart = qfalse;
 void CG_FairCvars() {
     qboolean vid_restart_required = qfalse;
     char rendererinfos[128];
-	
-	trap_Cvar_VariableStringBuffer("mapname",rendererinfos,sizeof(rendererinfos) );
-	if ( Q_stricmp (rendererinfos, "uimap_1") == 0 ) {
-	if ( trap_Key_GetCatcher() == KEYCATCH_UI || trap_Key_GetCatcher() & KEYCATCH_CONSOLE) {
-
-	} else {
-	trap_SendConsoleCommand("openui ui_menu");
-	}
-	}
 
     if(cgs.videoflags & VF_LOCK_CVARS_EXTENDED) {
         //Lock extended cvars.

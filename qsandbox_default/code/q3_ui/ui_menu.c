@@ -33,8 +33,14 @@ MAIN MENU
 #define ID_GAMEMODEP			21
 #define ID_MODDB				22
 #define ID_MODLOADER			23
+#define ID_BUTTON1				24
+#define ID_BUTTON2				25
+#define ID_BUTTON3				26
 
 #define MODDB				"menu/moddb"
+#define M_BUTTON1			"menu/button1"
+#define M_BUTTON2			"menu/button2"
+#define M_BUTTON3			"menu/button3"
 #define MAIN_MENU_VERTICAL_SPACING		34
 
 #define MAIN_MENU_CENTER 200
@@ -50,6 +56,9 @@ typedef struct {
 	menutext_s		gamemodep;
     menubitmap_s	modloader;
 	menubitmap_s	moddb;
+	menubitmap_s	button1;
+	menubitmap_s	button2;
+	menubitmap_s	button3;
 	menutext_s		singleplayer;
 	menutext_s      skirmish;
 	menutext_s		multiplayer;
@@ -256,6 +265,22 @@ void Main_MenuEvent (void* ptr, int event) {
 	case ID_EXIT:
 		UI_CreditMenu(0);
 		break;
+	case ID_BUTTON1:
+		trap_Cmd_ExecuteText( EXEC_APPEND, "toggle r_mode 3 -2;" );
+		trap_Cmd_ExecuteText( EXEC_APPEND, "set vid_xpos 0;" );
+		trap_Cmd_ExecuteText( EXEC_APPEND, "set vid_ypos 0;" );
+		trap_Cmd_ExecuteText( EXEC_APPEND, "vid_restart;" );
+		trap_Cmd_ExecuteText( EXEC_APPEND, "minimize;" );
+		break;
+	case ID_BUTTON2:
+		trap_Cmd_ExecuteText( EXEC_APPEND, "toggle r_mode 3 -2;" );
+		trap_Cmd_ExecuteText( EXEC_APPEND, "set vid_xpos 0;" );
+		trap_Cmd_ExecuteText( EXEC_APPEND, "set vid_ypos 0;" );
+		trap_Cmd_ExecuteText( EXEC_APPEND, "vid_restart;" );
+		break;
+	case ID_BUTTON3:
+		trap_Cmd_ExecuteText( EXEC_APPEND, "quit;" );
+		break;
 	}
 }
 
@@ -268,6 +293,9 @@ MainMenu_Cache
 void MainMenu_Cache( void ) {
 	trap_R_RegisterShaderNoMip( MODLOADER );
 	trap_R_RegisterShaderNoMip( MODDB );
+	trap_R_RegisterShaderNoMip( M_BUTTON1 );
+	trap_R_RegisterShaderNoMip( M_BUTTON2 );
+	trap_R_RegisterShaderNoMip( M_BUTTON3 );
 }
 
 sfxHandle_t ErrorMessage_Key(int key)
@@ -285,61 +313,8 @@ TTimo: this function is common to the main menu and errorMessage menu
 */
 
 static void Main_MenuDraw( void ) {
-	refdef_t		refdef;
-	refEntity_t		ent;
-	vec3_t			origin;
-	vec3_t			angles;
-	float			adjust;
-	float			x, y, w, h;
 	vec4_t			color = {0.85, 0.9, 1.0, 1};
 	char 			buffer[MAX_NAME_LENGTH];
-
-	// setup the refdef
-
-	memset( &refdef, 0, sizeof( refdef ) );
-
-	refdef.rdflags = RDF_NOWORLDMODEL;
-
-	AxisClear( refdef.viewaxis );
-
-	x = 0;
-	y = 0;
-	w = 640;
-	h = 120;
-	UI_AdjustFrom640( &x, &y, &w, &h );
-	refdef.x = x;
-	refdef.y = y;
-	refdef.width = w;
-	refdef.height = h;
-
-	adjust = 0; // JDC: Kenneth asked me to stop this 1.0 * sin( (float)uis.realtime / 1000 );
-	refdef.fov_x = 60 + adjust;
-	refdef.fov_y = 19.6875 + adjust;
-
-	refdef.time = uis.realtime;
-
-	origin[0] = 300;
-	origin[1] = 0;
-	origin[2] = -32;
-
-	trap_R_ClearScene();
-
-	// add the model
-
-/*	memset( &ent, 0, sizeof(ent) );
-
-	adjust = 5.0 * sin( (float)uis.realtime / 5000 );
-	VectorSet( angles, 0, 180 + adjust, 0 );
-	AnglesToAxis( angles, ent.axis );
-	ent.hModel = s_main.bannerModel;
-	VectorCopy( origin, ent.origin );
-	VectorCopy( origin, ent.lightingOrigin );
-	ent.renderfx = RF_LIGHTING_ORIGIN | RF_NOSHADOW;
-	VectorCopy( ent.origin, ent.oldorigin );
-
-	trap_R_AddRefEntityToScene( &ent );
-
-	trap_R_RenderScene( &refdef );*/
 
 	if (strlen(s_errorMessage.errorMessage))
 	{
@@ -363,8 +338,8 @@ static void Main_MenuDraw( void ) {
 	   // standard menu drawing
 	   Menu_Draw( &s_main.menu );
    }
-	UI_DrawString( 600+cl_screenoffset.integer, 450, "Quake Sandbox v4.5", UI_RIGHT|UI_SMALLFONT, color );
-	UI_DrawString( 600+cl_screenoffset.integer, 465, "by Noire.dev", UI_RIGHT|UI_SMALLFONT, color );
+	UI_DrawString( 600+uis.wideoffset, 450, "Quake Sandbox v5.0", UI_RIGHT|UI_SMALLFONT, color );
+	UI_DrawString( 600+uis.wideoffset, 465, "by Noire.dev", UI_RIGHT|UI_SMALLFONT, color );
 }
 
 
@@ -423,7 +398,7 @@ void UI_MainMenu( void ) {
 	int		style;
 	float	sizeScale;
 
-	trap_Cvar_Set( "sv_killserver", "1" );
+	//trap_Cvar_Set( "sv_killserver", "1" );
 
 	memset( &s_main, 0 ,sizeof(mainmenu_t) );
 	memset( &s_errorMessage, 0 ,sizeof(errorMessage_t) );
@@ -462,7 +437,7 @@ void UI_MainMenu( void ) {
 	s_main.modloader.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_main.modloader.generic.id			= ID_MODLOADER;
 	s_main.modloader.generic.callback	= Main_MenuEvent;
-	s_main.modloader.generic.x			= 440 + cl_screenoffset.integer;
+	s_main.modloader.generic.x			= 440 + uis.wideoffset;
 	s_main.modloader.generic.y			= 365;
 	s_main.modloader.width				= 256*0.90;
 	s_main.modloader.height				= 38*0.80;
@@ -471,17 +446,44 @@ void UI_MainMenu( void ) {
 	s_main.moddb.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_main.moddb.generic.id			= ID_MODDB;
 	s_main.moddb.generic.callback	= Main_MenuEvent;
-	s_main.moddb.generic.x			= 460 + cl_screenoffset.integer;
+	s_main.moddb.generic.x			= 460 + uis.wideoffset;
 	s_main.moddb.generic.y			= 365 + 38*0.80 + 15;
 	s_main.moddb.width				= 256*0.90;
 	s_main.moddb.height				= 38*0.80;
+	
+	s_main.button1.generic.type			= MTYPE_BITMAP;
+	s_main.button1.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_main.button1.generic.id			= ID_BUTTON1;
+	s_main.button1.generic.callback		= Main_MenuEvent;
+	s_main.button1.generic.x			= 577 + uis.wideoffset;
+	s_main.button1.generic.y			= 5;
+	s_main.button1.width				= 24;
+	s_main.button1.height				= 12;
+	
+	s_main.button2.generic.type			= MTYPE_BITMAP;
+	s_main.button2.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_main.button2.generic.id			= ID_BUTTON2;
+	s_main.button2.generic.callback		= Main_MenuEvent;
+	s_main.button2.generic.x			= 601 + uis.wideoffset;
+	s_main.button2.generic.y			= 5;
+	s_main.button2.width				= 24;
+	s_main.button2.height				= 12;
+	
+	s_main.button3.generic.type			= MTYPE_BITMAP;
+	s_main.button3.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_main.button3.generic.id			= ID_BUTTON3;
+	s_main.button3.generic.callback		= Main_MenuEvent;
+	s_main.button3.generic.x			= 625 + uis.wideoffset;
+	s_main.button3.generic.y			= 5;
+	s_main.button3.width				= 24;
+	s_main.button3.height				= 12;
 
-	y = 153;
+	y = 143;
 	s_main.singleplayer.generic.type		= MTYPE_PTEXT;
 	s_main.singleplayer.generic.flags		= QMF_LEFT_JUSTIFY|QMF_HIGHLIGHT_IF_FOCUS;
 	s_main.singleplayer.generic.id			= ID_SINGLEPLAYER;
 	s_main.singleplayer.generic.callback	= Main_MenuEvent;
-	s_main.singleplayer.generic.x			= 64 - cl_screenoffset.integer;
+	s_main.singleplayer.generic.x			= 64 - uis.wideoffset;
 	s_main.singleplayer.generic.y			= y;
 	s_main.singleplayer.color				= color_white;
 	s_main.singleplayer.style		    	= UI_LEFT|UI_SMALLFONT;
@@ -491,7 +493,7 @@ void UI_MainMenu( void ) {
 	s_main.multiplayer.generic.flags		= QMF_LEFT_JUSTIFY|QMF_HIGHLIGHT_IF_FOCUS;
 	s_main.multiplayer.generic.id			= ID_MULTIPLAYER;
 	s_main.multiplayer.generic.callback	= Main_MenuEvent;
-	s_main.multiplayer.generic.x			= 64 - cl_screenoffset.integer;
+	s_main.multiplayer.generic.x			= 64 - uis.wideoffset;
 	s_main.multiplayer.generic.y			= y;
 	s_main.multiplayer.color				= color_white;
 	s_main.multiplayer.style		    	= UI_LEFT|UI_SMALLFONT;
@@ -501,7 +503,7 @@ void UI_MainMenu( void ) {
 	s_main.gamemodep.generic.flags		= QMF_LEFT_JUSTIFY|QMF_HIGHLIGHT_IF_FOCUS;
 	s_main.gamemodep.generic.id			= ID_GAMEMODEP;
 	s_main.gamemodep.generic.callback	= Main_MenuEvent;
-	s_main.gamemodep.generic.x			= 64 - cl_screenoffset.integer;
+	s_main.gamemodep.generic.x			= 64 - uis.wideoffset;
 	s_main.gamemodep.generic.y			= y;
 	s_main.gamemodep.color				= color_white;
 	s_main.gamemodep.style		    	= UI_LEFT|UI_SMALLFONT;
@@ -509,7 +511,7 @@ void UI_MainMenu( void ) {
 	y += 19;
 	s_main.name.generic.type			= MTYPE_PTEXT;
 	s_main.name.generic.flags			= QMF_LEFT_JUSTIFY|QMF_HIGHLIGHT_IF_FOCUS;
-	s_main.name.generic.x				= 64 - cl_screenoffset.integer;
+	s_main.name.generic.x				= 64 - uis.wideoffset;
 	s_main.name.generic.y				= y;
 	s_main.name.generic.id				= ID_PLAYERNAME;
 	s_main.name.generic.callback		= Main_MenuEvent;
@@ -521,7 +523,7 @@ void UI_MainMenu( void ) {
 	s_main.mods.generic.flags		= QMF_LEFT_JUSTIFY|QMF_HIGHLIGHT_IF_FOCUS;
 	s_main.mods.generic.id			= ID_MODS;
 	s_main.mods.generic.callback	= Main_MenuEvent;
-	s_main.mods.generic.x			= 64 - cl_screenoffset.integer;
+	s_main.mods.generic.x			= 64 - uis.wideoffset;
 	s_main.mods.generic.y			= y;
 	s_main.mods.color				= color_white;
 	s_main.mods.style		    	= UI_LEFT|UI_SMALLFONT;
@@ -531,7 +533,7 @@ void UI_MainMenu( void ) {
 	s_main.demos.generic.flags		= QMF_LEFT_JUSTIFY|QMF_HIGHLIGHT_IF_FOCUS;
 	s_main.demos.generic.id			= ID_DEMOS;
 	s_main.demos.generic.callback	= Main_MenuEvent;
-	s_main.demos.generic.x			= 64 - cl_screenoffset.integer;
+	s_main.demos.generic.x			= 64 - uis.wideoffset;
 	s_main.demos.generic.y			= y;
 	s_main.demos.color				= color_white;
 	s_main.demos.style		    	= UI_LEFT|UI_SMALLFONT;
@@ -541,7 +543,7 @@ void UI_MainMenu( void ) {
 	s_main.setup.generic.flags		= QMF_LEFT_JUSTIFY|QMF_HIGHLIGHT_IF_FOCUS;
 	s_main.setup.generic.id			= ID_SETUP;
 	s_main.setup.generic.callback	= Main_MenuEvent;
-	s_main.setup.generic.x			= 64 - cl_screenoffset.integer;
+	s_main.setup.generic.x			= 64 - uis.wideoffset;
 	s_main.setup.generic.y			= y;
 	s_main.setup.color				= color_white;
 	s_main.setup.style		    	= UI_LEFT|UI_SMALLFONT;
@@ -551,7 +553,7 @@ void UI_MainMenu( void ) {
 	s_main.exit.generic.flags		= QMF_LEFT_JUSTIFY|QMF_HIGHLIGHT_IF_FOCUS;
 	s_main.exit.generic.id			= ID_EXIT;
 	s_main.exit.generic.callback	= Main_MenuEvent;
-	s_main.exit.generic.x			= 64 - cl_screenoffset.integer;
+	s_main.exit.generic.x			= 64 - uis.wideoffset;
 	s_main.exit.generic.y			= y;
 	s_main.exit.color				= color_white;
 	s_main.exit.style		    	= UI_LEFT|UI_SMALLFONT;
@@ -608,10 +610,10 @@ void UI_MainMenu( void ) {
 #ifndef NO_UIE_MINILOGO
 	s_main.logo.generic.type			= MTYPE_BITMAP;
 	s_main.logo.generic.flags		= QMF_INACTIVE|QMF_HIGHLIGHT;
-	s_main.logo.generic.x			= 54 - cl_screenoffset.integer;
-	s_main.logo.generic.y			= 57;
-	s_main.logo.width				= 180;
-	s_main.logo.height				= 63;
+	s_main.logo.generic.x			= 54 - uis.wideoffset;
+	s_main.logo.generic.y			= 37;
+	s_main.logo.width				= 200;
+	s_main.logo.height				= 100;
 	s_main.logo.focuspic 			= UIE_LOGO_NAME;
 
 	Menu_AddItem( &s_main.menu,	&s_main.logo);
@@ -619,6 +621,12 @@ void UI_MainMenu( void ) {
 	s_main.modloader.focuspic			= MODLOADER;
 	s_main.moddb.generic.name		= MODDB;
 	s_main.moddb.focuspic			= MODDB;
+	s_main.button1.generic.name		= M_BUTTON1;
+	s_main.button1.focuspic			= M_BUTTON1;
+	s_main.button2.generic.name		= M_BUTTON2;
+	s_main.button2.focuspic			= M_BUTTON2;
+	s_main.button3.generic.name		= M_BUTTON3;
+	s_main.button3.focuspic			= M_BUTTON3;
 #endif
 
 if(!trap_Cvar_VariableValue("cl_android")){
@@ -626,6 +634,9 @@ if(!trap_Cvar_VariableValue("cl_android")){
 }
 	Menu_AddItem( &s_main.menu,	&s_main.modloader );
 	Menu_AddItem( &s_main.menu,	&s_main.moddb );
+	Menu_AddItem( &s_main.menu,	&s_main.button1 );
+	Menu_AddItem( &s_main.menu,	&s_main.button2 );
+	Menu_AddItem( &s_main.menu,	&s_main.button3 );
 	Menu_AddItem( &s_main.menu,	&s_main.singleplayer );
 	Menu_AddItem( &s_main.menu,	&s_main.multiplayer );
 	Menu_AddItem( &s_main.menu,	&s_main.setup );

@@ -303,7 +303,7 @@ static void Demos_MenuInit( void ) {
 	s_demos.back.generic.flags		= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_demos.back.generic.id			= ID_BACK;
 	s_demos.back.generic.callback	= Demos_MenuEvent;
-	s_demos.back.generic.x			= 0 - cl_screenoffset.integer;
+	s_demos.back.generic.x			= 0 - uis.wideoffset;
 	s_demos.back.generic.y			= 480-64;
 	s_demos.back.width				= 128;
 	s_demos.back.height				= 64;
@@ -314,7 +314,7 @@ static void Demos_MenuInit( void ) {
 	s_demos.go.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_demos.go.generic.id			= ID_GO;
 	s_demos.go.generic.callback		= Demos_MenuEvent;
-	s_demos.go.generic.x			= 640 + cl_screenoffset.integer;
+	s_demos.go.generic.x			= 640 + uis.wideoffset;
 	s_demos.go.generic.y			= 480-64;
 	s_demos.go.width				= 128;
 	s_demos.go.height				= 64;

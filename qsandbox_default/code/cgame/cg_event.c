@@ -1249,25 +1249,25 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		break;
 	case EV_HORN:
 		DEBUGNAME("EV_HORN");
-		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, "sound/vehicle/horn.ogg") );
+		trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound(es->number, "sound/vehicle/horn.ogg") );
 		break;
 	case EV_CRASH25:
 		DEBUGNAME("EV_CRASH25");
-		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, "sound/vehicle/damage25.ogg") );
+		trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound(es->number, "sound/vehicle/damage25.ogg") );
 		break;
 	case EV_OT1_IMPACT:
 		DEBUGNAME("EV_OT1_IMPACT");
 		random_number = rand() % 3 + 1;
 		if(random_number == 1){
-		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, "sound/objects/basic/impact1") );}
+		trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound(es->number, "sound/objects/basic/impact1") );}
 		if(random_number == 2){
-		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, "sound/objects/basic/impact2") );}
+		trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound(es->number, "sound/objects/basic/impact2") );}
 		if(random_number == 3){
-		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, "sound/objects/basic/impact3") );}
+		trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound(es->number, "sound/objects/basic/impact3") );}
 		break;
 	case EV_GRAVITYSOUND:
 		DEBUGNAME("EV_GRAVITYSOUND");
-		trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, "sound/gravitygun") );
+		trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound(es->number, "sound/gravitygun") );
 		break;
 #ifdef MISSIONPACK
 	case EV_TAUNT_YES:
@@ -1952,21 +1952,20 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 
 		//es->generic1 is used to specify movement speed of the smokepuff
 		VectorSet(dir, es->angles[0] * es->generic1, es->angles[1] * es->generic1, es->angles[2] * es->generic1);
-
-		CG_SmokePuff(
-			cent->lerpOrigin, //origin
-			dir, //movement direction
-			es->otherEntityNum, //radius		es->otherEntityNum is used to specify the radius. Default is 32.
-			r / 255, //red
-			g / 255, //green
-			b / 255, //blue
-			0.33f, //alpha
-			es->eventParm * 1000, //duration
-			cg.time, //startTime
-			0, //fadeinTime
-			0, //LEF_PUFF_DONT_SCALE, //flags
-			cgs.media.smokePuffShader //shader
-		);
+		CG_SmokePuff(cent->lerpOrigin, dir, es->otherEntityNum, r / 255, g / 255, b / 255, 0.33f, es->eventParm * 1000, cg.time, 0, 0, cgs.media.smokePuffShader);
+		break;
+		
+	case EV_WATERPUFF:
+		DEBUGNAME("EV_WATERPUFF");
+		
+		//es->generic1 is used to specify movement speed of the smokepuff
+		CG_SmokePuff(cent->lerpOrigin, dir, es->otherEntityNum, 1.0, 1.0, 1.0, 1.00f, es->eventParm * 2000, cg.time, 0, 0, cgs.media.lsplShader);
+		CG_SmokePuff(cent->lerpOrigin, dir, es->otherEntityNum*0.80, 1.0, 1.0, 1.0, 1.00f, es->eventParm * 1500, cg.time, 0, 0, cgs.media.lsplShader);
+		CG_SmokePuff(cent->lerpOrigin, dir, es->otherEntityNum*0.60, 1.0, 1.0, 1.0, 1.00f, es->eventParm * 1000, cg.time, 0, 0, cgs.media.lsplShader);
+		CG_SmokePuff(cent->lerpOrigin, dir, es->otherEntityNum*0.40, 1.0, 1.0, 1.0, 1.00f, es->eventParm * 750, cg.time, 0, 0, cgs.media.lsplShader);
+		CG_SmokePuff(cent->lerpOrigin, dir, es->otherEntityNum*0.20, 1.0, 1.0, 1.0, 1.00f, es->eventParm * 500, cg.time, 0, 0, cgs.media.lsplShader);
+		CG_SmokePuff(cent->lerpOrigin, dir, es->otherEntityNum*0.10, 1.0, 1.0, 1.0, 1.00f, es->eventParm * 250, cg.time, 0, 0, cgs.media.lsplShader);
+		trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.watrInSound );
 		break;
 
 	case EV_PARTICLES_GRAVITY:

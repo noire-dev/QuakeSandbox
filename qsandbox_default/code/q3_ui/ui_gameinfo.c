@@ -232,10 +232,6 @@ static void UI_LoadUnscriptedMaps( void )
 
 		dirlen = strlen(dirptr);
 
-		// specifically avoid this map in pak0.pk3
-		if (Q_stricmp(dirptr, "test_bigbox.bsp") == 0)
-			continue;
-
 		COM_StripExtensionOld(dirptr, dirptr);
 
 		if (UI_GetArenaInfoByMap( dirptr ))

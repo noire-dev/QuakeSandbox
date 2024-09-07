@@ -110,7 +110,7 @@ static void ServerInfo_MenuDraw( void )
 	char			value[MAX_INFO_VALUE];
 	int				y;
 
-	y = SCREEN_HEIGHT/2 - s_serverinfo.numlines*(SMALLCHAR_HEIGHT)/2 - 20;
+	y = 50;
 	s = s_serverinfo.info;
 	while ( s ) {
 		Info_NextPair( &s, key, value );
@@ -120,10 +120,10 @@ static void ServerInfo_MenuDraw( void )
 
 		Q_strcat( key, MAX_INFO_KEY, ":" ); 
 
-		UI_DrawString(SCREEN_WIDTH*0.50 - 8,y,key,UI_RIGHT|UI_SMALLFONT,color_red);
-		UI_DrawString(SCREEN_WIDTH*0.50 + 8,y,value,UI_LEFT|UI_SMALLFONT,text_color_normal);
+		UI_DrawString(SCREEN_WIDTH*0.50 - 8,y,key,UI_RIGHT|UI_TINYFONT,color_red);
+		UI_DrawString(SCREEN_WIDTH*0.50 + 8,y,value,UI_LEFT|UI_TINYFONT,text_color_normal);
 
-		y += SMALLCHAR_HEIGHT;
+		y += TINYCHAR_HEIGHT;
 	}
 
 	Menu_Draw( &s_serverinfo.menu );
@@ -212,7 +212,7 @@ void UI_ServerInfoMenu( void )
 	s_serverinfo.add.generic.callback = ServerInfo_Event;
 	s_serverinfo.add.generic.id	      = ID_ADD;
 	s_serverinfo.add.generic.x		  = 320;
-	s_serverinfo.add.generic.y		  = 371;
+	s_serverinfo.add.generic.y		  = 450;
 	if(cl_language.integer == 0){
 		s_serverinfo.add.string  		  = "ADD TO FAVORITES";
 	}
@@ -230,7 +230,7 @@ void UI_ServerInfoMenu( void )
 	s_serverinfo.back.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_serverinfo.back.generic.callback = ServerInfo_Event;
 	s_serverinfo.back.generic.id	   = ID_BACK;
-	s_serverinfo.back.generic.x		   = 0;
+	s_serverinfo.back.generic.x		   = 0-uis.wideoffset;
 	s_serverinfo.back.generic.y		   = 480-64;
 	s_serverinfo.back.width  		   = 128;
 	s_serverinfo.back.height  		   = 64;

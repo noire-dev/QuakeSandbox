@@ -1253,7 +1253,7 @@ static void Controls_MenuInit( void )
 	s_controls.looking.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_controls.looking.generic.id	    = ID_LOOKING;
 	s_controls.looking.generic.callback	= Controls_MenuEvent;
-	s_controls.looking.generic.x	    = 152 - cl_screenoffset.integer;
+	s_controls.looking.generic.x	    = 152 - uis.wideoffset;
 	s_controls.looking.generic.y	    = 240 - 2.5 * PROP_HEIGHT;
 	if(cl_language.integer == 0){
 	s_controls.looking.string			= "LOOK";
@@ -1268,7 +1268,7 @@ static void Controls_MenuInit( void )
 	s_controls.movement.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_controls.movement.generic.id	     = ID_MOVEMENT;
 	s_controls.movement.generic.callback = Controls_MenuEvent;
-	s_controls.movement.generic.x	     = 152 - cl_screenoffset.integer;
+	s_controls.movement.generic.x	     = 152 - uis.wideoffset;
 	s_controls.movement.generic.y	     = 240 - 1.5*PROP_HEIGHT;
 	if(cl_language.integer == 0){
 	s_controls.movement.string			= "MOVE";
@@ -1283,7 +1283,7 @@ static void Controls_MenuInit( void )
 	s_controls.weapons.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_controls.weapons.generic.id	    = ID_WEAPONS;
 	s_controls.weapons.generic.callback	= Controls_MenuEvent;
-	s_controls.weapons.generic.x	    = 152 - cl_screenoffset.integer;
+	s_controls.weapons.generic.x	    = 152 - uis.wideoffset;
 	s_controls.weapons.generic.y	    = 240 - 0.5*PROP_HEIGHT;
 	if(cl_language.integer == 0){
 	s_controls.weapons.string			= "SHOOT";
@@ -1298,7 +1298,7 @@ static void Controls_MenuInit( void )
 	s_controls.input.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_controls.input.generic.id	     = ID_INPUT;
 	s_controls.input.generic.callback = Controls_MenuEvent;
-	s_controls.input.generic.x		 = 152 - cl_screenoffset.integer;
+	s_controls.input.generic.x		 = 152 - uis.wideoffset;
 	s_controls.input.generic.y		 = 240 + 0.5*PROP_HEIGHT;
 	if(cl_language.integer == 0){
 	s_controls.input.string			= "INPUT";
@@ -1313,7 +1313,7 @@ static void Controls_MenuInit( void )
 	s_controls.misc.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_controls.misc.generic.id	     = ID_MISC;
 	s_controls.misc.generic.callback = Controls_MenuEvent;
-	s_controls.misc.generic.x		 = 152 - cl_screenoffset.integer;
+	s_controls.misc.generic.x		 = 152 - uis.wideoffset;
 	s_controls.misc.generic.y		 = 240 + 1.5*PROP_HEIGHT;
 	if(cl_language.integer == 0){
 	s_controls.misc.string			= "MISC";
@@ -1327,7 +1327,7 @@ static void Controls_MenuInit( void )
 	s_controls.back.generic.type	 = MTYPE_BITMAP;
 	s_controls.back.generic.name     = ART_BACK0;
 	s_controls.back.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
-	s_controls.back.generic.x		 = 0 - cl_screenoffset.integer;
+	s_controls.back.generic.x		 = 0 - uis.wideoffset;
 	s_controls.back.generic.y		 = 480-64;
 	s_controls.back.generic.id	     = ID_BACK;
 	s_controls.back.generic.callback = Controls_MenuEvent;

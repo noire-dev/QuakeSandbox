@@ -168,6 +168,7 @@ void CG_PredictWeaponEffects( centity_t *cent ) {
 		if ( cg_delag.integer & 1 || cg_delag.integer & 4 ) {
 			int contents;
 			vec3_t endPoint, v;
+			vec3_t			up;
 
 			// do everything like the server does
 
@@ -181,15 +182,10 @@ void CG_PredictWeaponEffects( centity_t *cent ) {
 			VectorScale( v, 32, v );
 			VectorAdd( muzzlePoint, v, v );
 
-			if ( cgs.glconfig.hardwareType != GLHW_RAGEPRO ) {
-				// ragepro can't alpha fade, so don't even bother with smoke
-				vec3_t			up;
-
-				contents = trap_CM_PointContents( muzzlePoint, 0 );
-				if ( !( contents & CONTENTS_WATER ) ) {
-					VectorSet( up, 0, 0, 8 );
-					CG_SmokePuff( v, up, 32, 1, 1, 1, 0.33f, 900, cg.time, 0, LEF_PUFF_DONT_SCALE, cgs.media.shotgunSmokePuffShader );
-				}
+			contents = trap_CM_PointContents( muzzlePoint, 0 );
+			if ( !( contents & CONTENTS_WATER ) ) {
+				VectorSet( up, 0, 0, 8 );
+				CG_SmokePuff( v, up, 32, 1, 1, 1, 0.33f, 900, cg.time, 0, LEF_PUFF_DONT_SCALE, cgs.media.shotgunSmokePuffShader );
 			}
 
 			// do the shotgun pellets

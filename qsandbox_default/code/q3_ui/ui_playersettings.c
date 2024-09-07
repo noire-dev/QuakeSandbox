@@ -638,7 +638,7 @@ static void PlayerSettings_MenuInit( void ) {
 	s_playersettings.model.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_playersettings.model.generic.id			= ID_MODEL;
 	s_playersettings.model.generic.callback		= PlayerSettings_MenuEvent;
-	s_playersettings.model.generic.x			= 640 + cl_screenoffset.integer;
+	s_playersettings.model.generic.x			= 640 + uis.wideoffset;
 	s_playersettings.model.generic.y			= 480-64;
 	s_playersettings.model.width				= 128;
 	s_playersettings.model.height				= 64;
@@ -802,7 +802,7 @@ y = 170;
 	s_playersettings.back.generic.flags			= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_playersettings.back.generic.id			= ID_BACK;
 	s_playersettings.back.generic.callback		= PlayerSettings_MenuEvent;
-	s_playersettings.back.generic.x				= 0 - cl_screenoffset.integer;
+	s_playersettings.back.generic.x				= 0 - uis.wideoffset;
 	s_playersettings.back.generic.y				= 480-64;
 	s_playersettings.back.width					= 128;
 	s_playersettings.back.height				= 64;

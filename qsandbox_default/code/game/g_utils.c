@@ -1935,7 +1935,9 @@ void G_EnablePropPhysics( gentity_t *ent ) {
 		return;	
 	}
 	VectorCopy( ent->r.currentOrigin, ent->s.pos.trBase );
+	if(ent->s.pos.trType != TR_GRAVITY_WATER){
 	ent->s.pos.trType = TR_GRAVITY;
+	}
 	ent->s.pos.trTime = level.time;
 	ent->s.pos.trDuration = level.time;
 }

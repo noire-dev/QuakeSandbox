@@ -255,7 +255,7 @@ typedef struct {
 static creditEntry_t uie_credits[] = {
 //	{ CMODE_TEXT, "", { "", 0, 0, 0 } },
 	{ CMODE_TEXT, "Quake Sandbox", {"Noire.dev", 0, 0, 0  } },
-	{ CMODE_TEXT, "Game", {"Noire.dev", "Vovan_Vm", 0, 0} },
+	{ CMODE_TEXT, "Game", {"Noire.dev", "Vovan_Vm", "teapxt", 0} },
 	{ CMODE_QUOTE, 0, {0, 0, 0, 0} }
 };
 
@@ -2968,15 +2968,15 @@ static void UI_CreditMenu_Draw( void ) {
 
 	// debug info
 	if (uis.debug) {
-		y = 0;
+		y = 180;
 		for (i = 0; i < MAX_EFFECTS; i++) {
-			UI_DrawString( 0, y, va("%s, param=%i", effectData[s_credits.effects[i].type].name, s_credits.effects[i].param), UI_SMALLFONT, color_white );
+			UI_DrawString( 0-uis.wideoffset, y, va("%s, param=%i", effectData[s_credits.effects[i].type].name, s_credits.effects[i].param), UI_SMALLFONT, color_white );
 			y += SMALLCHAR_HEIGHT;
 		}
 
-		UI_DrawString( 0, y, va("Mode: %i", s_credits.imageMode), UI_SMALLFONT, color_white );
+		UI_DrawString( 0-uis.wideoffset, y, va("Mode: %i", s_credits.imageMode), UI_SMALLFONT, color_white );
 		y += SMALLCHAR_HEIGHT;
-		UI_DrawString( 0, y, va("NumPoints: %i", s_credits.numPoints), UI_SMALLFONT, color_white );
+		UI_DrawString( 0-uis.wideoffset, y, va("NumPoints: %i", s_credits.numPoints), UI_SMALLFONT, color_white );
 	}
 }
 

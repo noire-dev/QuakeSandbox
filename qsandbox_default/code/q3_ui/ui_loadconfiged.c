@@ -196,7 +196,7 @@ static void loadMapEd_MenuInit( void ) {
 	s_loadMapEd.back.generic.flags	= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_loadMapEd.back.generic.id		= ID_BACK;
 	s_loadMapEd.back.generic.callback	= loadMapEd_MenuEvent;
-	s_loadMapEd.back.generic.x		= 0 - cl_screenoffset.integer;
+	s_loadMapEd.back.generic.x		= 0 - uis.wideoffset;
 	s_loadMapEd.back.generic.y		= 480-64;
 	s_loadMapEd.back.width			= 128;
 	s_loadMapEd.back.height			= 64;
@@ -207,7 +207,7 @@ static void loadMapEd_MenuInit( void ) {
 	s_loadMapEd.go.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_loadMapEd.go.generic.id			= ID_GO;
 	s_loadMapEd.go.generic.callback	= loadMapEd_MenuEvent;
-	s_loadMapEd.go.generic.x			= 640 + cl_screenoffset.integer;
+	s_loadMapEd.go.generic.x			= 640 + uis.wideoffset;
 	s_loadMapEd.go.generic.y			= 480-64;
 	s_loadMapEd.go.width				= 128;
 	s_loadMapEd.go.height				= 64;
@@ -512,7 +512,7 @@ static void selecttoolEd_MenuInit( void ) {
 	s_selecttoolEd.back.generic.flags	= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_selecttoolEd.back.generic.id		= ID_BACK;
 	s_selecttoolEd.back.generic.callback	= selecttoolEd_MenuEvent;
-	s_selecttoolEd.back.generic.x		= 0 - cl_screenoffset.integer;
+	s_selecttoolEd.back.generic.x		= 0 - uis.wideoffset;
 	s_selecttoolEd.back.generic.y		= 480-64;
 	s_selecttoolEd.back.width			= 128;
 	s_selecttoolEd.back.height			= 64;
@@ -523,7 +523,7 @@ static void selecttoolEd_MenuInit( void ) {
 	s_selecttoolEd.go.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_selecttoolEd.go.generic.id			= ID_GO;
 	s_selecttoolEd.go.generic.callback	= selecttoolEd_MenuEvent;
-	s_selecttoolEd.go.generic.x			= 640 + cl_screenoffset.integer;
+	s_selecttoolEd.go.generic.x			= 640 + uis.wideoffset;
 	s_selecttoolEd.go.generic.y			= 480-64;
 	s_selecttoolEd.go.width				= 128;
 	s_selecttoolEd.go.height				= 64;

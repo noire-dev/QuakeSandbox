@@ -2961,47 +2961,28 @@ CG_ShotgunFire
 */
 void CG_ShotgunFire( entityState_t *es ) {
 	vec3_t	v;
+	vec3_t			up;
+	vec3_t			forward;
 	int		contents;
 
 	VectorSubtract( es->origin2, es->pos.trBase, v );
 	VectorNormalize( v );
 	VectorScale( v, 32, v );
 	VectorAdd( es->pos.trBase, v, v );
-	if ( cgs.glconfig.hardwareType != GLHW_RAGEPRO ) {
-		// ragepro can't alpha fade, so don't even bother with smoke
-		vec3_t			up;
-		vec3_t			forward;
 
-		contents = CG_PointContents( es->pos.trBase, 0 );
-		if ( !( contents & CONTENTS_WATER ) ) {
-			VectorSet( up, 0, 0, 8 );
-// LEILEI ENHANCEMENT
-				if (cg_leiEnhancement.integer) {
+	contents = CG_PointContents( es->pos.trBase, 0 );
+	if ( !( contents & CONTENTS_WATER ) ) {
+		VectorSet( up, 0, 0, 8 );
+			if (cg_leiEnhancement.integer) {
 				// Shotgun puffy
-					CG_LeiSparks(v, forward, 1500, 0, 0, 7);
-					CG_LeiSparks(v, forward, 1500, 0, 0, 7);
-					CG_LeiSparks(v, forward, 1500, 0, 0, 7);
-					CG_LeiSparks(v, forward, 1500, 0, 0, 7);
-					CG_LeiSparks(v, forward, 1500, 0, 0, 7);
-					CG_LeiSparks(v, forward, 1500, 0, 0, 7);
-				/*	VectorSet( up, 4, 4, 4 );
-					up[0] = up[0] * (crandom() * 22 + 44);	up[1] = up[1] * (crandom() * 22 + 44);	up[2] = up[2] * (crandom() * 22 + 44);
-					CG_SmokePuff( v, up, 14, 1, 1, 1, 0.4f, 900, cg.time, 0, 0,  cgs.media.lsmkShader1 );
-					up[0] = up[0] * (crandom() * 22 + 44);	up[1] = up[1] * (crandom() * 22 + 44);	up[2] = up[2] * (crandom() * 22 + 44);
-					CG_SmokePuff( v, up, 14, 1, 1, 1, 0.4f, 900, cg.time, 0, 0,  cgs.media.lsmkShader2 );
-					up[0] = up[0] * (crandom() * 22 + 44);	up[1] = up[1] * (crandom() * 22 + 44);	up[2] = up[2] * (crandom() * 22 + 44);
-					CG_SmokePuff( v, up, 14, 1, 1, 1, 0.4f, 900, cg.time, 0, 0,  cgs.media.lsmkShader3 );
-					up[0] = up[0] * (crandom() * 22 + 44);	up[1] = up[1] * (crandom() * 22 + 44);	up[2] = up[2] * (crandom() * 22 + 44);
-					CG_SmokePuff( v, up, 14, 1, 1, 1, 0.4f, 900, cg.time, 0, 0,  cgs.media.lsmkShader4 );
-				*/
-				}
-		else
-			
-// END LEIHANCMENET
-			
-CG_SmokePuff( v, up, 32, 1, 1, 1, 0.33f, 900, cg.time, 0, LEF_PUFF_DONT_SCALE, cgs.media.shotgunSmokePuffShader );
-
-		}
+				CG_LeiSparks(v, forward, 1500, 0, 0, 7);
+				CG_LeiSparks(v, forward, 1500, 0, 0, 7);
+				CG_LeiSparks(v, forward, 1500, 0, 0, 7);
+				CG_LeiSparks(v, forward, 1500, 0, 0, 7);
+				CG_LeiSparks(v, forward, 1500, 0, 0, 7);
+				CG_LeiSparks(v, forward, 1500, 0, 0, 7);
+				CG_SmokePuff( v, up, 32, 1, 1, 1, 0.33f, 900, cg.time, 0, LEF_PUFF_DONT_SCALE, cgs.media.shotgunSmokePuffShader );
+			}
 	}
 	CG_ShotgunPattern( es->pos.trBase, es->origin2, es->eventParm, es->otherEntityNum );
 }

@@ -156,7 +156,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	networkOptionsInfo.graphics.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	networkOptionsInfo.graphics.generic.id			= ID_GRAPHICS;
 	networkOptionsInfo.graphics.generic.callback	= UI_NetworkOptionsMenu_Event;
-	networkOptionsInfo.graphics.generic.x			= 140 - cl_screenoffset.integer;
+	networkOptionsInfo.graphics.generic.x			= 140 - uis.wideoffset;
 	networkOptionsInfo.graphics.generic.y			= 240 - 2 * PROP_HEIGHT;
 	if(cl_language.integer == 0){
 	networkOptionsInfo.graphics.string				= "GRAPHICS";
@@ -171,7 +171,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	networkOptionsInfo.display.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	networkOptionsInfo.display.generic.id			= ID_DISPLAY;
 	networkOptionsInfo.display.generic.callback		= UI_NetworkOptionsMenu_Event;
-	networkOptionsInfo.display.generic.x			= 140 - cl_screenoffset.integer;
+	networkOptionsInfo.display.generic.x			= 140 - uis.wideoffset;
 	networkOptionsInfo.display.generic.y			= 240 - PROP_HEIGHT;
 	if(cl_language.integer == 0){
 	networkOptionsInfo.display.string				= "DISPLAY";
@@ -186,7 +186,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	networkOptionsInfo.sound.generic.flags			= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	networkOptionsInfo.sound.generic.id				= ID_SOUND;
 	networkOptionsInfo.sound.generic.callback		= UI_NetworkOptionsMenu_Event;
-	networkOptionsInfo.sound.generic.x				= 140 - cl_screenoffset.integer;
+	networkOptionsInfo.sound.generic.x				= 140 - uis.wideoffset;
 	networkOptionsInfo.sound.generic.y				= 240;
 	if(cl_language.integer == 0){
 	networkOptionsInfo.sound.string					= "SOUND";
@@ -201,7 +201,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	networkOptionsInfo.network.generic.flags		= QMF_RIGHT_JUSTIFY;
 	networkOptionsInfo.network.generic.id			= ID_NETWORK;
 	networkOptionsInfo.network.generic.callback		= UI_NetworkOptionsMenu_Event;
-	networkOptionsInfo.network.generic.x			= 140 - cl_screenoffset.integer;
+	networkOptionsInfo.network.generic.x			= 140 - uis.wideoffset;
 	networkOptionsInfo.network.generic.y			= 240 + PROP_HEIGHT;
 	if(cl_language.integer == 0){
 	networkOptionsInfo.network.string				= "NETWORK";
@@ -232,7 +232,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	networkOptionsInfo.back.generic.flags		= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
 	networkOptionsInfo.back.generic.callback	= UI_NetworkOptionsMenu_Event;
 	networkOptionsInfo.back.generic.id			= ID_BACK;
-	networkOptionsInfo.back.generic.x			= 0 - cl_screenoffset.integer;
+	networkOptionsInfo.back.generic.x			= 0 - uis.wideoffset;
 	networkOptionsInfo.back.generic.y			= 480-64;
 	networkOptionsInfo.back.width				= 128;
 	networkOptionsInfo.back.height				= 64;

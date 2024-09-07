@@ -275,7 +275,7 @@ typedef enum {
 #define UI_PULSE		0x00004000
 #define UI_SCROLL		0x00008000
 #define UI_RUSSIAN		0x00016000
-//#define UI_GIANTFONT	0x00008000
+#define UI_TINYFONT		0x00020000
 
 #if defined(_DEBUG) && !defined(BSPC)
 	#define HUNK_DEBUG
@@ -350,7 +350,7 @@ extern	vec3_t	bytedirs[NUMVERTEXNORMALS];
 #define	SCREEN_WIDTH		640
 #define	SCREEN_HEIGHT		480
 
-#define TINYCHAR_WIDTH		(cl_smallcharwidth.integer)
+#define TINYCHAR_WIDTH		(cl_smallcharwidth.integer/2)
 #define TINYCHAR_HEIGHT		(cl_smallcharheight.integer/2)
 
 #define SMALLCHAR_WIDTH		cl_smallcharwidth.integer
@@ -1190,7 +1190,8 @@ typedef enum {
 	TR_LINEAR_STOP,
 	TR_SINE,					// value = base + sin( time / duration ) * delta
 	TR_GRAVITY,
-	TR_ROTATING
+	TR_ROTATING,
+	TR_GRAVITY_WATER
 } trType_t;
 
 typedef struct {

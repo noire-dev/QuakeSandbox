@@ -157,6 +157,8 @@ vmCvar_t	sbt_wallpaper;
 
 vmCvar_t	ui_scrollbtnsize;
 
+vmCvar_t	ui_3dmap;
+
 vmCvar_t	ui_singlemode;
 vmCvar_t	legsskin;
 vmCvar_t	team_legsskin;
@@ -164,7 +166,6 @@ vmCvar_t	cl_selectedmod;
 vmCvar_t	cl_language;
 vmCvar_t	cl_gamestyle;
 vmCvar_t	cl_screenoffset;
-vmCvar_t	cl_screencustomoffset;
 vmCvar_t	ui_loaded;
 vmCvar_t	ui_backcolors;
 vmCvar_t	sensitivitymenu;
@@ -328,6 +329,8 @@ static cvarTable_t		cvarTable[] = {
 
 	{ &ui_scrollbtnsize, "ui_scrollbtnsize", "1", 	 CVAR_ARCHIVE },
 
+	{ &ui_3dmap, "ui_3dmap", "uimap_1", CVAR_ARCHIVE },
+
 	{ &ui_singlemode, "ui_singlemode", "0", CVAR_ARCHIVE },
 	{ &ui_loaded, "ui_loaded", "0", 0 },
 	{ &legsskin, "legsskin", "sarge/default", CVAR_ARCHIVE },
@@ -336,7 +339,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &cl_language, "cl_language", "0", CVAR_ARCHIVE },
 	{ &cl_gamestyle, "cl_gamestyle", "0", CVAR_ARCHIVE },
 	{ &cl_screenoffset, "cl_screenoffset", "107", CVAR_ARCHIVE },
-	{ &cl_screencustomoffset, "cl_screencustomoffset", "-1", CVAR_ARCHIVE },
 	{ &ui_backcolors, "ui_backcolors", "1", CVAR_ARCHIVE },
 	{ &sensitivitymenu, "sensitivitymenu", "1", CVAR_ARCHIVE },
 

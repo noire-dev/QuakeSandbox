@@ -255,7 +255,7 @@ static void UI_SPSkillMenu_Init( void ) {
 	skillMenuInfo.item_back.generic.type		= MTYPE_BITMAP;
 	skillMenuInfo.item_back.generic.name		= ART_BACK;
 	skillMenuInfo.item_back.generic.flags		= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
-	skillMenuInfo.item_back.generic.x			= 0 - cl_screenoffset.integer;
+	skillMenuInfo.item_back.generic.x			= 0 - uis.wideoffset;
 	skillMenuInfo.item_back.generic.y			= 480-64;
 	skillMenuInfo.item_back.generic.callback	= UI_SPSkillMenu_BackEvent;
 	skillMenuInfo.item_back.generic.id			= ID_BACK;
@@ -275,7 +275,7 @@ static void UI_SPSkillMenu_Init( void ) {
 	skillMenuInfo.item_fight.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	skillMenuInfo.item_fight.generic.callback	= UI_SPSkillMenu_FightEvent;
 	skillMenuInfo.item_fight.generic.id			= ID_FIGHT;
-	skillMenuInfo.item_fight.generic.x			= 640 + cl_screenoffset.integer;
+	skillMenuInfo.item_fight.generic.x			= 640 + uis.wideoffset;
 	skillMenuInfo.item_fight.generic.y			= 480-64;
 	skillMenuInfo.item_fight.width				= 128;
 	skillMenuInfo.item_fight.height				= 64;

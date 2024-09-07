@@ -62,6 +62,40 @@ void UI_StartDemoLoop( void ) {
 }
 
 /*
+================
+UI_ScreenOffset
+
+Adjusted for resolution and screen aspect ratio
+================
+*/
+void UI_ScreenOffset( void ) {
+	float scrx;
+	float scry;
+	char  svinfo[MAX_INFO_STRING];
+	
+	trap_GetGlconfig( &uis.glconfig );
+	
+	scrx = uis.glconfig.vidWidth;
+	scry = uis.glconfig.vidHeight;
+	
+	if((scrx / (scry / 480)-640)/2 >= 0){
+	trap_Cvar_SetValue("cl_screenoffset", (scrx / (scry / 480)-640)/2);
+	uis.wideoffset = (scrx / (scry / 480)-640)/2;
+	uis.activemenu->errorui = qfalse;
+	} else {
+	trap_Cvar_SetValue("cl_screenoffset", 0);	
+	uis.wideoffset = 0;
+	uis.activemenu->errorui = qtrue;
+	}
+	trap_GetConfigString( CS_SERVERINFO, svinfo, MAX_INFO_STRING );
+	if(strlen(svinfo) <= 0){
+	uis.onmap = qfalse;
+	} else {
+	uis.onmap = qtrue;	
+	}
+}
+
+/*
 =================
 UI_PushMenu
 =================
@@ -83,6 +117,9 @@ void UI_PushMenu( menuframework_s *menu )
 	trap_Cvar_SetValue( "r_ambientScale", 0 );
 	trap_Cvar_SetValue( "r_intensity", 1.75 );
 	}
+	
+	// initialize the screen offset
+	UI_ScreenOffset();
 	
 	uis.menuscroll = 0;
 	
@@ -998,6 +1035,11 @@ void UI_DrawString( int x, int y, const char* str, int style, vec4_t color )
 		charw =	SMALLCHAR_WIDTH;
 		charh =	SMALLCHAR_HEIGHT;
 	}
+	else if (style & UI_TINYFONT)
+	{
+		charw =	TINYCHAR_WIDTH;
+		charh =	TINYCHAR_HEIGHT;
+	}
 	else if (style & UI_GIANTFONT)
 	{
 		charw =	GIANTCHAR_WIDTH;
@@ -1080,6 +1122,11 @@ if(csize == 0){
 	{
 		charw =	SMALLCHAR_WIDTH;
 		charh =	SMALLCHAR_HEIGHT;
+	}
+	else if (style & UI_TINYFONT)
+	{
+		charw =	TINYCHAR_WIDTH;
+		charh =	TINYCHAR_HEIGHT;
 	}
 	else if (style & UI_GIANTFONT)
 	{
@@ -1172,11 +1219,11 @@ void UI_DrawCharCustom( int x, int y, int ch, int style, vec4_t color, float csi
 
 qboolean UI_IsFullscreen( void ) {
 	if ( uis.activemenu && ( trap_Key_GetCatcher() & KEYCATCH_UI ) ) {
-		//if(trap_Cvar_VariableValue("sv_running") <= 0){
+		if(!uis.onmap){
 		return uis.activemenu->fullscreen;
-		//} else {
-		//return 0;
-		//}
+		} else {
+		return 0;
+		}
 	}
 
 	return qfalse;
@@ -1205,8 +1252,14 @@ void UI_SetActiveMenu( uiMenuCommand_t menu ) {
 		return;
 	case UIMENU_MAIN:
 		trap_Cvar_Set( "sv_pure", "0" );
+		UI_ScreenOffset();
+		if(strlen(ui_3dmap.string) <= 1){
 		UI_MainMenu();
 		UI_CreditMenu(1);
+		}
+		if(strlen(ui_3dmap.string)){
+		trap_Cmd_ExecuteText( EXEC_APPEND, va("set sv_maxclients 1; map %s\n", ui_3dmap.string) );
+		}
 		return;
 	case UIMENU_NEED_CD:
 		UI_ConfirmMenu( "Insert the CD", 0, NeedCDAction );
@@ -1555,6 +1608,8 @@ if ( Q_stricmp (UI_Argv(0), "mguicall") == 0 ) {
 	return qtrue;
 }
 
+UI_ScreenOffset();
+
 if( Q_stricmp (UI_Argv(0), "ui_addbots") == 0 ){
 UI_AddBotsMenu();
 return qtrue;
@@ -1698,7 +1753,6 @@ return qtrue;
 
 if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {
 	UI_MGUI_Clear();
-	trap_Cmd_ExecuteText( EXEC_NOW, "unset mgui_ingame\n");
 	trap_Cmd_ExecuteText( EXEC_NOW, "unset mgui_scroll\n");
 	for ( i = 1; i < 250; i++ ) {
 	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_type\n", i));
@@ -2006,35 +2060,6 @@ return qtrue;
 	}
 
 	return qfalse;
-}
-
-/*
-================
-UI_ScreenOffset
-
-Adjusted for resolution and screen aspect ratio
-================
-*/
-void UI_ScreenOffset( void ) {
-	float scrx;
-	float scry;
-	
-	trap_GetGlconfig( &uis.glconfig );
-	
-	scrx = uis.glconfig.vidWidth;
-	scry = uis.glconfig.vidHeight;
-	
-	if(cl_screencustomoffset.integer <= -1){
-	if((scrx / (scry / 480)-640)/2 >= 0){
-	trap_Cvar_SetValue("cl_screenoffset", (scrx / (scry / 480)-640)/2);
-	uis.activemenu->errorui = qfalse;
-	} else {
-	trap_Cvar_SetValue("cl_screenoffset", 0);	
-	uis.activemenu->errorui = qtrue;
-	}
-	} else {
-	trap_Cvar_SetValue("cl_screenoffset", cl_screencustomoffset.value);	
-	}
 }
 
 /*
@@ -2353,6 +2378,7 @@ UI_Refresh
 */
 void UI_Refresh( int realtime )
 {
+	int x;
 	uis.frametime = realtime - uis.realtime;
 	uis.realtime  = realtime;
 
@@ -2366,9 +2392,11 @@ void UI_Refresh( int realtime )
 	{
 		if (uis.activemenu->fullscreen)
 		{
-		// draw the background
-		trap_R_DrawStretchPic( 0.0, 0.0, uis.glconfig.vidWidth, uis.glconfig.vidHeight, 0, 0, 1, 1, uis.menuWallpapers );
-		trap_R_DrawStretchPic( 0.0, 0.0, uis.glconfig.vidWidth, uis.glconfig.vidHeight, 0, 0, 0.5, 1, trap_R_RegisterShaderNoMip( "menu/art/blacktrans" ) );
+			if(!uis.onmap){
+			// draw the background
+			trap_R_DrawStretchPic( 0.0, 0.0, uis.glconfig.vidWidth, uis.glconfig.vidHeight, 0, 0, 1, 1, uis.menuWallpapers );
+			}
+			trap_R_DrawStretchPic( 0.0, 0.0, uis.glconfig.vidWidth, uis.glconfig.vidHeight, 0, 0, 0.5, 1, trap_R_RegisterShaderNoMip( "menu/art/blacktrans" ) );
 		}
 
 		if (uis.activemenu->draw)
@@ -2420,9 +2448,15 @@ void UI_Refresh( int realtime )
 	if (uis.debug)
 	{
 		// cursor coordinates
-		UI_DrawString( 0, 0, va("cursor xy: (%d,%d)",uis.cursorx,uis.cursory), UI_LEFT|UI_SMALLFONT, colorRed );
-		UI_DrawString( 0, 10, va("native: %i",uis.activemenu->native), UI_LEFT|UI_SMALLFONT, colorRed );
-		UI_DrawString( 0, 20, va("screen: %ix%i",uis.glconfig.vidWidth, uis.glconfig.vidHeight), UI_LEFT|UI_SMALLFONT, colorRed );
+		if(uis.activemenu->native){
+			x = 0;
+		} else {
+			x = 0-uis.wideoffset;
+		}
+		UI_DrawString( x, 0, va("cursor xy: (%d,%d)",uis.cursorx,uis.cursory), UI_LEFT|UI_SMALLFONT, colorRed );
+		UI_DrawString( x, 10, va("native: %i",uis.activemenu->native), UI_LEFT|UI_SMALLFONT, colorRed );
+		UI_DrawString( x, 20, va("screen: %ix%i",uis.glconfig.vidWidth, uis.glconfig.vidHeight), UI_LEFT|UI_SMALLFONT, colorRed );
+		UI_DrawString( x, 30, va("map running: %i",uis.onmap), UI_LEFT|UI_SMALLFONT, colorRed );
 	}
 #endif
 
@@ -2435,8 +2469,6 @@ void UI_Refresh( int realtime )
 		m_entersound = qfalse;
 	}
 	
-	// initialize the screen offset
-	UI_ScreenOffset();
 }
 
 void UI_DrawTextBox (int x, int y, int width, int lines)
