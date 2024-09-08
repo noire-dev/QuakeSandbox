@@ -1617,6 +1617,7 @@ void G_RunProp(gentity_t *ent) {
 	
 	if(ent->s.pos.trType == TR_GRAVITY || ent->s.pos.trType == TR_GRAVITY_WATER){
 		if(trap_PointContents(tr.endpos, ent->s.number) & MASK_WATER){
+			if(!trap_Cvar_VariableIntegerValue("cl_android")){
 			if(ent->s.pos.trType != TR_GRAVITY_WATER){
 			ent->s.pos.trType = TR_GRAVITY_WATER;
 			G_PropWaterSplash( ent, impactForceFixed);
@@ -1625,6 +1626,7 @@ void G_RunProp(gentity_t *ent) {
 			ent->s.pos.trDelta[1] *= 0.50;
 			if(ent->s.pos.trDelta[2]){
 			ent->s.pos.trDelta[2] = 0;
+			}
 			}
 			}
 		} else {

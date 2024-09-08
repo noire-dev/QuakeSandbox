@@ -36,6 +36,7 @@ MAIN MENU
 #define ID_BUTTON1				24
 #define ID_BUTTON2				25
 #define ID_BUTTON3				26
+#define ID_MODLIST					27
 
 #define MODDB				"menu/moddb"
 #define M_BUTTON1			"menu/button1"
@@ -70,6 +71,10 @@ typedef struct {
 	menutext_s		exit;
 	menutext_s		name;
 	menutext_s		modeltype;
+	menuobject_s	modlist;
+	
+	char			names[524288];
+	char*			configlist[524288];
 
 #ifndef NO_UIE_MINILOGO
 	menubitmap_s	logo;
@@ -281,6 +286,9 @@ void Main_MenuEvent (void* ptr, int event) {
 	case ID_BUTTON3:
 		trap_Cmd_ExecuteText( EXEC_APPEND, "quit;" );
 		break;
+	case ID_MODLIST:
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("mgui %s\n", s_main.modlist.itemnames[s_main.modlist.curvalue]) );
+		break;
 	}
 }
 
@@ -315,6 +323,7 @@ TTimo: this function is common to the main menu and errorMessage menu
 static void Main_MenuDraw( void ) {
 	vec4_t			color = {0.85, 0.9, 1.0, 1};
 	char 			buffer[MAX_NAME_LENGTH];
+	vec4_t			modlistcolor = {0.00f, 0.00f, 0.00f, 0.40f};
 
 	if (strlen(s_errorMessage.errorMessage))
 	{
@@ -334,11 +343,12 @@ static void Main_MenuDraw( void ) {
 	   // update type of model displayed
 	   if (uis.firstdraw)
 		   Main_SetPlayerModelType();
-   
+	   
+	   UI_DrawRoundedRect(317+uis.wideoffset, 30, 1000000, 20*SMALLCHAR_HEIGHT*1.25, 10, modlistcolor);
 	   // standard menu drawing
 	   Menu_Draw( &s_main.menu );
    }
-	UI_DrawString( 600+uis.wideoffset, 450, "Quake Sandbox v5.0", UI_RIGHT|UI_SMALLFONT, color );
+	UI_DrawString( 600+uis.wideoffset, 450, "Quake Sandbox v5.1", UI_RIGHT|UI_SMALLFONT, color );
 	UI_DrawString( 600+uis.wideoffset, 465, "by Noire.dev", UI_RIGHT|UI_SMALLFONT, color );
 }
 
@@ -397,6 +407,9 @@ void UI_MainMenu( void ) {
 	qboolean teamArena = qfalse;
 	int		style;
 	float	sizeScale;
+	int		i;
+	int		len;
+	char	*configname;
 
 	//trap_Cvar_Set( "sv_killserver", "1" );
 
@@ -617,6 +630,8 @@ void UI_MainMenu( void ) {
 	s_main.logo.focuspic 			= UIE_LOGO_NAME;
 
 	Menu_AddItem( &s_main.menu,	&s_main.logo);
+#endif
+
 	s_main.modloader.generic.name		= MODLOADER;
 	s_main.modloader.focuspic			= MODLOADER;
 	s_main.moddb.generic.name		= MODDB;
@@ -627,7 +642,44 @@ void UI_MainMenu( void ) {
 	s_main.button2.focuspic			= M_BUTTON2;
 	s_main.button3.generic.name		= M_BUTTON3;
 	s_main.button3.focuspic			= M_BUTTON3;
-#endif
+
+	s_main.modlist.generic.type			= MTYPE_UIOBJECT;
+	s_main.modlist.type					= 5;
+	s_main.modlist.styles				= 1;
+	s_main.modlist.fontsize				= 1.25;
+	s_main.modlist.string				= "mgui/icons";
+	s_main.modlist.generic.flags		= QMF_PULSEIFFOCUS;
+	s_main.modlist.generic.callback		= Main_MenuEvent;
+	s_main.modlist.generic.id			= ID_MODLIST;
+	s_main.modlist.generic.x			= 319 + uis.wideoffset;
+	s_main.modlist.generic.y			= 30;
+	s_main.modlist.width				= 32;
+	s_main.modlist.height				= 20;
+	s_main.modlist.numitems				= trap_FS_GetFileList( "mgui", "as", s_main.names, 524288 );
+	s_main.modlist.itemnames			= (const char **)s_main.configlist;
+	s_main.modlist.columns				= 1;
+	s_main.modlist.color				= color_white;
+	
+	if (!s_main.modlist.numitems) {
+		strcpy(s_main.names,"No addons");
+		s_main.modlist.numitems = 1;
+	}
+	else if (s_main.modlist.numitems > 65536)
+		s_main.modlist.numitems = 65536;
+
+	configname = s_main.names;
+	for ( i = 0; i < s_main.modlist.numitems; i++ ) {
+		s_main.modlist.itemnames[i] = configname;
+
+		// strip extension
+		len = strlen( configname );
+		if (!Q_stricmp(configname +  len - 3,".as"))
+			configname[len-3] = '\0';
+
+		//Q_strupr(configname);
+
+		configname += len + 1;
+	}
 
 if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &s_main.menu,	&s_main.gamemodep );
@@ -644,6 +696,7 @@ if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &s_main.menu,	&s_main.mods );
 	Menu_AddItem( &s_main.menu,	&s_main.exit );
 	Menu_AddItem( &s_main.menu,	&s_main.name );
+	Menu_AddItem( &s_main.menu, &s_main.modlist );
 	//Menu_AddItem( &s_main.menu,	&s_main.modeltype );
 	//Menu_AddItem( &s_main.menu,	&s_main.model.bitmap);
 

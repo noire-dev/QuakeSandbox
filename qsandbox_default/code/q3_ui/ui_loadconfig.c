@@ -50,7 +50,7 @@ typedef struct {
 	menubitmap_s	framel;
 	menubitmap_s	framer;
 
-	menulist_s		list;
+	menuobject_s		list;
 
 	menufield_s		savename;
 
@@ -81,29 +81,9 @@ static configs_t	s_configs;
 
 // known config files that may cause saving problems
 static const char* configfiles[] = {
-	// pak0.pk3
-	"!slug", "ares", "atari", "bg_hunter", "bunchy", "capt", "cash", "cracky",
-	"danh", "default", "diehard", "djweaponx", "elusive", "eric", "fido",
-	"hammerhead", "hondopres", "jiggleypeff", "johnc", "keeper", "kornelia",
-	"lurker", "mikes", "milehi", "nabeo", "patOFnbk", "paulj", "phils",
-	"protofiend", "psteed", "q3atari", "q3atariteam", "redwood", "resdog", "scary",
-	"scroft", "sliderpimp", "stryder", "thumperx", "tim", "toddh", "xian",
-	"z", "zaphod", "zen", "zero_discipline", "zoid",
 
-	// twpak0.pk3
-	"carla", "casey", "CC-Red-CTF", "digi", "essobie", "headcrash",
-	"kauffee", "lfire", "mad-dog", "mansa", "mccow", "mertctf", "mutha",
-	"orange", "phantom", "redctf", "tac", "tiktok3", "toxy",
-
-	// q3wpak0.pk3 threewave CTF
-	"q3wblankz", "q3wcrewmaac", "q3wdarth", "q3wdd", "q3wdekard", "q3wg1zm0",
-	"q3wscan", "q3wslash",
-	
-	"q3config", "autoexec", "uiautoexec", "q3config_server", "screen", "voice", "maps_ctf", "maps_dd", "maps_dom",
+	"q3config", "default", "autoexec", "uiautoexec", "q3config_server", "screen", "voice", "maps_ctf", "maps_dd", "maps_dom",
 	"maps_dm", "maps_elimination", "maps_harvester", "maps_obelisk", "maps_oneflag", "maps_tdm", "maps_tourney", "maps_lms",
-
-	// pak6.pk3
-	"fredo2",
 
 	0
 };
@@ -354,17 +334,17 @@ static void LoadConfig_MenuEvent( void *ptr, int event ) {
 		break;
 
 	case ID_LEFT:
-		ScrollList_Key( &s_configs.list, K_LEFTARROW );
+		UIObject_Key( &s_configs.list, K_LEFTARROW );
 		break;
 
 	case ID_RIGHT:
-		ScrollList_Key( &s_configs.list, K_RIGHTARROW );
+		UIObject_Key( &s_configs.list, K_RIGHTARROW );
 		break;
 
 	case ID_SHOWID:
 		trap_Cvar_SetValue("uie_config_showid", s_configs.showid.curvalue);
 		LoadConfig_LoadFileNames();
-		ScrollList_Init(&s_configs.list);
+		UIObject_Init(&s_configs.list);
 		break;
 
 	case ID_LIST:
@@ -625,16 +605,21 @@ static void LoadConfig_MenuInit( qboolean load, const char* title,  configCallba
 	s_configs.force_exec.curvalue 			= qfalse;
 
 	// scan for configs
-	s_configs.list.generic.type		= MTYPE_SCROLLLIST;
+	s_configs.list.generic.type		= MTYPE_UIOBJECT;
 	s_configs.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_configs.list.generic.callback	= LoadConfig_MenuEvent;
 	s_configs.list.generic.id		= ID_LIST;
 	s_configs.list.generic.x		= 118;
 	s_configs.list.generic.y		= 106;
-	s_configs.list.width			= 16;
-	s_configs.list.height			= 14;
+	s_configs.list.string			= "";
+	s_configs.list.width			= 48;
+	s_configs.list.height			= 20;
 	s_configs.list.itemnames		= (const char **)s_configs.configlist;
-	s_configs.list.columns			= 3;
+	s_configs.list.columns			= 1;
+	s_configs.list.fontsize			= 1;
+	s_configs.list.type				= 5;
+	s_configs.list.styles			= 1;
+	
 
 	LoadConfig_LoadFileNames();
 	if (s_configs.loaderror)
