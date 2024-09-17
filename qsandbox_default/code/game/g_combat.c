@@ -555,6 +555,8 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 	if ( level.intermissiontime ) {
 		return;
 	}
+	
+	self->client->noclip = 0;
 
 	//if we're in SP mode and player killed a bot, award score for the kill
 	if(g_gametype.integer == GT_SINGLE){
@@ -1188,11 +1190,11 @@ if ( attacker && attacker->singlebot){
 			damage = 1;	//make sure bot does at least -some- damage
 }
 
-	if ( client ) {
+	/*if ( client ) {
 		if ( client->noclip ) {
 			return;
 		}
-	}
+	}*/
 
 	if ( !dir ) {
 		dflags |= DAMAGE_NO_KNOCKBACK;

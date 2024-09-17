@@ -726,14 +726,17 @@ typedef struct {
 	// model info
 	qhandle_t		legsModel;
 	qhandle_t		legsSkin;
+	qhandle_t		legsShader;
 	lerpFrame_t		legs;
 
 	qhandle_t		torsoModel;
 	qhandle_t		torsoSkin;
+	qhandle_t		torsoShader;
 	lerpFrame_t		torso;
 
 	qhandle_t		headModel;
 	qhandle_t		headSkin;
+	qhandle_t		headShader;
 
 	animation_t		animations[MAX_ANIMATIONS];
 

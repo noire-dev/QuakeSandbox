@@ -1719,7 +1719,7 @@ void CG_MouseEvent(int x, int y) {
 
 	if ( (cg.predictedPlayerState.pm_type == PM_NORMAL || cg.predictedPlayerState.pm_type == PM_SPECTATOR) && cg.showScores == qfalse) {
     trap_Key_SetCatcher(0);
-		return;
+	return;
 	}
 
 	cgs.cursorX+= x;

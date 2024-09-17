@@ -1352,35 +1352,6 @@ static void CG_ServerCommand( void ) {
 		CG_ConfigStringModified();
 		return;
 	}
-	
-	if ( !strcmp( cmd, "swep_0" ) ) {
-		cg.swep_listcl[atoi(CG_Argv(1))] = 0;
-		return;
-	}
-	
-	if ( !strcmp( cmd, "swep_1" ) ) {
-		cg.swep_listcl[atoi(CG_Argv(1))] = 1;
-		return;
-	}
-	
-	if ( !strcmp( cmd, "swep_2" ) ) {
-		cg.swep_listcl[atoi(CG_Argv(1))] = 2;
-		return;
-	}
-	
-	if ( !strcmp( cmd, "allswep_0" ) ) {
-		for(i = 1 ; i < WEAPONS_NUM-15 ; i++){
-		cg.swep_listcl[i+15] = 0; 
-		}
-		return;
-	}
-	
-	if ( !strcmp( cmd, "allswep_1" ) ) {
-		for(i = 1 ; i < WEAPONS_NUM-15 ; i++){
-		cg.swep_listcl[i+15] = 1; 
-		}
-		return;
-	}
 
 	if ( !strcmp( cmd, "fade" ) ) {
 		vec4_t color0, color1;

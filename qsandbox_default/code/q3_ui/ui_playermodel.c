@@ -78,7 +78,7 @@ static char* playermodel_modelorder[] = {
 #define PLAYERGRID_COLS		4
 #define PLAYERGRID_ROWS		4
 #define MAX_MODELSPERPAGE	(PLAYERGRID_ROWS*PLAYERGRID_COLS)
-#define MAX_SKINSPERPAGE	5
+#define MAX_SKINSPERPAGE	9
 
 #define MAX_PLAYERMODELS	8192
 #define MAX_PLAYERSKINS		4096
@@ -519,12 +519,12 @@ static void PlayerModel_UpdateSkinGrid( void )
 PlayerModel_BuildList
 =================
 */
+	char	pm_dirlist[131072];
+	char	pm_filelist[131072];
 static void PlayerModel_BuildList( void )
 {
 	int		numdirs;
 	int		numfiles;
-	char	dirlist[8192];
-	char	filelist[8192];
 	char	skinname[512];
 	char*	dirptr;
 	char*	fileptr;
@@ -541,8 +541,8 @@ static void PlayerModel_BuildList( void )
 	s_playermodel.nummodels = 0;
 
 	// iterate directory of all player models
-	numdirs = trap_FS_GetFileList(MODELDIR, "/", dirlist, 8192 );
-	dirptr  = dirlist;
+	numdirs = trap_FS_GetFileList(MODELDIR, "/", pm_dirlist, 131072 );
+	dirptr  = pm_dirlist;
 	for (i=0; i<numdirs && s_playermodel.nummodels < MAX_PLAYERMODELS; i++,dirptr+=dirlen+1)
 	{
 		dirlen = strlen(dirptr);
@@ -554,8 +554,8 @@ static void PlayerModel_BuildList( void )
 
 		// iterate all skin tga files in directory
 		defaultskin = NULL;
-		numfiles = trap_FS_GetFileList( va(MODELDIR"/%s",dirptr), "tga", filelist, 8192 );
-		fileptr  = filelist;
+		numfiles = trap_FS_GetFileList( va(MODELDIR"/%s",dirptr), "", pm_filelist, 131072 );
+		fileptr  = pm_filelist;
 		for (j=0; j<numfiles && s_playermodel.nummodels < MAX_PLAYERMODELS;j++,fileptr+=filelen+1)
 		{
 			filelen = strlen(fileptr);
@@ -602,7 +602,6 @@ PlayerModel_LoadSkins
 static void PlayerModel_LoadSkins( int modelnum )
 {
 	int		numfiles;
-	char	filelist[8192];
 	char* 	fullmodelname;
 	char	skinname[MODELNAME_BUFFER];
 	char*	fileptr;
@@ -623,8 +622,8 @@ static void PlayerModel_LoadSkins( int modelnum )
 
 	// iterate all skin files in directory
 	numfiles = trap_FS_GetFileList( va(MODELDIR"/%s",UIE_ModelName(fullmodelname)),
-		"tga", filelist, 8192 );
-	fileptr  = filelist;
+		"", pm_filelist, 131072 );
+	fileptr = pm_filelist;
 
 	for (i=0; i<numfiles && s_playermodel.numskins < MAX_PLAYERSKINS; i++,fileptr+=filelen+1)
 	{
@@ -2181,7 +2180,7 @@ static void PlayerModel_MenuInit( void )
 	Menu_AddItem( &s_playermodel.menu,	&s_playermodel.framel );
 	Menu_AddItem( &s_playermodel.menu,	&s_playermodel.framer );
 	Menu_AddItem( &s_playermodel.menu,	&s_playermodel.ports );
-	Menu_AddItem( &s_playermodel.menu,	&s_playermodel.skinports );
+	//Menu_AddItem( &s_playermodel.menu,	&s_playermodel.skinports );
 
 	for (i=0; i<MAX_MODELSPERPAGE; i++)
 	{

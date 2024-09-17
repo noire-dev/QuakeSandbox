@@ -195,29 +195,6 @@ static void CG_scrollScoresUp_f( void) {
 	}
 }
 
-
-static void CG_spWin_f( void) {
-	trap_Cvar_Set("cg_cameraOrbit", "2");
-	trap_Cvar_Set("cg_cameraOrbitDelay", "35");
-	trap_Cvar_Set("cg_thirdPerson", "1");
-	trap_Cvar_Set("cg_thirdPersonAngle", "0");
-	trap_Cvar_Set("cg_thirdPersonRange", "100");
-	CG_AddBufferedSound(cgs.media.winnerSound);
-	//trap_S_StartLocalSound(cgs.media.winnerSound, CHAN_ANNOUNCER);
-	CG_CenterPrint("YOU WIN!", SCREEN_HEIGHT * .30, 0);
-}
-
-static void CG_spLose_f( void) {
-	trap_Cvar_Set("cg_cameraOrbit", "2");
-	trap_Cvar_Set("cg_cameraOrbitDelay", "35");
-	trap_Cvar_Set("cg_thirdPerson", "1");
-	trap_Cvar_Set("cg_thirdPersonAngle", "0");
-	trap_Cvar_Set("cg_thirdPersonRange", "100");
-	CG_AddBufferedSound(cgs.media.loserSound);
-	//trap_S_StartLocalSound(cgs.media.loserSound, CHAN_ANNOUNCER);
-	CG_CenterPrint("YOU LOSE...", SCREEN_HEIGHT * .30, 0);
-}
-
 #endif
 
 static void CG_TellTarget_f( void ) {
@@ -455,30 +432,6 @@ static void CG_EditHud_f( void ) {
 #endif
 
 /*
-==================
-CG_StartOrbit_f
-==================
-*/
-
-static void CG_StartOrbit_f( void ) {
-	char var[MAX_TOKEN_CHARS];
-
-	trap_Cvar_VariableStringBuffer( "developer", var, sizeof( var ) );
-	if ( !atoi(var) ) {
-		return;
-	}
-	if (cg_cameraOrbit.value != 0) {
-		trap_Cvar_Set ("cg_cameraOrbit", "0");
-		trap_Cvar_Set("cg_thirdPerson", "0");
-	} else {
-		trap_Cvar_Set("cg_cameraOrbit", "5");
-		trap_Cvar_Set("cg_thirdPerson", "1");
-		trap_Cvar_Set("cg_thirdPersonAngle", "0");
-		trap_Cvar_Set("cg_thirdPersonRange", "100");
-	}
-}
-
-/*
 static void CG_Camera_f( void ) {
 	char name[1024];
 	trap_Argv( 1, name, sizeof(name));
@@ -603,12 +556,9 @@ static consoleCommand_t	commands[] = {
 	{ "tauntTaunt", CG_TauntTaunt_f },
 	{ "tauntDeathInsult", CG_TauntDeathInsult_f },
 	{ "tauntGauntlet", CG_TauntGauntlet_f },
-	{ "spWin", CG_spWin_f },
-	{ "spLose", CG_spLose_f },
 	{ "scoresDown", CG_scrollScoresDown_f },
 	{ "scoresUp", CG_scrollScoresUp_f },
 #endif
-	{ "startOrbit", CG_StartOrbit_f },
 //	{ "camera", CG_Camera_f },
 	{ "loaddeferred", CG_LoadDeferredPlayers },
         { "+acc", CG_AccDown_f },

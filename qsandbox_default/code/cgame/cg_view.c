@@ -258,7 +258,7 @@ static void CG_ViewFog( void ) {
 		cg.viewfog[i].shaderRGBA[2] = mod_fogColorB;
 		cg.viewfog[i].shaderRGBA[3] = (mod_fogColorA / 16) + (i * (mod_fogColorA - (mod_fogColorA / 16)) / 15);
 
-		scale = (mod_fogDistance * 0.50) + i * (mod_fogInterval * 0.50);
+		scale = ((mod_fogDistance*512) * 0.50) + i * (mod_fogInterval * 0.50);
 		VectorScale(cg.viewfog[i].axis[0], scale, cg.viewfog[i].axis[0]);
 		VectorScale(cg.viewfog[i].axis[1], scale, cg.viewfog[i].axis[1]);
 		VectorScale(cg.viewfog[i].axis[2], scale, cg.viewfog[i].axis[2]);
@@ -322,8 +322,7 @@ static void CG_OffsetThirdPersonView( void ) {
 	VectorCopy( cg.refdefViewAngles, focusAngles );
 
 	// if dead, look at killer
-	if ( (cg.predictedPlayerState.stats[STAT_HEALTH] <= 0) && 
-				(cgs.gametype !=GT_ELIMINATION && cgs.gametype !=GT_CTF_ELIMINATION && cgs.gametype !=GT_LMS) ) {
+	if ( (cg.predictedPlayerState.stats[STAT_HEALTH] <= 0) && (cg.snap->ps.pm_type != PM_SPECTATOR) && (cgs.gametype !=GT_ELIMINATION && cgs.gametype !=GT_CTF_ELIMINATION && cgs.gametype !=GT_LMS) ) {
 		focusAngles[YAW] = cg.predictedPlayerState.stats[STAT_DEAD_YAW];
 		cg.refdefViewAngles[YAW] = cg.predictedPlayerState.stats[STAT_DEAD_YAW];
 	}
@@ -338,7 +337,11 @@ static void CG_OffsetThirdPersonView( void ) {
 	VectorCopy( cg.refdef.vieworg, view );
 
 	view[2] += 8;
+	if(!BG_VehicleCheckClass(cg.snap->ps.stats[STAT_VEHICLE])){
 	VectorMA( view, cg_thirdPersonOffset.value, right, view );
+	} else {
+	VectorMA( view, 0, right, view );		
+	}
 
 	cg.refdefViewAngles[PITCH] *= 0.5;
 
@@ -346,8 +349,13 @@ static void CG_OffsetThirdPersonView( void ) {
 
 	forwardScale = cos( cg_thirdPersonAngle.value / 180 * M_PI );
 	sideScale = sin( cg_thirdPersonAngle.value / 180 * M_PI );
+	if(!BG_VehicleCheckClass(cg.snap->ps.stats[STAT_VEHICLE])){
 	VectorMA( view, -cg_thirdPersonRange.value * forwardScale, forward, view );
 	VectorMA( view, -cg_thirdPersonRange.value * sideScale, right, view );
+	} else {
+	VectorMA( view, -180 * forwardScale, forward, view );
+	VectorMA( view, -180 * sideScale, right, view );		
+	}
 
 	// trace a ray from the origin to the viewpoint to make sure the view isn't
 	// in a solid block.  Use an 8 by 8 block to prevent the view from near clipping anything
@@ -906,14 +914,14 @@ static int CG_CalcViewValues( void ) {
 	}
 
 	// leilei - View-from-the-model-eyes feature, aka "fullbody awareness" lol
-	if (cg_cameraEyes.integer && !cg.renderingThirdPerson){
+	if (cg.renderingEyesPerson && !cg.renderingThirdPerson){
 		vec3_t		forward, up;	
 		cg.refdefViewAngles[ROLL] = headang[ROLL];
 		cg.refdefViewAngles[PITCH] = headang[PITCH];
 		cg.refdefViewAngles[YAW] = headang[YAW];
 
 		AngleVectors( headang, forward, NULL, up );
-		if (cg_cameraEyes.integer == 2){
+		if (cg.renderingEyesPerson == 2){
 			VectorMA( headpos, 0, forward, headpos );
 			VectorMA( headpos, 4, up, headpos );
 		}
@@ -1048,7 +1056,8 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 	CG_PredictPlayerState();
 
 	// decide on third person view
-	cg.renderingThirdPerson = cg_thirdPerson.integer || (cg.snap->ps.stats[STAT_HEALTH] <= 0) || cg.snap->ps.stats[STAT_VEHICLE];
+	cg.renderingThirdPerson = cg_thirdPerson.integer && cg.snap->ps.pm_type != PM_CUTSCENE && cg.snap->ps.pm_type != PM_SPECTATOR || (cg.snap->ps.stats[STAT_HEALTH] <= 0) || cg.snap->ps.stats[STAT_VEHICLE];
+	cg.renderingEyesPerson = cg_cameraEyes.integer && cg.snap->ps.pm_type != PM_CUTSCENE && cg.snap->ps.pm_type != PM_SPECTATOR || cg.snap->ps.stats[STAT_VEHICLE];
 
 	// build cg.refdef
 	inwater = CG_CalcViewValues();

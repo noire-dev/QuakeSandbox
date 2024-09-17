@@ -964,7 +964,7 @@ static cvarTable_t		gameCvarTable[] = {
 	// change anytime vars
 	{ &g_fogModel, "g_fogModel", "1", 0, 0, qtrue  },
 	{ &g_fogShader, "g_fogShader", "1", 0, 0, qtrue  },
-	{ &g_fogDistance, "g_fogDistance", "4096", 0, 0, qtrue  },
+	{ &g_fogDistance, "g_fogDistance", "8", 0, 0, qtrue  },
 	{ &g_fogInterval, "g_fogInterval", "32", 0, 0, qtrue  },
 	{ &g_fogColorR, "g_fogColorR", "210", 0, 0, qtrue  },
 	{ &g_fogColorG, "g_fogColorG", "245", 0, 0, qtrue  },

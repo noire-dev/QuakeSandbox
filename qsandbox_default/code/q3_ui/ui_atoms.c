@@ -114,8 +114,6 @@ void UI_PushMenu( menuframework_s *menu )
 	trap_Cvar_SetValue( "in_nativetouch", 1 );
 	trap_Cvar_SetValue( "cg_alwaysWeaponBar", 1 );
 	trap_Cvar_SetValue( "cl_voip", 0 );
-	trap_Cvar_SetValue( "r_ambientScale", 0 );
-	trap_Cvar_SetValue( "r_intensity", 1.75 );
 	}
 	
 	// initialize the screen offset
@@ -2091,13 +2089,15 @@ void UI_Init( void ) {
 	//uis.scale = uis.glconfig.vidHeight * (1.0/uis.glconfig.vidHeight);
 	//uis.bias = 0;
 	// for 640x480 virtualized screen
-	uis.scale = uis.glconfig.vidHeight * (1.0/480.0);
+	uis.scale = (uis.glconfig.vidWidth * (1.0 / 640.0) < uis.glconfig.vidHeight * (1.0 / 480.0)) ? uis.glconfig.vidWidth * (1.0 / 640.0) : uis.glconfig.vidHeight * (1.0 / 480.0);
+	
 	if ( uis.glconfig.vidWidth * 480 > uis.glconfig.vidHeight * 640 ) {
 		// wide screen
-		uis.bias = 0.5 * ( uis.glconfig.vidWidth - ( uis.glconfig.vidHeight * (640.0/480.0) ) );
-		uis.scale = uis.scale;
-	}
-	else {
+		uis.bias = 0.5 * ( uis.glconfig.vidWidth - ( uis.glconfig.vidHeight * (640.0 / 480.0) ) );
+	} else if ( uis.glconfig.vidWidth * 480 < uis.glconfig.vidHeight * 640 ) {
+		// 5:4 screen
+		uis.bias = 0;
+	} else {
 		// no wide screen
 		uis.bias = 0;
 	}
@@ -2424,7 +2424,7 @@ void UI_Refresh( int realtime )
 		}
 		else {
 		// no wide screen
-		uis.scale = uis.glconfig.vidHeight * (1.0/480.0);
+		uis.scale = (uis.glconfig.vidWidth * (1.0 / 640.0) < uis.glconfig.vidHeight * (1.0 / 480.0)) ? uis.glconfig.vidWidth * (1.0 / 640.0) : uis.glconfig.vidHeight * (1.0 / 480.0);
 		uis.bias = 0;
 		}
 	}

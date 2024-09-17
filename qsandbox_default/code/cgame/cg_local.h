@@ -439,12 +439,15 @@ typedef struct {
 
 	qhandle_t		legsModel;
 	qhandle_t		legsSkin;
+	qhandle_t		legsShader;
 
 	qhandle_t		torsoModel;
 	qhandle_t		torsoSkin;
+	qhandle_t		torsoShader;
 
 	qhandle_t		headModel;
 	qhandle_t		headSkin;
+	qhandle_t		headShader;
 	
 	qhandle_t		plusModel;
 	qhandle_t		plusSkin;
@@ -578,6 +581,7 @@ typedef struct {
 	qboolean	mapRestart;			// set on a map restart to set back the weapon
 
 	qboolean	renderingThirdPerson;		// during deaths, chasecams, etc
+	int			renderingEyesPerson;		// during deaths, chasecams, etc
 
 	// prediction state
 	qboolean	hyperspace;				// true if prediction has hit a trigger_teleport
@@ -938,6 +942,7 @@ typedef struct {
 	qhandle_t	viewBloodShader;
 	qhandle_t	tracerShader;
 	qhandle_t	crosshairShader[NUM_CROSSHAIRS];
+	qhandle_t	crosshairSh3d[NUM_CROSSHAIRS];
 	qhandle_t	lagometerShader;
 	qhandle_t	backTileShader;
 	qhandle_t	noammoShader;
@@ -1564,7 +1569,6 @@ extern  vmCvar_t    ui_backcolors;
 extern	vmCvar_t	legsskin;
 extern	vmCvar_t	team_legsskin;
 extern	vmCvar_t	cg_oldscoreboard;
-extern	vmCvar_t	cg_thirdPersonRotating;
 extern	vmCvar_t	cg_itemstyle;
 extern	vmCvar_t	cg_gibtime;
 extern	vmCvar_t		cg_centertime;
@@ -1635,7 +1639,6 @@ extern 	vmCvar_t 		cg_chatY;
 extern 	vmCvar_t 		cg_teamChatScaleX;
 extern 	vmCvar_t 		cg_teamChatScaleY;
 extern	vmCvar_t		cg_stats;
-extern	vmCvar_t 		cg_forceModel;
 extern	vmCvar_t 		cg_buildScript;
 extern	vmCvar_t		cg_paused;
 extern	vmCvar_t		cg_blood;
@@ -1693,7 +1696,6 @@ extern	vmCvar_t		cg_lodScale;
 extern	vmCvar_t		cg_leiEnhancement;			// LEILEI'S LINE!
 extern	vmCvar_t		cg_leiGoreNoise;			// LEILEI'S LINE!
 extern	vmCvar_t		cg_leiBrassNoise;			// LEILEI'S LINE!
-extern	vmCvar_t		cg_leiSuperGoreyAwesome;	// LEILEI'S LINE!
 extern	vmCvar_t		cg_cameramode;
 extern	vmCvar_t		cg_cameraEyes;
 extern	vmCvar_t		cg_cameraEyes_Fwd;

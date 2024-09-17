@@ -348,7 +348,7 @@ static void Main_MenuDraw( void ) {
 	   // standard menu drawing
 	   Menu_Draw( &s_main.menu );
    }
-	UI_DrawString( 600+uis.wideoffset, 450, "Quake Sandbox v5.1", UI_RIGHT|UI_SMALLFONT, color );
+	UI_DrawString( 600+uis.wideoffset, 450, "Quake Sandbox v5.2", UI_RIGHT|UI_SMALLFONT, color );
 	UI_DrawString( 600+uis.wideoffset, 465, "by Noire.dev", UI_RIGHT|UI_SMALLFONT, color );
 }
 

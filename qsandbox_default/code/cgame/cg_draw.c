@@ -2670,6 +2670,10 @@ static void CG_DrawCrosshair(void)
 	if ( !cg_drawCrosshair.integer ) {
 		return;
 	}
+	
+	if( cg.renderingThirdPerson ) {
+		return;
+	}
 
 	if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR) {
 		return;
@@ -2735,10 +2739,10 @@ static void CG_DrawCrosshair(void)
 				w = h = cg_ch13size.value;
 				ca = cg_ch13.integer;
 				break;
-                        default:
-                                w = h = cg_crosshairScale.value;
-                                ca = cg_drawCrosshair.integer;
-                                break;
+        default:
+                w = h = cg_crosshairScale.value;
+                ca = cg_drawCrosshair.integer;
+                break;
 		}
 	}
 	else{
@@ -2781,73 +2785,69 @@ static void CG_DrawCrosshair(void)
 CG_DrawCrosshair3D
 =================
 */
-static void CG_DrawCrosshair3D(void)
-{
-	float		w, h;
-	qhandle_t	hShader;
-	float		f;
-	int			ca;
-
+static void CG_DrawCrosshair3D(void) {
+	float w, h;
+	qhandle_t hShader;
+	int ca;
 	trace_t trace;
 	vec3_t endpos;
-	float stereoSep, zProj, maxdist, xmax;
+	float zProj, maxdist;
 	char rendererinfos[128];
 	refEntity_t ent;
 
-	if ( !cg_drawCrosshair.integer ) {
+	if (!cg_drawCrosshair.integer) {
 		return;
 	}
 
-	if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR) {
+	if (cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR) {
+		return;
+	}
+
+	if (cg.predictedPlayerState.pm_type == PM_DEAD || cg.predictedPlayerState.pm_type == PM_INTERMISSION) {
 		return;
 	}
 
 	w = h = cg_crosshairScale.value;
 
-	// pulse the size of the crosshair when picking up items
-	f = cg.time - cg.itemPickupBlendTime;
-	if ( f > 0 && f < ITEM_BLOB_TIME ) {
-		f /= ITEM_BLOB_TIME;
-		w *= ( 1 + f );
-		h *= ( 1 + f );
-	}
-
 	ca = cg_drawCrosshair.integer;
 	if (ca < 0) {
 		ca = 0;
 	}
-	hShader = cgs.media.crosshairShader[ ca % NUM_CROSSHAIRS ];
+	hShader = cgs.media.crosshairSh3d[ ca % NUM_CROSSHAIRS ];
 
-        if(!hShader)
-            hShader = cgs.media.crosshairShader[ ca % 10 ];
+	if (!hShader)
+		hShader = cgs.media.crosshairSh3d[ ca % 10 ];
 
 	// Use a different method rendering the crosshair so players don't see two of them when
 	// focusing their eyes at distant objects with high stereo separation
 	// We are going to trace to the next shootable object and place the crosshair in front of it.
 
 	// first get all the important renderer information
-	trap_Cvar_VariableStringBuffer("r_zProj", rendererinfos, sizeof(rendererinfos));
+	trap_Cvar_VariableStringBuffer("r_zProj", rendererinfos, sizeof (rendererinfos));
 	zProj = atof(rendererinfos);
-	trap_Cvar_VariableStringBuffer("r_stereoSeparation", rendererinfos, sizeof(rendererinfos));
-	stereoSep = zProj / atof(rendererinfos);
 
-	xmax = zProj * tan(cg.refdef.fov_x * M_PI / 360.0f);
+    maxdist = 65536;
 
-	// let the trace run through until a change in stereo separation of the crosshair becomes less than one pixel.
-	maxdist = cgs.glconfig.vidWidth * stereoSep * zProj / (2 * xmax);
-	VectorMA(cg.refdef.vieworg, maxdist, cg.refdef.viewaxis[0], endpos);
-	CG_Trace(&trace, cg.refdef.vieworg, NULL, NULL, endpos, 0, MASK_SHOT);
-
-	memset(&ent, 0, sizeof(ent));
+	memset(&ent, 0, sizeof (ent));
 	ent.reType = RT_SPRITE;
-	ent.renderfx = RF_DEPTHHACK | RF_CROSSHAIR;
+	ent.renderfx = RF_DEPTHHACK | RF_CROSSHAIR | RF_FIRST_PERSON;
+
+    VectorCopy(cg.predictedPlayerState.origin, ent.origin );
+    ent.origin[2] = ent.origin[2]+cg.predictedPlayerState.viewheight;
+    AnglesToAxis(cg.predictedPlayerState.viewangles, ent.axis);
+    VectorMA(ent.origin, maxdist, ent.axis[0], endpos);
+
+	CG_Trace(&trace, ent.origin, NULL, NULL, endpos, 0, MASK_SHOT);
 
 	VectorCopy(trace.endpos, ent.origin);
 
 	// scale the crosshair so it appears the same size for all distances
-	ent.radius = w / 640 * xmax * trace.fraction * maxdist / zProj;
+	ent.radius = w / 800 * zProj * tan(cg.refdef.fov_x * M_PI / 360.0f) * trace.fraction * maxdist / zProj;
 	ent.customShader = hShader;
-
+    ent.shaderRGBA[0] = cg_crosshairColorRed.value * 255;
+	ent.shaderRGBA[1] = cg_crosshairColorGreen.value * 255;
+	ent.shaderRGBA[2] = cg_crosshairColorBlue.value * 255;
+    ent.shaderRGBA[3] = 255;
 	trap_R_AddRefEntityToScene(&ent);
 }
 
@@ -3779,7 +3779,7 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 	// clear around the rendered view if sized down
 	CG_TileClear();
 
-	if(stereoView != STEREO_CENTER)
+	if(cg.renderingThirdPerson)
 		CG_DrawCrosshair3D();
 
 	// apply earthquake effect

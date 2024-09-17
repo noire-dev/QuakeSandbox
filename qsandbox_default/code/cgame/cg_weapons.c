@@ -1309,7 +1309,7 @@ static void CG_LightningBolt( centity_t *cent, vec3_t origin ) {
 //unlagged - attack prediction #1
 
 	// CPMA  "true" lightning
-        if ((cent->currentState.number == cg.predictedPlayerState.clientNum) && (cg_trueLightning.value != 0)) {
+    if ((cent->currentState.number == cg.predictedPlayerState.clientNum) && (cg_trueLightning.value != 0)) {
 		vec3_t angle;
 		int i;
 
@@ -1731,7 +1731,7 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 	vec3_t		angles;
 	weaponInfo_t	*weapon;
 
-	if (cg_cameraEyes.integer >= 1 && cg_cameraEyes.integer <= 3) {
+	if (cg.renderingEyesPerson >= 1 && cg.renderingEyesPerson <= 3) {
 		vec3_t origin;
 	
 		if (cg.predictedPlayerState.eFlags & EF_FIRING) {
@@ -3222,9 +3222,6 @@ if ( cg_blood.integer ) {
 //		CG_Particle_Bleed(cgs.media.lbldShader1,kapew,kapow, 0, 100);
 //		CG_Particle_BloodCloud(self,end,'0 0 0');
 
-if (cg_leiSuperGoreyAwesome.integer) {
-		CG_SpurtBlood( end, kapow, -2);
-			}
 }
 		}
 

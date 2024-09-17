@@ -29,8 +29,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 displayContextDef_t cgDC;
 #endif
 
-int forceModelModificationCount = -1;
-
 void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum );
 void CG_Shutdown( void );
 
@@ -60,7 +58,7 @@ intptr_t vmMain( int command, int arg0, int arg1, int arg2, int arg3, int arg4, 
 		return CG_ConsoleCommand();
 	case CG_DRAW_ACTIVE_FRAME:
 		CG_DrawActiveFrame( arg0, arg1, arg2 );
-                CG_FairCvars();
+        CG_FairCvars();
 		return 0;
 	case CG_CROSSHAIR_PLAYER:
 		return CG_CrosshairPlayer();
@@ -176,9 +174,7 @@ vmCvar_t    ui_backcolors;
 vmCvar_t	legsskin;
 vmCvar_t	team_legsskin;
 vmCvar_t	cg_oldscoreboard;
-vmCvar_t	cg_thirdPersonRotating;
 vmCvar_t	cg_itemstyle;
-vmCvar_t	cg_hudfullscreen;
 vmCvar_t	cg_gibtime;
 vmCvar_t	cg_paintballMode;
 vmCvar_t	cg_disableLevelStartFade;
@@ -244,7 +240,6 @@ vmCvar_t 	cg_teamChatScaleX;
 vmCvar_t 	cg_teamChatScaleY;
 vmCvar_t 	cg_stats;
 vmCvar_t 	cg_buildScript;
-vmCvar_t 	cg_forceModel;
 vmCvar_t	cg_paused;
 vmCvar_t	cg_blood;
 vmCvar_t	cg_predictItems;
@@ -304,7 +299,6 @@ vmCvar_t	cg_lodScale;
 vmCvar_t	cg_leiEnhancement;		// ANOTHER LEILEI LINE!!!
 vmCvar_t	cg_leiBrassNoise;		// ANOTHER LEILEI LINE!!!
 vmCvar_t	cg_leiGoreNoise;		// ANOTHER LEILEI LINE!!!
-vmCvar_t	cg_leiSuperGoreyAwesome;		// ANOTHER LEILEI LINE!!!
 vmCvar_t	cg_oldPlasma;
 vmCvar_t	cg_trueLightning;
 vmCvar_t        cg_music;
@@ -537,9 +531,7 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_itemstyle, "cg_itemstyle", "2", CVAR_ARCHIVE },
 	{ &legsskin, "legsskin", "sarge/default", CVAR_USERINFO | CVAR_ARCHIVE },
 	{ &team_legsskin, "team_legsskin", "sarge/default", CVAR_USERINFO | CVAR_ARCHIVE },
-	{ &cg_thirdPersonRotating, "cg_thirdPersonRotating", "0", CVAR_ARCHIVE },
 	{ &cg_oldscoreboard, "cg_oldscoreboard", "0", CVAR_ARCHIVE },
-	{ &cg_hudfullscreen, "cg_hudfullscreen", "0", CVAR_ARCHIVE },
 	{ &cg_gibtime, "cg_gibtime", "30", CVAR_ARCHIVE },
 	{ &cg_gibjump, "cg_gibjump", "350", CVAR_ARCHIVE },
 	{ &cg_gibvelocity, "cg_gibvelocity", "350", CVAR_ARCHIVE },
@@ -596,16 +588,15 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_tracerChance, "cg_tracerchance", "0.4", CVAR_CHEAT },
 	{ &cg_tracerWidth, "cg_tracerwidth", "1", CVAR_CHEAT },
 	{ &cg_tracerLength, "cg_tracerlength", "100", CVAR_CHEAT },
-	{ &cg_thirdPersonRange, "cg_thirdPersonRange", "160", CVAR_ARCHIVE },
+	{ &cg_thirdPersonRange, "cg_thirdPersonRange", "65", CVAR_ARCHIVE },
 	{ &cg_thirdPersonAngle, "cg_thirdPersonAngle", "0", CVAR_ARCHIVE },
-	{ &cg_thirdPersonOffset, "cg_thirdPersonOffset", "10", CVAR_ARCHIVE },
+	{ &cg_thirdPersonOffset, "cg_thirdPersonOffset", "25", CVAR_ARCHIVE },
 	{ &cg_thirdPerson, "cg_thirdPerson", "0", CVAR_ARCHIVE},
 	//{ &cg_teamChatTime, "cg_teamChatTime", "3000", CVAR_ARCHIVE  },
 	{ &cg_atmosphericLevel, "cg_atmosphericLevel", "2", CVAR_ARCHIVE },
 	{ &cg_teamChatHeight, "cg_teamChatHeight", "8", CVAR_ARCHIVE  },
 	{ &cg_teamChatScaleX, "cg_teamChatScaleX", "0.7", CVAR_ARCHIVE  },
 	{ &cg_teamChatScaleY, "cg_teamChatScaleY", "1", CVAR_ARCHIVE  },
-	{ &cg_forceModel, "cg_forceModel", "0", CVAR_ARCHIVE  },
 	{ &cg_predictItems, "cg_predictItems", "1", CVAR_ARCHIVE },
 #ifdef MISSIONPACK
 	{ &cg_deferPlayers, "cg_deferPlayers", "0", CVAR_ARCHIVE },
@@ -701,7 +692,6 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_leiEnhancement, "cg_leiEnhancement", "1", CVAR_ARCHIVE},				// LEILEI default off (in case of whiner)
 	{ &cg_leiGoreNoise, "cg_leiGoreNoise", "1", CVAR_ARCHIVE},					// LEILEI
 	{ &cg_leiBrassNoise, "cg_leiBrassNoise", "1", CVAR_ARCHIVE},				// LEILEI
-	{ &cg_leiSuperGoreyAwesome, "cg_leiSuperGoreyAwesome", "1", CVAR_ARCHIVE},	// LEILEI
 	{ &cg_cameramode, "cg_cameramode", "0", CVAR_ARCHIVE},				// LEILEI
 	{ &cg_cameraEyes, "cg_cameraEyes", "0", CVAR_ARCHIVE},				// LEILEI
 	{ &cg_cameraEyes_Fwd, "cg_cameraEyes_Fwd", "3", CVAR_ARCHIVE},				// LEILEI
@@ -785,8 +775,6 @@ void CG_RegisterCvars( void ) {
 	// see if we are also running the server on this machine
 	trap_Cvar_VariableStringBuffer( "sv_running", var, sizeof( var ) );
 	cgs.localServer = atoi( var );
-
-	forceModelModificationCount = cg_forceModel.modificationCount;
 
 	trap_Cvar_Register(NULL, "model", "sarge/default", CVAR_USERINFO | CVAR_ARCHIVE );
 	trap_Cvar_Register(NULL, "headmodel", "sarge/default", CVAR_USERINFO | CVAR_ARCHIVE );
@@ -879,12 +867,6 @@ void CG_UpdateCvars( void ) {
 		} else {
 			trap_Cvar_Set( "teamoverlay", "0" );
 		}
-	}
-
-	// if force model changed
-	if ( forceModelModificationCount != cg_forceModel.modificationCount ) {
-		forceModelModificationCount = cg_forceModel.modificationCount;
-		CG_ForceModelChange();
 	}
 }
 
@@ -1493,10 +1475,13 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.selectShader = trap_R_RegisterShader( "gfx/2d/select" );
 
 	for (i = 0; i < NUM_CROSSHAIRS; i++ ) {
-		if (i < 10)
+		if (i < 10){
 			cgs.media.crosshairShader[i] = trap_R_RegisterShader( va("gfx/2d/crosshair%c", 'a'+i) );
-		else
+		    cgs.media.crosshairSh3d[i] = trap_R_RegisterShader( va("gfx/3d/crosshair%c", 'a'+i) );
+		} else {
 			cgs.media.crosshairShader[i] = trap_R_RegisterShader( va("gfx/2d/crosshair%02d", i - 10) );
+			cgs.media.crosshairSh3d[i] = trap_R_RegisterShader( va("gfx/3d/crosshair%02d", i - 10) );
+		}
  	}
 
 	cgs.media.backTileShader = trap_R_RegisterShader( "gfx/2d/backtile" );
@@ -2670,7 +2655,6 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	cgs.flagStatus = -1;
 	// old servers
 
-	if(cg_hudfullscreen.integer == 0){
 	// get the rendering configuration from the client system
 	trap_GetGlconfig( &cgs.glconfig );
 	cgs.screenXScale = cgs.glconfig.vidWidth / 640.0;
@@ -2701,7 +2685,6 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 
 
 		wideAdjustX = resbias;
-
 	}
 	if ( cgs.glconfig.vidWidth * 480 > cgs.glconfig.vidHeight * 640 ) {
 		// wide screen
@@ -2711,13 +2694,6 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	else {
 		// no wide screen
 		cgs.screenXBias = 0;
-	}
-	}
-	if(cg_hudfullscreen.integer == 1){
-	// get the rendering configuration from the client system
-	trap_GetGlconfig( &cgs.glconfig );
-	cgs.screenXScale = cgs.glconfig.vidWidth / 640.0;
-	cgs.screenYScale = cgs.glconfig.vidHeight / 480.0;
 	}
 
 
@@ -2885,6 +2861,9 @@ static qboolean do_vid_restart = qfalse;
 void CG_FairCvars() {
     qboolean vid_restart_required = qfalse;
     char rendererinfos[128];
+	
+	trap_Cvar_Set( "r_ambientScale", "1.5" );
+	trap_Cvar_Set( "r_directedScale", "0.6" );
 
     if(cgs.videoflags & VF_LOCK_CVARS_EXTENDED) {
         //Lock extended cvars.

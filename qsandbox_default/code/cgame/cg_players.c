@@ -383,243 +383,37 @@ static qboolean	CG_FileExists(const char *filename) {
 
 /*
 ==========================
-CG_FindClientModelFile
-==========================
-*/
-static qboolean	CG_FindClientModelFile( char *filename, int length, clientInfo_t *ci, const char *teamName, const char *modelName, const char *skinName, const char *base, const char *ext ) {
-	char *team, *charactersFolder;
-	int i;
-
-	if ( cgs.gametype >= GT_TEAM && cgs.ffa_gt!=1 && 1 == 0) {
-		switch ( ci->team ) {
-			case TEAM_BLUE: {
-				team = "blue";
-				break;
-			}
-			default: {
-				team = "red";
-				break;
-			}
-		}
-	}
-	else {
-		team = "default";
-	}
-	charactersFolder = "";
-	while(1) {
-		for ( i = 0; i < 2; i++ ) {
-			if ( i == 0 && teamName && *teamName ) {
-				//								"models/players/characters/sergei/stroggs/lower_lily_red.skin"
-				Com_sprintf( filename, length, "models/players/%s%s/%s%s_%s_%s.%s", charactersFolder, modelName, teamName, base, skinName, team, ext );
-			}
-			else {
-				//								"models/players/characters/sergei/lower_lily_red.skin"
-				Com_sprintf( filename, length, "models/players/%s%s/%s_%s_%s.%s", charactersFolder, modelName, base, skinName, team, ext );
-			}
-			if ( CG_FileExists( filename ) ) {
-				return qtrue;
-			}
-			if ( cgs.gametype >= GT_TEAM && cgs.ffa_gt!=1 && 1 == 0) {
-				if ( i == 0 && teamName && *teamName ) {
-					//								"models/players/characters/sergei/stroggs/lower_red.skin"
-					Com_sprintf( filename, length, "models/players/%s%s/%s%s_%s.%s", charactersFolder, modelName, teamName, base, team, ext );
-				}
-				else {
-					//								"models/players/characters/sergei/lower_red.skin"
-					Com_sprintf( filename, length, "models/players/%s%s/%s_%s.%s", charactersFolder, modelName, base, team, ext );
-				}
-			}
-			else {
-				if ( i == 0 && teamName && *teamName ) {
-					//								"models/players/characters/sergei/stroggs/lower_lily.skin"
-					Com_sprintf( filename, length, "models/players/%s%s/%s%s_%s.%s", charactersFolder, modelName, teamName, base, skinName, ext );
-				}
-				else {
-					//								"models/players/characters/sergei/lower_lily.skin"
-					Com_sprintf( filename, length, "models/players/%s%s/%s_%s.%s", charactersFolder, modelName, base, skinName, ext );
-				}
-			}
-			if ( CG_FileExists( filename ) ) {
-				return qtrue;
-			}
-			if ( !teamName || !*teamName ) {
-				break;
-			}
-		}
-		// if tried the heads folder first
-		if ( charactersFolder[0] ) {
-			break;
-		}
-		charactersFolder = "characters/";
-	}
-
-	return qfalse;
-}
-
-/*
-==========================
-CG_FindClientHeadFile
-==========================
-*/
-static qboolean	CG_FindClientHeadFile( char *filename, int length, clientInfo_t *ci, const char *teamName, const char *headModelName, const char *headSkinName, const char *base, const char *ext ) {
-	char *team, *headsFolder;
-	int i;
-
-	if ( cgs.gametype >= GT_TEAM && cgs.ffa_gt!=1 && 1 == 0) {
-		switch ( ci->team ) {
-			case TEAM_BLUE: {
-				team = "blue";
-				break;
-			}
-			default: {
-				team = "red";
-				break;
-			}
-		}
-	}
-	else {
-		team = "default";
-	}
-
-	if ( headModelName[0] == '*' ) {
-		headsFolder = "heads/";
-		headModelName++;
-	}
-	else {
-		headsFolder = "";
-	}
-	while(1) {
-		for ( i = 0; i < 2; i++ ) {
-			if ( i == 0 && teamName && *teamName ) {
-				Com_sprintf( filename, length, "models/players/%s%s/%s/%s%s_%s.%s", headsFolder, headModelName, headSkinName, teamName, base, team, ext );
-			}
-			else {
-				Com_sprintf( filename, length, "models/players/%s%s/%s/%s_%s.%s", headsFolder, headModelName, headSkinName, base, team, ext );
-			}
-			if ( CG_FileExists( filename ) ) {
-				return qtrue;
-			}
-			if ( cgs.gametype >= GT_TEAM && cgs.ffa_gt!=1 && 1 == 0) {
-				if ( i == 0 &&  teamName && *teamName ) {
-					Com_sprintf( filename, length, "models/players/%s%s/%s%s_%s.%s", headsFolder, headModelName, teamName, base, team, ext );
-				}
-				else {
-					Com_sprintf( filename, length, "models/players/%s%s/%s_%s.%s", headsFolder, headModelName, base, team, ext );
-				}
-			}
-			else {
-				if ( i == 0 && teamName && *teamName ) {
-					Com_sprintf( filename, length, "models/players/%s%s/%s%s_%s.%s", headsFolder, headModelName, teamName, base, headSkinName, ext );
-				}
-				else {
-					Com_sprintf( filename, length, "models/players/%s%s/%s_%s.%s", headsFolder, headModelName, base, headSkinName, ext );
-				}
-			}
-			if ( CG_FileExists( filename ) ) {
-				return qtrue;
-			}
-			if ( !teamName || !*teamName ) {
-				break;
-			}
-		}
-		// if tried the heads folder first
-		if ( headsFolder[0] ) {
-			break;
-		}
-		headsFolder = "heads/";
-	}
-
-	return qfalse;
-}
-
-/*
-==========================
 CG_RegisterClientSkin
 ==========================
 */
-static qboolean	CG_RegisterClientSkin( clientInfo_t *ci, const char *teamName, const char *modelName, const char *skinName, const char *headModelName, const char *headSkinName, const char *legsModelName, const char *legsSkinName ) {
+static qboolean	CG_RegisterClientSkin( clientInfo_t *ci, const char *modelName, const char *skinName, const char *headModelName, const char *headSkinName, const char *legsModelName, const char *legsSkinName ) {
 	char filename[MAX_QPATH];
 
-	/*
-	Com_sprintf( filename, sizeof( filename ), "models/players/%s/%slower_%s.skin", modelName, teamName, skinName );
+	Com_sprintf( filename, sizeof( filename ), "models/players/%s/lower_%s.skin", modelName, legsSkinName );
 	ci->legsSkin = trap_R_RegisterSkin( filename );
 	if (!ci->legsSkin) {
-		Com_sprintf( filename, sizeof( filename ), "models/players/characters/%s/%slower_%s.skin", modelName, teamName, skinName );
-		ci->legsSkin = trap_R_RegisterSkin( filename );
-		if (!ci->legsSkin) {
-			Com_Printf( "Leg skin load failure: %s\n", filename );
-		}
+		Com_sprintf( filename, sizeof( filename ), "models/players/%s/lower_%s", modelName, legsSkinName );
+		ci->legsShader = trap_R_RegisterShader( filename );
 	}
 
-
-	Com_sprintf( filename, sizeof( filename ), "models/players/%s/%supper_%s.skin", modelName, teamName, skinName );
+	Com_sprintf( filename, sizeof( filename ), "models/players/%s/upper_%s.skin", modelName, skinName );
 	ci->torsoSkin = trap_R_RegisterSkin( filename );
 	if (!ci->torsoSkin) {
-		Com_sprintf( filename, sizeof( filename ), "models/players/characters/%s/%supper_%s.skin", modelName, teamName, skinName );
-		ci->torsoSkin = trap_R_RegisterSkin( filename );
-		if (!ci->torsoSkin) {
-			Com_Printf( "Torso skin load failure: %s\n", filename );
-		}
+		Com_sprintf( filename, sizeof( filename ), "models/players/%s/upper_%s", modelName, skinName );
+		ci->torsoShader = trap_R_RegisterShader( filename );
 	}
-	*/
-	if(cg_forceModel.integer == 1){
-	if ( CG_FindClientModelFile( filename, sizeof(filename), ci, NULL, modelName, legsskin.string, "lower", "skin" ) ) {
-		ci->legsSkin = trap_R_RegisterSkin( filename );
-	}
-	if (!ci->legsSkin) {
-		//Com_Printf( "Leg skin load failure: %s\n", filename );
-	}
-
-	if ( CG_FindClientModelFile( filename, sizeof(filename), ci, NULL, modelName, skinName, "upper", "skin" ) ) {
-		ci->torsoSkin = trap_R_RegisterSkin( filename );
-	}
-	if (!ci->torsoSkin) {
-		//Com_Printf( "Torso skin load failure: %s\n", filename );
-	}
-
-	if ( CG_FindClientHeadFile( filename, sizeof(filename), ci, NULL, headModelName, headSkinName, "head", "skin" ) ) {
-		ci->headSkin = trap_R_RegisterSkin( filename );
-	}
+	
+	Com_sprintf( filename, sizeof( filename ), "models/players/%s/head_%s.skin", headModelName, headSkinName );
+	ci->headSkin = trap_R_RegisterSkin( filename );
 	if (!ci->headSkin) {
-		//Com_Printf( "Head skin load failure: %s\n", filename );
+		Com_sprintf( filename, sizeof( filename ), "models/players/%s/head_%s", headModelName, headSkinName );
+		ci->torsoShader = trap_R_RegisterShader( filename );
 	}
 
-	// if any skins failed to load
-	/*if ( !ci->legsSkin || !ci->torsoSkin || !ci->headSkin ) {
+	// if one skin loaded
+	if ( !ci->legsSkin && !ci->torsoSkin && !ci->headSkin && !ci->legsShader && !ci->torsoShader && !ci->headShader ) {
 		return qfalse;
-	}*/
-	return qtrue;
-}
-	if(cg_forceModel.integer == 0){
-	if ( CG_FindClientModelFile( filename, sizeof(filename), ci, NULL, modelName, legsSkinName, "lower", "skin" ) ) {
-		ci->legsSkin = trap_R_RegisterSkin( filename );
 	}
-	if (!ci->legsSkin) {
-		//Com_Printf( "Leg skin load failure using default: %s\n", filename );
-	if ( CG_FindClientModelFile( filename, sizeof(filename), ci, NULL, modelName, skinName, "lower", "skin" ) ) {
-		ci->legsSkin = trap_R_RegisterSkin( filename );
-	}
-	}
-
-	if ( CG_FindClientModelFile( filename, sizeof(filename), ci, NULL, modelName, skinName, "upper", "skin" ) ) {
-		ci->torsoSkin = trap_R_RegisterSkin( filename );
-	}
-	if (!ci->torsoSkin) {
-		//Com_Printf( "Torso skin load failure: %s\n", filename );
-	}
-
-	if ( CG_FindClientHeadFile( filename, sizeof(filename), ci, NULL, headModelName, headSkinName, "head", "skin" ) ) {
-		ci->headSkin = trap_R_RegisterSkin( filename );
-	}
-	if (!ci->headSkin) {
-		//Com_Printf( "Head skin load failure: %s\n", filename );
-	}
-
-	// if any skins failed to load
-	/*if ( !ci->legsSkin || !ci->torsoSkin || !ci->headSkin ) {
-		return qfalse;
-	}*/
-}
 return qtrue;
 }
 
@@ -642,61 +436,30 @@ static qboolean CG_RegisterClientModelname( clientInfo_t *ci, const char *modelN
 	Com_sprintf( filename, sizeof( filename ), "models/players/%s/lower.md3", modelName );
 	ci->legsModel = trap_R_RegisterModel_MiTech( filename );
 	if ( !ci->legsModel ) {
-		Com_sprintf( filename, sizeof( filename ), "models/players/characters/%s/lower.md3", modelName );
-		ci->legsModel = trap_R_RegisterModel_MiTech( filename );
-		if ( !ci->legsModel ) {
-			Com_Printf( "Failed to load model file %s\n", filename );
-			return qfalse;
-		}
+		Com_Printf( "Failed to load model file %s\n", filename );
+		return qfalse;
 	}
 
 	Com_sprintf( filename, sizeof( filename ), "models/players/%s/upper.md3", modelName );
 	ci->torsoModel = trap_R_RegisterModel_MiTech( filename );
 	if ( !ci->torsoModel ) {
-		Com_sprintf( filename, sizeof( filename ), "models/players/characters/%s/upper.md3", modelName );
-		ci->torsoModel = trap_R_RegisterModel_MiTech( filename );
-		if ( !ci->torsoModel ) {
-			Com_Printf( "Failed to load model file %s\n", filename );
-			return qfalse;
-		}
+		Com_Printf( "Failed to load model file %s\n", filename );
+		return qfalse;
 	}
 
-	if( headName[0] == '*' ) {
-		Com_sprintf( filename, sizeof( filename ), "models/players/heads/%s/%s.md3", &headModelName[1], &headModelName[1] );
-	}
-	else {
-		Com_sprintf( filename, sizeof( filename ), "models/players/%s/head.md3", headName );
-	}
+	Com_sprintf( filename, sizeof( filename ), "models/players/%s/head.md3", headName );
 	ci->headModel = trap_R_RegisterModel_MiTech( filename );
-	// if the head model could not be found and we didn't load from the heads folder try to load from there
-	if ( !ci->headModel && headName[0] != '*' ) {
-		Com_sprintf( filename, sizeof( filename ), "models/players/heads/%s/%s.md3", headModelName, headModelName );
-		ci->headModel = trap_R_RegisterModel_MiTech( filename );
-	}
 	if ( !ci->headModel ) {
 		Com_Printf( "Failed to load model file %s\n", filename );
 		return qfalse;
 	}
 
 	// if any skins failed to load, return failure
-	if ( !CG_RegisterClientSkin( ci, teamName, modelName, skinName, headName, headSkinName, legsModelName, legsSkinName ) ) {
-		if ( teamName && *teamName) {
-			Com_Printf( "Failed to load skin file: %s : %s : %s, %s : %s\n", teamName, modelName, skinName, headName, headSkinName );
-			if( ci->team == TEAM_BLUE ) {
-				Com_sprintf(newTeamName, sizeof(newTeamName), "%s/", DEFAULT_BLUETEAM_NAME);
-			}
-			else {
-				Com_sprintf(newTeamName, sizeof(newTeamName), "%s/", DEFAULT_REDTEAM_NAME);
-			}
-			if ( !CG_RegisterClientSkin( ci, newTeamName, modelName, skinName, headName, headSkinName, legsModelName, legsSkinName ) ) {
-				Com_Printf( "Failed to load skin file: %s : %s : %s, %s : %s\n", newTeamName, modelName, skinName, headName, headSkinName );
-				return qfalse;
-			}
-		} else {
-			Com_Printf( "Failed to load skin file: %s : %s, %s : %s\n", modelName, skinName, headName, headSkinName );
-			return qfalse;
-		}
+	if ( !CG_RegisterClientSkin( ci, modelName, skinName, headName, headSkinName, legsModelName, legsSkinName ) ) {
+		Com_Printf( "Failed to load skin file: %s : %s : %s, %s : %s\n", newTeamName, modelName, skinName, headName, headSkinName );
+		return qfalse;
 	}
+	
 
 	// load the animations
 	Com_sprintf( filename, sizeof( filename ), "models/players/%s/animation.cfg", modelName );
@@ -712,15 +475,31 @@ static qboolean CG_RegisterClientModelname( clientInfo_t *ci, const char *modelN
 	Com_sprintf( filename, sizeof( filename ), "models/players/%s/eyes.cfg", modelName );
 	if ( !CG_ParseEyesFile( filename, ci ) ) {
 		//	Com_Printf( "No eyes for %s\n", filename );
-		}
-
-
-
-	if ( CG_FindClientHeadFile( filename, sizeof(filename), ci, teamName, headName, headSkinName, "icon", "skin" ) ) {
+	}
+	
+	if(!ci->modelIcon){
+	Com_sprintf( filename, sizeof( filename ), "models/players/%s/icon_%s.tga", modelName, skinName );
+	if(CG_FileExists(filename)){
 		ci->modelIcon = trap_R_RegisterShaderNoMip( filename );
 	}
-	else if ( CG_FindClientHeadFile( filename, sizeof(filename), ci, teamName, headName, headSkinName, "icon", "tga" ) ) {
+	}
+	if(!ci->modelIcon){
+	Com_sprintf( filename, sizeof( filename ), "models/players/%s/icon_%s.png", modelName, skinName );
+	if(CG_FileExists(filename)){
 		ci->modelIcon = trap_R_RegisterShaderNoMip( filename );
+	}
+	}
+	if(!ci->modelIcon){
+	Com_sprintf( filename, sizeof( filename ), "models/players/%s/icon_%s.jpg", modelName, skinName );
+	if(CG_FileExists(filename)){
+		ci->modelIcon = trap_R_RegisterShaderNoMip( filename );
+	}
+	}
+	if(!ci->modelIcon){
+	Com_sprintf( filename, sizeof( filename ), "models/players/%s/icon_%s.bmp", modelName, skinName );
+	if(CG_FileExists(filename)){
+		ci->modelIcon = trap_R_RegisterShaderNoMip( filename );
+	}
 	}
 
 	if ( !ci->modelIcon ) {
@@ -853,10 +632,13 @@ static void CG_CopyClientInfoModel( clientInfo_t *from, clientInfo_t *to ) {
 
 	to->legsModel = from->legsModel;
 	to->legsSkin = from->legsSkin;
+	to->legsShader = from->legsShader;
 	to->torsoModel = from->torsoModel;
 	to->torsoSkin = from->torsoSkin;
+	to->torsoShader = from->torsoShader;
 	to->headModel = from->headModel;
 	to->headSkin = from->headSkin;
+	to->headShader = from->headShader;
 	to->modelIcon = from->modelIcon;
 
 	to->newAnims = from->newAnims;
@@ -1083,96 +865,47 @@ void CG_NewClientInfo( int clientNum ) {
 	newInfo.teamLeader = atoi(v);
 
 	v = Info_ValueForKey( configstring, "g_redteam" );
-	if ( cg_forceModel.integer ) {
-		// forcemodel makes everyone use a single model
-		// to prevent load hitches
-		char modelStr[MAX_QPATH];
-		char *skin;
-			trap_Cvar_VariableStringBuffer( "headmodel", modelStr, sizeof( modelStr ) );
-			if ( ( skin = strchr( modelStr, '/' ) ) == NULL) {
-				skin = "default";
-			} else {
-				*skin++ = 0;
-			}
+	
+	Q_strncpyz( newInfo.legsModelName, v, sizeof( newInfo.legsModelName ) );
 
-			Q_strncpyz( newInfo.legsSkinName, skin, sizeof( newInfo.legsSkinName ) );
-			Q_strncpyz( newInfo.legsModelName, modelStr, sizeof( newInfo.legsModelName ) );
+	slash = strchr( newInfo.legsModelName, '/' );
+	if ( !slash ) {
+		// modelName didn not include a skin name
+		Q_strncpyz( newInfo.legsSkinName, "default", sizeof( newInfo.legsSkinName ) );
 	} else {
-		Q_strncpyz( newInfo.legsModelName, v, sizeof( newInfo.legsModelName ) );
-
-		slash = strchr( newInfo.legsModelName, '/' );
-		if ( !slash ) {
-			// modelName didn not include a skin name
-			Q_strncpyz( newInfo.legsSkinName, "default", sizeof( newInfo.legsSkinName ) );
-		} else {
-			Q_strncpyz( newInfo.legsSkinName, slash + 1, sizeof( newInfo.legsSkinName ) );
-			// truncate modelName
-			*slash = 0;
-		}
+		Q_strncpyz( newInfo.legsSkinName, slash + 1, sizeof( newInfo.legsSkinName ) );
+		// truncate modelName
+		*slash = 0;
 	}
 
 	// model
 	v = Info_ValueForKey( configstring, "model" );
-	if ( cg_forceModel.integer ) {
-		// forcemodel makes everyone use a single model
-		// to prevent load hitches
-		char modelStr[MAX_QPATH];
-		char *skin;
 
-		trap_Cvar_VariableStringBuffer( "model", modelStr, sizeof( modelStr ) );
-		if ( ( skin = strchr( modelStr, '/' ) ) == NULL) {
-			skin = "default";
-		} else {
-			*skin++ = 0;
-		}
+	Q_strncpyz( newInfo.modelName, v, sizeof( newInfo.modelName ) );
 
-		Q_strncpyz( newInfo.skinName, skin, sizeof( newInfo.skinName ) );
-		Q_strncpyz( newInfo.modelName, modelStr, sizeof( newInfo.modelName ) );
-
+	slash = strchr( newInfo.modelName, '/' );
+	if ( !slash ) {
+		// modelName didn not include a skin name
+		Q_strncpyz( newInfo.skinName, "default", sizeof( newInfo.skinName ) );
 	} else {
-		Q_strncpyz( newInfo.modelName, v, sizeof( newInfo.modelName ) );
-
-		slash = strchr( newInfo.modelName, '/' );
-		if ( !slash ) {
-			// modelName didn not include a skin name
-			Q_strncpyz( newInfo.skinName, "default", sizeof( newInfo.skinName ) );
-		} else {
-			Q_strncpyz( newInfo.skinName, slash + 1, sizeof( newInfo.skinName ) );
-			// truncate modelName
-			*slash = 0;
-		}
+		Q_strncpyz( newInfo.skinName, slash + 1, sizeof( newInfo.skinName ) );
+		// truncate modelName
+		*slash = 0;
 	}
 
 	// head model
 	v = Info_ValueForKey( configstring, "hmodel" );
-	if ( cg_forceModel.integer ) {
-		// forcemodel makes everyone use a single model
-		// to prevent load hitches
-		char modelStr[MAX_QPATH];
-		char *skin;
+	
+	Q_strncpyz( newInfo.headModelName, v, sizeof( newInfo.headModelName ) );
 
-		trap_Cvar_VariableStringBuffer( "headmodel", modelStr, sizeof( modelStr ) );
-		if ( ( skin = strchr( modelStr, '/' ) ) == NULL) {
-			skin = "default";
-		} else {
-			*skin++ = 0;
-		}
-
-		Q_strncpyz( newInfo.headSkinName, skin, sizeof( newInfo.headSkinName ) );
-		Q_strncpyz( newInfo.headModelName, modelStr, sizeof( newInfo.headModelName ) );
-
+	slash = strchr( newInfo.headModelName, '/' );
+	if ( !slash ) {
+		// modelName didn not include a skin name
+		Q_strncpyz( newInfo.headSkinName, "default", sizeof( newInfo.headSkinName ) );
 	} else {
-		Q_strncpyz( newInfo.headModelName, v, sizeof( newInfo.headModelName ) );
-
-		slash = strchr( newInfo.headModelName, '/' );
-		if ( !slash ) {
-			// modelName didn not include a skin name
-			Q_strncpyz( newInfo.headSkinName, "default", sizeof( newInfo.headSkinName ) );
-		} else {
-			Q_strncpyz( newInfo.headSkinName, slash + 1, sizeof( newInfo.headSkinName ) );
-			// truncate modelName
-			*slash = 0;
-		}
+		Q_strncpyz( newInfo.headSkinName, slash + 1, sizeof( newInfo.headSkinName ) );
+		// truncate modelName
+		*slash = 0;
 	}
 
 	// scan for an existing clientinfo that matches this modelname
@@ -1517,10 +1250,12 @@ Handles seperate torso motion
 
   head always looks exactly at cent->lerpAngles
 
-  if motion < 20 degrees, show in head only
-  if < 45 degrees, also show in torso
+  if motion < 25 degrees, show in head only
+  if < 40 degrees, also show in torso
 ===============
 */
+#define L_ANIM ( cent->currentState.legsAnim & ~ANIM_TOGGLEBIT )
+#define T_ANIM ( cent->currentState.torsoAnim & ~ANIM_TOGGLEBIT )
 
 vec3_t		eyeat;
 
@@ -1569,12 +1304,16 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 	// --------- yaw -------------
 
 	// allow yaw to drift a bit
-	if ( ( cent->currentState.legsAnim & ~ANIM_TOGGLEBIT ) != LEGS_IDLE && ( cent->currentState.legsAnim & ~ANIM_TOGGLEBIT ) != LEGS_IDLECR || ((cent->currentState.torsoAnim & ~ANIM_TOGGLEBIT) != TORSO_ATTACK && (cent->currentState.torsoAnim & ~ANIM_TOGGLEBIT) != TORSO_ATTACK2) && ((cent->currentState.torsoAnim & ~ANIM_TOGGLEBIT) != TORSO_STAND && (cent->currentState.torsoAnim & ~ANIM_TOGGLEBIT) != TORSO_STAND2) && (cent->currentState.torsoAnim & ~ANIM_TOGGLEBIT) != TORSO_GESTURE && (cent->currentState.torsoAnim & ~ANIM_TOGGLEBIT) != TORSO_RAISE && (cent->currentState.torsoAnim & ~ANIM_TOGGLEBIT) != TORSO_DROP ) {
-		// if not standing still, always point all in the same direction
-		cent->pe.torso.yawing = qtrue;	// always center
-		cent->pe.torso.pitching = qtrue;	// always center
-		cent->pe.legs.yawing = qtrue;	// always center
+	if( 
+	   L_ANIM != LEGS_IDLE
+	&& L_ANIM != LEGS_IDLECR
 
+	|| T_ANIM == TORSO_ATTACK
+	|| T_ANIM == TORSO_ATTACK2
+	){
+		cent->pe.torso.yawing = qtrue;	// center
+		cent->pe.torso.pitching = qtrue;	// center
+		cent->pe.legs.yawing = qtrue;	// center
 	}
 
 	// etc
@@ -1605,22 +1344,15 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 	legsAngles[YAW] = headAngles[YAW] + movementOffsets[ dir ];
 	torsoAngles[YAW] = headAngles[YAW] + 0.25 * movementOffsets[ dir ];
 
-if (cg_thirdPersonRotating.integer == 0){
-	// torso
-	CG_SwingAngles( torsoAngles[YAW], 25, 90, cg_swingSpeed.value, &cent->pe.torso.yawAngle, &cent->pe.torso.yawing );
-	CG_SwingAngles( legsAngles[YAW], 40, 90, cg_swingSpeed.value, &cent->pe.legs.yawAngle, &cent->pe.legs.yawing );
-}
-if (cg_thirdPersonRotating.integer == 1){
-	if(cg_thirdPerson.integer == 0){
+	if(!cg.renderingThirdPerson){
 	CG_SwingAngles( torsoAngles[YAW], 25, 90, cg_swingSpeed.value, &cent->pe.torso.yawAngle, &cent->pe.torso.yawing );
 	CG_SwingAngles( legsAngles[YAW], 40, 90, cg_swingSpeed.value, &cent->pe.legs.yawAngle, &cent->pe.legs.yawing );
 	}
-	if(cg_thirdPerson.integer == 1 || cg.snap->ps.stats[STAT_VEHICLE]){
+	if(cg.renderingThirdPerson){
 	// torso
 	CG_SwingAngles( torsoAngles[YAW], 60000, 90, cg_swingSpeed.value, &cent->pe.torso.yawAngle, &cent->pe.torso.yawing );
 	CG_SwingAngles( legsAngles[YAW], 60000, 90, cg_swingSpeed.value, &cent->pe.legs.yawAngle, &cent->pe.legs.yawing );
 	}
-}
 
 	torsoAngles[YAW] = cent->pe.torso.yawAngle;
 	legsAngles[YAW] = cent->pe.legs.yawAngle;
@@ -1644,13 +1376,12 @@ if (cg_thirdPersonRotating.integer == 1){
 		if ( ci->fixedtorso ) {
 			torsoAngles[PITCH] = 0.0f;
 		}
-if (cg_thirdPersonRotating.integer == 1){
-	if(cg_thirdPerson.integer == 1 || cg.snap->ps.stats[STAT_VEHICLE]){
+
+	if(cg.renderingThirdPerson){
 			torsoAngles[PITCH] = 0.0f;
 	}
-}
 
-	if(cg_cameraEyes.integer == 3){
+	if(cg.renderingEyesPerson == 3){
 			torsoAngles[PITCH] = 0.0f;
 	}
 	}
@@ -1703,17 +1434,13 @@ if (cg_thirdPersonRotating.integer == 1){
 	AnglesSubtract( torsoAngles, legsAngles, torsoAngles );
 	AnglesToAxis( legsAngles, legs );
 	AnglesToAxis( torsoAngles, torso );
-if (cg_thirdPersonRotating.integer == 1){
-	if(cg_thirdPerson.integer == 0){
+
+	if(!cg.renderingThirdPerson){
 	AnglesToAxis( headAngles, head );
 	}
-	if(cg_thirdPerson.integer == 1 || cg.snap->ps.stats[STAT_VEHICLE]){
+	if(cg.renderingThirdPerson || cg.snap->ps.stats[STAT_VEHICLE]){
 	AnglesToAxis( torsoAngles, head );
 	}
-}
-if (cg_thirdPersonRotating.integer == 0){
-	AnglesToAxis( headAngles, head );
-}
 
 	// eyes crap
 	{
@@ -2643,16 +2370,13 @@ void CG_Player( centity_t *cent ) {
 	//
 	legs.hModel = ci->legsModel;
 	legs.customSkin = ci->legsSkin;
+	if(!legs.customSkin){
+	legs.customShader = ci->legsShader;	
+	}
 	legs.shaderRGBA[0] = ci->plred;
 	legs.shaderRGBA[1] = ci->plgreen;
 	legs.shaderRGBA[2] = ci->plblue;
 	legs.shaderRGBA[3] = 255;
-	if(cg_forceModel.integer == 1){
-	legs.shaderRGBA[0] = cg_plightred.integer;
-	legs.shaderRGBA[1] = cg_plightgreen.integer;
-	legs.shaderRGBA[2] = cg_plightblue.integer;
-	legs.shaderRGBA[3] = 255;
-	}
 	VectorCopy( cent->lerpOrigin, legs.origin );
 
 	VectorCopy( cent->lerpOrigin, legs.lightingOrigin );
@@ -2674,7 +2398,7 @@ void CG_Player( centity_t *cent ) {
 	legs.renderfx = renderfx;
 	VectorCopy (legs.origin, legs.oldorigin);	// don't positionally lerp at all
 
-	if (cg_cameraEyes.integer){
+	if (cg.renderingEyesPerson){
 			legs.renderfx &= RF_FIRST_PERSON;
 	}
 
@@ -2695,16 +2419,13 @@ void CG_Player( centity_t *cent ) {
 	}
 
 	torso.customSkin = ci->torsoSkin;
+	if(!torso.customSkin){
+	torso.customShader = ci->torsoShader;	
+	}
 	torso.shaderRGBA[0] = ci->tolred;
 	torso.shaderRGBA[1] = ci->tolgreen;
 	torso.shaderRGBA[2] = ci->tolblue;
 	torso.shaderRGBA[3] = 255;
-	if(cg_forceModel.integer == 1){
-	torso.shaderRGBA[0] = cg_tolightred.integer;
-	torso.shaderRGBA[1] = cg_tolightgreen.integer;
-	torso.shaderRGBA[2] = cg_tolightblue.integer;
-	torso.shaderRGBA[3] = 255;
-	}
 
 	VectorCopy( cent->lerpOrigin, torso.lightingOrigin );
 
@@ -2712,7 +2433,7 @@ void CG_Player( centity_t *cent ) {
 
 	torso.shadowPlane = shadowPlane;
 	torso.renderfx = renderfx;
-	if (cg_cameraEyes.integer){
+	if (cg.renderingEyesPerson){
 			torso.renderfx &= RF_FIRST_PERSON;
 		}
 
@@ -2951,18 +2672,13 @@ void CG_Player( centity_t *cent ) {
 		return;
 	}
 	head.customSkin = ci->headSkin;
+	if(!head.customSkin){
+	head.customShader = ci->headShader;	
+	}
 	head.shaderRGBA[0] = ci->helred;
 	head.shaderRGBA[1] = ci->helgreen;
 	head.shaderRGBA[2] = ci->helblue;
 	head.shaderRGBA[3] = 255;
-	if(cg_forceModel.integer == 1){
-	head.shaderRGBA[0] = cg_helightred.integer;
-	head.shaderRGBA[1] = cg_helightgreen.integer;
-	head.shaderRGBA[2] = cg_helightblue.integer;
-	head.shaderRGBA[3] = 255;
-	}
-
-
 
 	VectorCopy( cent->lerpOrigin, head.lightingOrigin );
 
@@ -2971,14 +2687,11 @@ void CG_Player( centity_t *cent ) {
 	//
 	// add the eyes
 	//
-
-
-
 	if (camereyes){
 	cent->eyesOrigin[0] = head.origin[0];
 	cent->eyesOrigin[1] = head.origin[1];
 	cent->eyesOrigin[2] = head.origin[2];
-	if (cg_cameraEyes.integer == 2){
+	if (cg.renderingEyesPerson == 2){
 	vectoangles( head.axis[0], headang);
 	}
 	else
@@ -2990,7 +2703,7 @@ void CG_Player( centity_t *cent ) {
 
 
 
-	if (cg_cameraEyes.integer){
+	if (cg.renderingEyesPerson){
 	VectorCopy(head.origin, cent->eyesOrigin);
 
 	VectorSubtract(cent->eyesOrigin, cent->lerpOrigin, cent->eyesOrigin);

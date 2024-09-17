@@ -1040,6 +1040,7 @@ static void UI_DrawPlayer( float x, float y, float w, float h, modelAnim_t *m, i
 	//
 	legs.hModel = pi->legsModel;
 	legs.customSkin = pi->legsSkin;
+	legs.customShader = pi->legsShader;
 	legs.shaderRGBA[0] = trap_Cvar_VariableValue( "cg_plightred");
 	legs.shaderRGBA[1] = trap_Cvar_VariableValue( "cg_plightgreen");
 	legs.shaderRGBA[2] = trap_Cvar_VariableValue( "cg_plightblue");
@@ -1065,7 +1066,11 @@ static void UI_DrawPlayer( float x, float y, float w, float h, modelAnim_t *m, i
 		return;
 	}
 
+
 	torso.customSkin = pi->torsoSkin;
+	if(!torso.customSkin){
+	torso.customShader = pi->torsoShader;
+	}
 	torso.shaderRGBA[0] = trap_Cvar_VariableValue( "cg_tolightred");
 	torso.shaderRGBA[1] = trap_Cvar_VariableValue( "cg_tolightgreen");
 	torso.shaderRGBA[2] = trap_Cvar_VariableValue( "cg_tolightblue");
@@ -1087,6 +1092,9 @@ static void UI_DrawPlayer( float x, float y, float w, float h, modelAnim_t *m, i
 		return;
 	}
 	head.customSkin = pi->headSkin;
+	if(!head.customSkin){
+	head.customShader = pi->headShader;
+	}
 	head.shaderRGBA[0] = trap_Cvar_VariableValue( "cg_helightred");
 	head.shaderRGBA[1] = trap_Cvar_VariableValue( "cg_helightgreen");
 	head.shaderRGBA[2] = trap_Cvar_VariableValue( "cg_helightblue");
@@ -1190,35 +1198,53 @@ UI_RegisterClientSkin
 static qboolean UI_RegisterClientSkin( playerInfo_t *pi, const char *modelName, const char *skinName, qboolean head, qboolean legs, qboolean model)
 {
 	char		filename[MAX_QPATH];
+	qboolean 	skinLoaded = qfalse;
 
 	if (head)
 	{
 		Com_sprintf( filename, sizeof( filename ), "models/players/%s/head_%s.skin", modelName, skinName );
 		pi->headSkin = trap_R_RegisterSkin( filename );
+		if(!pi->headSkin){
+		Com_sprintf( filename, sizeof( filename ), "models/players/%s/head_%s", modelName, skinName );
+		pi->headShader = trap_R_RegisterShaderNoMip( filename );
+		}
 
-		if (!pi->headSkin)
-			return qfalse;
-	}
+		if (pi->headSkin || pi->headShader )
+			skinLoaded = qtrue;
+		}
 	if (legs)
 	{
 		Com_sprintf( filename, sizeof( filename ), "models/players/%s/lower_%s.skin", modelName, skinName );
 		pi->legsSkin = trap_R_RegisterSkin( filename );
+		if(!pi->legsSkin){
+		Com_sprintf( filename, sizeof( filename ), "models/players/%s/lower_%s", modelName, skinName );
+		pi->legsShader = trap_R_RegisterShaderNoMip( filename );
+		Com_Printf( "Error file: %s", filename );
+		}
 		
-		if ( !pi->legsSkin) {
-			return qfalse;
+		if ( pi->legsSkin || pi->legsShader ) {
+			skinLoaded = qtrue;
 		}
 	}		
 	if (model)
 	{
 		Com_sprintf( filename, sizeof( filename ), "models/players/%s/upper_%s.skin", modelName, skinName );
 		pi->torsoSkin = trap_R_RegisterSkin( filename );
+		if(!pi->torsoSkin){
+		Com_sprintf( filename, sizeof( filename ), "models/players/%s/upper_%s", modelName, skinName );
+		pi->torsoShader = trap_R_RegisterShaderNoMip( filename );
+		}
 
-		if (!pi->torsoSkin) {
-			return qfalse;
+		if (pi->torsoSkin || pi->torsoShader ) {
+			skinLoaded = qtrue;
 		}
 	}
 
-	return qtrue;
+	if (skinLoaded) {
+		return qtrue;
+	} else {
+		return qfalse;
+	}
 }
 
 
@@ -1414,7 +1440,7 @@ qboolean UI_RegisterClientModelname( modelAnim_t* m)
 	m->bUnknownModel = qfalse;
 	m->bUnknownHeadModel = qfalse;
 	m->bUnknownLegsModel = qfalse;
-	if ( !modelSkinName[0])
+	/*if ( !modelSkinName[0])
 	{
 		m->bUnknownModel = qtrue;
 		return qfalse;
@@ -1430,7 +1456,7 @@ qboolean UI_RegisterClientModelname( modelAnim_t* m)
 	{
 		m->bUnknownLegsModel = qtrue;
 		return qfalse;
-	}
+	}*/
 	
 
 	// do the body model
@@ -1497,33 +1523,14 @@ qboolean UI_RegisterClientModelname( modelAnim_t* m)
 		return qfalse;
 	}
 
-	// if any skins failed to load, fall back to default
 	// this is the body part of the model
-	if ( !UI_RegisterClientSkin( pi, bodyName, skinBodyName, qfalse, qfalse, qtrue ) ) {
-		if ( !UI_RegisterClientSkin( pi, bodyName, "default", qfalse, qfalse, qtrue ) ) {
-			Com_Printf( "Failed to load skin file: %s : %s\n", bodyName, skinBodyName );
-			m->bUnknownModel = qtrue;
-			return qfalse;
-		}
-	}
+	UI_RegisterClientSkin( pi, bodyName, skinBodyName, qfalse, qfalse, qtrue );
 
 	// and this is the head part of the model
-	if ( !UI_RegisterClientSkin( pi, headName, skinHeadName, qtrue, qfalse, qfalse ) ) {
-		if ( !UI_RegisterClientSkin( pi, headName, "default", qtrue, qfalse, qfalse ) ) {
-			Com_Printf( "Failed to load skin file: %s : %s\n", headName, skinHeadName );
-			m->bUnknownHeadModel = qtrue;
-			return qfalse;
-		}
-	}
+	UI_RegisterClientSkin( pi, headName, skinHeadName, qtrue, qfalse, qfalse );
 	
 	// and this is the legs part of the model
-	if ( !UI_RegisterClientSkin( pi, legsName, skinLegsName, qfalse, qtrue, qfalse ) ) {
-		if ( !UI_RegisterClientSkin( pi, legsName, "default", qfalse, qtrue, qfalse ) ) {
-			Com_Printf( "Failed to load skin file: %s : %s\n", legsName, skinLegsName );
-			m->bUnknownLegsModel = qtrue;
-			return qfalse;
-		}
-	}
+	UI_RegisterClientSkin( pi, legsName, skinLegsName, qfalse, qtrue, qfalse );
 
 	// load the animations
 	// always for the body, never the head!

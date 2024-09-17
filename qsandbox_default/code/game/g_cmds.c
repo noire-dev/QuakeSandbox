@@ -465,7 +465,6 @@ void Cmd_Give_f (gentity_t *ent) {
 				ent->swep_list[i+15] = 1; 
 				ent->swep_ammo[i+15] = 9999; 
 			}
-			trap_SendServerCommand( ent->client->ps.clientNum, va("allswep_1", 0) );
 		if (!give_all)
 			return;
 	}
@@ -618,14 +617,7 @@ void Cmd_Noclip_f( gentity_t *ent ) {
 	if(g_gametype.integer != GT_SANDBOX){ return; }
 	if(!g_allownoclip.integer){ return; }
 
-	if ( ent->client->noclip ) {
-		msg = "noclip OFF\n";
-	} else {
-		msg = "noclip ON\n";
-	}
 	ent->client->noclip = !ent->client->noclip;
-
-	trap_SendServerCommand( ent-g_entities, va("print \"%s\"", msg));
 }
 
 

@@ -404,10 +404,8 @@ if(weapon <= 15){
 } else {
 	if(status == 1){
 	ent->swep_list[weapon] = 1;
-	trap_SendServerCommand( ent->client->ps.clientNum, va("swep_1 %i", weapon) );
 	} else {
 	ent->swep_list[weapon] = 0;
-	trap_SendServerCommand( ent->client->ps.clientNum, va("swep_0 %i", weapon) );
 	}
 }
 }

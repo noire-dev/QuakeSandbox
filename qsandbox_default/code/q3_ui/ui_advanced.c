@@ -95,7 +95,6 @@ static void UI_Advanced_MenuEvent2( void *ptr, int event ) {
 
 char* 			advanced_items[] = {
 "cg_leiChibi",
-"cg_hudfullscreen",
 "cl_propsmallsizescale",
 "cl_propheight",
 "cl_propgapwidth",
@@ -152,7 +151,6 @@ char* 			advanced_items[] = {
 "cg_leiEnhancement",
 "cg_leiGoreNoise",
 "cg_leiBrassNoise",
-"cg_leiSuperGoreyAwesome",
 "cg_crosshairPulse",
 "cg_letterBoxSize",
 "cg_chatBeep",
@@ -185,7 +183,7 @@ UI_Advanced_ParseInfos
 	int advanced_i = 0;
 	int advanced_j = 0;
 void UI_Advanced_ParseInfos( void ) {
-	for (advanced_i = 0; advanced_i < 80; advanced_i++) {
+	for (advanced_i = 0; advanced_i < 78; advanced_i++) {
 	if(Q_stricmp (s_advanced.filter.field.buffer, "")){
 	if ( !Q_stristr( advanced_items[advanced_i], s_advanced.filter.field.buffer ) ) {
 		continue;
