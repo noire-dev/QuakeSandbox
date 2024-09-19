@@ -417,16 +417,16 @@ int BotAddressedToBot(bot_state_t *bs, bot_match_t *match) {
 			else if (addresseematch.type == MSG_MULTIPLENAMES) {
 				trap_BotMatchVariable(&addresseematch, TEAMMATE, name, sizeof(name));
 				if (strlen(name)) {
-					if (stristr(botname, name)) return qtrue;
-					if (stristr(bs->subteam, name)) return qtrue;
+					if (!strcmp(botname, name)) return qtrue;
+					if (!strcmp(bs->subteam, name)) return qtrue;
 				}
 				trap_BotMatchVariable(&addresseematch, MORE, addressedto, MAX_MESSAGE_SIZE);
 			}
 			else {
 				trap_BotMatchVariable(&addresseematch, TEAMMATE, name, MAX_MESSAGE_SIZE);
 				if (strlen(name)) {
-					if (stristr(botname, name)) return qtrue;
-					if (stristr(bs->subteam, name)) return qtrue;
+					if (!strcmp(botname, name)) return qtrue;
+					if (!strcmp(bs->subteam, name)) return qtrue;
 				}
 				break;
 			}

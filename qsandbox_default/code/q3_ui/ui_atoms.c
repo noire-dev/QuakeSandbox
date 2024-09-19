@@ -81,11 +81,9 @@ void UI_ScreenOffset( void ) {
 	if((scrx / (scry / 480)-640)/2 >= 0){
 	trap_Cvar_SetValue("cl_screenoffset", (scrx / (scry / 480)-640)/2);
 	uis.wideoffset = (scrx / (scry / 480)-640)/2;
-	uis.activemenu->errorui = qfalse;
 	} else {
 	trap_Cvar_SetValue("cl_screenoffset", 0);	
 	uis.wideoffset = 0;
-	uis.activemenu->errorui = qtrue;
 	}
 	trap_GetConfigString( CS_SERVERINFO, svinfo, MAX_INFO_STRING );
 	if(strlen(svinfo) <= 0){
@@ -1333,7 +1331,6 @@ void UI_MouseEvent( int dx, int dy )
 
 	// update mouse screen position
 	if(!trap_Cvar_VariableValue("cl_android")){
-	if(!uis.activemenu->errorui){
 	if(uis.activemenu->native > 0){
 	uis.cursorx += dx * sensitivitymenu.value;
 	if (uis.cursorx < 0)
@@ -1348,10 +1345,10 @@ void UI_MouseEvent( int dx, int dy )
 		uis.cursory = uis.glconfig.vidHeight+uis.activemenu->downlimitscroll;
 	} else {
 		uis.cursorx += dx * sensitivitymenu.value;
-	if (uis.cursorx < 0-(scrx / (scry / 480)-640)/2)
-		uis.cursorx = 0-(scrx / (scry / 480)-640)/2;
-	else if (uis.cursorx > 640+(scrx / (scry / 480)-640)/2)
-		uis.cursorx = 640+(scrx / (scry / 480)-640)/2;
+	if (uis.cursorx < 0-uis.wideoffset)
+		uis.cursorx = 0-uis.wideoffset;
+	else if (uis.cursorx > 640+uis.wideoffset)
+		uis.cursorx = 640+uis.wideoffset;
 
 	uis.cursory += dy * sensitivitymenu.value;
 	if (uis.cursory < 0+uis.activemenu->uplimitscroll)
@@ -1359,33 +1356,20 @@ void UI_MouseEvent( int dx, int dy )
 	else if (uis.cursory > 480+uis.activemenu->downlimitscroll)
 		uis.cursory = 480+uis.activemenu->downlimitscroll;	
 	}
-	} else {
-	uis.cursorx += dx * sensitivitymenu.value;
-	if (uis.cursorx < 0)
-		uis.cursorx = 0;
-	else if (uis.cursorx > uis.glconfig.vidWidth)
-		uis.cursorx = uis.glconfig.vidWidth;
-
-	uis.cursory += dy * sensitivitymenu.value;
-	if (uis.cursory < 0+uis.activemenu->uplimitscroll)
-		uis.cursory = 0+uis.activemenu->uplimitscroll;
-	else if (uis.cursory > uis.glconfig.vidHeight+uis.activemenu->downlimitscroll)
-		uis.cursory = uis.glconfig.vidHeight+uis.activemenu->downlimitscroll;	
-	}
 	}
 	
 	if(trap_Cvar_VariableValue("cl_android")){
 	if(uis.activemenu->native > 0){
-	uis.cursorx += dx + (scrx / (scry / 480)-640)/2;
-	if (uis.cursorx < 0-(scrx / (scry / 480)-640)/2)
-		uis.cursorx = 0-(scrx / (scry / 480)-640)/2;
+	uis.cursorx += dx + uis.wideoffset;
+	if (uis.cursorx < 0-uis.wideoffset)
+		uis.cursorx = 0-uis.wideoffset;
 	uis.cursory += dy;
 	if (uis.cursory < 0)
 		uis.cursory = 0;
 	} else {
-	uis.cursorx += ((dx - uis.bias) / uis.scale) + (scrx / (scry / 480)-640)/2;
-	if (uis.cursorx < 0-(scrx / (scry / 480)-640)/2)
-		uis.cursorx = 0-(scrx / (scry / 480)-640)/2;
+	uis.cursorx += ((dx - uis.bias) / uis.scale) + uis.wideoffset;
+	if (uis.cursorx < 0-uis.wideoffset)
+		uis.cursorx = 0-uis.wideoffset;
 	uis.cursory += dy / uis.scale;
 	if (uis.cursory < 0)
 		uis.cursory = 0;
@@ -2412,7 +2396,6 @@ void UI_Refresh( int realtime )
 	
 	trap_GetGlconfig( &uis.glconfig );
 
-	if(!uis.activemenu->errorui){	
 	if(uis.activemenu->native > 0){
 		uis.scale = uis.glconfig.vidHeight * (1.0/uis.glconfig.vidHeight);
 		uis.bias = 0;
@@ -2427,11 +2410,6 @@ void UI_Refresh( int realtime )
 		uis.scale = (uis.glconfig.vidWidth * (1.0 / 640.0) < uis.glconfig.vidHeight * (1.0 / 480.0)) ? uis.glconfig.vidWidth * (1.0 / 640.0) : uis.glconfig.vidHeight * (1.0 / 480.0);
 		uis.bias = 0;
 		}
-	}
-	}
-	if(uis.activemenu->errorui){	
-		uis.scale = uis.glconfig.vidWidth * (1.0/640);
-		uis.bias = 0;
 	}
 
 	// draw cursor

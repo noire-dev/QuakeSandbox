@@ -296,7 +296,7 @@ void DynamicMenu_AddListOfPlayers( int type, createHandler crh, eventHandler evh
 			continue;
 
 		Q_strncpyz(name, Info_ValueForKey(info, "n"), 64);
-		Q_CleanStr(name);
+		//Q_CleanStr(name);
 
 		if (!name[0])
 			continue;
@@ -978,8 +978,8 @@ void DynamicMenu_MenuInit( qboolean full, qboolean wrap)
 	s_dynamic.menu.fullscreen = full;
 	s_dynamic.menu.wrapAround = wrap;
 	s_dynamic.menu.native = qfalse;
-	s_dynamic.menu.uplimitscroll = -2400;
-	s_dynamic.menu.downlimitscroll = 2400;
+	s_dynamic.menu.uplimitscroll = -6400;
+	s_dynamic.menu.downlimitscroll = 6400;
 
 	// start up the menu system
 	s_dynamic.depth = 0;

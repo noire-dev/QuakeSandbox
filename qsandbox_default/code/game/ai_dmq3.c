@@ -1547,7 +1547,10 @@ int ClientFromName(char *name) {
 	for (i = 0; i < maxclients && i < MAX_CLIENTS; i++) {
 		trap_GetConfigstring(CS_PLAYERS+i, buf, sizeof(buf));
 		Q_CleanStr( buf );
-		if (!Q_stricmp(Info_ValueForKey(buf, "n"), name)) return i;
+        // Используем strcmp для точного сравнения имен
+        if (strcasecmp(Info_ValueForKey(buf, "n"), name) == 0) {
+            return i;
+        }
 	}
 	return -1;
 }
@@ -1569,7 +1572,10 @@ int ClientOnSameTeamFromName(bot_state_t *bs, char *name) {
 			continue;
 		trap_GetConfigstring(CS_PLAYERS+i, buf, sizeof(buf));
 		Q_CleanStr( buf );
-		if (!Q_stricmp(Info_ValueForKey(buf, "n"), name)) return i;
+		// Используем strcmp для точного сравнения имен
+        if (strcasecmp(Info_ValueForKey(buf, "n"), name) == 0) {
+            return i;
+        }
 	}
 	return -1;
 }

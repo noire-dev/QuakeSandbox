@@ -527,7 +527,6 @@ void G_UseDeathTargets( gentity_t *ent, gentity_t *activator ) {
 	}
 
 	if ( !ent->deathTarget ) {
-		G_Printf("G_UseDeathTargets: !ent->deathTarget\n");
 		return;
 	}
 
@@ -538,7 +537,6 @@ void G_UseDeathTargets( gentity_t *ent, gentity_t *activator ) {
 			G_Printf ("WARNING: Entity used itself.\n");
 		} else {
 			if ( t->use ) {
-				G_Printf("G_UseDeathTargets: t->use\n");
 				t->use (t, ent, activator);
 			}
 		}

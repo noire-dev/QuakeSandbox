@@ -978,9 +978,7 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		
 	case ID_SAVEMAP:
 		if(uis.sb_tab == 5){
-		trap_Cmd_ExecuteText( EXEC_INSERT, "hideobjects\n" );
-		trap_Cmd_ExecuteText( EXEC_INSERT, "wait 5\n" );
-		trap_Cmd_ExecuteText( EXEC_INSERT, "showobjects\n" );
+		trap_Cmd_ExecuteText( EXEC_INSERT, "toggle bot_nochat\n" );
 		} else if(uis.sb_tab == 3){
 		trap_Cmd_ExecuteText( EXEC_INSERT, "op bot_pause = 1\n" );	
 		} else {
@@ -1239,7 +1237,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
 	s_sandboxmain.list.type				= 5;
 	s_sandboxmain.list.styles			= 2;
-	s_sandboxmain.list.columns			= 6+((2*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.list.columns			= 6+((1.75*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
 	s_sandboxmain.list.string			= "props";
 	s_sandboxmain.list.fontsize			= 0.4;
 	s_sandboxmain.list.corner			= 65;
@@ -1257,7 +1255,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.texturelist.generic.type		= MTYPE_UIOBJECT;
 	s_sandboxmain.texturelist.type				= 5;
 	s_sandboxmain.texturelist.styles			= 2;
-	s_sandboxmain.texturelist.columns			= 6+((2*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.texturelist.columns			= 6+((1.75*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
 	s_sandboxmain.texturelist.fontsize			= 0.4;
 	s_sandboxmain.texturelist.corner			= 65;
 	s_sandboxmain.texturelist.generic.flags		= QMF_PULSEIFFOCUS;
@@ -1309,7 +1307,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.classlist.generic.type		= MTYPE_UIOBJECT;
 	s_sandboxmain.classlist.type				= 5;
 	s_sandboxmain.classlist.styles			= 2;
-	s_sandboxmain.classlist.columns			= 6+((2*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.classlist.columns			= 6+((1.75*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
 	s_sandboxmain.classlist.string			= "";
 	s_sandboxmain.classlist.fontsize		= 0.4;
 	s_sandboxmain.classlist.corner			= 40;
@@ -1347,7 +1345,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
 	s_sandboxmain.list.type				= 5;
 	s_sandboxmain.list.styles			= 2;
-	s_sandboxmain.list.columns			= 6+((2*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.list.columns			= 6+((1.75*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
 	s_sandboxmain.list.string			= "bots";
 	s_sandboxmain.list.fontsize			= 0.4;
 	s_sandboxmain.list.corner			= 65;
@@ -1403,7 +1401,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
 	s_sandboxmain.list.type				= 5;
 	s_sandboxmain.list.styles			= 2;
-	s_sandboxmain.list.columns			= 6+((2*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.list.columns			= 6+((1.75*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
 	s_sandboxmain.list.string			= "";
 	s_sandboxmain.list.fontsize			= 0.4;
 	s_sandboxmain.list.corner			= 65;
@@ -1504,7 +1502,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.propstext.string  				= "Settings:";
 	s_sandboxmain.classtext.string  				= "Class:";
 	s_sandboxmain.spawnobject.string           		= "Apply";
-	s_sandboxmain.savemap.string					= "Reload props";
+	s_sandboxmain.savemap.string					= "Toggle bot chat";
 	s_sandboxmain.loadmap.string					= "Kick bots";
 	}
 	if(uis.sb_tab == 6){
@@ -1529,7 +1527,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
 	s_sandboxmain.list.type				= 5;
 	s_sandboxmain.list.styles			= 2;
-	s_sandboxmain.list.columns			= 6+((2*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.list.columns			= 6+((1.75*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
 	s_sandboxmain.list.string 			= (char *)UI_Alloc(256);
 	s_sandboxmain.list.fontsize			= 0.4;
 	s_sandboxmain.list.corner			= 65;

@@ -267,7 +267,7 @@ void UI_DrawConnectScreen( qboolean overlay ) {
 	}
 
 	UI_SetColor( color_white );
-	UI_DrawHandlePic( 0-(uis.wideoffset+1), 0, SCREEN_WIDTH+(uis.wideoffset*2)+2, SCREEN_HEIGHT, trap_R_RegisterShaderNoMip( "gfx/colors/black" ) );
+	UI_DrawHandlePic( 0-(uis.wideoffset+1), 0, SCREEN_WIDTH+(uis.wideoffset*2)+2, SCREEN_HEIGHT*777, trap_R_RegisterShaderNoMip( "gfx/colors/black" ) );
 	if(cl_language.integer == 0){
 	UI_DrawString( (SCREEN_WIDTH+uis.wideoffset - strWidth) - 16, SCREEN_HEIGHT - 32, "Loading...", UI_SMALLFONT, color_white );
 	}

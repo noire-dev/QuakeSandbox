@@ -1359,7 +1359,7 @@ if ( !ent->speed ){
 	if ( !ent->client->noclip ) {
 	client->ps.speed = g_speed.value;
 	} else {
-	client->ps.speed = g_speed.value*2;	
+	client->ps.speed = g_speed.value*2.5;	
 	}
 	if(client->sess.sessionTeam == TEAM_BLUE){
 	client->ps.speed = g_teamblue_speed.integer;

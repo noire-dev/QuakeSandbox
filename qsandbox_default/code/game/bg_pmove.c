@@ -651,6 +651,9 @@ static void PM_NoclipMove( void ) {
 
 	// accelerate
 	scale = PM_CmdScale( &pm->cmd );
+	
+	// set the movementDir so clients can rotate the legs for strafing
+	PM_SetMovementDir();
 
 	fmove = pm->cmd.forwardmove;
 	smove = pm->cmd.rightmove;
@@ -2384,6 +2387,10 @@ void PmoveSingle (pmove_t *pmove) {
 		PM_NoclipMove ();
 		PM_DropTimers ();
 		PM_Weapon();
+		PM_Animate();
+		PM_CheckDuck ();
+		PM_GroundTrace();
+		PM_TorsoAnimation();
 		return;
 	}
 

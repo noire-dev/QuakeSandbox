@@ -368,7 +368,7 @@ static void UI_DisplayOptionsMenu_Init( void ) {
 	displayOptionsInfo.thirdpersonrange.generic.x			= 400;
 	displayOptionsInfo.thirdpersonrange.generic.y			= y;
 	displayOptionsInfo.thirdpersonrange.minvalue				= 10;
-    displayOptionsInfo.thirdpersonrange.maxvalue				= 200;
+    displayOptionsInfo.thirdpersonrange.maxvalue				= 250;
 
 	y += BIGCHAR_HEIGHT+2;
 	displayOptionsInfo.thirdpersonoffset.generic.type			= MTYPE_SLIDER;
@@ -377,8 +377,8 @@ static void UI_DisplayOptionsMenu_Init( void ) {
 	displayOptionsInfo.thirdpersonoffset.generic.id		= ID_THIRDPERSONOFFSET;
 	displayOptionsInfo.thirdpersonoffset.generic.x			= 400;
 	displayOptionsInfo.thirdpersonoffset.generic.y			= y;
-	displayOptionsInfo.thirdpersonoffset.minvalue				= -30;
-    displayOptionsInfo.thirdpersonoffset.maxvalue				= 30;
+	displayOptionsInfo.thirdpersonoffset.minvalue				= -50;
+    displayOptionsInfo.thirdpersonoffset.maxvalue				= 50;
 
 	y += BIGCHAR_HEIGHT+4;
 	displayOptionsInfo.icons.generic.type     	= MTYPE_RADIOBUTTON;

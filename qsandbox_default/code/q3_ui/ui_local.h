@@ -314,7 +314,6 @@ typedef struct _tag_menuframework
 	qboolean	fulllock;
 	qboolean	fullscreen;
 	qboolean	native;
-	qboolean	errorui;
 	int			uplimitscroll;
 	int			downlimitscroll;
 	int			number;

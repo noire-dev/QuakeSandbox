@@ -350,8 +350,8 @@ static configcvar_t g_configcvars[] =
 
 
 static const char* mousestyle_description[] = {
-	"1.17 (linear)",
-	"1.27h (accel)",
+	"Win32",
+	"Raw",
 	NULL
 };
 
@@ -1584,10 +1584,10 @@ static void Controls_MenuInit( void )
 	s_controls.mousestyle.generic.flags	 = QMF_SMALLFONT;
 	s_controls.mousestyle.generic.x	     = SCREEN_WIDTH/2;
 	if(cl_language.integer == 0){
-	s_controls.mousestyle.generic.name	     = "input style";
+	s_controls.mousestyle.generic.name	     = "input method";
 	}
 	if(cl_language.integer == 1){
-	s_controls.mousestyle.generic.name	     = "стиль ввода";
+	s_controls.mousestyle.generic.name	     = "метод ввода";
 	}
 	s_controls.mousestyle.generic.id        = ID_MOUSESTYLE;
 	s_controls.mousestyle.generic.callback  = Controls_MenuEvent;

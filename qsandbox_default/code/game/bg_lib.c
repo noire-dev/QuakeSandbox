@@ -275,6 +275,13 @@ int strcmp( const char *string1, const char *string2 ) {
 	return *string1 - *string2;
 }
 
+int strcasecmp(const char *string1, const char *string2) {
+    while (tolower((unsigned char)*string1) == tolower((unsigned char)*string2) && *string1 && *string2) {
+        string1++;
+        string2++;
+    }
+    return tolower((unsigned char)*string1) - tolower((unsigned char)*string2);
+}
 
 char *strchr( const char *string, int c ) {
 	while ( *string ) {
