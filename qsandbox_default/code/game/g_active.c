@@ -1189,9 +1189,9 @@ void CheckCarCollisions(gentity_t *ent) {
 			}
 			if(impactForce > VEHICLE_DAMAGESENS){
 			if(hit->grabbedEntity != ent){
-			if(BG_VehicleCheckClass(ent->client->ps.stats[STAT_VEHICLE]) == VCLASS_CAR){
+			//if(BG_VehicleCheckClass(ent->client->ps.stats[STAT_VEHICLE]) == VCLASS_CAR){
 			G_CarDamage(hit, ent, (int)(impactForce * VEHICLE_DAMAGE));
-			}
+			//}
 			}
 			}
 			if(impactForce > VEHICLE_DAMAGESENS*6){
