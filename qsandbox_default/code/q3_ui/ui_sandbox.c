@@ -1502,7 +1502,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.propstext.string  				= "Settings:";
 	s_sandboxmain.classtext.string  				= "Class:";
 	s_sandboxmain.spawnobject.string           		= "Apply";
-	s_sandboxmain.savemap.string					= "Toggle bot chat";
+	s_sandboxmain.savemap.string					= "Bot chat";
 	s_sandboxmain.loadmap.string					= "Kick bots";
 	}
 	if(uis.sb_tab == 6){

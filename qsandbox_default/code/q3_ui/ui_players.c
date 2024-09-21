@@ -1219,7 +1219,6 @@ static qboolean UI_RegisterClientSkin( playerInfo_t *pi, const char *modelName, 
 		if(!pi->legsSkin){
 		Com_sprintf( filename, sizeof( filename ), "models/players/%s/lower_%s", modelName, skinName );
 		pi->legsShader = trap_R_RegisterShaderNoMip( filename );
-		Com_Printf( "Error file: %s", filename );
 		}
 		
 		if ( pi->legsSkin || pi->legsShader ) {
