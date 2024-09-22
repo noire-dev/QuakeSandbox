@@ -3784,6 +3784,8 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 
 	// apply earthquake effect
 	CG_Earthquake();
+	
+	CG_ReloadPlayers();
 
 	// draw 3D view
 	trap_R_RenderScene( &cg.refdef );

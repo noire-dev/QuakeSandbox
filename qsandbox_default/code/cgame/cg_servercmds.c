@@ -381,8 +381,15 @@ static void CG_ParseWeaponProperties(void) {
 
 static void CG_ParseSweps(void) {
     int i;
+    int j;
     int weaponIndex;
     int numArgs = trap_Argc();
+	
+	for(j = 1 ; j < WEAPONS_NUM ; j++){
+		if(cg.swep_listcl[j] != 2){
+		cg.swep_listcl[j] = 0;
+		}
+	}
 
     for (i = 1; i < numArgs; i++) {
         weaponIndex = atoi(CG_Argv(i));

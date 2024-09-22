@@ -510,6 +510,36 @@ static qboolean CG_RegisterClientModelname( clientInfo_t *ci, const char *modelN
 }
 
 /*
+==========================
+CG_ReloadClientModelname
+==========================
+*/
+static qboolean CG_ReloadClientModelname( clientInfo_t *ci, const char *modelName, const char *skinName, const char *headModelName, const char *headSkinName, const char *teamName, const char *legsModelName, const char *legsSkinName ) {
+	char	filename[MAX_QPATH*2];
+	const char		*headName;
+	char newTeamName[MAX_QPATH*2];
+
+	if ( headModelName[0] == '\0' ) {
+		headName = modelName;
+	}
+	else {
+		headName = headModelName;
+	}
+
+	// if any skins failed to load, return failure
+	if ( !CG_RegisterClientSkin( ci, modelName, skinName, headName, headSkinName, legsModelName, legsSkinName ) ) {
+		Com_Printf( "Failed to load skin file: %s : %s : %s, %s : %s\n", newTeamName, modelName, skinName, headName, headSkinName );
+		return qfalse;
+	}
+
+	if ( !ci->modelIcon ) {
+		return qfalse;
+	}
+
+	return qtrue;
+}
+
+/*
 ====================
 CG_ColorFromString
 ====================
@@ -556,9 +586,6 @@ static void CG_LoadClientInfo( int clientNum, clientInfo_t *ci ) {
 
 	modelloaded = qtrue;
 	if ( !CG_RegisterClientModelname( ci, ci->modelName, ci->skinName, ci->headModelName, ci->headSkinName, teamname, ci->legsModelName, ci->legsSkinName ) ) {
-		if ( cg_buildScript.integer ) {
-//			CG_Error( "CG_RegisterClientModelname( %s, %s, %s, %s %s ) failed", ci->modelName, ci->skinName, ci->headModelName, ci->headSkinName, teamname );
-		}
 
 		// fall back to default team name
 		if( cgs.gametype >= GT_TEAM && cgs.ffa_gt!=1) {
@@ -569,11 +596,9 @@ static void CG_LoadClientInfo( int clientNum, clientInfo_t *ci ) {
 				Q_strncpyz(teamname, DEFAULT_REDTEAM_NAME, sizeof(teamname) );
 			}
 			if ( !CG_RegisterClientModelname( ci, DEFAULT_TEAM_MODEL, ci->skinName, DEFAULT_TEAM_HEAD, ci->skinName, teamname, "default", "default" ) ) {
-//				CG_Error( "DEFAULT_TEAM_MODEL / skin (%s/%s) failed to register", DEFAULT_TEAM_MODEL, ci->skinName );
 			}
 		} else {
 			if ( !CG_RegisterClientModelname( ci, DEFAULT_MODEL, "default", DEFAULT_MODEL, "default", teamname, "default", "default" ) ) {
-//				CG_Error( "DEFAULT_MODEL (%s) failed to register", DEFAULT_MODEL );
 			}
 		}
 		modelloaded = qfalse;
@@ -616,6 +641,44 @@ static void CG_LoadClientInfo( int clientNum, clientInfo_t *ci ) {
 			&& cg_entities[i].currentState.eType == ET_PLAYER ) {
 			CG_ResetPlayerEntity( &cg_entities[i] );
 		}
+	}
+}
+
+/*
+===================
+CG_ReloadClientInfo
+
+Load it now, taking the disk hits.
+This will usually be deferred to a safe time
+===================
+*/
+static void CG_ReloadClientInfo( int clientNum, clientInfo_t *ci ) {
+	const char	*dir, *fallback;
+	int			i, modelloaded;
+	const char	*s;
+	char		teamname[MAX_QPATH];
+//	char		redTeam[MAX_QPATH];
+
+	teamname[0] = 0;
+
+	modelloaded = qtrue;
+	if ( !CG_ReloadClientModelname( ci, ci->modelName, ci->skinName, ci->headModelName, ci->headSkinName, teamname, ci->legsModelName, ci->legsSkinName ) ) {
+
+		// fall back to default team name
+		if( cgs.gametype >= GT_TEAM && cgs.ffa_gt!=1) {
+			// keep skin name
+			if( ci->team == TEAM_BLUE ) {
+				Q_strncpyz(teamname, DEFAULT_BLUETEAM_NAME, sizeof(teamname) );
+			} else {
+				Q_strncpyz(teamname, DEFAULT_REDTEAM_NAME, sizeof(teamname) );
+			}
+			if ( !CG_ReloadClientModelname( ci, DEFAULT_TEAM_MODEL, ci->skinName, DEFAULT_TEAM_HEAD, ci->skinName, teamname, "default", "default" ) ) {
+			}
+		} else {
+			if ( !CG_ReloadClientModelname( ci, DEFAULT_MODEL, "default", DEFAULT_MODEL, "default", teamname, "default", "default" ) ) {
+			}
+		}
+		modelloaded = qfalse;
 	}
 }
 
@@ -959,6 +1022,25 @@ void CG_LoadDeferredPlayers( void ) {
 				continue;
 			}
 			CG_LoadClientInfo( i, ci );
+//			break;
+		}
+	}
+}
+
+void CG_ReloadPlayers( void ) {
+	int		i;
+	clientInfo_t	*ci;
+
+	// scan for a deferred player to load
+	for ( i = 0, ci = cgs.clientinfo ; i < cgs.maxclients ; i++, ci++ ) {
+		if ( ci->infoValid ) {
+			// if we are low on memory, leave it deferred
+			if ( trap_MemoryRemaining() < 4000000 ) {
+				CG_Printf( "Memory is low. Using deferred model.\n" );
+				ci->deferred = qfalse;
+				continue;
+			}
+			CG_ReloadClientInfo( i, ci );
 //			break;
 		}
 	}
