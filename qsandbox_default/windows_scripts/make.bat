@@ -1,29 +1,34 @@
 echo off
+
 echo ---------------------------------------
 echo MiTech QVM Compiler (Quake Sandbox)
-echo Compile: game.qvm, cgame.qvm, q3_ui.qvm
+echo Compile: game.qvm, cgame.qvm, ui.qvm
 echo ---------------------------------------
+
 cd ..
+
 mkdir windows
 mkdir windows\build
-mkdir windows\baseoa
-mkdir windows\baseoa\vm
+mkdir windows\milab
+mkdir windows\milab\vm
 mkdir windows\build\game
+
 copy windows_scripts\lcc.exe  windows\build\game\
 copy windows_scripts\q3cpp.exe  windows\build\game\
 copy windows_scripts\q3rcc.exe  windows\build\game\
 copy windows_scripts\q3asm.exe  windows\build\game\
 copy windows_scripts\game.q3asm windows\build\
+
 set LIBRARY=
 set INCLUDE=
-set cc=lcc -DQAGAME -DMISSIONPACK -DQ3_VM -S -Wf-target=bytecode -Wf-g -I..\..\..\code\game -I..\..\..\code\qcommon %1
-cd windows\build\game
 
+set cc=lcc -DQAGAME -DMISSIONPACK -DQ3_VM -S -Wf-target=bytecode -Wf-g -I..\..\..\code\game -I..\..\..\code\qcommon %1
+
+cd windows\build\game
 
 :: ########################################
 :: Files to compile to           qagame.qvm
 :: ########################################
-
 
 %cc%  ../../../code/game/ai_chat.c
 %cc%  ../../../code/game/ai_cmd.c
@@ -72,35 +77,38 @@ copy  ..\..\..\code\game\g_syscalls.asm ..
 %cc%  ../../../code/qcommon/q_math.c
 %cc%  ../../../code/qcommon/q_shared.c
 
+echo -----------------
+echo game.qvm compiled
+echo -----------------
+
+q3asm -f ../game
 
 :: ########################################
 :: End of compilation files, add yours here
 :: ########################################
 
-echo -----------------
-echo game.qvm compiled
-echo -----------------
-
-
-q3asm -f ../game
 cd ..\..\..
 cd windows_scripts
 cd ..
+
 mkdir windows
 mkdir windows\build
-mkdir windows\baseoa
-mkdir windows\baseoa\vm
+mkdir windows\milab
+mkdir windows\milab\vm
 mkdir windows\build\cgame
+
 copy windows_scripts\lcc.exe  windows\build\cgame\
 copy windows_scripts\q3cpp.exe  windows\build\cgame\
 copy windows_scripts\q3rcc.exe  windows\build\cgame\
 copy windows_scripts\q3asm.exe  windows\build\cgame\
-copy windows_scripts\cgame_mp.q3asm windows\build\cgame.q3asm
+copy windows_scripts\cgame.q3asm windows\build\cgame.q3asm
+
 set LIBRARY=
 set INCLUDE=
-set cc=lcc -DCGAME -DMISSIONPACK -DQ3_VM -S -Wf-target=bytecode -Wf-g -I..\..\..\code\cgame -I..\..\..\code\ui -I..\..\..\code\qcommon %1
-cd windows\build\cgame
 
+set cc=lcc -DCGAME -DMISSIONPACK -DQ3_VM -S -Wf-target=bytecode -Wf-g -I..\..\..\code\cgame -I..\..\..\code\ui -I..\..\..\code\qcommon %1
+
+cd windows\build\cgame
 
 :: ########################################
 :: Files to compile to            сgame.qvm
@@ -141,40 +149,42 @@ copy  ..\..\..\code\cgame\cg_syscalls.asm ..
 
 %cc%  ../../../code/ui/ui_shared.c
 
+echo -----------------
+echo cgame.qvm compiled
+echo -----------------
+
+q3asm -f ../cgame
 
 :: ########################################
 :: End of compilation files, add yours here
 :: ########################################
 
-echo -----------------
-echo cgame.qvm compiled
-echo -----------------
-
-
-q3asm -f ../cgame
 cd ..\..\..
 cd windows_scripts
 cd ..
+
 mkdir windows
 mkdir windows\build
-mkdir windows\baseoa
-mkdir windows\baseoa\vm
+mkdir windows\milab
+mkdir windows\milab\vm
 mkdir windows\build\q3_ui
+
 copy windows_scripts\lcc.exe  windows\build\q3_ui\
 copy windows_scripts\q3cpp.exe  windows\build\q3_ui\
 copy windows_scripts\q3rcc.exe  windows\build\q3_ui\
 copy windows_scripts\q3asm.exe  windows\build\q3_ui\
-copy windows_scripts\q3_ui.q3asm windows\build\
+copy windows_scripts\ui.q3asm windows\build\
+
 set LIBRARY=
 set INCLUDE=
-set cc=lcc -DQ3_UI -DQ3_VM -S -Wf-target=bytecode -Wf-g -I..\..\..\code\q3_ui -I..\..\..\code\qcommon %1
-cd windows\build\q3_ui
 
+set cc=lcc -DQ3_UI -DQ3_VM -S -Wf-target=bytecode -Wf-g -I..\..\..\code\q3_ui -I..\..\..\code\qcommon %1
+
+cd windows\build\q3_ui
 
 :: ########################################
 :: Files to compile to               ui.qvm
 :: ########################################
-
 
 %cc%  ../../../code/q3_ui/mgui.c
 %cc%  ../../../code/q3_ui/ui_addbots.c
@@ -194,7 +204,6 @@ cd windows\build\q3_ui
 %cc%  ../../../code/q3_ui/ui_ingame_mapvote.c
 %cc%  ../../../code/q3_ui/ui_loadconfig.c
 %cc%  ../../../code/q3_ui/ui_loadconfiged.c
-
 %cc%  ../../../code/q3_ui/ui_main.c
 %cc%  ../../../code/q3_ui/ui_menu.c
 %cc%  ../../../code/q3_ui/ui_mods.c
@@ -205,16 +214,12 @@ cd windows\build\q3_ui
 %cc%  ../../../code/q3_ui/ui_playersettings.c
 %cc%  ../../../code/q3_ui/ui_preferences.c
 %cc%  ../../../code/q3_ui/ui_qmenu.c
-
 %cc%  ../../../code/q3_ui/ui_removebots.c
-
 %cc%  ../../../code/q3_ui/ui_sandbox.c
 %cc%  ../../../code/q3_ui/ui_saveconfiged.c
-
 %cc%  ../../../code/q3_ui/ui_serverinfo.c
 %cc%  ../../../code/q3_ui/ui_servers2.c
 %cc%  ../../../code/q3_ui/ui_setup.c
-
 %cc%  ../../../code/q3_ui/ui_sound.c
 %cc%  ../../../code/q3_ui/ui_sparena.c
 %cc%  ../../../code/q3_ui/ui_specifyleague.c
@@ -223,7 +228,6 @@ cd windows\build\q3_ui
 %cc%  ../../../code/q3_ui/ui_sppostgame.c
 %cc%  ../../../code/q3_ui/ui_spreset.c
 %cc%  ../../../code/q3_ui/ui_spskill.c
-
 %cc%  ../../../code/q3_ui/ui_startserver_bot.c
 %cc%  ../../../code/q3_ui/ui_startserver_botsel.c
 %cc%  ../../../code/q3_ui/ui_startserver_common.c
@@ -249,17 +253,16 @@ copy  ..\..\..\code\ui\ui_syscalls.asm ..
 %cc%  ../../../code/qcommon/q_math.c
 %cc%  ../../../code/qcommon/q_shared.c
 
+echo -----------------
+echo ui.qvm compiled
+echo -----------------
+
+q3asm -f ../ui
 
 :: ########################################
 :: End of compilation files, add yours here
 :: ########################################
 
-echo -----------------
-echo q3_ui.qvm compiled
-echo -----------------
-
-
-q3asm -f ../q3_ui
 cd ..\..\..
 cd windows_scripts
 cd ..\..
@@ -267,11 +270,10 @@ cd ..\..
 :: ##############################################################
 :: Replace "default" here with the name of your mod
 :: ##############################################################
-copy qsandbox_default\windows\baseoa\vm\qagame.qvm milab\x.default\vm\qagame.qvm
-copy qsandbox_default\windows\baseoa\vm\cgame.qvm milab\x.default\vm\cgame.qvm
-copy qsandbox_default\windows\baseoa\vm\ui.qvm milab\x.default\vm\ui.qvm
+
+copy qsandbox_default\windows\milab\vm\qagame.qvm milab\x.default\vm\qagame.qvm
+copy qsandbox_default\windows\milab\vm\cgame.qvm milab\x.default\vm\cgame.qvm
+copy qsandbox_default\windows\milab\vm\ui.qvm milab\x.default\vm\ui.qvm
 
 color 0A
 pause
-
-
