@@ -1,0 +1,242 @@
+<?xml version="1.0"?>
+<classes>
+<point name="info_player_dom" color="0.75 0.75 0.75" box="-16 -16 -24 16 16 32" model="">
+Spawn point used in Domination if no team specific spawn points exists. Usually placed in the middle of CTF maps. See info_player_dom_red and info_player_dom_blue for team specific versions.
+-------- KEYS --------
+<angle key="angle" name="Yaw Angle">Determines a facing angle.</angle>
+<boolean key="notbot" name="No Bots">Prevents bots from using this spot as a spawnpoint.</boolean>
+<boolean key="nothumans" name="Not Humans">Prevents humans from using this spot as a spawnpoint.</boolean>
+<boolean key="notsingle" name="Hidden for SP">If set to 1, this entity won't spawn in single-player mode.</boolean>
+<target key="target" name="Target">All entities with a matching targetname will be used.</target>
+-------- SPAWNFLAGS --------
+-------- NOTES --------
+This entity may not work with mods designed for the game OA is inspired from.
+Maps must have at least 8 of this kind of spawnpoint without either 'gametype' or '!gametype' in order to prevent friendly telefragging. Bigger maps may require up to 16 of this spawnpoint.
+</point>
+<point name="info_player_dom_blue" color="0.75 0.75 1" box="-16 -16 -24 16 16 32" model="">
+Spawn point used in Domination by the blue team
+-------- KEYS --------
+<angle key="angle" name="Yaw Angle">Determines a facing angle.</angle>
+<boolean key="notbot" name="No Bots">Prevents bots from using this spot as a spawnpoint.</boolean>
+<boolean key="nothumans" name="Not Humans">Prevents humans from using this spot as a spawnpoint.</boolean>
+<boolean key="notsingle" name="Hidden for SP">If set to 1, this entity won't spawn in single-player mode.</boolean>
+<target key="target" name="Target">All entities with a matching targetname will be used.</target>
+-------- SPAWNFLAGS --------
+-------- NOTES --------
+This entity may not work with mods designed for the game OA is inspired from.
+Maps must have at least 8 of this kind of spawnpoint without either 'gametype' or '!gametype' in order to prevent friendly telefragging. Bigger maps may require up to 16 of this spawnpoint.
+</point>
+<point name="info_player_dom_red" color="1 0.75 0.75" box="-16 -16 -24 16 16 32" model="">
+Spawn point used in Domination by the red team
+-------- KEYS --------
+<angle key="angle" name="Yaw Angle">Determines a facing angle.</angle>
+<boolean key="notbot" name="No Bots">Prevents bots from using this spot as a spawnpoint.</boolean>
+<boolean key="nothumans" name="Not Humans">Prevents humans from using this spot as a spawnpoint.</boolean>
+<boolean key="notsingle" name="Hidden for SP">If set to 1, this entity won't spawn in single-player mode.</boolean>
+<target key="target" name="Target">All entities with a matching targetname will be used.</target>
+-------- SPAWNFLAGS --------
+-------- NOTES --------
+This entity may not work with mods designed for the game OA is inspired from.
+Maps must have at least 8 of this kind of spawnpoint without either 'gametype' or '!gametype' in order to prevent friendly telefragging. Bigger maps may require up to 16 of this spawnpoint.
+</point>
+
+<point name="weapon_flamethrower" color="1 0 .5" box="-16 -16 -16 16 16 16" model="models/weapons2/flamethrower/rocketl.md3">
+Flamethrower. Added in ArenaUnlimited.
+-------- KEYS --------
+<real key="wait" name="Respawn Delay" value="5">Time in seconds before item respawns after being picked up (default 5, -1 = never respawn).</real>
+<real key="random" name="Respawn Delay Variance" value="0">Random time variance in seconds added or subtracted from "wait" delay (default 0 - see notes).</real>
+<string key="team" name="Team Name">Set this to team items. Teamed items will respawn randomly after team master is picked up (see notes).</string>
+<target key="target" name="Target">Picking up the item will trigger the entity this points to.</target>
+<targetname key="targetname" name="Target Name">A target_give entity, pointed to this, gives the item to player. Activating this by other entities will make the item to respawn.</targetname>
+<target key="target2" name="Target 2">Picking up the item will trigger the entity this points to.</target>
+<targetname key="targetname2" name="Target Name 2">A target_give entity, pointed to this, gives the item to player. Activating this by other entities will make the item to respawn.</targetname>
+<texture key="targetShaderName" name="Target Shader Name">Name of the original shader to remap (see notes).</texture>
+<texture key="targetShaderNewName" name="Target Shader New Name">Name of the new shader to remap by (see notes).</texture>
+<boolean key="notfree" name="Hidden For FFA">When set to 1, entity will not spawn in "Free for all" and "Tournament" modes.</boolean>
+<boolean key="notteam" name="Hidden For Teamplay">When set to 1, entity will not spawn in "Teamplay" and "CTF" modes.</boolean>
+<boolean key="notsingle" name="Hidden For SP">When set to 1, entity will not spawn in Single Player mode (bot play mode).</boolean>
+<string key="gametype" name="Game Type">Defines the gametypes that will spawn this item. Q3A values: ffa tournament single team ctf. Q3TA values: oneflag obelisk harvester teamtournament.</string>
+<boolean key="notbot" name="Invisible To Bots">Used to make an item invisible for bot attraction.</boolean>
+-------- SPAWNFLAGS --------
+<flag key="SUSPENDED" name="No Drop To Floor" bit="0">Item will spawn where it was placed in map and won't drop to the floor.</flag>
+<flag key="SILENT" name="No Pickup Sound" bit="1">No sound will be played when picking up this item.</flag>
+-------- NOTES --------
+The amount of time it takes for an item in the team to respawn is determined by the "wait" value of the item that was picked up previously. So if one of the items in the team has it's "wait" key set to -1 (never respawn), the random respawning cycle of the teamed items will stop after that item is picked up.
+
+When the random key is set, its value is used to calculate a minimum and a maximum delay. The final time delay will be a random value anywhere between the minimum and maximum values: (min delay = wait - random) (max delay = wait + random).
+
+When the entity activates its targets, all shaders/textures in the map that were originally the same name as the 'targetShaderName' value, will be changed to the 'targetShaderNewName' value. For example, turning a light on:
+ "targetShaderName"    "textures/proto2/redlight_off"
+ "targetShaderNewName" "textures/proto2/redlight_on"
+And this would turn it back off:
+ "targetShaderName"    "textures/proto2/redlight_off"
+ "targetShaderNewName" "textures/proto2/redlight_off"
+</point>
+
+<point name="ammo_flame" color=".3 .3 1" box="-16 -16 -16 16 16 16" model="models/powerups/ammo/flamethroweram.md3">
+Flamethrower ammo. Gives the player 100 by default.
+-------- KEYS --------
+<real key="wait" name="Respawn Delay" value="40">Time in seconds before item respawns after being picked up (default 40, -1 = never respawn).</real>
+<real key="random" name="Respawn Delay Variance" value="0">Random time variance in seconds added or subtracted from "wait" delay (default 0 - see notes).</real>
+<integer key="count" name="Ammo Given" value="50">Sets the amount of ammo given to the player when picked up (default 50).</integer>
+<string key="team" name="Team Name">Set this to team items. Teamed items will respawn randomly after team master is picked up (see notes).</string>
+<target key="target" name="Target">Picking up the item will trigger the entity this points to.</target>
+<targetname key="targetname" name="Target Name">A target_give entity, pointed to this, gives the item to player. Activating this by other entities will make the item to respawn.</targetname>
+<target key="target2" name="Target 2">Picking up the item will trigger the entity this points to.</target>
+<targetname key="targetname2" name="Target Name 2">A target_give entity, pointed to this, gives the item to player. Activating this by other entities will make the item to respawn.</targetname>
+<texture key="targetShaderName" name="Target Shader Name">Name of the original shader to remap (see notes).</texture>
+<texture key="targetShaderNewName" name="Target Shader New Name">Name of the new shader to remap by (see notes).</texture>
+<boolean key="notfree" name="Hidden For FFA">When set to 1, entity will not spawn in "Free for all" and "Tournament" modes.</boolean>
+<boolean key="notteam" name="Hidden For Teamplay">When set to 1, entity will not spawn in "Teamplay" and "CTF" modes.</boolean>
+<boolean key="notsingle" name="Hidden For SP">When set to 1, entity will not spawn in Single Player mode (bot play mode).</boolean>
+<string key="gametype" name="Game Type">Defines the gametypes that will spawn this item. Q3A values: ffa tournament single team ctf. Q3TA values: oneflag obelisk harvester teamtournament.</string>
+<boolean key="notbot" name="Invisible To Bots">Used to make an item invisible for bot attraction.</boolean>
+-------- SPAWNFLAGS --------
+<flag key="SUSPENDED" name="No Drop To Floor" bit="0">Item will spawn where it was placed in map and won't drop to the floor.</flag>
+<flag key="SILENT" name="No Pickup Sound" bit="1">No sound will be played when picking up this item.</flag>
+-------- NOTES --------
+The amount of time it takes for an item in the team to respawn is determined by the "wait" value of the item that was picked up previously. So if one of the items in the team has it's "wait" key set to -1 (never respawn), the random respawning cycle of the teamed items will stop after that item is picked up.
+
+When the random key is set, its value is used to calculate a minimum and a maximum delay. The final time delay will be a random value anywhere between the minimum and maximum values: (min delay = wait - random) (max delay = wait + random).
+
+When the entity activates its targets, all shaders/textures in the map that were originally the same name as the 'targetShaderName' value, will be changed to the 'targetShaderNewName' value. For example, turning a light on:
+ "targetShaderName"    "textures/proto2/redlight_off"
+ "targetShaderNewName" "textures/proto2/redlight_on"
+And this would turn it back off:
+ "targetShaderName"    "textures/proto2/redlight_off"
+ "targetShaderNewName" "textures/proto2/redlight_off"
+</point>
+
+<point name="weapon_antimatter" color="1 0 .5" box="-16 -16 -16 16 16 16" model="models/weapons2/antimatter/plasma.md3">
+Antimatter. Added in ArenaUnlimited.
+-------- KEYS --------
+<real key="wait" name="Respawn Delay" value="5">Time in seconds before item respawns after being picked up (default 5, -1 = never respawn).</real>
+<real key="random" name="Respawn Delay Variance" value="0">Random time variance in seconds added or subtracted from "wait" delay (default 0 - see notes).</real>
+<string key="team" name="Team Name">Set this to team items. Teamed items will respawn randomly after team master is picked up (see notes).</string>
+<target key="target" name="Target">Picking up the item will trigger the entity this points to.</target>
+<targetname key="targetname" name="Target Name">A target_give entity, pointed to this, gives the item to player. Activating this by other entities will make the item to respawn.</targetname>
+<target key="target2" name="Target 2">Picking up the item will trigger the entity this points to.</target>
+<targetname key="targetname2" name="Target Name 2">A target_give entity, pointed to this, gives the item to player. Activating this by other entities will make the item to respawn.</targetname>
+<texture key="targetShaderName" name="Target Shader Name">Name of the original shader to remap (see notes).</texture>
+<texture key="targetShaderNewName" name="Target Shader New Name">Name of the new shader to remap by (see notes).</texture>
+<boolean key="notfree" name="Hidden For FFA">When set to 1, entity will not spawn in "Free for all" and "Tournament" modes.</boolean>
+<boolean key="notteam" name="Hidden For Teamplay">When set to 1, entity will not spawn in "Teamplay" and "CTF" modes.</boolean>
+<boolean key="notsingle" name="Hidden For SP">When set to 1, entity will not spawn in Single Player mode (bot play mode).</boolean>
+<string key="gametype" name="Game Type">Defines the gametypes that will spawn this item. Q3A values: ffa tournament single team ctf. Q3TA values: oneflag obelisk harvester teamtournament.</string>
+<boolean key="notbot" name="Invisible To Bots">Used to make an item invisible for bot attraction.</boolean>
+-------- SPAWNFLAGS --------
+<flag key="SUSPENDED" name="No Drop To Floor" bit="0">Item will spawn where it was placed in map and won't drop to the floor.</flag>
+<flag key="SILENT" name="No Pickup Sound" bit="1">No sound will be played when picking up this item.</flag>
+-------- NOTES --------
+The amount of time it takes for an item in the team to respawn is determined by the "wait" value of the item that was picked up previously. So if one of the items in the team has it's "wait" key set to -1 (never respawn), the random respawning cycle of the teamed items will stop after that item is picked up.
+
+When the random key is set, its value is used to calculate a minimum and a maximum delay. The final time delay will be a random value anywhere between the minimum and maximum values: (min delay = wait - random) (max delay = wait + random).
+
+When the entity activates its targets, all shaders/textures in the map that were originally the same name as the 'targetShaderName' value, will be changed to the 'targetShaderNewName' value. For example, turning a light on:
+ "targetShaderName"    "textures/proto2/redlight_off"
+ "targetShaderNewName" "textures/proto2/redlight_on"
+And this would turn it back off:
+ "targetShaderName"    "textures/proto2/redlight_off"
+ "targetShaderNewName" "textures/proto2/redlight_off"
+</point>
+
+<point name="weapon_toolgun" color="1 0 .5" box="-16 -16 -16 16 16 16" model="models/weapons/toolgun/toolgun.md3">
+Toolgun. Added in Quake Sandbox.
+-------- KEYS --------
+<real key="wait" name="Respawn Delay" value="5">Time in seconds before item respawns after being picked up (default 5, -1 = never respawn).</real>
+<real key="random" name="Respawn Delay Variance" value="0">Random time variance in seconds added or subtracted from "wait" delay (default 0 - see notes).</real>
+<string key="team" name="Team Name">Set this to team items. Teamed items will respawn randomly after team master is picked up (see notes).</string>
+<target key="target" name="Target">Picking up the item will trigger the entity this points to.</target>
+<targetname key="targetname" name="Target Name">A target_give entity, pointed to this, gives the item to player. Activating this by other entities will make the item to respawn.</targetname>
+<target key="target2" name="Target 2">Picking up the item will trigger the entity this points to.</target>
+<targetname key="targetname2" name="Target Name 2">A target_give entity, pointed to this, gives the item to player. Activating this by other entities will make the item to respawn.</targetname>
+<texture key="targetShaderName" name="Target Shader Name">Name of the original shader to remap (see notes).</texture>
+<texture key="targetShaderNewName" name="Target Shader New Name">Name of the new shader to remap by (see notes).</texture>
+<boolean key="notfree" name="Hidden For FFA">When set to 1, entity will not spawn in "Free for all" and "Tournament" modes.</boolean>
+<boolean key="notteam" name="Hidden For Teamplay">When set to 1, entity will not spawn in "Teamplay" and "CTF" modes.</boolean>
+<boolean key="notsingle" name="Hidden For SP">When set to 1, entity will not spawn in Single Player mode (bot play mode).</boolean>
+<string key="gametype" name="Game Type">Defines the gametypes that will spawn this item. Q3A values: ffa tournament single team ctf. Q3TA values: oneflag obelisk harvester teamtournament.</string>
+<boolean key="notbot" name="Invisible To Bots">Used to make an item invisible for bot attraction.</boolean>
+-------- SPAWNFLAGS --------
+<flag key="SUSPENDED" name="No Drop To Floor" bit="0">Item will spawn where it was placed in map and won't drop to the floor.</flag>
+<flag key="SILENT" name="No Pickup Sound" bit="1">No sound will be played when picking up this item.</flag>
+-------- NOTES --------
+The amount of time it takes for an item in the team to respawn is determined by the "wait" value of the item that was picked up previously. So if one of the items in the team has it's "wait" key set to -1 (never respawn), the random respawning cycle of the teamed items will stop after that item is picked up.
+
+When the random key is set, its value is used to calculate a minimum and a maximum delay. The final time delay will be a random value anywhere between the minimum and maximum values: (min delay = wait - random) (max delay = wait + random).
+
+When the entity activates its targets, all shaders/textures in the map that were originally the same name as the 'targetShaderName' value, will be changed to the 'targetShaderNewName' value. For example, turning a light on:
+ "targetShaderName"    "textures/proto2/redlight_off"
+ "targetShaderNewName" "textures/proto2/redlight_on"
+And this would turn it back off:
+ "targetShaderName"    "textures/proto2/redlight_off"
+ "targetShaderNewName" "textures/proto2/redlight_off"
+</point>
+
+<point name="weapon_physgun" color="1 0 .5" box="-16 -16 -16 16 16 16" model="models/weapons/physgun/physgun.md3">
+Physgun. Added in Quake Sandbox.
+-------- KEYS --------
+<real key="wait" name="Respawn Delay" value="5">Time in seconds before item respawns after being picked up (default 5, -1 = never respawn).</real>
+<real key="random" name="Respawn Delay Variance" value="0">Random time variance in seconds added or subtracted from "wait" delay (default 0 - see notes).</real>
+<string key="team" name="Team Name">Set this to team items. Teamed items will respawn randomly after team master is picked up (see notes).</string>
+<target key="target" name="Target">Picking up the item will trigger the entity this points to.</target>
+<targetname key="targetname" name="Target Name">A target_give entity, pointed to this, gives the item to player. Activating this by other entities will make the item to respawn.</targetname>
+<target key="target2" name="Target 2">Picking up the item will trigger the entity this points to.</target>
+<targetname key="targetname2" name="Target Name 2">A target_give entity, pointed to this, gives the item to player. Activating this by other entities will make the item to respawn.</targetname>
+<texture key="targetShaderName" name="Target Shader Name">Name of the original shader to remap (see notes).</texture>
+<texture key="targetShaderNewName" name="Target Shader New Name">Name of the new shader to remap by (see notes).</texture>
+<boolean key="notfree" name="Hidden For FFA">When set to 1, entity will not spawn in "Free for all" and "Tournament" modes.</boolean>
+<boolean key="notteam" name="Hidden For Teamplay">When set to 1, entity will not spawn in "Teamplay" and "CTF" modes.</boolean>
+<boolean key="notsingle" name="Hidden For SP">When set to 1, entity will not spawn in Single Player mode (bot play mode).</boolean>
+<string key="gametype" name="Game Type">Defines the gametypes that will spawn this item. Q3A values: ffa tournament single team ctf. Q3TA values: oneflag obelisk harvester teamtournament.</string>
+<boolean key="notbot" name="Invisible To Bots">Used to make an item invisible for bot attraction.</boolean>
+-------- SPAWNFLAGS --------
+<flag key="SUSPENDED" name="No Drop To Floor" bit="0">Item will spawn where it was placed in map and won't drop to the floor.</flag>
+<flag key="SILENT" name="No Pickup Sound" bit="1">No sound will be played when picking up this item.</flag>
+-------- NOTES --------
+The amount of time it takes for an item in the team to respawn is determined by the "wait" value of the item that was picked up previously. So if one of the items in the team has it's "wait" key set to -1 (never respawn), the random respawning cycle of the teamed items will stop after that item is picked up.
+
+When the random key is set, its value is used to calculate a minimum and a maximum delay. The final time delay will be a random value anywhere between the minimum and maximum values: (min delay = wait - random) (max delay = wait + random).
+
+When the entity activates its targets, all shaders/textures in the map that were originally the same name as the 'targetShaderName' value, will be changed to the 'targetShaderNewName' value. For example, turning a light on:
+ "targetShaderName"    "textures/proto2/redlight_off"
+ "targetShaderNewName" "textures/proto2/redlight_on"
+And this would turn it back off:
+ "targetShaderName"    "textures/proto2/redlight_off"
+ "targetShaderNewName" "textures/proto2/redlight_off"
+</point>
+
+<point name="weapon_gravitygun" color="1 0 .5" box="-16 -16 -16 16 16 16" model="models/weapons/physgun/physgun.md3">
+Gravitygun. Added in Quake Sandbox.
+-------- KEYS --------
+<real key="wait" name="Respawn Delay" value="5">Time in seconds before item respawns after being picked up (default 5, -1 = never respawn).</real>
+<real key="random" name="Respawn Delay Variance" value="0">Random time variance in seconds added or subtracted from "wait" delay (default 0 - see notes).</real>
+<string key="team" name="Team Name">Set this to team items. Teamed items will respawn randomly after team master is picked up (see notes).</string>
+<target key="target" name="Target">Picking up the item will trigger the entity this points to.</target>
+<targetname key="targetname" name="Target Name">A target_give entity, pointed to this, gives the item to player. Activating this by other entities will make the item to respawn.</targetname>
+<target key="target2" name="Target 2">Picking up the item will trigger the entity this points to.</target>
+<targetname key="targetname2" name="Target Name 2">A target_give entity, pointed to this, gives the item to player. Activating this by other entities will make the item to respawn.</targetname>
+<texture key="targetShaderName" name="Target Shader Name">Name of the original shader to remap (see notes).</texture>
+<texture key="targetShaderNewName" name="Target Shader New Name">Name of the new shader to remap by (see notes).</texture>
+<boolean key="notfree" name="Hidden For FFA">When set to 1, entity will not spawn in "Free for all" and "Tournament" modes.</boolean>
+<boolean key="notteam" name="Hidden For Teamplay">When set to 1, entity will not spawn in "Teamplay" and "CTF" modes.</boolean>
+<boolean key="notsingle" name="Hidden For SP">When set to 1, entity will not spawn in Single Player mode (bot play mode).</boolean>
+<string key="gametype" name="Game Type">Defines the gametypes that will spawn this item. Q3A values: ffa tournament single team ctf. Q3TA values: oneflag obelisk harvester teamtournament.</string>
+<boolean key="notbot" name="Invisible To Bots">Used to make an item invisible for bot attraction.</boolean>
+-------- SPAWNFLAGS --------
+<flag key="SUSPENDED" name="No Drop To Floor" bit="0">Item will spawn where it was placed in map and won't drop to the floor.</flag>
+<flag key="SILENT" name="No Pickup Sound" bit="1">No sound will be played when picking up this item.</flag>
+-------- NOTES --------
+The amount of time it takes for an item in the team to respawn is determined by the "wait" value of the item that was picked up previously. So if one of the items in the team has it's "wait" key set to -1 (never respawn), the random respawning cycle of the teamed items will stop after that item is picked up.
+
+When the random key is set, its value is used to calculate a minimum and a maximum delay. The final time delay will be a random value anywhere between the minimum and maximum values: (min delay = wait - random) (max delay = wait + random).
+
+When the entity activates its targets, all shaders/textures in the map that were originally the same name as the 'targetShaderName' value, will be changed to the 'targetShaderNewName' value. For example, turning a light on:
+ "targetShaderName"    "textures/proto2/redlight_off"
+ "targetShaderNewName" "textures/proto2/redlight_on"
+And this would turn it back off:
+ "targetShaderName"    "textures/proto2/redlight_off"
+ "targetShaderNewName" "textures/proto2/redlight_off"
+</point>
+
+</classes>
