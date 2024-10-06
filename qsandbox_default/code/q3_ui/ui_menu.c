@@ -271,14 +271,14 @@ void Main_MenuEvent (void* ptr, int event) {
 		UI_CreditMenu(0);
 		break;
 	case ID_BUTTON1:
-		trap_Cmd_ExecuteText( EXEC_APPEND, "toggle r_mode 3 -2;" );
+		trap_Cmd_ExecuteText( EXEC_APPEND, "toggle r_fullscreen;" );
 		trap_Cmd_ExecuteText( EXEC_APPEND, "set vid_xpos 0;" );
 		trap_Cmd_ExecuteText( EXEC_APPEND, "set vid_ypos 0;" );
 		trap_Cmd_ExecuteText( EXEC_APPEND, "vid_restart;" );
 		trap_Cmd_ExecuteText( EXEC_APPEND, "minimize;" );
 		break;
 	case ID_BUTTON2:
-		trap_Cmd_ExecuteText( EXEC_APPEND, "toggle r_mode 3 -2;" );
+		trap_Cmd_ExecuteText( EXEC_APPEND, "toggle r_fullscreen;" );
 		trap_Cmd_ExecuteText( EXEC_APPEND, "set vid_xpos 0;" );
 		trap_Cmd_ExecuteText( EXEC_APPEND, "set vid_ypos 0;" );
 		trap_Cmd_ExecuteText( EXEC_APPEND, "vid_restart;" );
@@ -348,7 +348,7 @@ static void Main_MenuDraw( void ) {
 	   // standard menu drawing
 	   Menu_Draw( &s_main.menu );
    }
-	UI_DrawString( 600+uis.wideoffset, 450, "Quake Sandbox v5.5", UI_RIGHT|UI_SMALLFONT, color );
+	UI_DrawString( 600+uis.wideoffset, 450, "Quake Sandbox v6.0", UI_RIGHT|UI_SMALLFONT, color );
 	UI_DrawString( 600+uis.wideoffset, 465, "by Noire.dev", UI_RIGHT|UI_SMALLFONT, color );
 }
 

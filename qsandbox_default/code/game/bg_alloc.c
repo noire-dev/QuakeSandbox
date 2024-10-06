@@ -28,9 +28,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "g_local.h"
 
 #ifdef GAME
-# define  POOLSIZE ( 4096 * 8192 )
+# define  POOLSIZE ( 1024 * 1024 ) * 8
 #else
-# define  POOLSIZE ( 1024 * 8192 )
+# define  POOLSIZE ( 1024 * 1024 ) * 8
 #endif
 
 #define  FREEMEMCOOKIE  ((int)0xDEADBE3F)  // Any unlikely to be used value

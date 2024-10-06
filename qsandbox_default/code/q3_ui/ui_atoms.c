@@ -1247,14 +1247,19 @@ void UI_SetActiveMenu( uiMenuCommand_t menu ) {
 		UI_ForceMenuOff();
 		return;
 	case UIMENU_MAIN:
-		trap_Cvar_Set( "sv_pure", "0" );
 		UI_ScreenOffset();
+		if(!trap_Cvar_VariableValue("cl_32bit")){
 		if(strlen(ui_3dmap.string) <= 1){
 		UI_MainMenu();
 		UI_CreditMenu(1);
 		}
 		if(strlen(ui_3dmap.string)){
 		trap_Cmd_ExecuteText( EXEC_APPEND, va("set sv_maxclients 1; map %s\n", ui_3dmap.string) );
+		}
+		}
+		if(trap_Cvar_VariableValue("cl_32bit")){
+		UI_MainMenu();
+		UI_CreditMenu(1);
 		}
 		return;
 	case UIMENU_NEED_CD:

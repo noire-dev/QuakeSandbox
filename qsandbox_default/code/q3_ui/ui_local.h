@@ -155,7 +155,6 @@ extern vmCvar_t	sensitivitymenu;
 extern vmCvar_t	team_legsskin;
 extern vmCvar_t	cl_selectedmod;
 extern vmCvar_t	cl_language;
-extern vmCvar_t	cl_gamestyle;
 extern vmCvar_t	ui_loaded;
 extern vmCvar_t	cl_screenoffset;
 extern vmCvar_t	ui_backcolors;

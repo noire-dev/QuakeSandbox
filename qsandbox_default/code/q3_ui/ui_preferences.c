@@ -65,18 +65,17 @@ GAME OPTIONS MENU
 #define ID_FOV				152
 #define ID_ZOOMFOV			153
 #define ID_AMMOWARNING		154
-#define ID_OVERBRIGHT		155
-#define ID_DRAWGUN			156
+#define ID_DRAWGUN			155
 
-#define ID_OLDRAIL			157
-#define ID_OLDPLASMA		158
-#define ID_OLDROCKET		159
-#define ID_TRUELIGHTNING	160
-#define ID_COLORRED             161
-#define ID_COLORGREEN           162
-#define ID_COLORBLUE            163
-#define ID_CROSSHAIRHEALTH      164
-#define ID_WEAPONBAR                    165
+#define ID_OLDRAIL			156
+#define ID_OLDPLASMA		157
+#define ID_OLDROCKET		158
+#define ID_TRUELIGHTNING	159
+#define ID_COLORRED             160
+#define ID_COLORGREEN           161
+#define ID_COLORBLUE            162
+#define ID_CROSSHAIRHEALTH      163
+#define ID_WEAPONBAR                    164
 
 #define	NUM_CROSSHAIRS			10
 
@@ -130,7 +129,6 @@ typedef struct {
 	menufield_s			zoomfov;
 
 	menuradiobutton_s	drawAmmoWarning;
-	menulist_s			mapOverBright;	
 
 	menuradiobutton_s	oldrail;
 	menuradiobutton_s	oldplasma;
@@ -146,54 +144,6 @@ typedef struct {
 } preferences_t;
 
 static preferences_t s_preferences;
-
-
-static const char *overbright_valuesru[] = {
-	"Обычный",
-	"Реалистичный",
-	"Насыщенный",
-	"Серый",
-	"Черно-белый",
-	"Вечерний",
-	"Темный",
-	"Нет освещения",
-	"Красный 1",
-	"Красный 2",
-	"Зеленый 1",
-	"Зеленый 2",
-	"Синий 1",
-	"Синий 2",
-	"Светло Красный",
-	"Светло Зеленый",
-	"Светло Синий",
-	"Желтый",
-	"Голубой",
-	"Розовый",
-	0
-};
-static const char *overbright_values[] = {
-	"Default",
-	"Real",
-	"Saturated",
-	"Grey",
-	"Black-white",
-	"Evening",
-	"Dark",
-	"Not light",
-	"Red 1",
-	"Red 2",
-	"Green 1",
-	"Green 2",
-	"Blue 1",
-	"Blue 2",
-	"White Red",
-	"White Green",
-	"White Blue",
-	"Yellow",
-	"Cyan",
-	"Pink",
-	0
-};
 
 static const char *teamoverlay_names[] =
 {
@@ -268,7 +218,6 @@ static menucommon_s* g_hud_controls[] = {
 static menucommon_s* g_render_controls[] = {
 	(menucommon_s*) &s_preferences.shadows,
 	(menucommon_s*) &s_preferences.highqualitysky,
-	(menucommon_s*) &s_preferences.mapOverBright,
 	(menucommon_s*) &s_preferences.blood,
 	(menucommon_s*) &s_preferences.fov,
 	(menucommon_s*) &s_preferences.zoomfov,
@@ -348,8 +297,6 @@ static void Preferences_SetMenuItems( void ) {
 	s_preferences.shadows.curvalue			= Com_Clamp( 0, 3, trap_Cvar_VariableValue( "cg_shadows" ) );
 	s_preferences.newESCmenu.curvalue		= trap_Cvar_VariableValue( "uie_ingame_dynamicmenu" ) != 0;
 	s_preferences.drawAmmoWarning.curvalue		= trap_Cvar_VariableValue( "cg_drawAmmoWarning" ) != 0;
-
-	s_preferences.mapOverBright.curvalue		= Com_Clamp( 0, 19, trap_Cvar_VariableValue( "cl_gamestyle" ));
 
 	s_preferences.oldrail.curvalue			= trap_Cvar_VariableValue( "cg_oldRail" ) != 0;
 	s_preferences.oldplasma.curvalue		= trap_Cvar_VariableValue( "cg_oldPlasma" ) != 0;
@@ -665,10 +612,6 @@ static void Preferences_Event( void* ptr, int notification ) {
 		trap_Cvar_SetValue( "uie_ingame_dynamicmenu", s_preferences.newESCmenu.curvalue );
 		break;
 
-	case ID_OVERBRIGHT:
-		trap_Cvar_SetValue( "cl_gamestyle", s_preferences.mapOverBright.curvalue );
-		break;
-
 	case ID_OLDRAIL:
 		trap_Cvar_SetValue( "cg_oldRail", s_preferences.oldrail.curvalue );
 		break;
@@ -765,9 +708,6 @@ if(cl_language.integer == 0){
 		case ID_SYNCEVERYFRAME:
 			s = "on = game waits for OpenGL calls to finish";
 			break;
-		case ID_OVERBRIGHT:
-			s = "Graphic style (restart required)";
-			break;
 		case ID_FOV:
 			s = "Field of view angle (default = 90)";
 			break;
@@ -801,9 +741,6 @@ if(cl_language.integer == 1){
 	switch( ((menucommon_s*)self)->id ) {
 		case ID_SYNCEVERYFRAME:
 			s = "вкл = игра ожидает вызов завершения OpenGL";
-			break;
-		case ID_OVERBRIGHT:
-			s = "Графический стиль (требуется перезапуск)";
 			break;
 		case ID_FOV:
 			s = "Поле зрения (стандарт = 90)";
@@ -1006,12 +943,6 @@ static void Preferences_MenuInit( void )
 	s_preferences.shadows.generic.callback = Preferences_Event;
 	s_preferences.shadows.generic.id       = ID_SHADOWS;
 
-	s_preferences.mapOverBright.generic.type     = MTYPE_SPINCONTROL;
-	s_preferences.mapOverBright.generic.flags	   = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
-	s_preferences.mapOverBright.generic.callback = Preferences_Event;
-	s_preferences.mapOverBright.generic.statusbar= Preferences_Statusbar;
-	s_preferences.mapOverBright.generic.id       = ID_OVERBRIGHT;
-
 	s_preferences.gibs.generic.type     = MTYPE_RADIOBUTTON;
 	s_preferences.gibs.generic.flags	   = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
 	s_preferences.gibs.generic.callback = Preferences_Event;
@@ -1021,7 +952,6 @@ static void Preferences_MenuInit( void )
 	s_preferences.blood.generic.flags	   = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
 	s_preferences.blood.generic.callback = Preferences_Event;
 	s_preferences.blood.generic.id       = ID_BLOOD;
-
 
 	s_preferences.identifytarget.generic.type     = MTYPE_RADIOBUTTON;
 	s_preferences.identifytarget.generic.flags    = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
@@ -1172,7 +1102,6 @@ s_preferences.brass.generic.name	          = "Ejecting Brass:";
 s_preferences.dynamiclights.generic.name	  = "Dynamic Lights:";
 s_preferences.highqualitysky.generic.name	  = "High Quality Sky:";
 s_preferences.shadows.generic.name	   = "Shadow type:";
-s_preferences.mapOverBright.generic.name	   = "Graphic style:";
 s_preferences.gibs.generic.name	   = "Body Gibs:";
 s_preferences.blood.generic.name	   = "Blood:";
 s_preferences.identifytarget.generic.name	  = "Identify Target:";
@@ -1200,7 +1129,6 @@ s_preferences.botmenu.generic.name	  = "AutoClose Bot Menu:";
 s_preferences.newESCmenu.generic.name	   = "Dynamic Escape Menu:";
 	s_preferences.shadows.itemnames			= shadow_types;
 	s_preferences.drawteamoverlay.itemnames			= teamoverlay_names;
-	s_preferences.mapOverBright.itemnames			= overbright_values;
 }
 if(cl_language.integer == 1){
 s_preferences.banner.string		   = "ИГРОВЫЕ ОПЦИИ";
@@ -1220,7 +1148,6 @@ s_preferences.brass.generic.name	          = "Гильзы от пуль:";
 s_preferences.dynamiclights.generic.name	  = "Динамическое освещение:";
 s_preferences.highqualitysky.generic.name	  = "Небо высокого качества:";
 s_preferences.shadows.generic.name	   = "Тип теней:";
-s_preferences.mapOverBright.generic.name	   = "Графический стиль:";
 s_preferences.gibs.generic.name	   = "Куски тел:";
 s_preferences.blood.generic.name	   = "Кровь:";
 s_preferences.identifytarget.generic.name	  = "Определить цель:";
@@ -1248,7 +1175,6 @@ s_preferences.botmenu.generic.name	  = "Авто закрытие Бот Мен�
 s_preferences.newESCmenu.generic.name	   = "Новый вид меню:";
 	s_preferences.shadows.itemnames			= shadow_typesru;
 	s_preferences.drawteamoverlay.itemnames			= teamoverlay_namesru;
-	s_preferences.mapOverBright.itemnames			= overbright_valuesru;
 }
 
 	Menu_AddItem( &s_preferences.menu, &s_preferences.banner );
@@ -1294,7 +1220,6 @@ s_preferences.newESCmenu.generic.name	   = "Новый вид меню:";
 	Menu_AddItem( &s_preferences.menu, &s_preferences.teamchatheight);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.fov);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.zoomfov);
-	Menu_AddItem( &s_preferences.menu, &s_preferences.mapOverBright);
 
 	Menu_AddItem( &s_preferences.menu, &s_preferences.oldrail);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.oldplasma);

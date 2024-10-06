@@ -604,8 +604,10 @@ static void GraphicsOptions_ApplyChanges( void *unused, int notification )
 	trap_Cvar_SetValue( "r_allowExtensions", s_graphicsoptions.allow_extensions.curvalue );
 
 	if(s_graphicsoptions.fs.curvalue == 0){
+	trap_Cvar_SetValue( "r_fullscreen", 0 );
 	trap_Cvar_SetValue( "r_mode", s_graphicsoptions.mode.curvalue );
 	} else {
+	trap_Cvar_SetValue( "r_fullscreen", 1 );
 	trap_Cvar_SetValue( "r_mode", -2 );
 	}
 
@@ -765,7 +767,7 @@ static void GraphicsOptions_SetMenuItems( void )
 	{
 		s_graphicsoptions.mode.curvalue = 3;
 	}
-	if(trap_Cvar_VariableValue("r_mode") == -2){
+	if(trap_Cvar_VariableValue("r_fullscreen") == 1){
 		s_graphicsoptions.fs.curvalue = 1;
 	} else {
 		s_graphicsoptions.fs.curvalue = 0;

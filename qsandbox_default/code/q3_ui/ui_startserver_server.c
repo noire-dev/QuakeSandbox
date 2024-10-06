@@ -597,7 +597,7 @@ static controlinit_t srv_general[] = {
 		"Mod folder name:", NULL, 0, 0, s_scriptdata.server.selectedmod, 20, 20, NULL },
 		
 	{ SRVCTRL_NUMFIELD, 0, ID_SERVER_MAXENTITIES, ITEM_ALWAYSON,
-		"Max Entities:", &s_scriptdata.server.maxEntities, 256, 16384, NULL, 9, 9, NULL },
+		"Max Entities:", &s_scriptdata.server.maxEntities, 512, MAX_GENTITIES, NULL, 9, 9, NULL },
 		
 	{ SRVCTRL_NUMFIELD, 0, ID_SERVER_DRAWDISTANCE, ITEM_ALWAYSON|ITEM_HALFGAP,
 		"Entities load distance:", &s_scriptdata.server.viewdistance, 1, 90, NULL, 3, 3, NULL },
