@@ -898,13 +898,6 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 		case K_KP_ENTER:
 		case K_ENTER:
 		case K_MOUSE1:
-			if(trap_Cvar_VariableValue("cl_android")){
-				if (uis.realtime > lastKeypress + 300 || keycode != K_ENTER) // Prevent text input window re-appearing on Ouya
-				{
-					trap_ScreenKeyboardTextInput( b->field.buffer );
-					MField_Clear( &b->field );
-				}
-			}
 			break;
 		case K_JOY1:
 		case K_JOY2:
@@ -2875,11 +2868,7 @@ void Menu_Cache( void )
 	uis.charsetProp		= trap_R_RegisterShaderNoMip( "menu/art/font1_prop.tga" );
 	uis.charsetPropGlow	= trap_R_RegisterShaderNoMip( "menu/art/font1_prop_glo.tga" );
 	uis.charsetPropB	= trap_R_RegisterShaderNoMip( "menu/art/font2_prop.tga" );
-	if(!trap_Cvar_VariableValue("cl_android")){
 	uis.cursor          = trap_R_RegisterShaderNoMip( "menu/art/3_cursor2" );
-	} else {
-	uis.cursor          = trap_R_RegisterShaderNoMip( "trans" );
-	}
 	uis.corner          = trap_R_RegisterShaderNoMip( "corner" );
 	uis.rb_on           = trap_R_RegisterShaderNoMip( "menu/art/switch_on" );
 	uis.rb_off          = trap_R_RegisterShaderNoMip( "menu/art/switch_off" );
@@ -3389,13 +3378,6 @@ sfxHandle_t MenuField_Key( menufield_s* m, int* key )
 		case K_KP_ENTER:
 		case K_ENTER:
 		case K_MOUSE1:
-			if(trap_Cvar_VariableValue("cl_android")){
-				if (uis.realtime > lastKeypress + 300 || keycode != K_ENTER) // Prevent text input window re-appearing on Ouya
-				{
-					trap_ScreenKeyboardTextInput( m->field.buffer );
-					MField_Clear( &m->field );
-				}
-			}
 			break;
 		case K_JOY1:
 		case K_JOY2:

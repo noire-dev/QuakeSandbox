@@ -348,7 +348,7 @@ static void Main_MenuDraw( void ) {
 	   // standard menu drawing
 	   Menu_Draw( &s_main.menu );
    }
-	UI_DrawString( 600+uis.wideoffset, 450, "Quake Sandbox v6.0", UI_RIGHT|UI_SMALLFONT, color );
+	UI_DrawString( 600+uis.wideoffset, 450, "Quake Sandbox v6.1", UI_RIGHT|UI_SMALLFONT, color );
 	UI_DrawString( 600+uis.wideoffset, 465, "by Noire.dev", UI_RIGHT|UI_SMALLFONT, color );
 }
 
@@ -681,9 +681,7 @@ void UI_MainMenu( void ) {
 		configname += len + 1;
 	}
 
-if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &s_main.menu,	&s_main.gamemodep );
-}
 	Menu_AddItem( &s_main.menu,	&s_main.modloader );
 	Menu_AddItem( &s_main.menu,	&s_main.moddb );
 	Menu_AddItem( &s_main.menu,	&s_main.button1 );

@@ -108,12 +108,6 @@ void UI_PushMenu( menuframework_s *menu )
 	
 	trap_Cvar_SetValue( "ui_backcolors", number );
 	
-	if(trap_Cvar_VariableValue("cl_android")){
-	trap_Cvar_SetValue( "in_nativetouch", 1 );
-	trap_Cvar_SetValue( "cg_alwaysWeaponBar", 1 );
-	trap_Cvar_SetValue( "cl_voip", 0 );
-	}
-	
 	// initialize the screen offset
 	UI_ScreenOffset();
 	
@@ -1335,7 +1329,6 @@ void UI_MouseEvent( int dx, int dy )
 	scry = uis.glconfig.vidHeight;
 
 	// update mouse screen position
-	if(!trap_Cvar_VariableValue("cl_android")){
 	if(uis.activemenu->native > 0){
 	uis.cursorx += dx * sensitivitymenu.value;
 	if (uis.cursorx < 0)
@@ -1360,25 +1353,6 @@ void UI_MouseEvent( int dx, int dy )
 		uis.cursory = 0+uis.activemenu->uplimitscroll;
 	else if (uis.cursory > 480+uis.activemenu->downlimitscroll)
 		uis.cursory = 480+uis.activemenu->downlimitscroll;	
-	}
-	}
-	
-	if(trap_Cvar_VariableValue("cl_android")){
-	if(uis.activemenu->native > 0){
-	uis.cursorx += dx + uis.wideoffset;
-	if (uis.cursorx < 0-uis.wideoffset)
-		uis.cursorx = 0-uis.wideoffset;
-	uis.cursory += dy;
-	if (uis.cursory < 0)
-		uis.cursory = 0;
-	} else {
-	uis.cursorx += ((dx - uis.bias) / uis.scale) + uis.wideoffset;
-	if (uis.cursorx < 0-uis.wideoffset)
-		uis.cursorx = 0-uis.wideoffset;
-	uis.cursory += dy / uis.scale;
-	if (uis.cursory < 0)
-		uis.cursory = 0;
-	}
 	}
 
 	// region test the active menu items

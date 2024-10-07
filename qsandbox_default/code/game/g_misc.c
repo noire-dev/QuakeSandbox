@@ -1153,20 +1153,20 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	
 	o[0] = ((int)((xyz[0] + (xyz[0] < 0 ? -atoi(arg06) : atoi(arg06))) / (atoi(arg06) * 2)) * (atoi(arg06) * 2));
 	o[1] = ((int)((xyz[1] + (xyz[1] < 0 ? -atoi(arg06) : atoi(arg06))) / (atoi(arg06) * 2)) * (atoi(arg06) * 2));
-	if(atoi(arg09) <= 0){
+//	if(atoi(arg09) <= 0){
 	o[2] = ((int)((xyz[2] + (xyz[2] < 0 ? -atoi(arg06) : atoi(arg06))) / (atoi(arg06) * 2)) * (atoi(arg06) * 2));
-	} else {
-	o[2] = xyz[2] + atoi(arg05);
-	}
+//	} else {
+//	o[2] = xyz[2] + atoi(arg05);
+//	}
 
 	if (trap_Cvar_VariableIntegerValue("cl_android")) {
     o[0] -= (xyz[0] >= 0 ? (atoi(arg06)) : -(atoi(arg06)));
     o[1] -= (xyz[1] >= 0 ? (atoi(arg06)) : -(atoi(arg06)));
-	if(atoi(arg09) <= 0){
+//	if(atoi(arg09) <= 0){
     o[2] -= (xyz[2] >= 0 ? (atoi(arg06)) : -(atoi(arg06)));
-	} else {
-	o[2] = xyz[2] + atoi(arg05);
-	}
+//	} else {
+//	o[2] = xyz[2] + atoi(arg05);
+//	}
 	}
 
 	VectorCopy (o, snapped);
@@ -1615,9 +1615,9 @@ void G_RunProp(gentity_t *ent) {
 	impactForceAll = sqrt(ent->s.pos.trDelta[0] * ent->s.pos.trDelta[0] + ent->s.pos.trDelta[1] * ent->s.pos.trDelta[1] + ent->s.pos.trDelta[2] * ent->s.pos.trDelta[2]);
 	impactForceFixed = sqrt(ent->s.pos.trDelta[0] * ent->s.pos.trDelta[0] + ent->s.pos.trDelta[1] * ent->s.pos.trDelta[1] + g_gravity.integer*g_gravityModifier.value * g_gravity.integer*g_gravityModifier.value);
 	
+	if(!trap_Cvar_VariableIntegerValue("cl_android")){
 	if(ent->s.pos.trType == TR_GRAVITY || ent->s.pos.trType == TR_GRAVITY_WATER){
 		if(trap_PointContents(tr.endpos, ent->s.number) & MASK_WATER){
-			if(!trap_Cvar_VariableIntegerValue("cl_android")){
 			if(ent->s.pos.trType != TR_GRAVITY_WATER){
 			ent->s.pos.trType = TR_GRAVITY_WATER;
 			G_PropWaterSplash( ent, impactForceFixed);
@@ -1628,13 +1628,13 @@ void G_RunProp(gentity_t *ent) {
 			ent->s.pos.trDelta[2] = 0;
 			}
 			}
-			}
 		} else {
 			if(ent->s.pos.trType != TR_GRAVITY){
 			ent->s.pos.trType = TR_GRAVITY;
 			G_EnablePropPhysics(ent);
 			}
 		}
+	}
 	}
 
     // If there's a collision, handle it

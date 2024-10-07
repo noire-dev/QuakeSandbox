@@ -1984,17 +1984,8 @@ void CG_DrawWeaponBarNew2(int count, int bits, int swepnum){
 	int y = 4;
 	int x = 320 - count * (20*scale);
 	int i;
-	char	var[MAX_TOKEN_CHARS];
-
-	//android
-	trap_Cvar_VariableStringBuffer( "cl_android", var, sizeof( var ) );
 	
 	trap_GetGlconfig( &cgs.glconfig );
-	if(atoi(var)){
-	scale = (640.0+cl_screenoffset.value*2) / 640.0;
-	x = 320 - count * (20*scale);
-	y = 20;
-	}
 	
 	for ( i = 1 ; i <= WEAPONS_NUM ; i++ ) {
         if ( !(cg.snap->ps.stats[STAT_WEAPONS] & ( 1 << i )) && i <= 15 ) {

@@ -1798,19 +1798,14 @@ static void Controls_MenuInit( void )
 	Menu_AddItem( &s_controls.menu, &s_controls.joyenable );
 	Menu_AddItem( &s_controls.menu, &s_controls.joythreshold );
 
-if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &s_controls.menu, &s_controls.lookup );
 	Menu_AddItem( &s_controls.menu, &s_controls.lookdown );
 	Menu_AddItem( &s_controls.menu, &s_controls.mouselook );
-}
 	Menu_AddItem( &s_controls.menu, &s_controls.freelook );
-if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &s_controls.menu, &s_controls.centerview );
 	Menu_AddItem( &s_controls.menu, &s_controls.zoomview );
-}
 
 	Menu_AddItem( &s_controls.menu, &s_controls.alwaysrun );
-if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &s_controls.menu, &s_controls.run );
 
 	Menu_AddItem( &s_controls.menu, &s_controls.walkforward );
@@ -1826,8 +1821,6 @@ if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &s_controls.menu, &s_controls.attack );
 	Menu_AddItem( &s_controls.menu, &s_controls.nextweapon );
 	Menu_AddItem( &s_controls.menu, &s_controls.prevweapon );
-}
-if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &s_controls.menu, &s_controls.chainsaw );
 	Menu_AddItem( &s_controls.menu, &s_controls.machinegun );
 	Menu_AddItem( &s_controls.menu, &s_controls.shotgun );
@@ -1864,7 +1857,6 @@ if(!trap_Cvar_VariableValue("cl_android")){
 	Menu_AddItem( &s_controls.menu, &s_controls.newsandbox );
 	Menu_AddItem( &s_controls.menu, &s_controls.actionmenu );
 	Menu_AddItem( &s_controls.menu, &s_controls.exitvehicle );
-}
 
 	Menu_AddItem( &s_controls.menu, &s_controls.back );
 
