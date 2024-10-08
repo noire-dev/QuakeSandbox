@@ -20,7 +20,7 @@ cp linux_scripts/game.q3asm linux/build/
 LIBRARY=""
 INCLUDE=""
 
-cc="./lcc -DQAGAME -DMISSIONPACK -DQ3_VM -S -Wf-target=bytecode -Wf-g -I../../../code/game -I../../../code/qcommon $1"
+cc="./lcc -w -DQAGAME -DMISSIONPACK -DQ3_VM -S -Wf-target=bytecode -Wf-g -I../../../code/game -I../../../code/qcommon $1"
 
 cd linux/build/game
 
@@ -102,7 +102,7 @@ cp linux_scripts/cgame.q3asm linux/build/
 LIBRARY=""
 INCLUDE=""
 
-cc="./lcc -DCGAME -DMISSIONPACK -DQ3_VM -S -Wf-target=bytecode -Wf-g -I..\..\..\code\cgame -I..\..\..\code\ui -I..\..\..\code\qcommon $1"
+cc="./lcc -w -DCGAME -DMISSIONPACK -DQ3_VM -S -Wf-target=bytecode -Wf-g -I..\..\..\code\cgame -I..\..\..\code\ui -I..\..\..\code\qcommon $1"
 
 cd linux/build/cgame
 
@@ -172,7 +172,7 @@ cp linux_scripts/ui.q3asm linux/build/
 LIBRARY=""
 INCLUDE=""
 
-cc="./lcc -DQ3_UI -DQ3_VM -S -Wf-target=bytecode -Wf-g -I..\..\..\code\q3_ui -I..\..\..\code\qcommon $1"
+cc="./lcc -w -DQ3_UI -DQ3_VM -S -Wf-target=bytecode -Wf-g -I..\..\..\code\q3_ui -I..\..\..\code\qcommon $1"
 
 cd linux/build/q3_ui
 
