@@ -27,8 +27,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define MAX_ATMOSPHERIC_PARTICLES		2048  	// maximum # of particles
 #define MAX_ATMOSPHERIC_DISTANCE		3000  	// maximum distance from refdef origin that particles are visible
 
-#define MAX_ATMOSPHERIC_HEIGHT			1048576  	// maximum world height (FIXME: since 1.27 this should be 65536)
-#define MIN_ATMOSPHERIC_HEIGHT			-1048576s  	// minimum world height (FIXME: since 1.27 this should be -65536)
+#define MAX_ATMOSPHERIC_HEIGHT			524288  	// maximum world height (FIXME: since 1.27 this should be 65536)
+#define MIN_ATMOSPHERIC_HEIGHT			-524288  	// minimum world height (FIXME: since 1.27 this should be -65536)
 
 #define START_RAIN_HEIGHT				4096
 #define START_SNOW_HEIGHT				256
