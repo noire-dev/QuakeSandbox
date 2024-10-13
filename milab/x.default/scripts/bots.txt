@@ -166,11 +166,6 @@ name		Henry
 model		beret/macho
 aifile	bots/beret_c.c
 }
-{
-name		Oliver
-model		beret/cooldude
-aifile	bots/beret_c.c
-}
 
 // Gargoyle
 {
