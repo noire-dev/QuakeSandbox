@@ -1,0 +1,6417 @@
+export CG_BuildSolidList
+code
+proc CG_BuildSolidList 28 0
+file "../../../code/cgame/cg_predict.c"
+line 46
+;1:/*
+;2:===========================================================================
+;3:Copyright (C) 1999-2005 Id Software, Inc.
+;4:
+;5:This file is part of Quake III Arena source code.
+;6:
+;7:Quake III Arena source code is free software; you can redistribute it
+;8:and/or modify it under the terms of the GNU General Public License as
+;9:published by the Free Software Foundation; either version 2 of the License,
+;10:or (at your option) any later version.
+;11:
+;12:Quake III Arena source code is distributed in the hope that it will be
+;13:useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+;14:MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;15:GNU General Public License for more details.
+;16:
+;17:You should have received a copy of the GNU General Public License
+;18:along with Quake III Arena source code; if not, write to the Free Software
+;19:Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+;20:===========================================================================
+;21:*/
+;22://
+;23:// cg_predict.c -- this file generates cg.predictedPlayerState by either
+;24:// interpolating between snapshots from the server or locally predicting
+;25:// ahead the client's movement.
+;26:// It also handles local physics interaction, like fragments bouncing off walls
+;27:
+;28:#include "cg_local.h"
+;29:
+;30:static	pmove_t		cg_pmove;
+;31:
+;32:static	int			cg_numSolidEntities;
+;33:static	centity_t	*cg_solidEntities[MAX_ENTITIES_IN_SNAPSHOT];
+;34:static	int			cg_numTriggerEntities;
+;35:static	centity_t	*cg_triggerEntities[MAX_ENTITIES_IN_SNAPSHOT];
+;36:
+;37:/*
+;38:====================
+;39:CG_BuildSolidList
+;40:
+;41:When a new cg.snap has been set, this function builds a sublist
+;42:of the entities that are actually solid, to make for more
+;43:efficient collision detection
+;44:====================
+;45:*/
+;46:void CG_BuildSolidList( void ) {
+line 52
+;47:	int			i;
+;48:	centity_t	*cent;
+;49:	snapshot_t	*snap;
+;50:	entityState_t	*ent;
+;51:
+;52:	cg_numSolidEntities = 0;
+ADDRGP4 cg_numSolidEntities
+CNSTI4 0
+ASGNI4
+line 53
+;53:	cg_numTriggerEntities = 0;
+ADDRGP4 cg_numTriggerEntities
+CNSTI4 0
+ASGNI4
+line 55
+;54:
+;55:	if ( cg.nextSnap && !cg.nextFrameTeleport && !cg.thisFrameTeleport ) {
+ADDRGP4 cg+40
+INDIRP4
+CVPU4 4
+CNSTU4 0
+EQU4 $82
+ADDRLP4 16
+CNSTI4 0
+ASGNI4
+ADDRGP4 cg+1868884
+INDIRI4
+ADDRLP4 16
+INDIRI4
+NEI4 $82
+ADDRGP4 cg+1868880
+INDIRI4
+ADDRLP4 16
+INDIRI4
+NEI4 $82
+line 56
+;56:		snap = cg.nextSnap;
+ADDRLP4 12
+ADDRGP4 cg+40
+INDIRP4
+ASGNP4
+line 57
+;57:	} else {
+ADDRGP4 $83
+JUMPV
+LABELV $82
+line 58
+;58:		snap = cg.snap;
+ADDRLP4 12
+ADDRGP4 cg+36
+INDIRP4
+ASGNP4
+line 59
+;59:	}
+LABELV $83
+line 61
+;60:
+;61:	for ( i = 0 ; i < snap->numEntities ; i++ ) {
+ADDRLP4 8
+CNSTI4 0
+ASGNI4
+ADDRGP4 $92
+JUMPV
+LABELV $89
+line 62
+;62:		cent = &cg_entities[ snap->entities[ i ].number ];
+ADDRLP4 0
+CNSTI4 928
+CNSTI4 228
+ADDRLP4 8
+INDIRI4
+MULI4
+ADDRLP4 12
+INDIRP4
+CNSTI4 520
+ADDP4
+ADDP4
+INDIRI4
+MULI4
+ADDRGP4 cg_entities
+ADDP4
+ASGNP4
+line 63
+;63:		ent = &cent->currentState;
+ADDRLP4 4
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 65
+;64:
+;65:		if ( ent->eType == ET_ITEM || ent->eType == ET_PUSH_TRIGGER || ent->eType == ET_TELEPORT_TRIGGER ) {
+ADDRLP4 20
+ADDRLP4 4
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 20
+INDIRI4
+CNSTI4 2
+EQI4 $96
+ADDRLP4 20
+INDIRI4
+CNSTI4 8
+EQI4 $96
+ADDRLP4 20
+INDIRI4
+CNSTI4 9
+NEI4 $93
+LABELV $96
+line 66
+;66:			cg_triggerEntities[cg_numTriggerEntities] = cent;
+ADDRGP4 cg_numTriggerEntities
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 cg_triggerEntities
+ADDP4
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 67
+;67:			cg_numTriggerEntities++;
+ADDRLP4 24
+ADDRGP4 cg_numTriggerEntities
+ASGNP4
+ADDRLP4 24
+INDIRP4
+ADDRLP4 24
+INDIRP4
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+line 68
+;68:			continue;
+ADDRGP4 $90
+JUMPV
+LABELV $93
+line 71
+;69:		}
+;70:
+;71:		if ( cent->nextState.solid ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 416
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $97
+line 72
+;72:			cg_solidEntities[cg_numSolidEntities] = cent;
+ADDRGP4 cg_numSolidEntities
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 cg_solidEntities
+ADDP4
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 73
+;73:			cg_numSolidEntities++;
+ADDRLP4 24
+ADDRGP4 cg_numSolidEntities
+ASGNP4
+ADDRLP4 24
+INDIRP4
+ADDRLP4 24
+INDIRP4
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+line 74
+;74:			continue;
+LABELV $97
+line 76
+;75:		}
+;76:	}
+LABELV $90
+line 61
+ADDRLP4 8
+ADDRLP4 8
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+LABELV $92
+ADDRLP4 8
+INDIRI4
+ADDRLP4 12
+INDIRP4
+CNSTI4 516
+ADDP4
+INDIRI4
+LTI4 $89
+line 77
+;77:}
+LABELV $81
+endproc CG_BuildSolidList 28 0
+proc CG_ClipMoveToEntities 144 36
+line 86
+;78:
+;79:/*
+;80:====================
+;81:CG_ClipMoveToEntities
+;82:
+;83:====================
+;84:*/
+;85:static void CG_ClipMoveToEntities ( const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
+;86:							int skipNumber, int mask, trace_t *tr ) {
+line 95
+;87:	int			i, x, zd, zu;
+;88:	trace_t		trace;
+;89:	entityState_t	*ent;
+;90:	clipHandle_t 	cmodel;
+;91:	vec3_t		bmins, bmaxs;
+;92:	vec3_t		origin, angles;
+;93:	centity_t	*cent;
+;94:
+;95:	for ( i = 0 ; i < cg_numSolidEntities ; i++ ) {
+ADDRLP4 64
+CNSTI4 0
+ASGNI4
+ADDRGP4 $103
+JUMPV
+LABELV $100
+line 96
+;96:		cent = cg_solidEntities[ i ];
+ADDRLP4 60
+ADDRLP4 64
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 cg_solidEntities
+ADDP4
+INDIRP4
+ASGNP4
+line 97
+;97:		ent = &cent->currentState;
+ADDRLP4 0
+ADDRLP4 60
+INDIRP4
+ASGNP4
+line 99
+;98:
+;99:		if ( ent->number == skipNumber ) {
+ADDRLP4 0
+INDIRP4
+INDIRI4
+ADDRFP4 16
+INDIRI4
+NEI4 $104
+line 100
+;100:			continue;
+ADDRGP4 $101
+JUMPV
+LABELV $104
+line 103
+;101:		}
+;102:
+;103:		if ( ent->solid == SOLID_BMODEL ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 188
+ADDP4
+INDIRI4
+CNSTI4 16777215
+NEI4 $106
+line 105
+;104:			// special value for bmodel
+;105:			cmodel = trap_CM_InlineModel( ent->modelindex );
+ADDRLP4 0
+INDIRP4
+CNSTI4 172
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 132
+ADDRGP4 trap_CM_InlineModel
+CALLI4
+ASGNI4
+ADDRLP4 68
+ADDRLP4 132
+INDIRI4
+ASGNI4
+line 106
+;106:			VectorCopy( cent->lerpAngles, angles );
+ADDRLP4 108
+ADDRLP4 60
+INDIRP4
+CNSTI4 828
+ADDP4
+INDIRB
+ASGNB 12
+line 107
+;107:			BG_EvaluateTrajectory( &cent->currentState.pos, cg.physicsTime, origin );
+ADDRLP4 60
+INDIRP4
+CNSTI4 12
+ADDP4
+ARGP4
+ADDRGP4 cg+1868900
+INDIRI4
+ARGI4
+ADDRLP4 96
+ARGP4
+ADDRGP4 BG_EvaluateTrajectory
+CALLV
+pop
+line 108
+;108:		} else {
+ADDRGP4 $107
+JUMPV
+LABELV $106
+line 110
+;109:			// encoded bbox
+;110:			x = (ent->solid & 255);
+ADDRLP4 120
+ADDRLP4 0
+INDIRP4
+CNSTI4 188
+ADDP4
+INDIRI4
+CNSTI4 255
+BANDI4
+ASGNI4
+line 111
+;111:			zd = ((ent->solid>>8) & 255);
+ADDRLP4 124
+ADDRLP4 0
+INDIRP4
+CNSTI4 188
+ADDP4
+INDIRI4
+CNSTI4 8
+RSHI4
+CNSTI4 255
+BANDI4
+ASGNI4
+line 112
+;112:			zu = ((ent->solid>>16) & 255) - 32;
+ADDRLP4 128
+ADDRLP4 0
+INDIRP4
+CNSTI4 188
+ADDP4
+INDIRI4
+CNSTI4 16
+RSHI4
+CNSTI4 255
+BANDI4
+CNSTI4 32
+SUBI4
+ASGNI4
+line 114
+;113:
+;114:			bmins[0] = bmins[1] = -x;
+ADDRLP4 132
+ADDRLP4 120
+INDIRI4
+NEGI4
+CVIF4 4
+ASGNF4
+ADDRLP4 72+4
+ADDRLP4 132
+INDIRF4
+ASGNF4
+ADDRLP4 72
+ADDRLP4 132
+INDIRF4
+ASGNF4
+line 115
+;115:			bmaxs[0] = bmaxs[1] = x;
+ADDRLP4 136
+ADDRLP4 120
+INDIRI4
+CVIF4 4
+ASGNF4
+ADDRLP4 84+4
+ADDRLP4 136
+INDIRF4
+ASGNF4
+ADDRLP4 84
+ADDRLP4 136
+INDIRF4
+ASGNF4
+line 116
+;116:			bmins[2] = -zd;
+ADDRLP4 72+8
+ADDRLP4 124
+INDIRI4
+NEGI4
+CVIF4 4
+ASGNF4
+line 117
+;117:			bmaxs[2] = zu;
+ADDRLP4 84+8
+ADDRLP4 128
+INDIRI4
+CVIF4 4
+ASGNF4
+line 119
+;118:
+;119:			cmodel = trap_CM_TempBoxModel( bmins, bmaxs );
+ADDRLP4 72
+ARGP4
+ADDRLP4 84
+ARGP4
+ADDRLP4 140
+ADDRGP4 trap_CM_TempBoxModel
+CALLI4
+ASGNI4
+ADDRLP4 68
+ADDRLP4 140
+INDIRI4
+ASGNI4
+line 120
+;120:			VectorCopy( vec3_origin, angles );
+ADDRLP4 108
+ADDRGP4 vec3_origin
+INDIRB
+ASGNB 12
+line 121
+;121:			VectorCopy( cent->lerpOrigin, origin );
+ADDRLP4 96
+ADDRLP4 60
+INDIRP4
+CNSTI4 816
+ADDP4
+INDIRB
+ASGNB 12
+line 122
+;122:		}
+LABELV $107
+line 125
+;123:
+;124:
+;125:		trap_CM_TransformedBoxTrace ( &trace, start, end,
+ADDRLP4 4
+ARGP4
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRFP4 12
+INDIRP4
+ARGP4
+ADDRFP4 4
+INDIRP4
+ARGP4
+ADDRFP4 8
+INDIRP4
+ARGP4
+ADDRLP4 68
+INDIRI4
+ARGI4
+ADDRFP4 20
+INDIRI4
+ARGI4
+ADDRLP4 96
+ARGP4
+ADDRLP4 108
+ARGP4
+ADDRGP4 trap_CM_TransformedBoxTrace
+CALLV
+pop
+line 128
+;126:			mins, maxs, cmodel,  mask, origin, angles);
+;127:
+;128:		if (trace.allsolid || trace.fraction < tr->fraction) {
+ADDRLP4 4
+INDIRI4
+CNSTI4 0
+NEI4 $116
+ADDRLP4 4+8
+INDIRF4
+ADDRFP4 24
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+GEF4 $113
+LABELV $116
+line 129
+;129:			trace.entityNum = ent->number;
+ADDRLP4 4+52
+ADDRLP4 0
+INDIRP4
+INDIRI4
+ASGNI4
+line 130
+;130:			*tr = trace;
+ADDRFP4 24
+INDIRP4
+ADDRLP4 4
+INDIRB
+ASGNB 56
+line 131
+;131:		} else if (trace.startsolid) {
+ADDRGP4 $114
+JUMPV
+LABELV $113
+ADDRLP4 4+4
+INDIRI4
+CNSTI4 0
+EQI4 $118
+line 132
+;132:			tr->startsolid = qtrue;
+ADDRFP4 24
+INDIRP4
+CNSTI4 4
+ADDP4
+CNSTI4 1
+ASGNI4
+line 133
+;133:		}
+LABELV $118
+LABELV $114
+line 134
+;134:		if ( tr->allsolid ) {
+ADDRFP4 24
+INDIRP4
+INDIRI4
+CNSTI4 0
+EQI4 $121
+line 135
+;135:			return;
+ADDRGP4 $99
+JUMPV
+LABELV $121
+line 137
+;136:		}
+;137:	}
+LABELV $101
+line 95
+ADDRLP4 64
+ADDRLP4 64
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+LABELV $103
+ADDRLP4 64
+INDIRI4
+ADDRGP4 cg_numSolidEntities
+INDIRI4
+LTI4 $100
+line 138
+;138:}
+LABELV $99
+endproc CG_ClipMoveToEntities 144 36
+export CG_Trace
+proc CG_Trace 60 28
+line 146
+;139:
+;140:/*
+;141:================
+;142:CG_Trace
+;143:================
+;144:*/
+;145:void	CG_Trace( trace_t *result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, 
+;146:					 int skipNumber, int mask ) {
+line 149
+;147:	trace_t	t;
+;148:
+;149:	trap_CM_BoxTrace ( &t, start, end, mins, maxs, 0, mask);
+ADDRLP4 0
+ARGP4
+ADDRFP4 4
+INDIRP4
+ARGP4
+ADDRFP4 16
+INDIRP4
+ARGP4
+ADDRFP4 8
+INDIRP4
+ARGP4
+ADDRFP4 12
+INDIRP4
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRFP4 24
+INDIRI4
+ARGI4
+ADDRGP4 trap_CM_BoxTrace
+CALLV
+pop
+line 150
+;150:	t.entityNum = t.fraction != 1.0 ? ENTITYNUM_WORLD : ENTITYNUM_NONE;
+ADDRLP4 0+8
+INDIRF4
+CNSTF4 1065353216
+EQF4 $127
+ADDRLP4 56
+CNSTI4 4094
+ASGNI4
+ADDRGP4 $128
+JUMPV
+LABELV $127
+ADDRLP4 56
+CNSTI4 4095
+ASGNI4
+LABELV $128
+ADDRLP4 0+52
+ADDRLP4 56
+INDIRI4
+ASGNI4
+line 152
+;151:	// check all other solid models
+;152:	CG_ClipMoveToEntities (start, mins, maxs, end, skipNumber, mask, &t);
+ADDRFP4 4
+INDIRP4
+ARGP4
+ADDRFP4 8
+INDIRP4
+ARGP4
+ADDRFP4 12
+INDIRP4
+ARGP4
+ADDRFP4 16
+INDIRP4
+ARGP4
+ADDRFP4 20
+INDIRI4
+ARGI4
+ADDRFP4 24
+INDIRI4
+ARGI4
+ADDRLP4 0
+ARGP4
+ADDRGP4 CG_ClipMoveToEntities
+CALLV
+pop
+line 154
+;153:
+;154:	*result = t;
+ADDRFP4 0
+INDIRP4
+ADDRLP4 0
+INDIRB
+ASGNB 56
+line 155
+;155:}
+LABELV $123
+endproc CG_Trace 60 28
+export CG_PointContents
+proc CG_PointContents 36 16
+line 162
+;156:
+;157:/*
+;158:================
+;159:CG_PointContents
+;160:================
+;161:*/
+;162:int		CG_PointContents( const vec3_t point, int passEntityNum ) {
+line 169
+;163:	int			i;
+;164:	entityState_t	*ent;
+;165:	centity_t	*cent;
+;166:	clipHandle_t cmodel;
+;167:	int			contents;
+;168:
+;169:	contents = trap_CM_PointContents (point, 0);
+ADDRFP4 0
+INDIRP4
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 20
+ADDRGP4 trap_CM_PointContents
+CALLI4
+ASGNI4
+ADDRLP4 16
+ADDRLP4 20
+INDIRI4
+ASGNI4
+line 171
+;170:
+;171:	for ( i = 0 ; i < cg_numSolidEntities ; i++ ) {
+ADDRLP4 8
+CNSTI4 0
+ASGNI4
+ADDRGP4 $133
+JUMPV
+LABELV $130
+line 172
+;172:		cent = cg_solidEntities[ i ];
+ADDRLP4 4
+ADDRLP4 8
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 cg_solidEntities
+ADDP4
+INDIRP4
+ASGNP4
+line 174
+;173:
+;174:		ent = &cent->currentState;
+ADDRLP4 0
+ADDRLP4 4
+INDIRP4
+ASGNP4
+line 176
+;175:
+;176:		if ( ent->number == passEntityNum ) {
+ADDRLP4 0
+INDIRP4
+INDIRI4
+ADDRFP4 4
+INDIRI4
+NEI4 $134
+line 177
+;177:			continue;
+ADDRGP4 $131
+JUMPV
+LABELV $134
+line 180
+;178:		}
+;179:
+;180:		if (ent->solid != SOLID_BMODEL) { // special value for bmodel
+ADDRLP4 0
+INDIRP4
+CNSTI4 188
+ADDP4
+INDIRI4
+CNSTI4 16777215
+EQI4 $136
+line 181
+;181:			continue;
+ADDRGP4 $131
+JUMPV
+LABELV $136
+line 184
+;182:		}
+;183:
+;184:		cmodel = trap_CM_InlineModel( ent->modelindex );
+ADDRLP4 0
+INDIRP4
+CNSTI4 172
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 24
+ADDRGP4 trap_CM_InlineModel
+CALLI4
+ASGNI4
+ADDRLP4 12
+ADDRLP4 24
+INDIRI4
+ASGNI4
+line 185
+;185:		if ( !cmodel ) {
+ADDRLP4 12
+INDIRI4
+CNSTI4 0
+NEI4 $138
+line 186
+;186:			continue;
+ADDRGP4 $131
+JUMPV
+LABELV $138
+line 189
+;187:		}
+;188:
+;189:		contents |= trap_CM_TransformedPointContents( point, cmodel, cent->lerpOrigin, cent->lerpAngles );
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRLP4 12
+INDIRI4
+ARGI4
+ADDRLP4 4
+INDIRP4
+CNSTI4 816
+ADDP4
+ARGP4
+ADDRLP4 4
+INDIRP4
+CNSTI4 828
+ADDP4
+ARGP4
+ADDRLP4 32
+ADDRGP4 trap_CM_TransformedPointContents
+CALLI4
+ASGNI4
+ADDRLP4 16
+ADDRLP4 16
+INDIRI4
+ADDRLP4 32
+INDIRI4
+BORI4
+ASGNI4
+line 190
+;190:	}
+LABELV $131
+line 171
+ADDRLP4 8
+ADDRLP4 8
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+LABELV $133
+ADDRLP4 8
+INDIRI4
+ADDRGP4 cg_numSolidEntities
+INDIRI4
+LTI4 $130
+line 192
+;191:
+;192:	return contents;
+ADDRLP4 16
+INDIRI4
+RETI4
+LABELV $129
+endproc CG_PointContents 36 16
+proc CG_InterpolatePlayerState 64 12
+line 204
+;193:}
+;194:
+;195:
+;196:/*
+;197:========================
+;198:CG_InterpolatePlayerState
+;199:
+;200:Generates cg.predictedPlayerState by interpolating between
+;201:cg.snap->player_state and cg.nextFrame->player_state
+;202:========================
+;203:*/
+;204:static void CG_InterpolatePlayerState( qboolean grabAngles ) {
+line 210
+;205:	float			f;
+;206:	int				i;
+;207:	playerState_t	*out;
+;208:	snapshot_t		*prev, *next;
+;209:
+;210:	out = &cg.predictedPlayerState;
+ADDRLP4 12
+ADDRGP4 cg+1868928
+ASGNP4
+line 211
+;211:	prev = cg.snap;
+ADDRLP4 4
+ADDRGP4 cg+36
+INDIRP4
+ASGNP4
+line 212
+;212:	next = cg.nextSnap;
+ADDRLP4 8
+ADDRGP4 cg+40
+INDIRP4
+ASGNP4
+line 214
+;213:
+;214:	*out = cg.snap->ps;
+ADDRLP4 12
+INDIRP4
+ADDRGP4 cg+36
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRB
+ASGNB 472
+line 217
+;215:
+;216:	// if we are still allowing local input, short circuit the view angles
+;217:	if ( grabAngles ) {
+ADDRFP4 0
+INDIRI4
+CNSTI4 0
+EQI4 $145
+line 221
+;218:		usercmd_t	cmd;
+;219:		int			cmdNum;
+;220:
+;221:		cmdNum = trap_GetCurrentCmdNumber();
+ADDRLP4 48
+ADDRGP4 trap_GetCurrentCmdNumber
+CALLI4
+ASGNI4
+ADDRLP4 44
+ADDRLP4 48
+INDIRI4
+ASGNI4
+line 222
+;222:		trap_GetUserCmd( cmdNum, &cmd );
+ADDRLP4 44
+INDIRI4
+ARGI4
+ADDRLP4 20
+ARGP4
+ADDRGP4 trap_GetUserCmd
+CALLI4
+pop
+line 224
+;223:
+;224:		PM_UpdateViewAngles( out, &cmd );
+ADDRLP4 12
+INDIRP4
+ARGP4
+ADDRLP4 20
+ARGP4
+ADDRGP4 PM_UpdateViewAngles
+CALLV
+pop
+line 225
+;225:	}
+LABELV $145
+line 228
+;226:
+;227:	// if the next frame is a teleport, we can't lerp to it
+;228:	if ( cg.nextFrameTeleport ) {
+ADDRGP4 cg+1868884
+INDIRI4
+CNSTI4 0
+EQI4 $147
+line 229
+;229:		return;
+ADDRGP4 $140
+JUMPV
+LABELV $147
+line 232
+;230:	}
+;231:
+;232:	if ( !next || next->serverTime <= prev->serverTime ) {
+ADDRLP4 8
+INDIRP4
+CVPU4 4
+CNSTU4 0
+EQU4 $152
+ADDRLP4 24
+CNSTI4 8
+ASGNI4
+ADDRLP4 8
+INDIRP4
+ADDRLP4 24
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 4
+INDIRP4
+ADDRLP4 24
+INDIRI4
+ADDP4
+INDIRI4
+GTI4 $150
+LABELV $152
+line 233
+;233:		return;
+ADDRGP4 $140
+JUMPV
+LABELV $150
+line 236
+;234:	}
+;235:
+;236:	f = (float)( cg.time - prev->serverTime ) / ( next->serverTime - prev->serverTime );
+ADDRLP4 28
+CNSTI4 8
+ASGNI4
+ADDRLP4 32
+ADDRLP4 4
+INDIRP4
+ADDRLP4 28
+INDIRI4
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 16
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRLP4 32
+INDIRI4
+SUBI4
+CVIF4 4
+ADDRLP4 8
+INDIRP4
+ADDRLP4 28
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 32
+INDIRI4
+SUBI4
+CVIF4 4
+DIVF4
+ASGNF4
+line 238
+;237:
+;238:	i = next->ps.bobCycle;
+ADDRLP4 0
+ADDRLP4 8
+INDIRP4
+CNSTI4 52
+ADDP4
+INDIRI4
+ASGNI4
+line 239
+;239:	if ( i < prev->ps.bobCycle ) {
+ADDRLP4 0
+INDIRI4
+ADDRLP4 4
+INDIRP4
+CNSTI4 52
+ADDP4
+INDIRI4
+GEI4 $154
+line 240
+;240:		i += 256;		// handle wraparound
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 256
+ADDI4
+ASGNI4
+line 241
+;241:	}
+LABELV $154
+line 242
+;242:	out->bobCycle = prev->ps.bobCycle + f * ( i - prev->ps.bobCycle );
+ADDRLP4 36
+ADDRLP4 4
+INDIRP4
+CNSTI4 52
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 12
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRLP4 36
+INDIRI4
+CVIF4 4
+ADDRLP4 16
+INDIRF4
+ADDRLP4 0
+INDIRI4
+ADDRLP4 36
+INDIRI4
+SUBI4
+CVIF4 4
+MULF4
+ADDF4
+CVFI4 4
+ASGNI4
+line 244
+;243:
+;244:	for ( i = 0 ; i < 3 ; i++ ) {
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+LABELV $156
+line 245
+;245:		out->origin[i] = prev->ps.origin[i] + f * (next->ps.origin[i] - prev->ps.origin[i] );
+ADDRLP4 40
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ASGNI4
+ADDRLP4 44
+CNSTI4 64
+ASGNI4
+ADDRLP4 48
+ADDRLP4 40
+INDIRI4
+ADDRLP4 4
+INDIRP4
+ADDRLP4 44
+INDIRI4
+ADDP4
+ADDP4
+INDIRF4
+ASGNF4
+ADDRLP4 40
+INDIRI4
+ADDRLP4 12
+INDIRP4
+CNSTI4 20
+ADDP4
+ADDP4
+ADDRLP4 48
+INDIRF4
+ADDRLP4 16
+INDIRF4
+ADDRLP4 40
+INDIRI4
+ADDRLP4 8
+INDIRP4
+ADDRLP4 44
+INDIRI4
+ADDP4
+ADDP4
+INDIRF4
+ADDRLP4 48
+INDIRF4
+SUBF4
+MULF4
+ADDF4
+ASGNF4
+line 246
+;246:		if ( !grabAngles ) {
+ADDRFP4 0
+INDIRI4
+CNSTI4 0
+NEI4 $160
+line 247
+;247:			out->viewangles[i] = LerpAngle( 
+ADDRLP4 52
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ASGNI4
+ADDRLP4 56
+CNSTI4 196
+ASGNI4
+ADDRLP4 52
+INDIRI4
+ADDRLP4 4
+INDIRP4
+ADDRLP4 56
+INDIRI4
+ADDP4
+ADDP4
+INDIRF4
+ARGF4
+ADDRLP4 52
+INDIRI4
+ADDRLP4 8
+INDIRP4
+ADDRLP4 56
+INDIRI4
+ADDP4
+ADDP4
+INDIRF4
+ARGF4
+ADDRLP4 16
+INDIRF4
+ARGF4
+ADDRLP4 60
+ADDRGP4 LerpAngle
+CALLF4
+ASGNF4
+ADDRLP4 52
+INDIRI4
+ADDRLP4 12
+INDIRP4
+CNSTI4 152
+ADDP4
+ADDP4
+ADDRLP4 60
+INDIRF4
+ASGNF4
+line 249
+;248:				prev->ps.viewangles[i], next->ps.viewangles[i], f );
+;249:		}
+LABELV $160
+line 250
+;250:		out->velocity[i] = prev->ps.velocity[i] + 
+ADDRLP4 52
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ASGNI4
+ADDRLP4 56
+CNSTI4 76
+ASGNI4
+ADDRLP4 60
+ADDRLP4 52
+INDIRI4
+ADDRLP4 4
+INDIRP4
+ADDRLP4 56
+INDIRI4
+ADDP4
+ADDP4
+INDIRF4
+ASGNF4
+ADDRLP4 52
+INDIRI4
+ADDRLP4 12
+INDIRP4
+CNSTI4 32
+ADDP4
+ADDP4
+ADDRLP4 60
+INDIRF4
+ADDRLP4 16
+INDIRF4
+ADDRLP4 52
+INDIRI4
+ADDRLP4 8
+INDIRP4
+ADDRLP4 56
+INDIRI4
+ADDP4
+ADDP4
+INDIRF4
+ADDRLP4 60
+INDIRF4
+SUBF4
+MULF4
+ADDF4
+ASGNF4
+line 252
+;251:			f * (next->ps.velocity[i] - prev->ps.velocity[i] );
+;252:	}
+LABELV $157
+line 244
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 3
+LTI4 $156
+line 254
+;253:
+;254:}
+LABELV $140
+endproc CG_InterpolatePlayerState 64 12
+proc CG_TouchItem 24 12
+line 261
+;255:
+;256:/*
+;257:===================
+;258:CG_TouchItem
+;259:===================
+;260:*/
+;261:static void CG_TouchItem( centity_t *cent ) {
+line 266
+;262:	gitem_t		*item;
+;263:	//For instantgib
+;264:	qboolean	canBePicked;
+;265:
+;266:	if(cgs.gametype == GT_ELIMINATION || cgs.gametype == GT_LMS)
+ADDRGP4 cgs+339040
+INDIRI4
+CNSTI4 9
+EQI4 $167
+ADDRGP4 cgs+339040
+INDIRI4
+CNSTI4 11
+NEI4 $163
+LABELV $167
+line 267
+;267:		return; //No weapon pickup in elimination
+ADDRGP4 $162
+JUMPV
+LABELV $163
+line 270
+;268:
+;269:	//normally we can
+;270:	canBePicked = qtrue;
+ADDRLP4 4
+CNSTI4 1
+ASGNI4
+line 273
+;271:
+;272:	//But in instantgib, rocket arena, and CTF_ELIMINATION we normally can't:
+;273:	if(cgs.nopickup || cgs.gametype == GT_CTF_ELIMINATION)
+ADDRGP4 cgs+342412
+INDIRI4
+CNSTI4 0
+NEI4 $172
+ADDRGP4 cgs+339040
+INDIRI4
+CNSTI4 10
+NEI4 $168
+LABELV $172
+line 274
+;274:		canBePicked = qfalse;
+ADDRLP4 4
+CNSTI4 0
+ASGNI4
+LABELV $168
+line 276
+;275:
+;276:	if ( !cg_predictItems.integer ) {
+ADDRGP4 cg_predictItems+12
+INDIRI4
+CNSTI4 0
+NEI4 $173
+line 277
+;277:		return;
+ADDRGP4 $162
+JUMPV
+LABELV $173
+line 279
+;278:	}
+;279:	if ( !BG_PlayerTouchesItem( &cg.predictedPlayerState, &cent->currentState, cg.time ) ) {
+ADDRGP4 cg+1868928
+ARGP4
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 cg+1868892
+INDIRI4
+ARGI4
+ADDRLP4 8
+ADDRGP4 BG_PlayerTouchesItem
+CALLI4
+ASGNI4
+ADDRLP4 8
+INDIRI4
+CNSTI4 0
+NEI4 $176
+line 280
+;280:		return;
+ADDRGP4 $162
+JUMPV
+LABELV $176
+line 284
+;281:	}
+;282:
+;283:	// never pick an item up twice in a prediction
+;284:	if ( cent->miscTime == cg.time ) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 484
+ADDP4
+INDIRI4
+ADDRGP4 cg+1868892
+INDIRI4
+NEI4 $180
+line 285
+;285:		return;
+ADDRGP4 $162
+JUMPV
+LABELV $180
+line 288
+;286:	}
+;287:
+;288:	if ( !BG_CanItemBeGrabbed( cgs.gametype, &cent->currentState, &cg.predictedPlayerState ) ) {
+ADDRGP4 cgs+339040
+INDIRI4
+ARGI4
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 cg+1868928
+ARGP4
+ADDRLP4 12
+ADDRGP4 BG_CanItemBeGrabbed
+CALLI4
+ASGNI4
+ADDRLP4 12
+INDIRI4
+CNSTI4 0
+NEI4 $183
+line 289
+;289:		return;		// can't hold it
+ADDRGP4 $162
+JUMPV
+LABELV $183
+line 292
+;290:	}
+;291:
+;292:	item = &bg_itemlist[ cent->currentState.modelindex ];
+ADDRLP4 0
+CNSTI4 56
+ADDRFP4 0
+INDIRP4
+CNSTI4 172
+ADDP4
+INDIRI4
+MULI4
+ADDRGP4 bg_itemlist
+ADDP4
+ASGNP4
+line 297
+;293:
+;294:	// Special case for flags.  
+;295:	// We don't predict touching our own flag
+;296:#if 1 //MISSIONPACK
+;297:	if( cgs.gametype == GT_1FCTF ) {
+ADDRGP4 cgs+339040
+INDIRI4
+CNSTI4 6
+NEI4 $187
+line 298
+;298:		if( item->giTag != PW_NEUTRALFLAG ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+CNSTI4 9
+EQI4 $190
+line 299
+;299:			return;
+ADDRGP4 $162
+JUMPV
+LABELV $190
+line 301
+;300:		}
+;301:	}
+LABELV $187
+line 302
+;302:	if( cgs.gametype == GT_CTF || cgs.gametype == GT_CTF_ELIMINATION || cgs.gametype == GT_HARVESTER ) {
+ADDRGP4 cgs+339040
+INDIRI4
+CNSTI4 5
+EQI4 $198
+ADDRGP4 cgs+339040
+INDIRI4
+CNSTI4 10
+EQI4 $198
+ADDRGP4 cgs+339040
+INDIRI4
+CNSTI4 8
+NEI4 $192
+LABELV $198
+line 306
+;303:#else
+;304:	if( cgs.gametype == GT_CTF || cgs.gametype == GT_CTF_ELIMINATION ) {
+;305:#endif
+;306:		if (cg.predictedPlayerState.persistant[PERS_TEAM] == TEAM_RED &&
+ADDRGP4 cg+1868928+248+12
+INDIRI4
+CNSTI4 1
+NEI4 $199
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+CNSTI4 7
+NEI4 $199
+line 308
+;307:			item->giTag == PW_REDFLAG)
+;308:			return;
+ADDRGP4 $162
+JUMPV
+LABELV $199
+line 309
+;309:		if (cg.predictedPlayerState.persistant[PERS_TEAM] == TEAM_BLUE &&
+ADDRGP4 cg+1868928+248+12
+INDIRI4
+CNSTI4 2
+NEI4 $204
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+CNSTI4 8
+NEI4 $204
+line 311
+;310:			item->giTag == PW_BLUEFLAG)
+;311:			return;
+ADDRGP4 $162
+JUMPV
+LABELV $204
+line 313
+;312:		//Even in instantgib, we can predict our enemy flag
+;313:		if (cg.predictedPlayerState.persistant[PERS_TEAM] == TEAM_RED &&
+ADDRLP4 16
+CNSTI4 1
+ASGNI4
+ADDRGP4 cg+1868928+248+12
+INDIRI4
+ADDRLP4 16
+INDIRI4
+NEI4 $209
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+CNSTI4 8
+NEI4 $209
+ADDRGP4 cgs+339052
+INDIRI4
+ADDRLP4 16
+INDIRI4
+BANDI4
+CNSTI4 0
+EQI4 $216
+ADDRGP4 cgs+342404
+INDIRI4
+ADDRLP4 16
+INDIRI4
+NEI4 $209
+LABELV $216
+line 315
+;314:			item->giTag == PW_BLUEFLAG && (!(cgs.elimflags&EF_ONEWAY) || cgs.attackingTeam == TEAM_RED))
+;315:			canBePicked = qtrue;
+ADDRLP4 4
+CNSTI4 1
+ASGNI4
+LABELV $209
+line 316
+;316:		if (cg.predictedPlayerState.persistant[PERS_TEAM] == TEAM_BLUE &&
+ADDRLP4 20
+CNSTI4 2
+ASGNI4
+ADDRGP4 cg+1868928+248+12
+INDIRI4
+ADDRLP4 20
+INDIRI4
+NEI4 $217
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+CNSTI4 7
+NEI4 $217
+ADDRGP4 cgs+339052
+INDIRI4
+CNSTI4 1
+BANDI4
+CNSTI4 0
+EQI4 $224
+ADDRGP4 cgs+342404
+INDIRI4
+ADDRLP4 20
+INDIRI4
+NEI4 $217
+LABELV $224
+line 318
+;317:			item->giTag == PW_REDFLAG && (!(cgs.elimflags&EF_ONEWAY) || cgs.attackingTeam == TEAM_BLUE))
+;318:			canBePicked = qtrue;
+ADDRLP4 4
+CNSTI4 1
+ASGNI4
+LABELV $217
+line 319
+;319:		if (item->giTag == WP_RAILGUN)
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+CNSTI4 7
+NEI4 $225
+line 320
+;320:			canBePicked = qfalse;
+ADDRLP4 4
+CNSTI4 0
+ASGNI4
+LABELV $225
+line 321
+;321:		if (item->giTag == WP_PLASMAGUN)
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+CNSTI4 8
+NEI4 $227
+line 322
+;322:			canBePicked = qfalse;
+ADDRLP4 4
+CNSTI4 0
+ASGNI4
+LABELV $227
+line 323
+;323:	}
+LABELV $192
+line 326
+;324:
+;325:	//Currently we don't predict anything in Double Domination because it looks like we take a flag
+;326:	if( cgs.gametype == GT_DOUBLE_D ) {
+ADDRGP4 cgs+339040
+INDIRI4
+CNSTI4 12
+NEI4 $229
+line 327
+;327:		if(cgs.redflag == TEAM_NONE)
+ADDRGP4 cgs+342624
+INDIRI4
+CNSTI4 3
+NEI4 $232
+line 328
+;328:			return; //Can never pick if just one flag is NONE (because then the other is too)
+ADDRGP4 $162
+JUMPV
+LABELV $232
+line 329
+;329:		if(item->giTag == PW_REDFLAG){ //at point A
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+CNSTI4 7
+NEI4 $235
+line 330
+;330:			if(cgs.redflag != cg.predictedPlayerState.persistant[PERS_TEAM]) //not already taken
+ADDRGP4 cgs+342624
+INDIRI4
+ADDRGP4 cg+1868928+248+12
+INDIRI4
+EQI4 $162
+line 331
+;331:                            trap_S_StartLocalSound( cgs.media.hitSound , CHAN_ANNOUNCER );
+ADDRGP4 cgs+956380+2228
+INDIRI4
+ARGI4
+CNSTI4 7
+ARGI4
+ADDRGP4 trap_S_StartLocalSound
+CALLV
+pop
+line 332
+;332:			return;
+ADDRGP4 $162
+JUMPV
+LABELV $235
+line 334
+;333:		}	
+;334:		if(item->giTag == PW_BLUEFLAG){ //at point B
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+CNSTI4 8
+NEI4 $245
+line 335
+;335:			if(cgs.blueflag != cg.predictedPlayerState.persistant[PERS_TEAM]) //already taken
+ADDRGP4 cgs+342628
+INDIRI4
+ADDRGP4 cg+1868928+248+12
+INDIRI4
+EQI4 $162
+line 336
+;336:                            trap_S_StartLocalSound( cgs.media.hitSound , CHAN_ANNOUNCER );
+ADDRGP4 cgs+956380+2228
+INDIRI4
+ARGI4
+CNSTI4 7
+ARGI4
+ADDRGP4 trap_S_StartLocalSound
+CALLV
+pop
+line 337
+;337:			return;
+ADDRGP4 $162
+JUMPV
+LABELV $245
+line 339
+;338:		}	
+;339:	}
+LABELV $229
+line 342
+;340:
+;341:	// grab it
+;342:	if(canBePicked)
+ADDRLP4 4
+INDIRI4
+CNSTI4 0
+EQI4 $255
+line 343
+;343:	{
+line 344
+;344:		BG_AddPredictableEventToPlayerstate( EV_ITEM_PICKUP, cent->currentState.modelindex , &cg.predictedPlayerState);
+CNSTI4 19
+ARGI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 172
+ADDP4
+INDIRI4
+ARGI4
+ADDRGP4 cg+1868928
+ARGP4
+ADDRGP4 BG_AddPredictableEventToPlayerstate
+CALLV
+pop
+line 347
+;345:
+;346:		// remove it from the frame so it won't be drawn
+;347:		cent->currentState.eFlags |= EF_NODRAW;
+ADDRLP4 16
+ADDRFP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ASGNP4
+ADDRLP4 16
+INDIRP4
+ADDRLP4 16
+INDIRP4
+INDIRI4
+CNSTI4 128
+BORI4
+ASGNI4
+line 350
+;348:
+;349:		// don't touch it again this prediction
+;350:		cent->miscTime = cg.time;
+ADDRFP4 0
+INDIRP4
+CNSTI4 484
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ASGNI4
+line 353
+;351:
+;352:		// if its a weapon, give them some predicted ammo so the autoswitch will work
+;353:		if ( item->giType == IT_WEAPON ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+INDIRI4
+CNSTI4 1
+NEI4 $259
+line 354
+;354:			cg.predictedPlayerState.stats[ STAT_WEAPONS ] |= 1 << item->giTag;
+ADDRLP4 20
+ADDRGP4 cg+1868928+184+12
+ASGNP4
+ADDRLP4 20
+INDIRP4
+ADDRLP4 20
+INDIRP4
+INDIRI4
+CNSTI4 1
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+LSHI4
+BORI4
+ASGNI4
+line 355
+;355:			if ( !cg.predictedPlayerState.ammo[ item->giTag ] ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 cg+1868928+376
+ADDP4
+INDIRI4
+CNSTI4 0
+NEI4 $264
+line 356
+;356:				cg.predictedPlayerState.ammo[ item->giTag ] = 1;
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 cg+1868928+376
+ADDP4
+CNSTI4 1
+ASGNI4
+line 357
+;357:			}
+LABELV $264
+line 358
+;358:		}
+LABELV $259
+line 359
+;359:	}
+LABELV $255
+line 360
+;360:}
+LABELV $162
+endproc CG_TouchItem 24 12
+proc CG_TouchTriggerPrediction 88 28
+line 370
+;361:
+;362:
+;363:/*
+;364:=========================
+;365:CG_TouchTriggerPrediction
+;366:
+;367:Predict push triggers and items
+;368:=========================
+;369:*/
+;370:static void CG_TouchTriggerPrediction( void ) {
+line 379
+;371:	int			i;
+;372:	trace_t		trace;
+;373:	entityState_t	*ent;
+;374:	clipHandle_t cmodel;
+;375:	centity_t	*cent;
+;376:	qboolean	spectator;
+;377:
+;378:	// dead clients don't activate triggers
+;379:	if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 ) {
+ADDRGP4 cg+1868928+184
+INDIRI4
+CNSTI4 0
+GTI4 $271
+line 380
+;380:		return;
+ADDRGP4 $270
+JUMPV
+LABELV $271
+line 383
+;381:	}
+;382:
+;383:	spectator = ( cg.predictedPlayerState.pm_type == PM_SPECTATOR );
+ADDRGP4 cg+1868928+4
+INDIRI4
+CNSTI4 2
+NEI4 $278
+ADDRLP4 76
+CNSTI4 1
+ASGNI4
+ADDRGP4 $279
+JUMPV
+LABELV $278
+ADDRLP4 76
+CNSTI4 0
+ASGNI4
+LABELV $279
+ADDRLP4 72
+ADDRLP4 76
+INDIRI4
+ASGNI4
+line 385
+;384:
+;385:	if ( cg.predictedPlayerState.pm_type != PM_NORMAL && !spectator ) {
+ADDRLP4 80
+CNSTI4 0
+ASGNI4
+ADDRGP4 cg+1868928+4
+INDIRI4
+ADDRLP4 80
+INDIRI4
+EQI4 $280
+ADDRLP4 72
+INDIRI4
+ADDRLP4 80
+INDIRI4
+NEI4 $280
+line 386
+;386:		return;
+ADDRGP4 $270
+JUMPV
+LABELV $280
+line 389
+;387:	}
+;388:
+;389:	for ( i = 0 ; i < cg_numTriggerEntities ; i++ ) {
+ADDRLP4 4
+CNSTI4 0
+ASGNI4
+ADDRGP4 $287
+JUMPV
+LABELV $284
+line 390
+;390:		cent = cg_triggerEntities[ i ];
+ADDRLP4 12
+ADDRLP4 4
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 cg_triggerEntities
+ADDP4
+INDIRP4
+ASGNP4
+line 391
+;391:		ent = &cent->currentState;
+ADDRLP4 0
+ADDRLP4 12
+INDIRP4
+ASGNP4
+line 393
+;392:
+;393:		if ( ent->eType == ET_ITEM && !spectator ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+CNSTI4 2
+NEI4 $288
+ADDRLP4 72
+INDIRI4
+CNSTI4 0
+NEI4 $288
+line 394
+;394:			CG_TouchItem( cent );
+ADDRLP4 12
+INDIRP4
+ARGP4
+ADDRGP4 CG_TouchItem
+CALLV
+pop
+line 395
+;395:			continue;
+ADDRGP4 $285
+JUMPV
+LABELV $288
+line 398
+;396:		}
+;397:
+;398:		if ( ent->solid != SOLID_BMODEL ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 188
+ADDP4
+INDIRI4
+CNSTI4 16777215
+EQI4 $290
+line 399
+;399:			continue;
+ADDRGP4 $285
+JUMPV
+LABELV $290
+line 402
+;400:		}
+;401:
+;402:		cmodel = trap_CM_InlineModel( ent->modelindex );
+ADDRLP4 0
+INDIRP4
+CNSTI4 172
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 84
+ADDRGP4 trap_CM_InlineModel
+CALLI4
+ASGNI4
+ADDRLP4 8
+ADDRLP4 84
+INDIRI4
+ASGNI4
+line 403
+;403:		if ( !cmodel ) {
+ADDRLP4 8
+INDIRI4
+CNSTI4 0
+NEI4 $292
+line 404
+;404:			continue;
+ADDRGP4 $285
+JUMPV
+LABELV $292
+line 407
+;405:		}
+;406:
+;407:		trap_CM_BoxTrace( &trace, cg.predictedPlayerState.origin, cg.predictedPlayerState.origin, 
+ADDRLP4 16
+ARGP4
+ADDRGP4 cg+1868928+20
+ARGP4
+ADDRGP4 cg+1868928+20
+ARGP4
+ADDRGP4 cg_pmove+184
+ARGP4
+ADDRGP4 cg_pmove+196
+ARGP4
+ADDRLP4 8
+INDIRI4
+ARGI4
+CNSTI4 -1
+ARGI4
+ADDRGP4 trap_CM_BoxTrace
+CALLV
+pop
+line 410
+;408:			cg_pmove.mins, cg_pmove.maxs, cmodel, -1 );
+;409:
+;410:		if ( !trace.startsolid ) {
+ADDRLP4 16+4
+INDIRI4
+CNSTI4 0
+NEI4 $300
+line 411
+;411:			continue;
+ADDRGP4 $285
+JUMPV
+LABELV $300
+line 414
+;412:		}
+;413:
+;414:		if ( ent->eType == ET_TELEPORT_TRIGGER ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+CNSTI4 9
+NEI4 $303
+line 415
+;415:			cg.hyperspace = qfalse;
+ADDRGP4 cg+1868924
+CNSTI4 0
+ASGNI4
+line 416
+;416:		} else if ( ent->eType == ET_PUSH_TRIGGER ) {
+ADDRGP4 $304
+JUMPV
+LABELV $303
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+CNSTI4 8
+NEI4 $306
+line 417
+;417:			BG_TouchJumpPad( &cg.predictedPlayerState, ent, 1 );
+ADDRGP4 cg+1868928
+ARGP4
+ADDRLP4 0
+INDIRP4
+ARGP4
+CNSTI4 1
+ARGI4
+ADDRGP4 BG_TouchJumpPad
+CALLV
+pop
+line 418
+;418:		}
+LABELV $306
+LABELV $304
+line 419
+;419:	}
+LABELV $285
+line 389
+ADDRLP4 4
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+LABELV $287
+ADDRLP4 4
+INDIRI4
+ADDRGP4 cg_numTriggerEntities
+INDIRI4
+LTI4 $284
+line 422
+;420:
+;421:	// if we didn't touch a jump pad this pmove frame
+;422:	if ( cg.predictedPlayerState.jumppad_frame != cg.predictedPlayerState.pmove_framecount ) {
+ADDRGP4 cg+1868928+464
+INDIRI4
+ADDRGP4 cg+1868928+460
+INDIRI4
+EQI4 $309
+line 423
+;423:		cg.predictedPlayerState.jumppad_frame = 0;
+ADDRGP4 cg+1868928+464
+CNSTI4 0
+ASGNI4
+line 424
+;424:		cg.predictedPlayerState.jumppad_ent = 0;
+ADDRGP4 cg+1868928+452
+CNSTI4 0
+ASGNI4
+line 425
+;425:	}
+LABELV $309
+line 426
+;426:}
+LABELV $270
+endproc CG_TouchTriggerPrediction 88 28
+proc IsUnacceptableError 316 8
+line 431
+;427:
+;428://unlagged - optimized prediction
+;429:#define ABS(x) ((x) < 0 ? (-(x)) : (x))
+;430:
+;431:static int IsUnacceptableError( playerState_t *ps, playerState_t *pps ) {
+line 435
+;432:	vec3_t delta;
+;433:	int i;
+;434:
+;435:	if ( pps->pm_type != ps->pm_type ||
+ADDRLP4 16
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 20
+CNSTI4 4
+ASGNI4
+ADDRLP4 24
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 16
+INDIRP4
+ADDRLP4 20
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 24
+INDIRP4
+ADDRLP4 20
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $323
+ADDRLP4 28
+CNSTI4 12
+ASGNI4
+ADDRLP4 16
+INDIRP4
+ADDRLP4 28
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 24
+INDIRP4
+ADDRLP4 28
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $323
+ADDRLP4 32
+CNSTI4 16
+ASGNI4
+ADDRLP4 16
+INDIRP4
+ADDRLP4 32
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 24
+INDIRP4
+ADDRLP4 32
+INDIRI4
+ADDP4
+INDIRI4
+EQI4 $320
+LABELV $323
+line 437
+;436:			pps->pm_flags != ps->pm_flags ||
+;437:			pps->pm_time != ps->pm_time ) {
+line 438
+;438:		return 1;
+CNSTI4 1
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $320
+line 441
+;439:	}
+;440:
+;441:	VectorSubtract( pps->origin, ps->origin, delta );
+ADDRLP4 36
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 40
+CNSTI4 20
+ASGNI4
+ADDRLP4 44
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 4
+ADDRLP4 36
+INDIRP4
+ADDRLP4 40
+INDIRI4
+ADDP4
+INDIRF4
+ADDRLP4 44
+INDIRP4
+ADDRLP4 40
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+ADDRLP4 48
+CNSTI4 24
+ASGNI4
+ADDRLP4 4+4
+ADDRLP4 36
+INDIRP4
+ADDRLP4 48
+INDIRI4
+ADDP4
+INDIRF4
+ADDRLP4 44
+INDIRP4
+ADDRLP4 48
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+ADDRLP4 52
+CNSTI4 28
+ASGNI4
+ADDRLP4 4+8
+ADDRFP4 4
+INDIRP4
+ADDRLP4 52
+INDIRI4
+ADDP4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 52
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+line 442
+;442:	if ( VectorLengthSquared( delta ) > 0.1f * 0.1f ) {
+ADDRLP4 4
+ARGP4
+ADDRLP4 56
+ADDRGP4 VectorLengthSquared
+CALLF4
+ASGNF4
+ADDRLP4 56
+INDIRF4
+CNSTF4 1008981770
+LEF4 $326
+line 443
+;443:		if ( cg_showmiss.integer ) {
+ADDRGP4 cg_showmiss+12
+INDIRI4
+CNSTI4 0
+EQI4 $328
+line 444
+;444:			CG_Printf("delta: %.2f  ", VectorLength(delta) );
+ADDRLP4 4
+ARGP4
+ADDRLP4 60
+ADDRGP4 VectorLength
+CALLF4
+ASGNF4
+ADDRGP4 $331
+ARGP4
+ADDRLP4 60
+INDIRF4
+ARGF4
+ADDRGP4 CG_Printf
+CALLV
+pop
+line 445
+;445:		}
+LABELV $328
+line 446
+;446:		return 2;
+CNSTI4 2
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $326
+line 449
+;447:	}
+;448:
+;449:	VectorSubtract( pps->velocity, ps->velocity, delta );
+ADDRLP4 60
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 64
+CNSTI4 32
+ASGNI4
+ADDRLP4 68
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 4
+ADDRLP4 60
+INDIRP4
+ADDRLP4 64
+INDIRI4
+ADDP4
+INDIRF4
+ADDRLP4 68
+INDIRP4
+ADDRLP4 64
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+ADDRLP4 72
+CNSTI4 36
+ASGNI4
+ADDRLP4 4+4
+ADDRLP4 60
+INDIRP4
+ADDRLP4 72
+INDIRI4
+ADDP4
+INDIRF4
+ADDRLP4 68
+INDIRP4
+ADDRLP4 72
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+ADDRLP4 76
+CNSTI4 40
+ASGNI4
+ADDRLP4 4+8
+ADDRFP4 4
+INDIRP4
+ADDRLP4 76
+INDIRI4
+ADDP4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 76
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+line 450
+;450:	if ( VectorLengthSquared( delta ) > 0.1f * 0.1f ) {
+ADDRLP4 4
+ARGP4
+ADDRLP4 80
+ADDRGP4 VectorLengthSquared
+CALLF4
+ASGNF4
+ADDRLP4 80
+INDIRF4
+CNSTF4 1008981770
+LEF4 $334
+line 451
+;451:		if ( cg_showmiss.integer ) {
+ADDRGP4 cg_showmiss+12
+INDIRI4
+CNSTI4 0
+EQI4 $336
+line 452
+;452:			CG_Printf("delta: %.2f  ", VectorLength(delta) );
+ADDRLP4 4
+ARGP4
+ADDRLP4 84
+ADDRGP4 VectorLength
+CALLF4
+ASGNF4
+ADDRGP4 $331
+ARGP4
+ADDRLP4 84
+INDIRF4
+ARGF4
+ADDRGP4 CG_Printf
+CALLV
+pop
+line 453
+;453:		}
+LABELV $336
+line 454
+;454:		return 3;
+CNSTI4 3
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $334
+line 457
+;455:	}
+;456:
+;457:	if ( pps->weaponTime != ps->weaponTime ||
+ADDRLP4 84
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 88
+CNSTI4 44
+ASGNI4
+ADDRLP4 92
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 84
+INDIRP4
+ADDRLP4 88
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 92
+INDIRP4
+ADDRLP4 88
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $346
+ADDRLP4 96
+CNSTI4 48
+ASGNI4
+ADDRLP4 84
+INDIRP4
+ADDRLP4 96
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 92
+INDIRP4
+ADDRLP4 96
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $346
+ADDRLP4 100
+CNSTI4 52
+ASGNI4
+ADDRLP4 84
+INDIRP4
+ADDRLP4 100
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 92
+INDIRP4
+ADDRLP4 100
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $346
+ADDRLP4 104
+CNSTI4 56
+ASGNI4
+ADDRLP4 84
+INDIRP4
+ADDRLP4 104
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 92
+INDIRP4
+ADDRLP4 104
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $346
+ADDRLP4 108
+CNSTI4 60
+ASGNI4
+ADDRLP4 84
+INDIRP4
+ADDRLP4 108
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 92
+INDIRP4
+ADDRLP4 108
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $346
+ADDRLP4 112
+CNSTI4 64
+ASGNI4
+ADDRLP4 84
+INDIRP4
+ADDRLP4 112
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 92
+INDIRP4
+ADDRLP4 112
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $346
+ADDRLP4 116
+CNSTI4 68
+ASGNI4
+ADDRLP4 84
+INDIRP4
+ADDRLP4 116
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 92
+INDIRP4
+ADDRLP4 116
+INDIRI4
+ADDP4
+INDIRI4
+EQI4 $339
+LABELV $346
+line 463
+;458:			pps->gravity != ps->gravity ||
+;459:			pps->speed != ps->speed ||
+;460:			pps->delta_angles[0] != ps->delta_angles[0] ||
+;461:			pps->delta_angles[1] != ps->delta_angles[1] ||
+;462:			pps->delta_angles[2] != ps->delta_angles[2] || 
+;463:			pps->groundEntityNum != ps->groundEntityNum ) {
+line 464
+;464:		return 4;
+CNSTI4 4
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $339
+line 467
+;465:	}
+;466:
+;467:	if ( pps->legsTimer != ps->legsTimer ||
+ADDRLP4 120
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 124
+CNSTI4 72
+ASGNI4
+ADDRLP4 128
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 120
+INDIRP4
+ADDRLP4 124
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 128
+INDIRP4
+ADDRLP4 124
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $352
+ADDRLP4 132
+CNSTI4 76
+ASGNI4
+ADDRLP4 120
+INDIRP4
+ADDRLP4 132
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 128
+INDIRP4
+ADDRLP4 132
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $352
+ADDRLP4 136
+CNSTI4 80
+ASGNI4
+ADDRLP4 120
+INDIRP4
+ADDRLP4 136
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 128
+INDIRP4
+ADDRLP4 136
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $352
+ADDRLP4 140
+CNSTI4 84
+ASGNI4
+ADDRLP4 120
+INDIRP4
+ADDRLP4 140
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 128
+INDIRP4
+ADDRLP4 140
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $352
+ADDRLP4 144
+CNSTI4 88
+ASGNI4
+ADDRLP4 120
+INDIRP4
+ADDRLP4 144
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 128
+INDIRP4
+ADDRLP4 144
+INDIRI4
+ADDP4
+INDIRI4
+EQI4 $347
+LABELV $352
+line 471
+;468:			pps->legsAnim != ps->legsAnim ||
+;469:			pps->torsoTimer != ps->torsoTimer ||
+;470:			pps->torsoAnim != ps->torsoAnim ||
+;471:			pps->movementDir != ps->movementDir ) {
+line 472
+;472:		return 5;
+CNSTI4 5
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $347
+line 475
+;473:	}
+;474:
+;475:	VectorSubtract( pps->grapplePoint, ps->grapplePoint, delta );
+ADDRLP4 148
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 152
+CNSTI4 92
+ASGNI4
+ADDRLP4 156
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 4
+ADDRLP4 148
+INDIRP4
+ADDRLP4 152
+INDIRI4
+ADDP4
+INDIRF4
+ADDRLP4 156
+INDIRP4
+ADDRLP4 152
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+ADDRLP4 160
+CNSTI4 96
+ASGNI4
+ADDRLP4 4+4
+ADDRLP4 148
+INDIRP4
+ADDRLP4 160
+INDIRI4
+ADDP4
+INDIRF4
+ADDRLP4 156
+INDIRP4
+ADDRLP4 160
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+ADDRLP4 164
+CNSTI4 100
+ASGNI4
+ADDRLP4 4+8
+ADDRFP4 4
+INDIRP4
+ADDRLP4 164
+INDIRI4
+ADDP4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 164
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+line 476
+;476:	if ( VectorLengthSquared( delta ) > 0.1f * 0.1f ) {
+ADDRLP4 4
+ARGP4
+ADDRLP4 168
+ADDRGP4 VectorLengthSquared
+CALLF4
+ASGNF4
+ADDRLP4 168
+INDIRF4
+CNSTF4 1008981770
+LEF4 $355
+line 477
+;477:		return 6;
+CNSTI4 6
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $355
+line 480
+;478:	}
+;479:
+;480:	if ( pps->eFlags != ps->eFlags ) {
+ADDRLP4 172
+CNSTI4 104
+ASGNI4
+ADDRFP4 4
+INDIRP4
+ADDRLP4 172
+INDIRI4
+ADDP4
+INDIRI4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 172
+INDIRI4
+ADDP4
+INDIRI4
+EQI4 $357
+line 481
+;481:		return 7;
+CNSTI4 7
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $357
+line 484
+;482:	}
+;483:
+;484:	if ( pps->eventSequence != ps->eventSequence ) {
+ADDRLP4 176
+CNSTI4 108
+ASGNI4
+ADDRFP4 4
+INDIRP4
+ADDRLP4 176
+INDIRI4
+ADDP4
+INDIRI4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 176
+INDIRI4
+ADDP4
+INDIRI4
+EQI4 $359
+line 485
+;485:		return 8;
+CNSTI4 8
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $359
+line 488
+;486:	}
+;487:
+;488:	for ( i = 0; i < MAX_PS_EVENTS; i++ ) {
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+LABELV $361
+line 489
+;489:		if ( pps->events[i] != ps->events[i] ||
+ADDRLP4 180
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ASGNI4
+ADDRLP4 184
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 188
+CNSTI4 112
+ASGNI4
+ADDRLP4 192
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 180
+INDIRI4
+ADDRLP4 184
+INDIRP4
+ADDRLP4 188
+INDIRI4
+ADDP4
+ADDP4
+INDIRI4
+ADDRLP4 180
+INDIRI4
+ADDRLP4 192
+INDIRP4
+ADDRLP4 188
+INDIRI4
+ADDP4
+ADDP4
+INDIRI4
+NEI4 $367
+ADDRLP4 196
+CNSTI4 120
+ASGNI4
+ADDRLP4 180
+INDIRI4
+ADDRLP4 184
+INDIRP4
+ADDRLP4 196
+INDIRI4
+ADDP4
+ADDP4
+INDIRI4
+ADDRLP4 180
+INDIRI4
+ADDRLP4 192
+INDIRP4
+ADDRLP4 196
+INDIRI4
+ADDP4
+ADDP4
+INDIRI4
+EQI4 $365
+LABELV $367
+line 490
+;490:				pps->eventParms[i] != ps->eventParms[i] ) {
+line 491
+;491:			return 9;
+CNSTI4 9
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $365
+line 493
+;492:		}
+;493:	}
+LABELV $362
+line 488
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LTI4 $361
+line 495
+;494:
+;495:	if ( pps->externalEvent != ps->externalEvent ||
+ADDRLP4 180
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 184
+CNSTI4 128
+ASGNI4
+ADDRLP4 188
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 180
+INDIRP4
+ADDRLP4 184
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 188
+INDIRP4
+ADDRLP4 184
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $371
+ADDRLP4 192
+CNSTI4 132
+ASGNI4
+ADDRLP4 180
+INDIRP4
+ADDRLP4 192
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 188
+INDIRP4
+ADDRLP4 192
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $371
+ADDRLP4 196
+CNSTI4 136
+ASGNI4
+ADDRLP4 180
+INDIRP4
+ADDRLP4 196
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 188
+INDIRP4
+ADDRLP4 196
+INDIRI4
+ADDP4
+INDIRI4
+EQI4 $368
+LABELV $371
+line 497
+;496:			pps->externalEventParm != ps->externalEventParm ||
+;497:			pps->externalEventTime != ps->externalEventTime ) {
+line 498
+;498:		return 10;
+CNSTI4 10
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $368
+line 501
+;499:	}
+;500:
+;501:	if ( pps->clientNum != ps->clientNum ||
+ADDRLP4 200
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 204
+CNSTI4 140
+ASGNI4
+ADDRLP4 208
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 200
+INDIRP4
+ADDRLP4 204
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 208
+INDIRP4
+ADDRLP4 204
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $375
+ADDRLP4 212
+CNSTI4 144
+ASGNI4
+ADDRLP4 200
+INDIRP4
+ADDRLP4 212
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 208
+INDIRP4
+ADDRLP4 212
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $375
+ADDRLP4 216
+CNSTI4 148
+ASGNI4
+ADDRLP4 200
+INDIRP4
+ADDRLP4 216
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 208
+INDIRP4
+ADDRLP4 216
+INDIRI4
+ADDP4
+INDIRI4
+EQI4 $372
+LABELV $375
+line 503
+;502:			pps->weapon != ps->weapon ||
+;503:			pps->weaponstate != ps->weaponstate ) {
+line 504
+;504:		return 11;
+CNSTI4 11
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $372
+line 507
+;505:	}
+;506:
+;507:	if ( ABS(pps->viewangles[0] - ps->viewangles[0]) > 1.0f ||
+ADDRLP4 232
+CNSTI4 152
+ASGNI4
+ADDRFP4 4
+INDIRP4
+ADDRLP4 232
+INDIRI4
+ADDP4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 232
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+CNSTF4 0
+GEF4 $382
+ADDRLP4 236
+CNSTI4 152
+ASGNI4
+ADDRLP4 220
+ADDRFP4 4
+INDIRP4
+ADDRLP4 236
+INDIRI4
+ADDP4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 236
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+NEGF4
+ASGNF4
+ADDRGP4 $383
+JUMPV
+LABELV $382
+ADDRLP4 240
+CNSTI4 152
+ASGNI4
+ADDRLP4 220
+ADDRFP4 4
+INDIRP4
+ADDRLP4 240
+INDIRI4
+ADDP4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 240
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+LABELV $383
+ADDRLP4 220
+INDIRF4
+CNSTF4 1065353216
+GTF4 $384
+ADDRLP4 244
+CNSTI4 156
+ASGNI4
+ADDRFP4 4
+INDIRP4
+ADDRLP4 244
+INDIRI4
+ADDP4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 244
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+CNSTF4 0
+GEF4 $385
+ADDRLP4 248
+CNSTI4 156
+ASGNI4
+ADDRLP4 224
+ADDRFP4 4
+INDIRP4
+ADDRLP4 248
+INDIRI4
+ADDP4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 248
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+NEGF4
+ASGNF4
+ADDRGP4 $386
+JUMPV
+LABELV $385
+ADDRLP4 252
+CNSTI4 156
+ASGNI4
+ADDRLP4 224
+ADDRFP4 4
+INDIRP4
+ADDRLP4 252
+INDIRI4
+ADDP4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 252
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+LABELV $386
+ADDRLP4 224
+INDIRF4
+CNSTF4 1065353216
+GTF4 $384
+ADDRLP4 256
+CNSTI4 160
+ASGNI4
+ADDRFP4 4
+INDIRP4
+ADDRLP4 256
+INDIRI4
+ADDP4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 256
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+CNSTF4 0
+GEF4 $387
+ADDRLP4 260
+CNSTI4 160
+ASGNI4
+ADDRLP4 228
+ADDRFP4 4
+INDIRP4
+ADDRLP4 260
+INDIRI4
+ADDP4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 260
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+NEGF4
+ASGNF4
+ADDRGP4 $388
+JUMPV
+LABELV $387
+ADDRLP4 264
+CNSTI4 160
+ASGNI4
+ADDRLP4 228
+ADDRFP4 4
+INDIRP4
+ADDRLP4 264
+INDIRI4
+ADDP4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 264
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+LABELV $388
+ADDRLP4 228
+INDIRF4
+CNSTF4 1065353216
+LEF4 $376
+LABELV $384
+line 509
+;508:			ABS(pps->viewangles[1] - ps->viewangles[1]) > 1.0f ||
+;509:			ABS(pps->viewangles[2] - ps->viewangles[2]) > 1.0f ) {
+line 510
+;510:		return 12;
+CNSTI4 12
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $376
+line 513
+;511:	}
+;512:
+;513:	if ( pps->viewheight != ps->viewheight ) {
+ADDRLP4 268
+CNSTI4 164
+ASGNI4
+ADDRFP4 4
+INDIRP4
+ADDRLP4 268
+INDIRI4
+ADDP4
+INDIRI4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 268
+INDIRI4
+ADDP4
+INDIRI4
+EQI4 $389
+line 514
+;514:		return 13;
+CNSTI4 13
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $389
+line 517
+;515:	}
+;516:
+;517:	if ( pps->damageEvent != ps->damageEvent ||
+ADDRLP4 272
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 276
+CNSTI4 168
+ASGNI4
+ADDRLP4 280
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 272
+INDIRP4
+ADDRLP4 276
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 280
+INDIRP4
+ADDRLP4 276
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $395
+ADDRLP4 284
+CNSTI4 172
+ASGNI4
+ADDRLP4 272
+INDIRP4
+ADDRLP4 284
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 280
+INDIRP4
+ADDRLP4 284
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $395
+ADDRLP4 288
+CNSTI4 176
+ASGNI4
+ADDRLP4 272
+INDIRP4
+ADDRLP4 288
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 280
+INDIRP4
+ADDRLP4 288
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $395
+ADDRLP4 292
+CNSTI4 180
+ASGNI4
+ADDRLP4 272
+INDIRP4
+ADDRLP4 292
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 280
+INDIRP4
+ADDRLP4 292
+INDIRI4
+ADDP4
+INDIRI4
+EQI4 $391
+LABELV $395
+line 520
+;518:			pps->damageYaw != ps->damageYaw ||
+;519:			pps->damagePitch != ps->damagePitch ||
+;520:			pps->damageCount != ps->damageCount ) {
+line 521
+;521:		return 14;
+CNSTI4 14
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $391
+line 524
+;522:	}
+;523:
+;524:	for ( i = 0; i < MAX_STATS; i++ ) {
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+LABELV $396
+line 525
+;525:		if ( pps->stats[i] != ps->stats[i] ) {
+ADDRLP4 296
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ASGNI4
+ADDRLP4 300
+CNSTI4 184
+ASGNI4
+ADDRLP4 296
+INDIRI4
+ADDRFP4 4
+INDIRP4
+ADDRLP4 300
+INDIRI4
+ADDP4
+ADDP4
+INDIRI4
+ADDRLP4 296
+INDIRI4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 300
+INDIRI4
+ADDP4
+ADDP4
+INDIRI4
+EQI4 $400
+line 526
+;526:			return 15;
+CNSTI4 15
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $400
+line 528
+;527:		}
+;528:	}
+LABELV $397
+line 524
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 16
+LTI4 $396
+line 530
+;529:
+;530:	for ( i = 0; i < MAX_PERSISTANT; i++ ) {
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+LABELV $402
+line 531
+;531:		if ( pps->persistant[i] != ps->persistant[i] ) {
+ADDRLP4 296
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ASGNI4
+ADDRLP4 300
+CNSTI4 248
+ASGNI4
+ADDRLP4 296
+INDIRI4
+ADDRFP4 4
+INDIRP4
+ADDRLP4 300
+INDIRI4
+ADDP4
+ADDP4
+INDIRI4
+ADDRLP4 296
+INDIRI4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 300
+INDIRI4
+ADDP4
+ADDP4
+INDIRI4
+EQI4 $406
+line 532
+;532:			return 16;
+CNSTI4 16
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $406
+line 534
+;533:		}
+;534:	}
+LABELV $403
+line 530
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 16
+LTI4 $402
+line 536
+;535:
+;536:	for ( i = 0; i < MAX_POWERUPS; i++ ) {
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+LABELV $408
+line 537
+;537:		if ( pps->powerups[i] != ps->powerups[i] ) {
+ADDRLP4 296
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ASGNI4
+ADDRLP4 300
+CNSTI4 312
+ASGNI4
+ADDRLP4 296
+INDIRI4
+ADDRFP4 4
+INDIRP4
+ADDRLP4 300
+INDIRI4
+ADDP4
+ADDP4
+INDIRI4
+ADDRLP4 296
+INDIRI4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 300
+INDIRI4
+ADDP4
+ADDP4
+INDIRI4
+EQI4 $412
+line 538
+;538:			return 17;
+CNSTI4 17
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $412
+line 540
+;539:		}
+;540:	}
+LABELV $409
+line 536
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 16
+LTI4 $408
+line 542
+;541:
+;542:	for ( i = 0; i < MAX_WEAPONS; i++ ) {
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+LABELV $414
+line 543
+;543:		if ( pps->ammo[i] != ps->ammo[i] ) {
+ADDRLP4 296
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ASGNI4
+ADDRLP4 300
+CNSTI4 376
+ASGNI4
+ADDRLP4 296
+INDIRI4
+ADDRFP4 4
+INDIRP4
+ADDRLP4 300
+INDIRI4
+ADDP4
+ADDP4
+INDIRI4
+ADDRLP4 296
+INDIRI4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 300
+INDIRI4
+ADDP4
+ADDP4
+INDIRI4
+EQI4 $418
+line 544
+;544:			return 18;
+CNSTI4 18
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $418
+line 546
+;545:		}
+;546:	}
+LABELV $415
+line 542
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 16
+LTI4 $414
+line 548
+;547:
+;548:	if ( pps->generic1 != ps->generic1 ||
+ADDRLP4 296
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 300
+CNSTI4 440
+ASGNI4
+ADDRLP4 304
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 296
+INDIRP4
+ADDRLP4 300
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 304
+INDIRP4
+ADDRLP4 300
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $423
+ADDRLP4 308
+CNSTI4 448
+ASGNI4
+ADDRLP4 296
+INDIRP4
+ADDRLP4 308
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 304
+INDIRP4
+ADDRLP4 308
+INDIRI4
+ADDP4
+INDIRI4
+NEI4 $423
+ADDRLP4 312
+CNSTI4 452
+ASGNI4
+ADDRLP4 296
+INDIRP4
+ADDRLP4 312
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 304
+INDIRP4
+ADDRLP4 312
+INDIRI4
+ADDP4
+INDIRI4
+EQI4 $420
+LABELV $423
+line 550
+;549:			pps->loopSound != ps->loopSound ||
+;550:			pps->jumppad_ent != ps->jumppad_ent ) {
+line 551
+;551:		return 19;
+CNSTI4 19
+RETI4
+ADDRGP4 $319
+JUMPV
+LABELV $420
+line 554
+;552:	}
+;553:
+;554:	return 0;
+CNSTI4 0
+RETI4
+LABELV $319
+endproc IsUnacceptableError 316 8
+export CG_PredictPlayerState
+proc CG_PredictPlayerState 612 20
+line 584
+;555:}
+;556://unlagged - optimized prediction
+;557:
+;558:/*
+;559:=================
+;560:CG_PredictPlayerState
+;561:
+;562:Generates cg.predictedPlayerState for the current cg.time
+;563:cg.predictedPlayerState is guaranteed to be valid after exiting.
+;564:
+;565:For demo playback, this will be an interpolation between two valid
+;566:playerState_t.
+;567:
+;568:For normal gameplay, it will be the result of predicted usercmd_t on
+;569:top of the most recent playerState_t received from the server.
+;570:
+;571:Each new snapshot will usually have one or more new usercmd over the last,
+;572:but we simulate all unacknowledged commands each time, not just the new ones.
+;573:This means that on an internet connection, quite a few pmoves may be issued
+;574:each frame.
+;575:
+;576:OPTIMIZE: don't re-simulate unless the newly arrived snapshot playerState_t
+;577:differs from the predicted one.  Would require saving all intermediate
+;578:playerState_t during prediction.
+;579:
+;580:We detect prediction errors and allow them to be decayed off over several frames
+;581:to ease the jerk.
+;582:=================
+;583:*/
+;584:void CG_PredictPlayerState( void ) {
+line 591
+;585:	int			cmdNum, current;
+;586:	playerState_t	oldPlayerState;
+;587:	qboolean	moved;
+;588:	usercmd_t	oldestCmd;
+;589:	usercmd_t	latestCmd;
+;590://unlagged - optimized prediction
+;591:	int stateIndex = 0, predictCmd = 0; //Sago: added initializing
+ADDRLP4 4
+CNSTI4 0
+ASGNI4
+ADDRLP4 516
+CNSTI4 0
+ASGNI4
+line 592
+;592:	int numPredicted = 0, numPlayedBack = 0; // debug code
+ADDRLP4 512
+CNSTI4 0
+ASGNI4
+ADDRLP4 520
+CNSTI4 0
+ASGNI4
+line 595
+;593://unlagged - optimized prediction
+;594:
+;595:	cg.hyperspace = qfalse;	// will be set if touching a trigger_teleport
+ADDRGP4 cg+1868924
+CNSTI4 0
+ASGNI4
+line 600
+;596:
+;597:	// if this is the first frame we must guarantee
+;598:	// predictedPlayerState is valid even if there is some
+;599:	// other error condition
+;600:	if ( !cg.validPPS ) {
+ADDRGP4 cg+1870328
+INDIRI4
+CNSTI4 0
+NEI4 $426
+line 601
+;601:		cg.validPPS = qtrue;
+ADDRGP4 cg+1870328
+CNSTI4 1
+ASGNI4
+line 602
+;602:		cg.predictedPlayerState = cg.snap->ps;
+ADDRGP4 cg+1868928
+ADDRGP4 cg+36
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRB
+ASGNB 472
+line 603
+;603:	}
+LABELV $426
+line 607
+;604:
+;605:
+;606:	// demo playback just copies the moves
+;607:	if ( cg.demoPlayback || (cg.snap->ps.pm_flags & PMF_FOLLOW) ) {
+ADDRLP4 548
+CNSTI4 0
+ASGNI4
+ADDRGP4 cg+8
+INDIRI4
+ADDRLP4 548
+INDIRI4
+NEI4 $436
+ADDRGP4 cg+36
+INDIRP4
+CNSTI4 56
+ADDP4
+INDIRI4
+CNSTI4 4096
+BANDI4
+ADDRLP4 548
+INDIRI4
+EQI4 $432
+LABELV $436
+line 608
+;608:		CG_InterpolatePlayerState( qfalse );
+CNSTI4 0
+ARGI4
+ADDRGP4 CG_InterpolatePlayerState
+CALLV
+pop
+line 609
+;609:		return;
+ADDRGP4 $424
+JUMPV
+LABELV $432
+line 613
+;610:	}
+;611:
+;612:	// non-predicting local movement will grab the latest angles
+;613:	if ( cg_nopredict.integer || cg_synchronousClients.integer ) {
+ADDRLP4 552
+CNSTI4 0
+ASGNI4
+ADDRGP4 cg_nopredict+12
+INDIRI4
+ADDRLP4 552
+INDIRI4
+NEI4 $441
+ADDRGP4 cg_synchronousClients+12
+INDIRI4
+ADDRLP4 552
+INDIRI4
+EQI4 $437
+LABELV $441
+line 614
+;614:		CG_InterpolatePlayerState( qtrue );
+CNSTI4 1
+ARGI4
+ADDRGP4 CG_InterpolatePlayerState
+CALLV
+pop
+line 615
+;615:		return;
+ADDRGP4 $424
+JUMPV
+LABELV $437
+line 619
+;616:	}
+;617:
+;618:	// prepare for pmove
+;619:	cg_pmove.ps = &cg.predictedPlayerState;
+ADDRGP4 cg_pmove
+ADDRGP4 cg+1868928
+ASGNP4
+line 620
+;620:	cg_pmove.trace = CG_Trace;
+ADDRGP4 cg_pmove+236
+ADDRGP4 CG_Trace
+ASGNP4
+line 621
+;621:	cg_pmove.pointcontents = CG_PointContents;
+ADDRGP4 cg_pmove+240
+ADDRGP4 CG_PointContents
+ASGNP4
+line 622
+;622:	if ( cg_pmove.ps->pm_type == PM_DEAD ) {
+ADDRGP4 cg_pmove
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+CNSTI4 3
+NEI4 $445
+line 623
+;623:		cg_pmove.tracemask = MASK_PLAYERSOLID & ~CONTENTS_BODY;
+ADDRGP4 cg_pmove+32
+CNSTI4 65537
+ASGNI4
+line 624
+;624:	}
+ADDRGP4 $446
+JUMPV
+LABELV $445
+line 625
+;625:	else {
+line 626
+;626:		cg_pmove.tracemask = MASK_PLAYERSOLID;
+ADDRGP4 cg_pmove+32
+CNSTI4 33619969
+ASGNI4
+line 627
+;627:	}
+LABELV $446
+line 628
+;628:	if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR ) {
+ADDRGP4 cg+36
+INDIRP4
+CNSTI4 304
+ADDP4
+INDIRI4
+CNSTI4 3
+NEI4 $449
+line 629
+;629:		cg_pmove.tracemask &= ~CONTENTS_BODY;	// spectators can fly through bodies
+ADDRLP4 556
+ADDRGP4 cg_pmove+32
+ASGNP4
+ADDRLP4 556
+INDIRP4
+ADDRLP4 556
+INDIRP4
+INDIRI4
+CNSTI4 -33554433
+BANDI4
+ASGNI4
+line 630
+;630:	}
+LABELV $449
+line 631
+;631:	cg_pmove.noFootsteps = ( cgs.dmflags & DF_NO_FOOTSTEPS ) > 0;
+ADDRGP4 cgs+339044
+INDIRI4
+CNSTI4 32
+BANDI4
+CNSTI4 0
+LEI4 $456
+ADDRLP4 556
+CNSTI4 1
+ASGNI4
+ADDRGP4 $457
+JUMPV
+LABELV $456
+ADDRLP4 556
+CNSTI4 0
+ASGNI4
+LABELV $457
+ADDRGP4 cg_pmove+40
+ADDRLP4 556
+INDIRI4
+ASGNI4
+line 634
+;632:
+;633:	// save the state before the pmove so we can detect transitions
+;634:	oldPlayerState = cg.predictedPlayerState;
+ADDRLP4 8
+ADDRGP4 cg+1868928
+INDIRB
+ASGNB 472
+line 636
+;635:
+;636:	current = trap_GetCurrentCmdNumber();
+ADDRLP4 560
+ADDRGP4 trap_GetCurrentCmdNumber
+CALLI4
+ASGNI4
+ADDRLP4 480
+ADDRLP4 560
+INDIRI4
+ASGNI4
+line 641
+;637:
+;638:	// if we don't have the commands right after the snapshot, we
+;639:	// can't accurately predict a current position, so just freeze at
+;640:	// the last good position we had
+;641:	cmdNum = current - CMD_BACKUP + 1;
+ADDRLP4 0
+ADDRLP4 480
+INDIRI4
+CNSTI4 64
+SUBI4
+CNSTI4 1
+ADDI4
+ASGNI4
+line 642
+;642:	trap_GetUserCmd( cmdNum, &oldestCmd );
+ADDRLP4 0
+INDIRI4
+ARGI4
+ADDRLP4 524
+ARGP4
+ADDRGP4 trap_GetUserCmd
+CALLI4
+pop
+line 643
+;643:	if ( oldestCmd.serverTime > cg.snap->ps.commandTime 
+ADDRLP4 564
+ADDRLP4 524
+INDIRI4
+ASGNI4
+ADDRLP4 564
+INDIRI4
+ADDRGP4 cg+36
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+LEI4 $459
+ADDRLP4 564
+INDIRI4
+ADDRGP4 cg+1868892
+INDIRI4
+GEI4 $459
+line 644
+;644:		&& oldestCmd.serverTime < cg.time ) {	// special check for map_restart
+line 645
+;645:		if ( cg_showmiss.integer ) {
+ADDRGP4 cg_showmiss+12
+INDIRI4
+CNSTI4 0
+EQI4 $424
+line 646
+;646:			CG_Printf ("exceeded PACKET_BACKUP on commands\n");
+ADDRGP4 $466
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+line 647
+;647:		}
+line 648
+;648:		return;
+ADDRGP4 $424
+JUMPV
+LABELV $459
+line 652
+;649:	}
+;650:
+;651:	// get the latest command so we can know which commands are from previous map_restarts
+;652:	trap_GetUserCmd( current, &latestCmd );
+ADDRLP4 480
+INDIRI4
+ARGI4
+ADDRLP4 488
+ARGP4
+ADDRGP4 trap_GetUserCmd
+CALLI4
+pop
+line 658
+;653:
+;654:	// get the most recent information we have, even if
+;655:	// the server time is beyond our current cg.time,
+;656:	// because predicted player positions are going to 
+;657:	// be ahead of everything else anyway
+;658:	if ( cg.nextSnap && !cg.nextFrameTeleport && !cg.thisFrameTeleport ) {
+ADDRGP4 cg+40
+INDIRP4
+CVPU4 4
+CNSTU4 0
+EQU4 $467
+ADDRLP4 568
+CNSTI4 0
+ASGNI4
+ADDRGP4 cg+1868884
+INDIRI4
+ADDRLP4 568
+INDIRI4
+NEI4 $467
+ADDRGP4 cg+1868880
+INDIRI4
+ADDRLP4 568
+INDIRI4
+NEI4 $467
+line 659
+;659:		cg.predictedPlayerState = cg.nextSnap->ps;
+ADDRGP4 cg+1868928
+ADDRGP4 cg+40
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRB
+ASGNB 472
+line 660
+;660:		cg.physicsTime = cg.nextSnap->serverTime;
+ADDRGP4 cg+1868900
+ADDRGP4 cg+40
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRI4
+ASGNI4
+line 661
+;661:	} else {
+ADDRGP4 $468
+JUMPV
+LABELV $467
+line 662
+;662:		cg.predictedPlayerState = cg.snap->ps;
+ADDRGP4 cg+1868928
+ADDRGP4 cg+36
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRB
+ASGNB 472
+line 663
+;663:		cg.physicsTime = cg.snap->serverTime;
+ADDRGP4 cg+1868900
+ADDRGP4 cg+36
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRI4
+ASGNI4
+line 664
+;664:	}
+LABELV $468
+line 666
+;665:
+;666:	if ( pmove_msec.integer < 8 ) {
+ADDRGP4 pmove_msec+12
+INDIRI4
+CNSTI4 8
+GEI4 $480
+line 667
+;667:		trap_Cvar_Set("pmove_msec", "8");
+ADDRGP4 $483
+ARGP4
+ADDRGP4 $484
+ARGP4
+ADDRGP4 trap_Cvar_Set
+CALLV
+pop
+line 668
+;668:	}
+ADDRGP4 $481
+JUMPV
+LABELV $480
+line 669
+;669:	else if (pmove_msec.integer > 33) {
+ADDRGP4 pmove_msec+12
+INDIRI4
+CNSTI4 33
+LEI4 $485
+line 670
+;670:		trap_Cvar_Set("pmove_msec", "33");
+ADDRGP4 $483
+ARGP4
+ADDRGP4 $488
+ARGP4
+ADDRGP4 trap_Cvar_Set
+CALLV
+pop
+line 671
+;671:	}
+LABELV $485
+LABELV $481
+line 673
+;672:
+;673:	cg_pmove.pmove_fixed = pmove_fixed.integer;// | cg_pmove_fixed.integer;
+ADDRGP4 cg_pmove+220
+ADDRGP4 pmove_fixed+12
+INDIRI4
+ASGNI4
+line 674
+;674:	cg_pmove.pmove_msec = pmove_msec.integer;
+ADDRGP4 cg_pmove+224
+ADDRGP4 pmove_msec+12
+INDIRI4
+ASGNI4
+line 675
+;675:        cg_pmove.pmove_float = pmove_float.integer;
+ADDRGP4 cg_pmove+228
+ADDRGP4 pmove_float+12
+INDIRI4
+ASGNI4
+line 676
+;676:        cg_pmove.pmove_flags = cgs.dmflags;
+ADDRGP4 cg_pmove+232
+ADDRGP4 cgs+339044
+INDIRI4
+ASGNI4
+line 699
+;677:        
+;678:
+;679://unlagged - optimized prediction
+;680:	// Like the comments described above, a player's state is entirely
+;681:	// re-predicted from the last valid snapshot every client frame, which
+;682:	// can be really, really, really slow.  Every old command has to be
+;683:	// run again.  For every client frame that is *not* directly after a
+;684:	// snapshot, this is unnecessary, since we have no new information.
+;685:	// For those, we'll play back the predictions from the last frame and
+;686:	// predict only the newest commands.  Essentially, we'll be doing
+;687:	// an incremental predict instead of a full predict.
+;688:	//
+;689:	// If we have a new snapshot, we can compare its player state's command
+;690:	// time to the command times in the queue to find a match.  If we find
+;691:	// a matching state, and the predicted version has not deviated, we can
+;692:	// use the predicted state as a base - and also do an incremental predict.
+;693:	//
+;694:	// With this method, we get incremental predicts on every client frame
+;695:	// except a frame following a new snapshot in which there was a prediction
+;696:	// error.  This yeilds anywhere from a 15% to 40% performance increase,
+;697:	// depending on how much of a bottleneck the CPU is.
+;698:
+;699:	if ( cg_optimizePrediction.integer ) {
+ADDRGP4 cg_optimizePrediction+12
+INDIRI4
+CNSTI4 0
+EQI4 $497
+line 700
+;700:		if ( cg.nextFrameTeleport || cg.thisFrameTeleport ) {
+ADDRLP4 572
+CNSTI4 0
+ASGNI4
+ADDRGP4 cg+1868884
+INDIRI4
+ADDRLP4 572
+INDIRI4
+NEI4 $504
+ADDRGP4 cg+1868880
+INDIRI4
+ADDRLP4 572
+INDIRI4
+EQI4 $500
+LABELV $504
+line 702
+;701:			// do a full predict
+;702:			cg.lastPredictedCommand = 0;
+ADDRGP4 cg+1956308
+CNSTI4 0
+ASGNI4
+line 703
+;703:			cg.stateTail = cg.stateHead;
+ADDRGP4 cg+1987472
+ADDRGP4 cg+1987468
+INDIRI4
+ASGNI4
+line 704
+;704:			predictCmd = current - CMD_BACKUP + 1;
+ADDRLP4 516
+ADDRLP4 480
+INDIRI4
+CNSTI4 64
+SUBI4
+CNSTI4 1
+ADDI4
+ASGNI4
+line 705
+;705:		}
+ADDRGP4 $501
+JUMPV
+LABELV $500
+line 708
+;706:		// cg.physicsTime is the current snapshot's serverTime
+;707:		// if it's the same as the last one
+;708:		else if ( cg.physicsTime == cg.lastServerTime ) {
+ADDRGP4 cg+1868900
+INDIRI4
+ADDRGP4 cg+1956312
+INDIRI4
+NEI4 $508
+line 710
+;709:			// we have no new information, so do an incremental predict
+;710:			predictCmd = cg.lastPredictedCommand + 1;
+ADDRLP4 516
+ADDRGP4 cg+1956308
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+line 711
+;711:		}
+ADDRGP4 $509
+JUMPV
+LABELV $508
+line 712
+;712:		else {
+line 716
+;713:			// we have a new snapshot
+;714:
+;715:			int i;
+;716:			qboolean error = qtrue;
+ADDRLP4 580
+CNSTI4 1
+ASGNI4
+line 719
+;717:
+;718:			// loop through the saved states queue
+;719:			for ( i = cg.stateHead; i != cg.stateTail; i = (i + 1) % NUM_SAVED_STATES ) {
+ADDRLP4 576
+ADDRGP4 cg+1987468
+INDIRI4
+ASGNI4
+ADDRGP4 $516
+JUMPV
+LABELV $513
+line 721
+;720:				// if we find a predicted state whose commandTime matches the snapshot player state's commandTime
+;721:				if ( cg.savedPmoveStates[i].commandTime == cg.predictedPlayerState.commandTime ) {
+CNSTI4 472
+ADDRLP4 576
+INDIRI4
+MULI4
+ADDRGP4 cg+1956316
+ADDP4
+INDIRI4
+ADDRGP4 cg+1868928
+INDIRI4
+NEI4 $519
+line 723
+;722:					// make sure the state differences are acceptable
+;723:					int errorcode = IsUnacceptableError( &cg.predictedPlayerState, &cg.savedPmoveStates[i] );
+ADDRGP4 cg+1868928
+ARGP4
+CNSTI4 472
+ADDRLP4 576
+INDIRI4
+MULI4
+ADDRGP4 cg+1956316
+ADDP4
+ARGP4
+ADDRLP4 588
+ADDRGP4 IsUnacceptableError
+CALLI4
+ASGNI4
+ADDRLP4 584
+ADDRLP4 588
+INDIRI4
+ASGNI4
+line 726
+;724:
+;725:					// too much change?
+;726:					if ( errorcode ) {
+ADDRLP4 584
+INDIRI4
+CNSTI4 0
+EQI4 $525
+line 727
+;727:						if ( cg_showmiss.integer ) {
+ADDRGP4 cg_showmiss+12
+INDIRI4
+CNSTI4 0
+EQI4 $515
+line 728
+;728:							CG_Printf("errorcode %d at %d\n", errorcode, cg.time);
+ADDRGP4 $530
+ARGP4
+ADDRLP4 584
+INDIRI4
+ARGI4
+ADDRGP4 cg+1868892
+INDIRI4
+ARGI4
+ADDRGP4 CG_Printf
+CALLV
+pop
+line 729
+;729:						}
+line 731
+;730:						// yeah, so do a full predict
+;731:						break;
+ADDRGP4 $515
+JUMPV
+LABELV $525
+line 735
+;732:					}
+;733:
+;734:					// this one is almost exact, so we'll copy it in as the starting point
+;735:					*cg_pmove.ps = cg.savedPmoveStates[i];
+ADDRGP4 cg_pmove
+INDIRP4
+CNSTI4 472
+ADDRLP4 576
+INDIRI4
+MULI4
+ADDRGP4 cg+1956316
+ADDP4
+INDIRB
+ASGNB 472
+line 737
+;736:					// advance the head
+;737:					cg.stateHead = (i + 1) % NUM_SAVED_STATES;
+ADDRGP4 cg+1987468
+ADDRLP4 576
+INDIRI4
+CNSTI4 1
+ADDI4
+CNSTI4 66
+MODI4
+ASGNI4
+line 740
+;738:
+;739:					// set the next command to predict
+;740:					predictCmd = cg.lastPredictedCommand + 1;
+ADDRLP4 516
+ADDRGP4 cg+1956308
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+line 743
+;741:
+;742:					// a saved state matched, so flag it
+;743:					error = qfalse;
+ADDRLP4 580
+CNSTI4 0
+ASGNI4
+line 744
+;744:					break;
+ADDRGP4 $515
+JUMPV
+LABELV $519
+line 746
+;745:				}
+;746:			}
+LABELV $514
+line 719
+ADDRLP4 576
+ADDRLP4 576
+INDIRI4
+CNSTI4 1
+ADDI4
+CNSTI4 66
+MODI4
+ASGNI4
+LABELV $516
+ADDRLP4 576
+INDIRI4
+ADDRGP4 cg+1987472
+INDIRI4
+NEI4 $513
+LABELV $515
+line 749
+;747:
+;748:			// if no saved states matched
+;749:			if ( error ) {
+ADDRLP4 580
+INDIRI4
+CNSTI4 0
+EQI4 $535
+line 751
+;750:				// do a full predict
+;751:				cg.lastPredictedCommand = 0;
+ADDRGP4 cg+1956308
+CNSTI4 0
+ASGNI4
+line 752
+;752:				cg.stateTail = cg.stateHead;
+ADDRGP4 cg+1987472
+ADDRGP4 cg+1987468
+INDIRI4
+ASGNI4
+line 753
+;753:				predictCmd = current - CMD_BACKUP + 1;
+ADDRLP4 516
+ADDRLP4 480
+INDIRI4
+CNSTI4 64
+SUBI4
+CNSTI4 1
+ADDI4
+ASGNI4
+line 754
+;754:			}
+LABELV $535
+line 755
+;755:		}
+LABELV $509
+LABELV $501
+line 759
+;756:
+;757:		// keep track of the server time of the last snapshot so we
+;758:		// know when we're starting from a new one in future calls
+;759:		cg.lastServerTime = cg.physicsTime;
+ADDRGP4 cg+1956312
+ADDRGP4 cg+1868900
+INDIRI4
+ASGNI4
+line 760
+;760:		stateIndex = cg.stateHead;
+ADDRLP4 4
+ADDRGP4 cg+1987468
+INDIRI4
+ASGNI4
+line 761
+;761:	}
+LABELV $497
+line 765
+;762://unlagged - optimized prediction
+;763:
+;764:	// run cmds
+;765:	moved = qfalse;
+ADDRLP4 484
+CNSTI4 0
+ASGNI4
+line 766
+;766:	for ( cmdNum = current - CMD_BACKUP + 1 ; cmdNum <= current ; cmdNum++ ) {
+ADDRLP4 0
+ADDRLP4 480
+INDIRI4
+CNSTI4 64
+SUBI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRGP4 $546
+JUMPV
+LABELV $543
+line 768
+;767:		// get the command
+;768:		trap_GetUserCmd( cmdNum, &cg_pmove.cmd );
+ADDRLP4 0
+INDIRI4
+ARGI4
+ADDRGP4 cg_pmove+8
+ARGP4
+ADDRGP4 trap_GetUserCmd
+CALLI4
+pop
+line 770
+;769:
+;770:		if ( cg_pmove.pmove_fixed ) {
+ADDRGP4 cg_pmove+220
+INDIRI4
+CNSTI4 0
+EQI4 $548
+line 771
+;771:			PM_UpdateViewAngles( cg_pmove.ps, &cg_pmove.cmd );
+ADDRGP4 cg_pmove
+INDIRP4
+ARGP4
+ADDRGP4 cg_pmove+8
+ARGP4
+ADDRGP4 PM_UpdateViewAngles
+CALLV
+pop
+line 772
+;772:		}
+LABELV $548
+line 775
+;773:
+;774:		// don't do anything if the time is before the snapshot player time
+;775:		if ( cg_pmove.cmd.serverTime <= cg.predictedPlayerState.commandTime ) {
+ADDRGP4 cg_pmove+8
+INDIRI4
+ADDRGP4 cg+1868928
+INDIRI4
+GTI4 $552
+line 776
+;776:			continue;
+ADDRGP4 $544
+JUMPV
+LABELV $552
+line 780
+;777:		}
+;778:
+;779:		// don't do anything if the command was from a previous map_restart
+;780:		if ( cg_pmove.cmd.serverTime > latestCmd.serverTime ) {
+ADDRGP4 cg_pmove+8
+INDIRI4
+ADDRLP4 488
+INDIRI4
+LEI4 $556
+line 781
+;781:			continue;
+ADDRGP4 $544
+JUMPV
+LABELV $556
+line 789
+;782:		}
+;783:
+;784:		// check for a prediction error from last frame
+;785:		// on a lan, this will often be the exact value
+;786:		// from the snapshot, but on a wan we will have
+;787:		// to predict several commands to get to the point
+;788:		// we want to compare
+;789:		if ( cg.predictedPlayerState.commandTime == oldPlayerState.commandTime ) {
+ADDRGP4 cg+1868928
+INDIRI4
+ADDRLP4 8
+INDIRI4
+NEI4 $559
+line 793
+;790:			vec3_t	delta;
+;791:			float	len;
+;792:
+;793:			if ( cg.thisFrameTeleport ) {
+ADDRGP4 cg+1868880
+INDIRI4
+CNSTI4 0
+EQI4 $562
+line 795
+;794:				// a teleport will not cause an error decay
+;795:				VectorClear( cg.predictedError );
+ADDRLP4 588
+CNSTF4 0
+ASGNF4
+ADDRGP4 cg+1870336+8
+ADDRLP4 588
+INDIRF4
+ASGNF4
+ADDRGP4 cg+1870336+4
+ADDRLP4 588
+INDIRF4
+ASGNF4
+ADDRGP4 cg+1870336
+ADDRLP4 588
+INDIRF4
+ASGNF4
+line 796
+;796:				if ( cg_showmiss.integer ) {
+ADDRGP4 cg_showmiss+12
+INDIRI4
+CNSTI4 0
+EQI4 $570
+line 797
+;797:					CG_Printf( "PredictionTeleport\n" );
+ADDRGP4 $573
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+line 798
+;798:				}
+LABELV $570
+line 799
+;799:				cg.thisFrameTeleport = qfalse;
+ADDRGP4 cg+1868880
+CNSTI4 0
+ASGNI4
+line 800
+;800:			} else {
+ADDRGP4 $563
+JUMPV
+LABELV $562
+line 802
+;801:				vec3_t	adjusted;
+;802:				CG_AdjustPositionForMover( cg.predictedPlayerState.origin, 
+ADDRGP4 cg+1868928+20
+ARGP4
+ADDRGP4 cg+1868928+68
+INDIRI4
+ARGI4
+ADDRGP4 cg+1868900
+INDIRI4
+ARGI4
+ADDRGP4 cg+1868896
+INDIRI4
+ARGI4
+ADDRLP4 588
+ARGP4
+ADDRGP4 CG_AdjustPositionForMover
+CALLV
+pop
+line 805
+;803:					cg.predictedPlayerState.groundEntityNum, cg.physicsTime, cg.oldTime, adjusted );
+;804:
+;805:				if ( cg_showmiss.integer ) {
+ADDRGP4 cg_showmiss+12
+INDIRI4
+CNSTI4 0
+EQI4 $581
+line 806
+;806:					if (!VectorCompare( oldPlayerState.origin, adjusted )) {
+ADDRLP4 8+20
+ARGP4
+ADDRLP4 588
+ARGP4
+ADDRLP4 600
+ADDRGP4 VectorCompare
+CALLI4
+ASGNI4
+ADDRLP4 600
+INDIRI4
+CNSTI4 0
+NEI4 $584
+line 807
+;807:						CG_Printf("prediction error\n");
+ADDRGP4 $587
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+line 808
+;808:					}
+LABELV $584
+line 809
+;809:				}
+LABELV $581
+line 810
+;810:				VectorSubtract( oldPlayerState.origin, adjusted, delta );
+ADDRLP4 572
+ADDRLP4 8+20
+INDIRF4
+ADDRLP4 588
+INDIRF4
+SUBF4
+ASGNF4
+ADDRLP4 572+4
+ADDRLP4 8+20+4
+INDIRF4
+ADDRLP4 588+4
+INDIRF4
+SUBF4
+ASGNF4
+ADDRLP4 572+8
+ADDRLP4 8+20+8
+INDIRF4
+ADDRLP4 588+8
+INDIRF4
+SUBF4
+ASGNF4
+line 811
+;811:				len = VectorLength( delta );
+ADDRLP4 572
+ARGP4
+ADDRLP4 600
+ADDRGP4 VectorLength
+CALLF4
+ASGNF4
+ADDRLP4 584
+ADDRLP4 600
+INDIRF4
+ASGNF4
+line 812
+;812:				if ( len > 0.1 ) {
+ADDRLP4 584
+INDIRF4
+CNSTF4 1036831949
+LEF4 $597
+line 813
+;813:					if ( cg_showmiss.integer ) {
+ADDRGP4 cg_showmiss+12
+INDIRI4
+CNSTI4 0
+EQI4 $599
+line 814
+;814:						CG_Printf("Prediction miss: %f\n", len);
+ADDRGP4 $602
+ARGP4
+ADDRLP4 584
+INDIRF4
+ARGF4
+ADDRGP4 CG_Printf
+CALLV
+pop
+line 815
+;815:					}
+LABELV $599
+line 816
+;816:					if ( cg_errorDecay.integer ) {
+ADDRGP4 cg_errorDecay+12
+INDIRI4
+CNSTI4 0
+EQI4 $603
+line 820
+;817:						int		t;
+;818:						float	f;
+;819:
+;820:						t = cg.time - cg.predictedErrorTime;
+ADDRLP4 608
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRGP4 cg+1870332
+INDIRI4
+SUBI4
+ASGNI4
+line 821
+;821:						f = ( cg_errorDecay.value - t ) / cg_errorDecay.value;
+ADDRLP4 604
+ADDRGP4 cg_errorDecay+8
+INDIRF4
+ADDRLP4 608
+INDIRI4
+CVIF4 4
+SUBF4
+ADDRGP4 cg_errorDecay+8
+INDIRF4
+DIVF4
+ASGNF4
+line 822
+;822:						if ( f < 0 ) {
+ADDRLP4 604
+INDIRF4
+CNSTF4 0
+GEF4 $610
+line 823
+;823:							f = 0;
+ADDRLP4 604
+CNSTF4 0
+ASGNF4
+line 824
+;824:						}
+LABELV $610
+line 825
+;825:						if ( f > 0 && cg_showmiss.integer ) {
+ADDRLP4 604
+INDIRF4
+CNSTF4 0
+LEF4 $612
+ADDRGP4 cg_showmiss+12
+INDIRI4
+CNSTI4 0
+EQI4 $612
+line 826
+;826:							CG_Printf("Double prediction decay: %f\n", f);
+ADDRGP4 $615
+ARGP4
+ADDRLP4 604
+INDIRF4
+ARGF4
+ADDRGP4 CG_Printf
+CALLV
+pop
+line 827
+;827:						}
+LABELV $612
+line 828
+;828:						VectorScale( cg.predictedError, f, cg.predictedError );
+ADDRGP4 cg+1870336
+ADDRGP4 cg+1870336
+INDIRF4
+ADDRLP4 604
+INDIRF4
+MULF4
+ASGNF4
+ADDRGP4 cg+1870336+4
+ADDRGP4 cg+1870336+4
+INDIRF4
+ADDRLP4 604
+INDIRF4
+MULF4
+ASGNF4
+ADDRGP4 cg+1870336+8
+ADDRGP4 cg+1870336+8
+INDIRF4
+ADDRLP4 604
+INDIRF4
+MULF4
+ASGNF4
+line 829
+;829:					} else {
+ADDRGP4 $604
+JUMPV
+LABELV $603
+line 830
+;830:						VectorClear( cg.predictedError );
+ADDRLP4 604
+CNSTF4 0
+ASGNF4
+ADDRGP4 cg+1870336+8
+ADDRLP4 604
+INDIRF4
+ASGNF4
+ADDRGP4 cg+1870336+4
+ADDRLP4 604
+INDIRF4
+ASGNF4
+ADDRGP4 cg+1870336
+ADDRLP4 604
+INDIRF4
+ASGNF4
+line 831
+;831:					}
+LABELV $604
+line 832
+;832:					VectorAdd( delta, cg.predictedError, cg.predictedError );
+ADDRGP4 cg+1870336
+ADDRLP4 572
+INDIRF4
+ADDRGP4 cg+1870336
+INDIRF4
+ADDF4
+ASGNF4
+ADDRGP4 cg+1870336+4
+ADDRLP4 572+4
+INDIRF4
+ADDRGP4 cg+1870336+4
+INDIRF4
+ADDF4
+ASGNF4
+ADDRGP4 cg+1870336+8
+ADDRLP4 572+8
+INDIRF4
+ADDRGP4 cg+1870336+8
+INDIRF4
+ADDF4
+ASGNF4
+line 833
+;833:					cg.predictedErrorTime = cg.oldTime;
+ADDRGP4 cg+1870332
+ADDRGP4 cg+1868896
+INDIRI4
+ASGNI4
+line 834
+;834:				}
+LABELV $597
+line 835
+;835:			}
+LABELV $563
+line 836
+;836:		}
+LABELV $559
+line 840
+;837:
+;838:		// don't predict gauntlet firing, which is only supposed to happen
+;839:		// when it actually inflicts damage
+;840:		cg_pmove.gauntletHit = qfalse;
+ADDRGP4 cg_pmove+44
+CNSTI4 0
+ASGNI4
+line 842
+;841:
+;842:		if ( cg_pmove.pmove_fixed ) {
+ADDRGP4 cg_pmove+220
+INDIRI4
+CNSTI4 0
+EQI4 $646
+line 843
+;843:			cg_pmove.cmd.serverTime = ((cg_pmove.cmd.serverTime + pmove_msec.integer-1) / pmove_msec.integer) * pmove_msec.integer;
+ADDRGP4 cg_pmove+8
+ADDRGP4 cg_pmove+8
+INDIRI4
+ADDRGP4 pmove_msec+12
+INDIRI4
+ADDI4
+CNSTI4 1
+SUBI4
+ADDRGP4 pmove_msec+12
+INDIRI4
+DIVI4
+ADDRGP4 pmove_msec+12
+INDIRI4
+MULI4
+ASGNI4
+line 844
+;844:		}
+LABELV $646
+line 847
+;845:
+;846://unlagged - optimized prediction
+;847:		if ( cg_optimizePrediction.integer ) {
+ADDRGP4 cg_optimizePrediction+12
+INDIRI4
+CNSTI4 0
+EQI4 $654
+line 849
+;848:			// if we need to predict this command, or we've run out of space in the saved states queue
+;849:			if ( cmdNum >= predictCmd || (stateIndex + 1) % NUM_SAVED_STATES == cg.stateHead ) {
+ADDRLP4 0
+INDIRI4
+ADDRLP4 516
+INDIRI4
+GEI4 $660
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+ADDI4
+CNSTI4 66
+MODI4
+ADDRGP4 cg+1987468
+INDIRI4
+NEI4 $657
+LABELV $660
+line 851
+;850:				// run the Pmove
+;851:				Pmove (&cg_pmove);
+ADDRGP4 cg_pmove
+ARGP4
+ADDRGP4 Pmove
+CALLV
+pop
+line 853
+;852:
+;853:				numPredicted++; // debug code
+ADDRLP4 512
+ADDRLP4 512
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+line 856
+;854:
+;855:				// record the last predicted command
+;856:				cg.lastPredictedCommand = cmdNum;
+ADDRGP4 cg+1956308
+ADDRLP4 0
+INDIRI4
+ASGNI4
+line 859
+;857:
+;858:				// if we haven't run out of space in the saved states queue
+;859:				if ( (stateIndex + 1) % NUM_SAVED_STATES != cg.stateHead ) {
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+ADDI4
+CNSTI4 66
+MODI4
+ADDRGP4 cg+1987468
+INDIRI4
+EQI4 $655
+line 862
+;860:					// save the state for the false case (of cmdNum >= predictCmd)
+;861:					// in later calls to this function
+;862:					cg.savedPmoveStates[stateIndex] = *cg_pmove.ps;
+CNSTI4 472
+ADDRLP4 4
+INDIRI4
+MULI4
+ADDRGP4 cg+1956316
+ADDP4
+ADDRGP4 cg_pmove
+INDIRP4
+INDIRB
+ASGNB 472
+line 863
+;863:					stateIndex = (stateIndex + 1) % NUM_SAVED_STATES;
+ADDRLP4 4
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+ADDI4
+CNSTI4 66
+MODI4
+ASGNI4
+line 864
+;864:					cg.stateTail = stateIndex;
+ADDRGP4 cg+1987472
+ADDRLP4 4
+INDIRI4
+ASGNI4
+line 865
+;865:				}
+line 866
+;866:			}
+ADDRGP4 $655
+JUMPV
+LABELV $657
+line 867
+;867:			else {
+line 868
+;868:				numPlayedBack++; // debug code
+ADDRLP4 520
+ADDRLP4 520
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+line 870
+;869:
+;870:				if ( cg_showmiss.integer && 
+ADDRGP4 cg_showmiss+12
+INDIRI4
+CNSTI4 0
+EQI4 $667
+CNSTI4 472
+ADDRLP4 4
+INDIRI4
+MULI4
+ADDRGP4 cg+1956316
+ADDP4
+INDIRI4
+ADDRGP4 cg_pmove+8
+INDIRI4
+EQI4 $667
+line 871
+;871:						cg.savedPmoveStates[stateIndex].commandTime != cg_pmove.cmd.serverTime) {
+line 873
+;872:					// this should ONLY happen just after changing the value of pmove_fixed
+;873:					CG_Printf( "saved state miss\n" );
+ADDRGP4 $672
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+line 874
+;874:				}
+LABELV $667
+line 877
+;875:
+;876:				// play back the command from the saved states
+;877:				*cg_pmove.ps = cg.savedPmoveStates[stateIndex];
+ADDRGP4 cg_pmove
+INDIRP4
+CNSTI4 472
+ADDRLP4 4
+INDIRI4
+MULI4
+ADDRGP4 cg+1956316
+ADDP4
+INDIRB
+ASGNB 472
+line 880
+;878:
+;879:				// go to the next element in the saved states array
+;880:				stateIndex = (stateIndex + 1) % NUM_SAVED_STATES;
+ADDRLP4 4
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+ADDI4
+CNSTI4 66
+MODI4
+ASGNI4
+line 881
+;881:			}
+line 882
+;882:		}
+ADDRGP4 $655
+JUMPV
+LABELV $654
+line 883
+;883:		else {
+line 885
+;884:			// run the Pmove
+;885:			Pmove (&cg_pmove);
+ADDRGP4 cg_pmove
+ARGP4
+ADDRGP4 Pmove
+CALLV
+pop
+line 887
+;886:
+;887:			numPredicted++; // debug code
+ADDRLP4 512
+ADDRLP4 512
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+line 888
+;888:		}
+LABELV $655
+line 891
+;889://unlagged - optimized prediction
+;890:
+;891:		moved = qtrue;
+ADDRLP4 484
+CNSTI4 1
+ASGNI4
+line 894
+;892:
+;893:		// add push trigger movement effects
+;894:		CG_TouchTriggerPrediction();
+ADDRGP4 CG_TouchTriggerPrediction
+CALLV
+pop
+line 898
+;895:
+;896:		// check for predictable events that changed from previous predictions
+;897:		//CG_CheckChangedPredictableEvents(&cg.predictedPlayerState);
+;898:	}
+LABELV $544
+line 766
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+LABELV $546
+ADDRLP4 0
+INDIRI4
+ADDRLP4 480
+INDIRI4
+LEI4 $543
+line 909
+;899:
+;900://unlagged - optimized prediction
+;901:	// do a /condump after a few seconds of this
+;902:	//CG_Printf("cg.time: %d, numPredicted: %d, numPlayedBack: %d\n", cg.time, numPredicted, numPlayedBack); // debug code
+;903:	// if everything is working right, numPredicted should be 1 more than 98%
+;904:	// of the time, meaning only ONE predicted move was done in the frame
+;905:	// you should see other values for numPredicted after IsUnacceptableError
+;906:	// returns nonzero, and that's it
+;907://unlagged - optimized prediction
+;908:
+;909:	if ( cg_showmiss.integer > 1 ) {
+ADDRGP4 cg_showmiss+12
+INDIRI4
+CNSTI4 1
+LEI4 $674
+line 910
+;910:		CG_Printf( "[%i : %i] ", cg_pmove.cmd.serverTime, cg.time );
+ADDRGP4 $677
+ARGP4
+ADDRGP4 cg_pmove+8
+INDIRI4
+ARGI4
+ADDRGP4 cg+1868892
+INDIRI4
+ARGI4
+ADDRGP4 CG_Printf
+CALLV
+pop
+line 911
+;911:	}
+LABELV $674
+line 913
+;912:
+;913:	if ( !moved ) {
+ADDRLP4 484
+INDIRI4
+CNSTI4 0
+NEI4 $680
+line 914
+;914:		if ( cg_showmiss.integer ) {
+ADDRGP4 cg_showmiss+12
+INDIRI4
+CNSTI4 0
+EQI4 $424
+line 915
+;915:			CG_Printf( "not moved\n" );
+ADDRGP4 $685
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+line 916
+;916:		}
+line 917
+;917:		return;
+ADDRGP4 $424
+JUMPV
+LABELV $680
+line 921
+;918:	}
+;919:
+;920:	// adjust for the movement of the groundentity
+;921:	CG_AdjustPositionForMover( cg.predictedPlayerState.origin, 
+ADDRGP4 cg+1868928+20
+ARGP4
+ADDRGP4 cg+1868928+68
+INDIRI4
+ARGI4
+ADDRGP4 cg+1868900
+INDIRI4
+ARGI4
+ADDRGP4 cg+1868892
+INDIRI4
+ARGI4
+ADDRGP4 cg+1868928+20
+ARGP4
+ADDRGP4 CG_AdjustPositionForMover
+CALLV
+pop
+line 925
+;922:		cg.predictedPlayerState.groundEntityNum, 
+;923:		cg.physicsTime, cg.time, cg.predictedPlayerState.origin );
+;924:
+;925:	if ( cg_showmiss.integer ) {
+ADDRGP4 cg_showmiss+12
+INDIRI4
+CNSTI4 0
+EQI4 $694
+line 926
+;926:		if (cg.predictedPlayerState.eventSequence > oldPlayerState.eventSequence + MAX_PS_EVENTS) {
+ADDRGP4 cg+1868928+108
+INDIRI4
+ADDRLP4 8+108
+INDIRI4
+CNSTI4 2
+ADDI4
+LEI4 $697
+line 927
+;927:			CG_Printf("WARNING: dropped event\n");
+ADDRGP4 $702
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+line 928
+;928:		}
+LABELV $697
+line 929
+;929:	}
+LABELV $694
+line 932
+;930:
+;931:	// fire events and other transition triggered things
+;932:	CG_TransitionPlayerState( &cg.predictedPlayerState, &oldPlayerState );
+ADDRGP4 cg+1868928
+ARGP4
+ADDRLP4 8
+ARGP4
+ADDRGP4 CG_TransitionPlayerState
+CALLV
+pop
+line 934
+;933:
+;934:	if ( cg_showmiss.integer ) {
+ADDRGP4 cg_showmiss+12
+INDIRI4
+CNSTI4 0
+EQI4 $704
+line 935
+;935:		if (cg.eventSequence > cg.predictedPlayerState.eventSequence) {
+ADDRGP4 cg+1870348
+INDIRI4
+ADDRGP4 cg+1868928+108
+INDIRI4
+LEI4 $707
+line 936
+;936:			CG_Printf("WARNING: double event\n");
+ADDRGP4 $712
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+line 937
+;937:			cg.eventSequence = cg.predictedPlayerState.eventSequence;
+ADDRGP4 cg+1870348
+ADDRGP4 cg+1868928+108
+INDIRI4
+ASGNI4
+line 938
+;938:		}
+LABELV $707
+line 939
+;939:	}
+LABELV $704
+line 940
+;940:}
+LABELV $424
+endproc CG_PredictPlayerState 612 20
+bss
+align 4
+LABELV cg_triggerEntities
+skip 16384
+align 4
+LABELV cg_numTriggerEntities
+skip 4
+align 4
+LABELV cg_solidEntities
+skip 16384
+align 4
+LABELV cg_numSolidEntities
+skip 4
+align 4
+LABELV cg_pmove
+skip 244
+import wideAdjustX
+import CG_NewParticleArea
+import initparticles
+import CG_LaunchFragment
+import CG_ParticleExplosion
+import CG_ParticleMisc
+import CG_ParticleDust
+import CG_ParticleSparks
+import CG_ParticleBulletDebris
+import CG_ParticleSnowFlurry
+import CG_AddParticleShrapnel
+import CG_ParticleSmoke
+import CG_ParticleSnow
+import CG_AddParticles
+import CG_ClearParticles
+import trap_GetEntityToken
+import trap_getCameraInfo
+import trap_startCamera
+import trap_loadCamera
+import trap_SnapVector
+import trap_CIN_SetExtents
+import trap_CIN_DrawCinematic
+import trap_CIN_RunCinematic
+import trap_CIN_StopCinematic
+import trap_CIN_PlayCinematic
+import trap_Key_GetKey
+import trap_Key_SetCatcher
+import trap_Key_GetCatcher
+import trap_Key_IsDown
+import trap_R_RegisterFont
+import trap_MemoryRemaining
+import testPrintFloat
+import testPrintInt
+import trap_SetUserCmdValue
+import trap_GetUserCmd
+import trap_GetCurrentCmdNumber
+import trap_GetServerCommand
+import trap_GetSnapshot
+import trap_GetCurrentSnapshotNumber
+import trap_GetGameState
+import trap_GetGlconfig
+import trap_R_RemapShader
+import trap_R_LerpTag
+import trap_R_ModelBounds
+import trap_R_DrawStretchPic
+import trap_R_SetColor
+import trap_R_RenderScene
+import trap_R_LightForPoint
+import trap_R_AddLightToScene
+import trap_R_AddPolysToScene
+import trap_R_AddPolyToScene
+import trap_R_AddRefEntityToScene
+import trap_R_ClearScene
+import trap_R_RegisterShaderNoMip
+import trap_R_RegisterShader
+import trap_R_RegisterSkin
+import trap_R_RegisterModel_MiTech
+import trap_R_RegisterModel
+import trap_R_LoadWorldMap
+import trap_S_StopBackgroundTrack
+import trap_S_StartBackgroundTrack
+import trap_S_RegisterSound_MiTech
+import trap_S_RegisterSound
+import trap_S_Respatialize
+import trap_S_UpdateEntityPosition
+import trap_S_AddRealLoopingSound
+import trap_S_AddLoopingSound
+import trap_S_ClearLoopingSounds
+import trap_S_StartLocalSound
+import trap_S_StopLoopingSound
+import trap_S_StartSound
+import trap_CM_MarkFragments
+import trap_CM_TransformedBoxTrace
+import trap_CM_BoxTrace
+import trap_CM_TransformedPointContents
+import trap_CM_PointContents
+import trap_CM_TempBoxModel
+import trap_CM_InlineModel
+import trap_CM_NumInlineModels
+import trap_CM_LoadMap
+import trap_UpdateScreen
+import trap_SendClientCommand
+import trap_AddCommand
+import trap_SendConsoleCommand
+import trap_System
+import trap_FS_Seek
+import trap_FS_FCloseFile
+import trap_FS_Write
+import trap_FS_Read
+import trap_FS_FOpenFile
+import trap_Args
+import trap_Argv
+import trap_Argc
+import trap_Cvar_VariableStringBuffer
+import trap_Cvar_Set
+import trap_Cvar_Update
+import trap_Cvar_Register
+import trap_Milliseconds
+import trap_Error
+import trap_Print
+import CG_Atmospheric_SetParticles
+import CG_AddAtmosphericEffects
+import teamcolormodels
+import CG_CheckChangedPredictableEvents
+import CG_TransitionPlayerState
+import CG_Respawn
+import CG_PlayBufferedVoiceChats
+import CG_VoiceChatLocal
+import CG_ShaderStateChanged
+import CG_LoadVoiceChats
+import CG_SetConfigValues
+import CG_ParseServerinfo
+import CG_ExecuteNewServerCommands
+import CG_InitConsoleCommands
+import CG_ConsoleCommand
+import CG_DrawOldTourneyScoreboard
+import CG_DrawOldScoreboard
+import CG_DrawInformationRus
+import CG_DrawInformation
+import CG_LoadingClient
+import CG_LoadingItem
+import CG_LoadingString
+import CG_TransitionEntity
+import CG_ProcessSnapshots
+import CG_SpurtBlood
+import CG_MakeExplosion
+import CG_Bleed
+import CG_BigExplode
+import CG_GibPlayer
+import CG_ScorePlum
+import CG_LightningBoltBeam
+import CG_InvulnerabilityJuiced
+import CG_InvulnerabilityImpact
+import CG_ObeliskPain
+import CG_ObeliskExplode
+import CG_KamikazeEffect
+import CG_SpawnEffect
+import CG_BubbleTrail
+import CG_SmokePuff
+import CG_AddLocalEntities
+import CG_AllocLocalEntity
+import CG_InitLocalEntities
+import CG_LeiPuff
+import CG_LeiSparks2
+import CG_LeiSparks
+import CG_ImpactMark
+import CG_AddMarks
+import CG_InitMarkPolys
+import CG_OutOfAmmoChange
+import CG_DrawWeaponBarNew2
+import CG_DrawWeaponBarNew
+import CG_DrawWeaponBar0
+import CG_DrawWeaponSelect
+import CG_AddRealWeapon
+import CG_AddPlayerWeapon
+import CG_AddViewWeapon
+import CG_GrappleTrail
+import CG_GravitygunTrail
+import CG_PhysgunTrail
+import CG_RailTrail
+import CG_Bullet
+import CG_ShotgunFire
+import CG_MissileHitPlayer
+import CG_MissileHitWall
+import CG_FireWeapon
+import CG_RegisterItemVisuals
+import CG_RegisterWeapon
+import CG_Weapon_f
+import CG_PrevWeapon_f
+import CG_NextWeapon_f
+import CG_PositionRotatedEntityOnTag
+import CG_PositionEntityOnTag
+import CG_AdjustPositionForMover
+import CG_Beam
+import CG_AddPacketEntities
+import CG_SetEntitySoundPosition
+import CG_PainVehicleEvent
+import CG_PainEvent
+import CG_EntityEvent
+import CG_PlaceString
+import CG_CheckEvents
+import CG_ReloadPlayers
+import CG_LoadDeferredPlayers
+import CG_CustomSound
+import CG_NewClientInfo
+import CG_AddRefEntityWithPowerups
+import CG_ResetPlayerEntity
+import CG_Player
+import CG_AddToGenericConsole
+import CG_StatusHandle
+import CG_OtherTeamHasFlag
+import CG_YourTeamHasFlag
+import CG_GameTypeString
+import CG_CheckOrderPending
+import CG_Text_PaintChar
+import CG_Draw3DModelCopy
+import CG_Draw3DModel
+import CG_GetKillerText
+import CG_GetGameStatusText
+import CG_GetTeamColor
+import CG_InitTeamChat
+import CG_SetPrintString
+import CG_ShowResponseHead
+import CG_RunMenuScript
+import CG_OwnerDrawVisible
+import CG_GetValue
+import CG_SelectNextPlayer
+import CG_SelectPrevPlayer
+import CG_Text_Height
+import CG_Text_Width
+import CG_Text_Paint
+import CG_OwnerDraw
+import CG_DrawTeamBackground
+import CG_DrawFlagModel
+import CG_DrawActive
+import CG_DrawHead
+import CG_CenterPrintRus
+import CG_CenterPrint
+import CG_AddLagometerSnapshotInfo
+import CG_AddLagometerFrameInfo
+import CG_DrawFade
+import CG_Fade
+import teamChat2
+import teamChat1
+import systemChat
+import drawTeamOverlayModificationCount
+import numSortedTeamPlayers
+import sortedTeamPlayers
+import CG_InsideBox
+import CG_DrawTopBottom
+import CG_DrawSides
+import CG_DrawRect
+import UI_DrawProportionalString
+import CG_GetColorForHealth
+import CG_ColorForHealth
+import CG_TileClear
+import CG_TeamColor
+import CG_FadeColor
+import CG_DrawStrlen
+import CG_DrawSmallStringColor
+import CG_DrawSmallString
+import CG_DrawBigStringColor
+import CG_DrawGiantString
+import CG_DrawBigString
+import CG_DrawStringExt
+import CG_DrawString
+import CG_DrawPic
+import CG_DrawRoundedRect
+import CG_FillRect2
+import CG_FillRect
+import CG_AdjustFrom640
+import CG_DrawActiveFrame
+import CG_AddBufferedSound
+import CG_ZoomUp_f
+import CG_ZoomDown_f
+import CG_TestModelPrevSkin_f
+import CG_TestModelNextSkin_f
+import CG_TestModelPrevFrame_f
+import CG_TestModelNextFrame_f
+import CG_TestGun_f
+import CG_TestModel_f
+import CG_CloadMap_f
+import CG_FairCvars
+import SnapVectorTowards
+import CG_RegisterOverlay
+import CG_IsTeamGame
+import CG_BuildSpectatorString
+import CG_SetScoreSelection
+import CG_RankRunFrame
+import CG_EventHandling
+import CG_MouseEvent
+import CG_KeyEvent
+import CG_LoadMenus
+import CG_LastAttacker
+import CG_CrosshairPlayer
+import CG_UpdateCvars
+import CG_StartMusic
+import CG_Error
+import CG_Printf
+import CG_Argv
+import CG_ConfigString
+import CG_Cvar_ClampInt
+import CG_PredictWeaponEffects
+import cg_teamChatBeep
+import cg_chatBeep
+import cg_weaponOrder
+import cg_weaponBarStyle
+import cg_crosshairColorBlue
+import cg_crosshairColorGreen
+import cg_crosshairColorRed
+import cg_ch13size
+import cg_ch13
+import cg_ch12size
+import cg_ch12
+import cg_ch11size
+import cg_ch11
+import cg_ch10size
+import cg_ch10
+import cg_ch9slze
+import cg_ch9size
+import cg_ch9
+import cg_ch8size
+import cg_ch8
+import cg_ch7size
+import cg_ch7
+import cg_ch6size
+import cg_ch6
+import cg_ch5size
+import cg_ch5
+import cg_ch4size
+import cg_ch4
+import cg_ch3size
+import cg_ch3
+import cg_ch2size
+import cg_ch2
+import cg_ch1size
+import cg_ch1
+import cg_differentCrosshairs
+import cg_crosshairPulse
+import cg_atmosphericLevel
+import cg_fragmsgsize
+import cg_autovertex
+import cg_vote_custom_commands
+import cg_cyclegrapple
+import cg_voteflags
+import cg_voip_teamonly
+import cg_hitsound
+import cg_alwaysWeaponBar
+import cl_timeNudge
+import cg_optimizePrediction
+import cg_projectileNudge
+import sv_fps
+import cg_cmdTimeNudge
+import cg_delag
+import cg_enableBreath
+import cg_enableDust
+import cg_obeliskRespawnDelay
+import cg_recordSPDemoName
+import cg_recordSPDemo
+import cg_singlePlayerActive
+import cg_singlePlayer
+import cg_currentSelectedPlayerName
+import cg_currentSelectedPlayer
+import cg_blueTeamName
+import cg_redTeamName
+import cg_music
+import cg_trueLightning
+import cg_oldPlasma
+import cg_cameraEyes_Up
+import cg_cameraEyes_Fwd
+import cg_cameraEyes
+import cg_cameramode
+import cg_leiBrassNoise
+import cg_leiGoreNoise
+import cg_leiEnhancement
+import cg_lodScale
+import cg_letterBoxSize
+import cg_oldRocket
+import cg_oldRail
+import cg_noProjectileTrail
+import cg_noTaunt
+import cg_bigFont
+import cg_smallFont
+import cg_cameraMode
+import cg_timescale
+import cg_timescaleFadeSpeed
+import cg_timescaleFadeEnd
+import cg_cameraOrbitDelay
+import cg_cameraOrbit
+import pmove_float
+import pmove_msec
+import pmove_fixed
+import cg_commonConsole
+import cg_teamChatLines
+import cg_chatLines
+import cg_commonConsoleLines
+import cg_consoleLines
+import cg_teamChatSizeY
+import cg_teamChatSizeX
+import cg_chatSizeY
+import cg_chatSizeX
+import cg_consoleSizeY
+import cg_consoleSizeX
+import cg_fontShadow
+import cg_fontScale
+import cg_consoleTime
+import cg_chatTime
+import cg_newConsole
+import cg_newFont
+import cg_scorePlum
+import cg_noVoiceText
+import cg_noVoiceChats
+import cg_teamChatsOnly
+import cg_drawFriend
+import cg_deferPlayers
+import cg_predictItems
+import cg_blood
+import cg_paused
+import cg_buildScript
+import cg_stats
+import cg_teamChatScaleY
+import cg_teamChatScaleX
+import cg_chatY
+import cg_teamChatY
+import cg_teamChatHeight
+import cg_teamChatTime
+import cg_synchronousClients
+import cg_drawSpeed
+import cg_drawAttacker
+import cg_lagometer
+import cg_thirdPerson
+import cg_thirdPersonAngle
+import cg_thirdPersonRange
+import cg_thirdPersonOffset
+import cg_zoomFov
+import cg_fov
+import cg_simpleItems
+import cg_ignore
+import cg_tracerLength
+import cg_tracerWidth
+import cg_tracerChance
+import cg_viewsize
+import cg_drawGun
+import cg_gun_z
+import cg_gun_y
+import cg_gun_x
+import cg_gun_frame
+import cg_brassTime
+import cg_addMarks
+import cg_footsteps
+import cg_showmiss
+import cg_noPlayerAnims
+import cg_nopredict
+import cg_errorDecay
+import cg_bigheadMode
+import cg_disableLevelStartFade
+import cg_paintballMode
+import cg_railTrailTime
+import cg_debugEvents
+import cg_debugPosition
+import cg_debugAnim
+import cg_animSpeed
+import cg_draw2D
+import cg_drawStatus
+import cg_crosshairScale
+import cg_crosshairY
+import cg_crosshairX
+import cg_teamOverlayUserinfo
+import cg_drawTeamOverlay
+import cg_drawCrosshairNames
+import cg_drawCrosshair
+import cg_drawIcons
+import cg_draw3dIcons
+import cg_drawSnapshot
+import cg_drawFPS
+import cg_drawTimer
+import cg_gibs
+import cg_shadows
+import cg_swingSpeed
+import cg_bobroll
+import cg_bobpitch
+import cg_bobup
+import cg_runroll
+import cg_runpitch
+import cg_drawSyncMessage
+import cg_drawsubtitles
+import cg_centertime
+import cg_gibtime
+import cg_itemstyle
+import cg_oldscoreboard
+import team_legsskin
+import legsskin
+import ui_backcolors
+import cl_screenoffset
+import cg_cameraeyes
+import cg_leiChibi
+import cg_plightradius
+import cg_plightblue
+import cg_plightgreen
+import cg_plightred
+import cg_tolightblue
+import cg_tolightgreen
+import cg_tolightred
+import cg_hetex
+import cg_totex
+import cg_ptex
+import cg_helightblue
+import cg_helightgreen
+import cg_helightred
+import con_notifytime
+import cl_language
+import cg_toolguninfo
+import cg_postprocess
+import cg_hide255
+import sb_texturename
+import sb_texture_view
+import sb_classnum_view
+import toolgun_modelst
+import toolgun_toolmode4
+import toolgun_toolmode3
+import toolgun_toolmode2
+import toolgun_toolmode1
+import toolgun_tooltip4
+import toolgun_tooltip3
+import toolgun_tooltip2
+import toolgun_tooltip1
+import toolgun_tooltext
+import toolgun_toolcmd4
+import toolgun_toolcmd3
+import toolgun_toolcmd2
+import toolgun_toolcmd1
+import toolgun_tool
+import toolgun_mod19
+import toolgun_mod18
+import toolgun_mod17
+import toolgun_mod16
+import toolgun_mod15
+import toolgun_mod14
+import toolgun_mod13
+import toolgun_mod12
+import toolgun_mod11
+import toolgun_mod10
+import toolgun_mod9
+import toolgun_mod8
+import toolgun_mod7
+import toolgun_mod6
+import toolgun_mod5
+import toolgun_mod4
+import toolgun_mod3
+import toolgun_mod2
+import toolgun_mod1
+import cg_weaponBarActiveWidth
+import cg_weaponselecttime
+import cg_itemscaletime
+import cg_zoomtime
+import cg_gibmodifier
+import cg_gibvelocity
+import cg_gibjump
+import cl_giantcharheight
+import cl_giantcharwidth
+import cl_bigcharheight
+import cl_bigcharwidth
+import cl_smallcharheight
+import cl_smallcharwidth
+import cl_propgapwidth
+import cl_propspacewidth
+import cl_propheight
+import cl_propsmallsizescale
+import g_gametype
+import mod_skyColorA
+import mod_skyColorB
+import mod_skyColorG
+import mod_skyColorR
+import mod_skyShader
+import mod_fogColorA
+import mod_fogColorB
+import mod_fogColorG
+import mod_fogColorR
+import mod_fogInterval
+import mod_fogDistance
+import mod_fogShader
+import mod_fogModel
+import mod_zround
+import mod_gravity
+import mod_roundmode
+import mod_overlay
+import mod_slickmove
+import mod_accelerate
+import mod_invulinf
+import mod_kamikazeinf
+import mod_portalinf
+import mod_teleporterinf
+import mod_medkitinf
+import mod_medkitlimit
+import mod_teamblue_firespeed
+import mod_teamred_firespeed
+import mod_invulmove
+import mod_ammolimit
+import mod_noplayerclip
+import mod_doublerfirespeed
+import mod_guardfirespeed
+import mod_scoutfirespeed
+import mod_ammoregenfirespeed
+import mod_hastefirespeed
+import mod_amdelay
+import mod_ftdelay
+import mod_cgdelay
+import mod_pldelay
+import mod_ngdelay
+import mod_bfgdelay
+import mod_rgdelay
+import mod_pgdelay
+import mod_lgdelay
+import mod_rldelay
+import mod_gldelay
+import mod_sgdelay
+import mod_mgdelay
+import mod_gdelay
+import mod_jumpheight
+import mod_sgspread
+import mod_sgcount
+import mod_lgrange
+import mod_cgspread
+import mod_mgspread
+import cg_markPolys
+import cg_items
+import cg_weapons
+import cg_entities
+import cg
+import cgs
+import BG_TeamName
+import BG_GetVehicleSettings
+import BG_VehicleCheckClass
+import BG_PlayerTouchesItem
+import BG_PlayerStateToEntityStateExtraPolate
+import BG_PlayerStateToEntityState
+import BG_TouchJumpPad
+import BG_AddPredictableEventToPlayerstate
+import BG_EvaluateTrajectoryDelta
+import BG_EvaluateTrajectory
+import BG_DefragmentMemory
+import BG_Free
+import BG_InitMemory
+import BG_Alloc
+import BG_CanAlloc
+import BG_CanItemBeGrabbed
+import BG_FindItemForBackpack
+import BG_FindItemForHoldable
+import BG_FindItemForPowerup
+import BG_FindItemForWeapon
+import BG_FindSwepAmmo
+import BG_FindSwep
+import BG_FindItem
+import bg_numItems
+import bg_itemlist
+import Pmove
+import PM_UpdateViewAngles
+import COM_LoadLevelScores
+import COM_CalculatePlayerScore
+import Com_Printf
+import Com_Error
+import Info_NextPair
+import Info_Validate
+import Info_SetValueForKey_Big
+import Info_SetValueForKey
+import Info_RemoveKey_big
+import Info_RemoveKey
+import Info_ValueForKey
+import vectoyaw
+import AngleDifference
+import Com_TruncateLongString
+import va
+import Q_CountChar
+import Q_CleanStr
+import Q_PrintStrlen
+import Q_strcat
+import Q_strncpyz
+import Q_stristr
+import Q_strupr
+import Q_strlwr
+import Q_stricmpn
+import Q_strncmp
+import Q_stricmp
+import Q_isalpha
+import Q_isupper
+import Q_islower
+import Q_isprint
+import Com_RandomBytes
+import Com_SkipCharset
+import Com_SkipTokens
+import Com_sprintf
+import Parse3DMatrix
+import Parse2DMatrix
+import Parse1DMatrix
+import SkipRestOfLine
+import SkipBracedSection
+import COM_MatchToken
+import COM_ParseWarning
+import COM_ParseError
+import COM_Compress
+import COM_ParseExt
+import COM_Parse
+import COM_GetCurrentParseLine
+import COM_BeginParseSession
+import COM_DefaultExtension
+import COM_StripExtension
+import COM_GetExtension
+import COM_SkipPath
+import Com_Clamp
+import Q_isnan
+import PerpendicularVector
+import AngleVectors
+import MatrixMultiply
+import MakeNormalVectors
+import RotateAroundDirection
+import RotatePointAroundVector
+import ProjectPointOnPlane
+import PlaneFromPoints
+import AngleDelta
+import AngleNormalize180
+import AngleNormalize360
+import AnglesSubtract
+import AngleSubtract
+import LerpAngle
+import AngleMod
+import BoundsIntersectPoint
+import BoundsIntersectSphere
+import BoundsIntersect
+import BoxOnPlaneSide
+import SetPlaneSignbits
+import AxisCopy
+import AxisClear
+import Lerp
+import VelocityToAxis
+import AnglesToAxis
+import vectoangles
+import Q_crandom
+import Q_random
+import Q_rand
+import Q_acos
+import Q_log2
+import VectorRotate
+import Vector4Scale
+import VectorNormalize2
+import VectorNormalize
+import CrossProduct
+import VectorInverse
+import VectorNormalizeFast
+import DistanceSquared
+import Distance
+import VectorLengthSquared
+import VectorLength
+import VectorCompare
+import AddPointToBounds
+import ClearBounds
+import RadiusFromBounds
+import NormalizeColor
+import ColorBytes4
+import ColorBytes3
+import _VectorMA
+import _VectorScale
+import _VectorCopy
+import _VectorAdd
+import _VectorSubtract
+import _DotProduct
+import ByteToDir
+import DirToByte
+import ClampShort
+import ClampChar
+import Q_rsqrt
+import Q_fabs
+import axisDefault
+import vec3_origin
+import g_color_table
+import colorDkGrey
+import colorMdGrey
+import colorLtGrey
+import colorWhite
+import colorCyan
+import colorMagenta
+import colorYellow
+import colorBlue
+import colorGreen
+import colorRed
+import colorBlack
+import bytedirs
+import Hunk_Alloc
+import FloatSwap
+import LongSwap
+import ShortSwap
+import acos
+import fabs
+import abs
+import tan
+import atan2
+import cos
+import sin
+import sqrt
+import floor
+import ceil
+import memcpy
+import memset
+import memmove
+import sscanf
+import Q_snprintf
+import Q_vsnprintf
+import strtol
+import _atoi
+import atoi
+import strtod
+import _atof
+import atof
+import toupper
+import tolower
+import strncpy
+import strstr
+import strrchr
+import strchr
+import strcmp
+import strcpy
+import strcat
+import ifstrlenru
+import strlenru
+import strlen
+import rand
+import srand
+import qsort
+lit
+align 1
+LABELV $712
+byte 1 87
+byte 1 65
+byte 1 82
+byte 1 78
+byte 1 73
+byte 1 78
+byte 1 71
+byte 1 58
+byte 1 32
+byte 1 100
+byte 1 111
+byte 1 117
+byte 1 98
+byte 1 108
+byte 1 101
+byte 1 32
+byte 1 101
+byte 1 118
+byte 1 101
+byte 1 110
+byte 1 116
+byte 1 10
+byte 1 0
+align 1
+LABELV $702
+byte 1 87
+byte 1 65
+byte 1 82
+byte 1 78
+byte 1 73
+byte 1 78
+byte 1 71
+byte 1 58
+byte 1 32
+byte 1 100
+byte 1 114
+byte 1 111
+byte 1 112
+byte 1 112
+byte 1 101
+byte 1 100
+byte 1 32
+byte 1 101
+byte 1 118
+byte 1 101
+byte 1 110
+byte 1 116
+byte 1 10
+byte 1 0
+align 1
+LABELV $685
+byte 1 110
+byte 1 111
+byte 1 116
+byte 1 32
+byte 1 109
+byte 1 111
+byte 1 118
+byte 1 101
+byte 1 100
+byte 1 10
+byte 1 0
+align 1
+LABELV $677
+byte 1 91
+byte 1 37
+byte 1 105
+byte 1 32
+byte 1 58
+byte 1 32
+byte 1 37
+byte 1 105
+byte 1 93
+byte 1 32
+byte 1 0
+align 1
+LABELV $672
+byte 1 115
+byte 1 97
+byte 1 118
+byte 1 101
+byte 1 100
+byte 1 32
+byte 1 115
+byte 1 116
+byte 1 97
+byte 1 116
+byte 1 101
+byte 1 32
+byte 1 109
+byte 1 105
+byte 1 115
+byte 1 115
+byte 1 10
+byte 1 0
+align 1
+LABELV $615
+byte 1 68
+byte 1 111
+byte 1 117
+byte 1 98
+byte 1 108
+byte 1 101
+byte 1 32
+byte 1 112
+byte 1 114
+byte 1 101
+byte 1 100
+byte 1 105
+byte 1 99
+byte 1 116
+byte 1 105
+byte 1 111
+byte 1 110
+byte 1 32
+byte 1 100
+byte 1 101
+byte 1 99
+byte 1 97
+byte 1 121
+byte 1 58
+byte 1 32
+byte 1 37
+byte 1 102
+byte 1 10
+byte 1 0
+align 1
+LABELV $602
+byte 1 80
+byte 1 114
+byte 1 101
+byte 1 100
+byte 1 105
+byte 1 99
+byte 1 116
+byte 1 105
+byte 1 111
+byte 1 110
+byte 1 32
+byte 1 109
+byte 1 105
+byte 1 115
+byte 1 115
+byte 1 58
+byte 1 32
+byte 1 37
+byte 1 102
+byte 1 10
+byte 1 0
+align 1
+LABELV $587
+byte 1 112
+byte 1 114
+byte 1 101
+byte 1 100
+byte 1 105
+byte 1 99
+byte 1 116
+byte 1 105
+byte 1 111
+byte 1 110
+byte 1 32
+byte 1 101
+byte 1 114
+byte 1 114
+byte 1 111
+byte 1 114
+byte 1 10
+byte 1 0
+align 1
+LABELV $573
+byte 1 80
+byte 1 114
+byte 1 101
+byte 1 100
+byte 1 105
+byte 1 99
+byte 1 116
+byte 1 105
+byte 1 111
+byte 1 110
+byte 1 84
+byte 1 101
+byte 1 108
+byte 1 101
+byte 1 112
+byte 1 111
+byte 1 114
+byte 1 116
+byte 1 10
+byte 1 0
+align 1
+LABELV $530
+byte 1 101
+byte 1 114
+byte 1 114
+byte 1 111
+byte 1 114
+byte 1 99
+byte 1 111
+byte 1 100
+byte 1 101
+byte 1 32
+byte 1 37
+byte 1 100
+byte 1 32
+byte 1 97
+byte 1 116
+byte 1 32
+byte 1 37
+byte 1 100
+byte 1 10
+byte 1 0
+align 1
+LABELV $488
+byte 1 51
+byte 1 51
+byte 1 0
+align 1
+LABELV $484
+byte 1 56
+byte 1 0
+align 1
+LABELV $483
+byte 1 112
+byte 1 109
+byte 1 111
+byte 1 118
+byte 1 101
+byte 1 95
+byte 1 109
+byte 1 115
+byte 1 101
+byte 1 99
+byte 1 0
+align 1
+LABELV $466
+byte 1 101
+byte 1 120
+byte 1 99
+byte 1 101
+byte 1 101
+byte 1 100
+byte 1 101
+byte 1 100
+byte 1 32
+byte 1 80
+byte 1 65
+byte 1 67
+byte 1 75
+byte 1 69
+byte 1 84
+byte 1 95
+byte 1 66
+byte 1 65
+byte 1 67
+byte 1 75
+byte 1 85
+byte 1 80
+byte 1 32
+byte 1 111
+byte 1 110
+byte 1 32
+byte 1 99
+byte 1 111
+byte 1 109
+byte 1 109
+byte 1 97
+byte 1 110
+byte 1 100
+byte 1 115
+byte 1 10
+byte 1 0
+align 1
+LABELV $331
+byte 1 100
+byte 1 101
+byte 1 108
+byte 1 116
+byte 1 97
+byte 1 58
+byte 1 32
+byte 1 37
+byte 1 46
+byte 1 50
+byte 1 102
+byte 1 32
+byte 1 32
+byte 1 0

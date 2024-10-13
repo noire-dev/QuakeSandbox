@@ -1,0 +1,18902 @@
+data
+align 4
+LABELV weaponSfxInit
+byte 4 0
+align 4
+LABELV drawTeamModel
+byte 4 0
+align 4
+LABELV startupCrashDetect
+byte 4 1
+align 4
+LABELV crashAnimCount
+byte 4 3
+export ui_footstepName
+align 4
+LABELV ui_footstepName
+address $83
+address $84
+address $85
+address $86
+address $87
+address $88
+address $89
+code
+proc PlayerInfo_CacheWeaponSfx 64 12
+file "../../../code/q3_ui/ui_players.c"
+line 128
+;1:// Copyright (C) 1999-2000 Id Software, Inc.
+;2://
+;3:// ui_players.c
+;4:
+;5:
+;6:
+;7:
+;8:#include "ui_local.h"
+;9:
+;10:
+;11:#define UI_TIMER_GESTURE		2300
+;12:#define UI_TIMER_JUMP			1000
+;13:#define UI_TIMER_LAND			130
+;14:#define UI_TIMER_WEAPON_SWITCH	300
+;15:#define UI_TIMER_ATTACK			500
+;16:#define	UI_TIMER_MUZZLE_FLASH	20
+;17:#define	UI_TIMER_WEAPON_DELAY	250
+;18:
+;19:#define JUMP_HEIGHT				56
+;20:
+;21:#define SWINGSPEED				0.3f
+;22:
+;23:#define SPIN_SPEED				0.9f
+;24:#define COAST_TIME				1000
+;25:
+;26:#define DEFAULT_MODEL	"sarge"
+;27:#define IDLE_ANIM_STARTTIME 	8000
+;28:
+;29:#define ANIM_SLOWDOWN 			1.7
+;30:
+;31:#define LIGHTNING_SFX_DURATION	964
+;32:
+;33:
+;34:#define MODELSPIN_STOP "menu/uie_art/rotate_stop"
+;35:#define MODELSPIN_STOP1 "menu/uie_art/rotate_stop1"
+;36:#define MODELSPIN_PAUSE "menu/uie_art/rotate_pause"
+;37:#define MODELSPIN_PAUSE1 "menu/uie_art/rotate_pause1"
+;38:#define MODELSPIN_LEFT "menu/uie_art/rotate_left"
+;39:#define MODELSPIN_LEFT1 "menu/uie_art/rotate_left1"
+;40:#define MODELSPIN_RIGHT "menu/uie_art/rotate_right"
+;41:#define MODELSPIN_RIGHT1 "menu/uie_art/rotate_right1"
+;42:
+;43:
+;44:#define ID_MODELSPIN_STOP   1
+;45:#define ID_MODELSPIN_LEFT   2
+;46:#define ID_MODELSPIN_RIGHT	3
+;47:#define ID_MODELSPIN_PAUSE	4
+;48:
+;49:
+;50:
+;51:
+;52:// copied from cg_local.h
+;53:typedef enum {
+;54:	FOOTSTEP_NORMAL,
+;55:	FOOTSTEP_BOOT,
+;56:	FOOTSTEP_FLESH,
+;57:	FOOTSTEP_MECH,
+;58:	FOOTSTEP_ENERGY,
+;59:	FOOTSTEP_METAL,
+;60:	FOOTSTEP_SPLASH,
+;61:
+;62:	FOOTSTEP_TOTAL
+;63:} footstep_t;
+;64:
+;65:
+;66:typedef struct {
+;67:	sfxHandle_t		gesture;
+;68:	sfxHandle_t		footstep;
+;69:	sfxHandle_t		jump;
+;70:	sfxHandle_t		land;
+;71:	sfxHandle_t 	death1;
+;72:	sfxHandle_t 	death2;
+;73:	sfxHandle_t 	death3;
+;74:    sfxHandle_t		drop;
+;75:
+;76:	footstep_t footsteps;
+;77:	sfxHandle_t step[4];
+;78:} sfxModel_t;
+;79:
+;80:
+;81:
+;82:typedef struct {
+;83:	sfxHandle_t	flash[WEAPONS_NUM][4];
+;84:	sfxHandle_t	firing[WEAPONS_NUM];
+;85:} sfxWeapon_t;
+;86:
+;87:
+;88:static qboolean		weaponSfxInit = qfalse;
+;89:static sfxWeapon_t	sfxWeapon;
+;90:static sfxModel_t	sfxModel;
+;91:static int			dp_realtime;
+;92:static float		jumpHeight;
+;93:static int			forceNextAnim;
+;94:
+;95:// set team model drawing here so all modelAnim_t
+;96:// structs use the same value
+;97:static qboolean drawTeamModel = qfalse;
+;98:
+;99:// Detection for model code crashing the UI (VM builds)
+;100:// never expected to be true in a public release,
+;101:// but might allow the UI to run if bugs have been
+;102:// introduced into the model code
+;103:static qboolean		crashProtected;
+;104:static qboolean		startupCrashDetect = qtrue;
+;105:static int 			crashAnimCount = 3;
+;106:
+;107:char* ui_footstepName[] = {
+;108:	"step",
+;109:	"boot",
+;110:	"flesh",
+;111:	"mech",
+;112:	"energy",
+;113:	"clank",
+;114:	"splash"
+;115:};
+;116:
+;117:
+;118:static int PlayerInfo_WeaponCycleTime( playerInfo_t* m);
+;119:
+;120:
+;121:
+;122:/*
+;123:=================
+;124:PlayerInfo_CacheWeaponSfx
+;125:=================
+;126:*/
+;127:static void PlayerInfo_CacheWeaponSfx( void )
+;128:{
+line 129
+;129:	memset(&sfxWeapon, 0, sizeof(sfxWeapon));
+ADDRGP4 sfxWeapon
+ARGP4
+CNSTI4 0
+ARGI4
+CNSTI4 380
+ARGI4
+ADDRGP4 memset
+CALLP4
+pop
+line 131
+;130:
+;131:	sfxWeapon.flash[WP_GAUNTLET][0] = trap_S_RegisterSound( "sound/weapons/melee/fstatck.wav", qfalse );
+ADDRGP4 $92
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 0
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxWeapon+16
+ADDRLP4 0
+INDIRI4
+ASGNI4
+line 132
+;132:	sfxWeapon.flash[WP_MACHINEGUN][0] = trap_S_RegisterSound( "sound/weapons/machinegun/machgf1b.wav", qfalse );
+ADDRGP4 $94
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 4
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxWeapon+32
+ADDRLP4 4
+INDIRI4
+ASGNI4
+line 133
+;133:	sfxWeapon.flash[WP_MACHINEGUN][1] = trap_S_RegisterSound( "sound/weapons/machinegun/machgf2b.wav", qfalse );
+ADDRGP4 $97
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 8
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxWeapon+32+4
+ADDRLP4 8
+INDIRI4
+ASGNI4
+line 134
+;134:	sfxWeapon.flash[WP_MACHINEGUN][2] = trap_S_RegisterSound( "sound/weapons/machinegun/machgf3b.wav", qfalse );
+ADDRGP4 $100
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 12
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxWeapon+32+8
+ADDRLP4 12
+INDIRI4
+ASGNI4
+line 135
+;135:	sfxWeapon.flash[WP_MACHINEGUN][3] = trap_S_RegisterSound( "sound/weapons/machinegun/machgf4b.wav", qfalse );
+ADDRGP4 $103
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 16
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxWeapon+32+12
+ADDRLP4 16
+INDIRI4
+ASGNI4
+line 136
+;136:	sfxWeapon.flash[WP_SHOTGUN][0] = trap_S_RegisterSound( "sound/weapons/shotgun/sshotf1b.wav", qfalse );
+ADDRGP4 $105
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 20
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxWeapon+48
+ADDRLP4 20
+INDIRI4
+ASGNI4
+line 137
+;137:	sfxWeapon.flash[WP_GRENADE_LAUNCHER][0] = trap_S_RegisterSound( "sound/weapons/grenade/grenlf1a.wav", qfalse );
+ADDRGP4 $107
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 24
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxWeapon+64
+ADDRLP4 24
+INDIRI4
+ASGNI4
+line 138
+;138:	sfxWeapon.flash[WP_ROCKET_LAUNCHER][0] = trap_S_RegisterSound( "sound/weapons/rocket/rocklf1a.wav", qfalse );
+ADDRGP4 $109
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 28
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxWeapon+80
+ADDRLP4 28
+INDIRI4
+ASGNI4
+line 139
+;139:	sfxWeapon.flash[WP_LIGHTNING][0] = trap_S_RegisterSound( "sound/weapons/lightning/lg_fire.wav", qfalse );
+ADDRGP4 $111
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 32
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxWeapon+96
+ADDRLP4 32
+INDIRI4
+ASGNI4
+line 140
+;140:	sfxWeapon.flash[WP_RAILGUN][0] = trap_S_RegisterSound( "sound/weapons/railgun/railgf1a.wav", qfalse );
+ADDRGP4 $113
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 36
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxWeapon+112
+ADDRLP4 36
+INDIRI4
+ASGNI4
+line 141
+;141:	sfxWeapon.flash[WP_PLASMAGUN][0] = trap_S_RegisterSound( "sound/weapons/plasma/hyprbf1a.wav", qfalse );
+ADDRGP4 $115
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 40
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxWeapon+128
+ADDRLP4 40
+INDIRI4
+ASGNI4
+line 142
+;142:	sfxWeapon.flash[WP_BFG][0] = trap_S_RegisterSound( "sound/weapons/bfg/bfg_fire.wav", qfalse );
+ADDRGP4 $117
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 44
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxWeapon+144
+ADDRLP4 44
+INDIRI4
+ASGNI4
+line 143
+;143:	sfxWeapon.flash[WP_GRAPPLING_HOOK][0] = trap_S_RegisterSound( "sound/weapons/melee/fstrun.wav", qfalse );
+ADDRGP4 $119
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 48
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxWeapon+160
+ADDRLP4 48
+INDIRI4
+ASGNI4
+line 145
+;144:
+;145:	sfxWeapon.firing[WP_LIGHTNING] = trap_S_RegisterSound( "sound/weapons/lightning/lg_hum.wav", qfalse );
+ADDRGP4 $122
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 52
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxWeapon+304+24
+ADDRLP4 52
+INDIRI4
+ASGNI4
+line 146
+;146:	sfxWeapon.firing[WP_GAUNTLET] = trap_S_RegisterSound( "sound/weapons/melee/fstrun.wav", qfalse );
+ADDRGP4 $119
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 56
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxWeapon+304+4
+ADDRLP4 56
+INDIRI4
+ASGNI4
+line 147
+;147:	sfxWeapon.firing[WP_GRAPPLING_HOOK] = trap_S_RegisterSound( "sound/weapons/melee/fstrun.wav", qfalse );
+ADDRGP4 $119
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 60
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxWeapon+304+40
+ADDRLP4 60
+INDIRI4
+ASGNI4
+line 149
+;148:
+;149:	weaponSfxInit = qtrue;
+ADDRGP4 weaponSfxInit
+CNSTI4 1
+ASGNI4
+line 150
+;150:}
+LABELV $90
+endproc PlayerInfo_CacheWeaponSfx 64 12
+proc PlayerInfo_FireWeaponSound 16 8
+line 159
+;151:
+;152:
+;153:/*
+;154:===============
+;155:PlayerInfo_FireWeaponSound
+;156:===============
+;157:*/
+;158:static void PlayerInfo_FireWeaponSound(playerInfo_t* pi)
+;159:{
+line 163
+;160:	int index;
+;161:	int weapon;
+;162:
+;163:	weapon = pi->weapon;
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+CNSTI4 1072
+ADDP4
+INDIRI4
+ASGNI4
+line 164
+;164:	pi->muzzleFlashTime = dp_realtime + UI_TIMER_MUZZLE_FLASH;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1024
+ADDP4
+ADDRGP4 dp_realtime
+INDIRI4
+CNSTI4 20
+ADDI4
+ASGNI4
+line 165
+;165:	if (weapon == WP_GAUNTLET)
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+NEI4 $128
+line 166
+;166:		pi->muzzleFlashTime += UI_TIMER_MUZZLE_FLASH * 2;
+ADDRLP4 8
+ADDRFP4 0
+INDIRP4
+CNSTI4 1024
+ADDP4
+ASGNP4
+ADDRLP4 8
+INDIRP4
+ADDRLP4 8
+INDIRP4
+INDIRI4
+CNSTI4 40
+ADDI4
+ASGNI4
+LABELV $128
+line 169
+;167:
+;168:	// allows muzzle flash to start, before returning	
+;169:	if (!uie_animsfx.integer)
+ADDRGP4 uie_animsfx+12
+INDIRI4
+CNSTI4 0
+NEI4 $130
+line 170
+;170:		return;
+ADDRGP4 $127
+JUMPV
+LABELV $130
+line 172
+;171:
+;172:	if (weapon == WP_LIGHTNING) {
+ADDRLP4 0
+INDIRI4
+CNSTI4 6
+NEI4 $133
+line 173
+;173:		if (pi->humTimer > 0)
+ADDRFP4 0
+INDIRP4
+CNSTI4 1028
+ADDP4
+INDIRI4
+CNSTI4 0
+LEI4 $135
+line 174
+;174:			return;
+ADDRGP4 $127
+JUMPV
+LABELV $135
+line 176
+;175:
+;176:		pi->humTimer = 1;	// force start on next display	
+ADDRFP4 0
+INDIRP4
+CNSTI4 1028
+ADDP4
+CNSTI4 1
+ASGNI4
+line 177
+;177:	}
+LABELV $133
+line 179
+;178:
+;179:	index = 0;
+ADDRLP4 4
+CNSTI4 0
+ASGNI4
+line 180
+;180:	if (weapon == WP_MACHINEGUN) {
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+NEI4 $137
+line 181
+;181:		index = rand() & 3;
+ADDRLP4 12
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 4
+ADDRLP4 12
+INDIRI4
+CNSTI4 3
+BANDI4
+ASGNI4
+line 182
+;182:	}
+LABELV $137
+line 183
+;183:	trap_S_StartLocalSound( sfxWeapon.flash[weapon][index], CHAN_WEAPON );
+ADDRLP4 12
+CNSTI4 2
+ASGNI4
+ADDRLP4 4
+INDIRI4
+ADDRLP4 12
+INDIRI4
+LSHI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 4
+LSHI4
+ADDRGP4 sfxWeapon
+ADDP4
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 12
+INDIRI4
+ARGI4
+ADDRGP4 trap_S_StartLocalSound
+CALLV
+pop
+line 184
+;184:}
+LABELV $127
+endproc PlayerInfo_FireWeaponSound 16 8
+proc PlayerInfo_PlayModelSound 16 8
+line 195
+;185:
+;186:
+;187:
+;188:
+;189:/*
+;190:===============
+;191:PlayerInfo_PlayModelSound
+;192:===============
+;193:*/
+;194:static void PlayerInfo_PlayModelSound(int torsoAnim, int legsAnim)
+;195:{
+line 199
+;196:	sfxHandle_t sfx;
+;197:	int channel;
+;198:
+;199:	if (!uie_animsfx.integer)
+ADDRGP4 uie_animsfx+12
+INDIRI4
+CNSTI4 0
+NEI4 $140
+line 200
+;200:		return;
+ADDRGP4 $139
+JUMPV
+LABELV $140
+line 202
+;201:
+;202:	sfx = 0;
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+line 203
+;203:	channel = CHAN_VOICE;
+ADDRLP4 4
+CNSTI4 3
+ASGNI4
+line 204
+;204:	switch (torsoAnim) {
+ADDRLP4 8
+ADDRFP4 0
+INDIRI4
+ASGNI4
+ADDRLP4 8
+INDIRI4
+CNSTI4 0
+LTI4 $143
+ADDRLP4 8
+INDIRI4
+CNSTI4 9
+GTI4 $143
+ADDRLP4 8
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 $154
+ADDP4
+INDIRP4
+JUMPV
+lit
+align 4
+LABELV $154
+address $146
+address $143
+address $148
+address $143
+address $150
+address $143
+address $145
+address $143
+address $143
+address $152
+code
+LABELV $145
+line 206
+;205:	case TORSO_GESTURE:
+;206:		sfx = sfxModel.gesture;
+ADDRLP4 0
+ADDRGP4 sfxModel
+INDIRI4
+ASGNI4
+line 207
+;207:		break;
+ADDRGP4 $144
+JUMPV
+LABELV $146
+line 209
+;208:	case BOTH_DEATH1:
+;209:		sfx = sfxModel.death1;
+ADDRLP4 0
+ADDRGP4 sfxModel+16
+INDIRI4
+ASGNI4
+line 210
+;210:		break;
+ADDRGP4 $144
+JUMPV
+LABELV $148
+line 212
+;211:	case BOTH_DEATH2:
+;212:		sfx = sfxModel.death2;
+ADDRLP4 0
+ADDRGP4 sfxModel+20
+INDIRI4
+ASGNI4
+line 213
+;213:		break;
+ADDRGP4 $144
+JUMPV
+LABELV $150
+line 215
+;214:	case BOTH_DEATH3:
+;215:		sfx = sfxModel.death3;
+ADDRLP4 0
+ADDRGP4 sfxModel+24
+INDIRI4
+ASGNI4
+line 216
+;216:		break;
+ADDRGP4 $144
+JUMPV
+LABELV $152
+line 218
+;217:	case TORSO_DROP:
+;218:		sfx = sfxModel.drop;
+ADDRLP4 0
+ADDRGP4 sfxModel+28
+INDIRI4
+ASGNI4
+line 219
+;219:		channel = CHAN_BODY;
+ADDRLP4 4
+CNSTI4 5
+ASGNI4
+line 220
+;220:		break;
+LABELV $143
+LABELV $144
+line 223
+;221:	}
+;222:
+;223:	if (sfx)
+ADDRLP4 0
+INDIRI4
+CNSTI4 0
+EQI4 $155
+line 224
+;224:		trap_S_StartLocalSound( sfx, channel);
+ADDRLP4 0
+INDIRI4
+ARGI4
+ADDRLP4 4
+INDIRI4
+ARGI4
+ADDRGP4 trap_S_StartLocalSound
+CALLV
+pop
+LABELV $155
+line 226
+;225:
+;226:	sfx = 0;
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+line 227
+;227:	switch (legsAnim) {
+ADDRLP4 12
+ADDRFP4 4
+INDIRI4
+ASGNI4
+ADDRLP4 12
+INDIRI4
+CNSTI4 18
+EQI4 $159
+ADDRLP4 12
+INDIRI4
+CNSTI4 19
+EQI4 $161
+ADDRGP4 $157
+JUMPV
+LABELV $159
+line 229
+;228:	case LEGS_JUMP:
+;229:		sfx = sfxModel.jump;
+ADDRLP4 0
+ADDRGP4 sfxModel+8
+INDIRI4
+ASGNI4
+line 230
+;230:		break;
+ADDRGP4 $158
+JUMPV
+LABELV $161
+line 232
+;231:	case LEGS_LAND:
+;232:		sfx = sfxModel.land;
+ADDRLP4 0
+ADDRGP4 sfxModel+12
+INDIRI4
+ASGNI4
+line 233
+;233:		break;	
+LABELV $157
+LABELV $158
+line 236
+;234:	}
+;235:
+;236:	if (sfx)
+ADDRLP4 0
+INDIRI4
+CNSTI4 0
+EQI4 $163
+line 237
+;237:		trap_S_StartLocalSound( sfx, CHAN_BODY);
+ADDRLP4 0
+INDIRI4
+ARGI4
+CNSTI4 5
+ARGI4
+ADDRGP4 trap_S_StartLocalSound
+CALLV
+pop
+LABELV $163
+line 238
+;238:}
+LABELV $139
+endproc PlayerInfo_PlayModelSound 16 8
+proc PlayerInfo_PlayModelFootstep 48 8
+line 247
+;239:
+;240:
+;241:/*
+;242:===============
+;243:PlayerInfo_PlayModelFootstep
+;244:===============
+;245:*/
+;246:static void PlayerInfo_PlayModelFootstep(playerInfo_t* pi)
+;247:{
+line 252
+;248:	lerpFrame_t* lf;
+;249:	animation_t* anim;
+;250:	int f, old, mid, animNum;
+;251:
+;252:	if (!uie_animsfx.integer)
+ADDRGP4 uie_animsfx+12
+INDIRI4
+CNSTI4 0
+NEI4 $166
+line 253
+;253:		return;
+ADDRGP4 $165
+JUMPV
+LABELV $166
+line 255
+;254:
+;255:	old = pi->oldFrame;
+ADDRLP4 12
+ADDRFP4 0
+INDIRP4
+CNSTI4 1136
+ADDP4
+INDIRI4
+ASGNI4
+line 256
+;256:	lf = &pi->legs;
+ADDRLP4 8
+ADDRFP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ASGNP4
+line 257
+;257:	anim = lf->animation;
+ADDRLP4 4
+ADDRLP4 8
+INDIRP4
+CNSTI4 40
+ADDP4
+INDIRP4
+ASGNP4
+line 258
+;258:	f = ( lf->frameTime - lf->animationTime ) / anim->frameLerp;
+ADDRLP4 28
+CNSTI4 12
+ASGNI4
+ADDRLP4 0
+ADDRLP4 8
+INDIRP4
+ADDRLP4 28
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 8
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+SUBI4
+ADDRLP4 4
+INDIRP4
+ADDRLP4 28
+INDIRI4
+ADDP4
+INDIRI4
+DIVI4
+ASGNI4
+line 260
+;259:
+;260:	if ( f >= anim->numFrames ) {
+ADDRLP4 0
+INDIRI4
+ADDRLP4 4
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+LTI4 $169
+line 261
+;261:		f -= anim->numFrames;
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+ADDRLP4 4
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+SUBI4
+ASGNI4
+line 262
+;262:		if ( anim->loopFrames ) {
+ADDRLP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $171
+line 263
+;263:			f %= anim->loopFrames;
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+ADDRLP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRI4
+MODI4
+ASGNI4
+line 264
+;264:			f += anim->numFrames - anim->loopFrames;
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+ADDRLP4 4
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+ADDRLP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRI4
+SUBI4
+ADDI4
+ASGNI4
+line 265
+;265:		}
+LABELV $171
+line 266
+;266:	}
+LABELV $169
+line 267
+;267:	pi->oldFrame = f;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1136
+ADDP4
+ADDRLP4 0
+INDIRI4
+ASGNI4
+line 269
+;268:
+;269:	animNum = lf->animationNumber & ~ANIM_TOGGLEBIT;
+ADDRLP4 20
+ADDRLP4 8
+INDIRP4
+CNSTI4 36
+ADDP4
+INDIRI4
+CNSTI4 -129
+BANDI4
+ASGNI4
+line 270
+;270:	if (animNum != LEGS_RUN && animNum != LEGS_BACK)
+ADDRLP4 20
+INDIRI4
+CNSTI4 15
+EQI4 $173
+ADDRLP4 20
+INDIRI4
+CNSTI4 16
+EQI4 $173
+line 271
+;271:		return; 
+ADDRGP4 $165
+JUMPV
+LABELV $173
+line 273
+;272:
+;273:	mid = anim->numFrames/2;
+ADDRLP4 16
+ADDRLP4 4
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+CNSTI4 2
+DIVI4
+ASGNI4
+line 274
+;274:	if ((old <= mid && f > mid) || (old > f && f >= 0) )
+ADDRLP4 12
+INDIRI4
+ADDRLP4 16
+INDIRI4
+GTI4 $178
+ADDRLP4 0
+INDIRI4
+ADDRLP4 16
+INDIRI4
+GTI4 $177
+LABELV $178
+ADDRLP4 12
+INDIRI4
+ADDRLP4 0
+INDIRI4
+LEI4 $175
+ADDRLP4 0
+INDIRI4
+CNSTI4 0
+LTI4 $175
+LABELV $177
+line 275
+;275:		trap_S_StartLocalSound( sfxModel.step[rand() & 3], CHAN_BODY );
+ADDRLP4 44
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 44
+INDIRI4
+CNSTI4 3
+BANDI4
+CNSTI4 2
+LSHI4
+ADDRGP4 sfxModel+36
+ADDP4
+INDIRI4
+ARGI4
+CNSTI4 5
+ARGI4
+ADDRGP4 trap_S_StartLocalSound
+CALLV
+pop
+LABELV $175
+line 276
+;276:}
+LABELV $165
+endproc PlayerInfo_PlayModelFootstep 48 8
+proc UI_PlayerInfo_SetWeapon 84 8
+line 285
+;277:
+;278:
+;279:
+;280:/*
+;281:===============
+;282:UI_PlayerInfo_SetWeapon
+;283:===============
+;284:*/
+;285:static void UI_PlayerInfo_SetWeapon( playerInfo_t *pi, weapon_t weaponNum ) {
+line 289
+;286:	gitem_t *	item;
+;287:	char		path[MAX_QPATH];
+;288:
+;289:	pi->currentWeapon = weaponNum;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1060
+ADDP4
+ADDRFP4 4
+INDIRI4
+ASGNI4
+LABELV $181
+line 291
+;290:tryagain:
+;291:	pi->realWeapon = weaponNum;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1132
+ADDP4
+ADDRFP4 4
+INDIRI4
+ASGNI4
+line 292
+;292:	pi->weaponModel = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1000
+ADDP4
+CNSTI4 0
+ASGNI4
+line 293
+;293:	pi->barrelModel = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1004
+ADDP4
+CNSTI4 0
+ASGNI4
+line 294
+;294:	pi->flashModel = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1008
+ADDP4
+CNSTI4 0
+ASGNI4
+line 296
+;295:
+;296:	if ( weaponNum == WP_NONE ) {
+ADDRFP4 4
+INDIRI4
+CNSTI4 0
+NEI4 $182
+line 297
+;297:		return;
+ADDRGP4 $180
+JUMPV
+LABELV $182
+line 300
+;298:	}
+;299:
+;300:	for ( item = bg_itemlist + 1; item->classname ; item++ ) {
+ADDRLP4 0
+ADDRGP4 bg_itemlist+56
+ASGNP4
+ADDRGP4 $187
+JUMPV
+LABELV $184
+line 301
+;301:		if ( item->giType != IT_WEAPON ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+INDIRI4
+CNSTI4 1
+EQI4 $189
+line 302
+;302:			continue;
+ADDRGP4 $185
+JUMPV
+LABELV $189
+line 304
+;303:		}
+;304:		if ( item->giTag == weaponNum ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+ADDRFP4 4
+INDIRI4
+NEI4 $191
+line 305
+;305:			break;
+ADDRGP4 $186
+JUMPV
+LABELV $191
+line 307
+;306:		}
+;307:	}
+LABELV $185
+line 300
+ADDRLP4 0
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+ASGNP4
+LABELV $187
+ADDRLP4 0
+INDIRP4
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $184
+LABELV $186
+line 309
+;308:
+;309:	if ( item->classname ) {
+ADDRLP4 0
+INDIRP4
+INDIRP4
+CVPU4 4
+CNSTU4 0
+EQU4 $193
+line 310
+;310:		pi->weaponModel = trap_R_RegisterModel( item->world_model[0] );
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRP4
+ARGP4
+ADDRLP4 68
+ADDRGP4 trap_R_RegisterModel
+CALLI4
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1000
+ADDP4
+ADDRLP4 68
+INDIRI4
+ASGNI4
+line 311
+;311:	}
+LABELV $193
+line 313
+;312:
+;313:	if( pi->weaponModel == 0 ) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 1000
+ADDP4
+INDIRI4
+CNSTI4 0
+NEI4 $195
+line 314
+;314:		if( weaponNum == WP_MACHINEGUN ) {
+ADDRFP4 4
+INDIRI4
+CNSTI4 2
+NEI4 $197
+line 315
+;315:			weaponNum = WP_NONE;
+ADDRFP4 4
+CNSTI4 0
+ASGNI4
+line 316
+;316:			goto tryagain;
+ADDRGP4 $181
+JUMPV
+LABELV $197
+line 318
+;317:		}
+;318:		weaponNum = WP_MACHINEGUN;
+ADDRFP4 4
+CNSTI4 2
+ASGNI4
+line 319
+;319:		goto tryagain;
+ADDRGP4 $181
+JUMPV
+LABELV $195
+line 322
+;320:	}
+;321:
+;322:	if ( weaponNum == WP_MACHINEGUN || weaponNum == WP_GAUNTLET || weaponNum == WP_BFG ) {
+ADDRLP4 68
+ADDRFP4 4
+INDIRI4
+ASGNI4
+ADDRLP4 68
+INDIRI4
+CNSTI4 2
+EQI4 $202
+ADDRLP4 68
+INDIRI4
+CNSTI4 1
+EQI4 $202
+ADDRLP4 68
+INDIRI4
+CNSTI4 9
+NEI4 $199
+LABELV $202
+line 323
+;323:		strcpy( path, item->world_model[0] );
+ADDRLP4 4
+ARGP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRP4
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 324
+;324:		COM_StripExtensionOld( path, path );
+ADDRLP4 4
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRGP4 COM_StripExtensionOld
+CALLI4
+pop
+line 325
+;325:		strcat( path, "_barrel.md3" );
+ADDRLP4 4
+ARGP4
+ADDRGP4 $203
+ARGP4
+ADDRGP4 strcat
+CALLP4
+pop
+line 326
+;326:		pi->barrelModel = trap_R_RegisterModel( path );
+ADDRLP4 4
+ARGP4
+ADDRLP4 72
+ADDRGP4 trap_R_RegisterModel
+CALLI4
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1004
+ADDP4
+ADDRLP4 72
+INDIRI4
+ASGNI4
+line 327
+;327:	}
+LABELV $199
+line 329
+;328:
+;329:	strcpy( path, item->world_model[0] );
+ADDRLP4 4
+ARGP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRP4
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 330
+;330:	COM_StripExtensionOld( path, path );
+ADDRLP4 4
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRGP4 COM_StripExtensionOld
+CALLI4
+pop
+line 331
+;331:	strcat( path, "_flash.md3" );
+ADDRLP4 4
+ARGP4
+ADDRGP4 $204
+ARGP4
+ADDRGP4 strcat
+CALLP4
+pop
+line 332
+;332:	pi->flashModel = trap_R_RegisterModel( path );
+ADDRLP4 4
+ARGP4
+ADDRLP4 72
+ADDRGP4 trap_R_RegisterModel
+CALLI4
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1008
+ADDP4
+ADDRLP4 72
+INDIRI4
+ASGNI4
+line 334
+;333:
+;334:	switch( weaponNum ) {
+ADDRLP4 76
+ADDRFP4 4
+INDIRI4
+ASGNI4
+ADDRLP4 76
+INDIRI4
+CNSTI4 1
+LTI4 $205
+ADDRLP4 76
+INDIRI4
+CNSTI4 10
+GTI4 $205
+ADDRLP4 76
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 $218-4
+ADDP4
+INDIRP4
+JUMPV
+lit
+align 4
+LABELV $218
+address $208
+address $209
+address $210
+address $211
+address $212
+address $213
+address $214
+address $215
+address $216
+address $217
+code
+LABELV $208
+line 336
+;335:	case WP_GAUNTLET:
+;336:		MAKERGB( pi->flashDlightColor, 0.6f, 0.6f, 1.0f );
+ADDRFP4 0
+INDIRP4
+CNSTI4 1012
+ADDP4
+CNSTF4 1058642330
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1016
+ADDP4
+CNSTF4 1058642330
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1020
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 337
+;337:		break;
+ADDRGP4 $206
+JUMPV
+LABELV $209
+line 340
+;338:
+;339:	case WP_MACHINEGUN:
+;340:		MAKERGB( pi->flashDlightColor, 1.0f, 1.0f, 0.0f );
+ADDRFP4 0
+INDIRP4
+CNSTI4 1012
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1016
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1020
+ADDP4
+CNSTF4 0
+ASGNF4
+line 341
+;341:		break;
+ADDRGP4 $206
+JUMPV
+LABELV $210
+line 344
+;342:
+;343:	case WP_SHOTGUN:
+;344:		MAKERGB( pi->flashDlightColor, 1.0f, 1.0f, 0.0f );
+ADDRFP4 0
+INDIRP4
+CNSTI4 1012
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1016
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1020
+ADDP4
+CNSTF4 0
+ASGNF4
+line 345
+;345:		break;
+ADDRGP4 $206
+JUMPV
+LABELV $211
+line 348
+;346:
+;347:	case WP_GRENADE_LAUNCHER:
+;348:		MAKERGB( pi->flashDlightColor, 1.0f, 0.7f, 0.5f );
+ADDRFP4 0
+INDIRP4
+CNSTI4 1012
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1016
+ADDP4
+CNSTF4 1060320051
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1020
+ADDP4
+CNSTF4 1056964608
+ASGNF4
+line 349
+;349:		break;
+ADDRGP4 $206
+JUMPV
+LABELV $212
+line 352
+;350:
+;351:	case WP_ROCKET_LAUNCHER:
+;352:		MAKERGB( pi->flashDlightColor, 1.0f, 0.75f, 0.0f );
+ADDRFP4 0
+INDIRP4
+CNSTI4 1012
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1016
+ADDP4
+CNSTF4 1061158912
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1020
+ADDP4
+CNSTF4 0
+ASGNF4
+line 353
+;353:		break;
+ADDRGP4 $206
+JUMPV
+LABELV $213
+line 356
+;354:
+;355:	case WP_LIGHTNING:
+;356:		MAKERGB( pi->flashDlightColor, 0.6f, 0.6f, 1.0f );
+ADDRFP4 0
+INDIRP4
+CNSTI4 1012
+ADDP4
+CNSTF4 1058642330
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1016
+ADDP4
+CNSTF4 1058642330
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1020
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 357
+;357:		break;
+ADDRGP4 $206
+JUMPV
+LABELV $214
+line 360
+;358:
+;359:	case WP_RAILGUN:
+;360:		MAKERGB( pi->flashDlightColor, 1.0f, 0.5f, 0.0f );
+ADDRFP4 0
+INDIRP4
+CNSTI4 1012
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1016
+ADDP4
+CNSTF4 1056964608
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1020
+ADDP4
+CNSTF4 0
+ASGNF4
+line 361
+;361:		break;
+ADDRGP4 $206
+JUMPV
+LABELV $215
+line 364
+;362:
+;363:	case WP_PLASMAGUN:
+;364:		MAKERGB( pi->flashDlightColor, 0.6f, 0.6f, 1.0f );
+ADDRFP4 0
+INDIRP4
+CNSTI4 1012
+ADDP4
+CNSTF4 1058642330
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1016
+ADDP4
+CNSTF4 1058642330
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1020
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 365
+;365:		break;
+ADDRGP4 $206
+JUMPV
+LABELV $216
+line 368
+;366:
+;367:	case WP_BFG:
+;368:		MAKERGB( pi->flashDlightColor, 1.0f, 0.7f, 1.0f );
+ADDRFP4 0
+INDIRP4
+CNSTI4 1012
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1016
+ADDP4
+CNSTF4 1060320051
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1020
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 369
+;369:		break;
+ADDRGP4 $206
+JUMPV
+LABELV $217
+line 372
+;370:
+;371:	case WP_GRAPPLING_HOOK:
+;372:		MAKERGB( pi->flashDlightColor, 0.6f, 0.6f, 1.0f );
+ADDRFP4 0
+INDIRP4
+CNSTI4 1012
+ADDP4
+CNSTF4 1058642330
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1016
+ADDP4
+CNSTF4 1058642330
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1020
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 373
+;373:		break;
+ADDRGP4 $206
+JUMPV
+LABELV $205
+line 376
+;374:
+;375:	default:
+;376:		MAKERGB( pi->flashDlightColor, 1.0f, 1.0f, 1.0f );
+ADDRFP4 0
+INDIRP4
+CNSTI4 1012
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1016
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1020
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 377
+;377:		break;
+LABELV $206
+line 379
+;378:	}
+;379:}
+LABELV $180
+endproc UI_PlayerInfo_SetWeapon 84 8
+proc UI_ForceLegsAnim 8 0
+line 387
+;380:
+;381:
+;382:/*
+;383:===============
+;384:UI_ForceLegsAnim
+;385:===============
+;386:*/
+;387:static void UI_ForceLegsAnim( playerInfo_t *pi, int anim ) {
+line 388
+;388:	pi->legsAnim = ( ( pi->legsAnim & ANIM_TOGGLEBIT ) ^ ANIM_TOGGLEBIT ) | anim;
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+CNSTI4 1064
+ADDP4
+ASGNP4
+ADDRLP4 4
+CNSTI4 128
+ASGNI4
+ADDRLP4 0
+INDIRP4
+ADDRLP4 0
+INDIRP4
+INDIRI4
+ADDRLP4 4
+INDIRI4
+BANDI4
+ADDRLP4 4
+INDIRI4
+BXORI4
+ADDRFP4 4
+INDIRI4
+BORI4
+ASGNI4
+line 390
+;389:
+;390:	if ( anim == LEGS_JUMP ) {
+ADDRFP4 4
+INDIRI4
+CNSTI4 18
+NEI4 $221
+line 391
+;391:		pi->legsAnimationTimer = UI_TIMER_JUMP;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1100
+ADDP4
+CNSTI4 1000
+ASGNI4
+line 392
+;392:	}
+LABELV $221
+line 393
+;393:}
+LABELV $220
+endproc UI_ForceLegsAnim 8 0
+proc UI_SetLegsAnim 0 8
+line 401
+;394:
+;395:
+;396:/*
+;397:===============
+;398:UI_SetLegsAnim
+;399:===============
+;400:*/
+;401:static void UI_SetLegsAnim( playerInfo_t *pi, int anim ) {
+line 402
+;402:	if ( pi->pendingLegsAnim ) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 1088
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $224
+line 403
+;403:		anim = pi->pendingLegsAnim;
+ADDRFP4 4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1088
+ADDP4
+INDIRI4
+ASGNI4
+line 404
+;404:		pi->pendingLegsAnim = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1088
+ADDP4
+CNSTI4 0
+ASGNI4
+line 405
+;405:	}
+LABELV $224
+line 406
+;406:	UI_ForceLegsAnim( pi, anim );
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRFP4 4
+INDIRI4
+ARGI4
+ADDRGP4 UI_ForceLegsAnim
+CALLV
+pop
+line 407
+;407:}
+LABELV $223
+endproc UI_SetLegsAnim 0 8
+proc UI_ForceTorsoAnim 12 0
+line 415
+;408:
+;409:
+;410:/*
+;411:===============
+;412:UI_ForceTorsoAnim
+;413:===============
+;414:*/
+;415:static void UI_ForceTorsoAnim( playerInfo_t *pi, int anim ) {
+line 416
+;416:	pi->torsoAnim = ( ( pi->torsoAnim & ANIM_TOGGLEBIT ) ^ ANIM_TOGGLEBIT ) | anim;
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+CNSTI4 1068
+ADDP4
+ASGNP4
+ADDRLP4 4
+CNSTI4 128
+ASGNI4
+ADDRLP4 0
+INDIRP4
+ADDRLP4 0
+INDIRP4
+INDIRI4
+ADDRLP4 4
+INDIRI4
+BANDI4
+ADDRLP4 4
+INDIRI4
+BXORI4
+ADDRFP4 4
+INDIRI4
+BORI4
+ASGNI4
+line 418
+;417:
+;418:	if ( anim == TORSO_GESTURE ) {
+ADDRFP4 4
+INDIRI4
+CNSTI4 6
+NEI4 $227
+line 419
+;419:		pi->torsoAnimationTimer = UI_TIMER_GESTURE;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1092
+ADDP4
+CNSTI4 2300
+ASGNI4
+line 420
+;420:	}
+LABELV $227
+line 422
+;421:
+;422:	if ( anim == TORSO_ATTACK || anim == TORSO_ATTACK2 ) {
+ADDRLP4 8
+ADDRFP4 4
+INDIRI4
+ASGNI4
+ADDRLP4 8
+INDIRI4
+CNSTI4 7
+EQI4 $231
+ADDRLP4 8
+INDIRI4
+CNSTI4 8
+NEI4 $229
+LABELV $231
+line 423
+;423:		pi->torsoAnimationTimer = UI_TIMER_ATTACK;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1092
+ADDP4
+CNSTI4 500
+ASGNI4
+line 424
+;424:	}
+LABELV $229
+line 425
+;425:}
+LABELV $226
+endproc UI_ForceTorsoAnim 12 0
+proc UI_SetTorsoAnim 0 8
+line 433
+;426:
+;427:
+;428:/*
+;429:===============
+;430:UI_SetTorsoAnim
+;431:===============
+;432:*/
+;433:static void UI_SetTorsoAnim( playerInfo_t *pi, int anim ) {
+line 434
+;434:	if ( pi->pendingTorsoAnim ) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 1096
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $233
+line 435
+;435:		anim = pi->pendingTorsoAnim;
+ADDRFP4 4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1096
+ADDP4
+INDIRI4
+ASGNI4
+line 436
+;436:		pi->pendingTorsoAnim = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1096
+ADDP4
+CNSTI4 0
+ASGNI4
+line 437
+;437:	}
+LABELV $233
+line 439
+;438:
+;439:	UI_ForceTorsoAnim( pi, anim );
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRFP4 4
+INDIRI4
+ARGI4
+ADDRGP4 UI_ForceTorsoAnim
+CALLV
+pop
+line 440
+;440:}
+LABELV $232
+endproc UI_SetTorsoAnim 0 8
+proc UI_TorsoSequencing 16 8
+line 448
+;441:
+;442:
+;443:/*
+;444:===============
+;445:UI_TorsoSequencing
+;446:===============
+;447:*/
+;448:static void UI_TorsoSequencing( playerInfo_t *pi ) {
+line 451
+;449:	int		currentAnim;
+;450:
+;451:	currentAnim = pi->torsoAnim & ~ANIM_TOGGLEBIT;
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+CNSTI4 1068
+ADDP4
+INDIRI4
+CNSTI4 -129
+BANDI4
+ASGNI4
+line 453
+;452:
+;453:	if ( pi->weapon != pi->currentWeapon ) {
+ADDRLP4 4
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 4
+INDIRP4
+CNSTI4 1072
+ADDP4
+INDIRI4
+ADDRLP4 4
+INDIRP4
+CNSTI4 1060
+ADDP4
+INDIRI4
+EQI4 $236
+line 454
+;454:		if ( currentAnim != TORSO_DROP ) {
+ADDRLP4 0
+INDIRI4
+CNSTI4 9
+EQI4 $238
+line 455
+;455:			pi->torsoAnimationTimer = UI_TIMER_WEAPON_SWITCH;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1092
+ADDP4
+CNSTI4 300
+ASGNI4
+line 456
+;456:			UI_ForceTorsoAnim( pi, TORSO_DROP );
+ADDRFP4 0
+INDIRP4
+ARGP4
+CNSTI4 9
+ARGI4
+ADDRGP4 UI_ForceTorsoAnim
+CALLV
+pop
+line 457
+;457:		}
+LABELV $238
+line 458
+;458:	}
+LABELV $236
+line 460
+;459:
+;460:	if ( pi->torsoAnimationTimer > 0 ) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 1092
+ADDP4
+INDIRI4
+CNSTI4 0
+LEI4 $240
+line 461
+;461:		return;
+ADDRGP4 $235
+JUMPV
+LABELV $240
+line 464
+;462:	}
+;463:
+;464:	if( currentAnim == TORSO_GESTURE ) {
+ADDRLP4 0
+INDIRI4
+CNSTI4 6
+NEI4 $242
+line 465
+;465:		UI_SetTorsoAnim( pi, TORSO_STAND );
+ADDRFP4 0
+INDIRP4
+ARGP4
+CNSTI4 11
+ARGI4
+ADDRGP4 UI_SetTorsoAnim
+CALLV
+pop
+line 466
+;466:		return;
+ADDRGP4 $235
+JUMPV
+LABELV $242
+line 469
+;467:	}
+;468:
+;469:	if( currentAnim == TORSO_ATTACK || currentAnim == TORSO_ATTACK2 ) {
+ADDRLP4 0
+INDIRI4
+CNSTI4 7
+EQI4 $246
+ADDRLP4 0
+INDIRI4
+CNSTI4 8
+NEI4 $244
+LABELV $246
+line 470
+;470:		UI_SetTorsoAnim( pi, TORSO_STAND );
+ADDRFP4 0
+INDIRP4
+ARGP4
+CNSTI4 11
+ARGI4
+ADDRGP4 UI_SetTorsoAnim
+CALLV
+pop
+line 471
+;471:		return;
+ADDRGP4 $235
+JUMPV
+LABELV $244
+line 474
+;472:	}
+;473:
+;474:	if ( currentAnim == TORSO_DROP ) {
+ADDRLP4 0
+INDIRI4
+CNSTI4 9
+NEI4 $247
+line 475
+;475:		UI_PlayerInfo_SetWeapon( pi, pi->weapon );
+ADDRLP4 12
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 12
+INDIRP4
+ARGP4
+ADDRLP4 12
+INDIRP4
+CNSTI4 1072
+ADDP4
+INDIRI4
+ARGI4
+ADDRGP4 UI_PlayerInfo_SetWeapon
+CALLV
+pop
+line 476
+;476:		pi->torsoAnimationTimer = UI_TIMER_WEAPON_SWITCH;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1092
+ADDP4
+CNSTI4 300
+ASGNI4
+line 477
+;477:		UI_ForceTorsoAnim( pi, TORSO_RAISE );
+ADDRFP4 0
+INDIRP4
+ARGP4
+CNSTI4 10
+ARGI4
+ADDRGP4 UI_ForceTorsoAnim
+CALLV
+pop
+line 478
+;478:		return;
+ADDRGP4 $235
+JUMPV
+LABELV $247
+line 481
+;479:	}
+;480:
+;481:	if ( currentAnim == TORSO_RAISE ) {
+ADDRLP4 0
+INDIRI4
+CNSTI4 10
+NEI4 $249
+line 482
+;482:		UI_SetTorsoAnim( pi, TORSO_STAND );
+ADDRFP4 0
+INDIRP4
+ARGP4
+CNSTI4 11
+ARGI4
+ADDRGP4 UI_SetTorsoAnim
+CALLV
+pop
+line 483
+;483:		return;
+LABELV $249
+line 485
+;484:	}
+;485:}
+LABELV $235
+endproc UI_TorsoSequencing 16 8
+proc UI_LegsSequencing 8 8
+line 493
+;486:
+;487:
+;488:/*
+;489:===============
+;490:UI_LegsSequencing
+;491:===============
+;492:*/
+;493:static void UI_LegsSequencing( playerInfo_t *pi ) {
+line 496
+;494:	int		currentAnim;
+;495:
+;496:	currentAnim = pi->legsAnim & ~ANIM_TOGGLEBIT;
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+CNSTI4 1064
+ADDP4
+INDIRI4
+CNSTI4 -129
+BANDI4
+ASGNI4
+line 498
+;497:
+;498:	if ( pi->legsAnimationTimer > 0 ) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 1100
+ADDP4
+INDIRI4
+CNSTI4 0
+LEI4 $252
+line 499
+;499:		if ( currentAnim == LEGS_JUMP ) {
+ADDRLP4 0
+INDIRI4
+CNSTI4 18
+NEI4 $251
+line 500
+;500:			jumpHeight = JUMP_HEIGHT * sin( M_PI * ( UI_TIMER_JUMP - pi->legsAnimationTimer ) / UI_TIMER_JUMP );
+CNSTF4 1078530011
+CNSTI4 1000
+ADDRFP4 0
+INDIRP4
+CNSTI4 1100
+ADDP4
+INDIRI4
+SUBI4
+CVIF4 4
+MULF4
+CNSTF4 1148846080
+DIVF4
+ARGF4
+ADDRLP4 4
+ADDRGP4 sin
+CALLF4
+ASGNF4
+ADDRGP4 jumpHeight
+CNSTF4 1113587712
+ADDRLP4 4
+INDIRF4
+MULF4
+ASGNF4
+line 501
+;501:		}
+line 502
+;502:		return;
+ADDRGP4 $251
+JUMPV
+LABELV $252
+line 505
+;503:	}
+;504:
+;505:	if ( currentAnim == LEGS_JUMP ) {
+ADDRLP4 0
+INDIRI4
+CNSTI4 18
+NEI4 $256
+line 506
+;506:		UI_ForceLegsAnim( pi, LEGS_LAND );
+ADDRFP4 0
+INDIRP4
+ARGP4
+CNSTI4 19
+ARGI4
+ADDRGP4 UI_ForceLegsAnim
+CALLV
+pop
+line 507
+;507:		pi->legsAnimationTimer = UI_TIMER_LAND;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1100
+ADDP4
+CNSTI4 130
+ASGNI4
+line 508
+;508:		jumpHeight = 0;
+ADDRGP4 jumpHeight
+CNSTF4 0
+ASGNF4
+line 509
+;509:		return;
+ADDRGP4 $251
+JUMPV
+LABELV $256
+line 512
+;510:	}
+;511:
+;512:	if ( currentAnim == LEGS_LAND ) {
+ADDRLP4 0
+INDIRI4
+CNSTI4 19
+NEI4 $258
+line 513
+;513:		PlayerInfo_PlayModelSound(-1, LEGS_LAND);
+CNSTI4 -1
+ARGI4
+CNSTI4 19
+ARGI4
+ADDRGP4 PlayerInfo_PlayModelSound
+CALLV
+pop
+line 514
+;514:		UI_SetLegsAnim( pi, LEGS_IDLE );
+ADDRFP4 0
+INDIRP4
+ARGP4
+CNSTI4 22
+ARGI4
+ADDRGP4 UI_SetLegsAnim
+CALLV
+pop
+line 515
+;515:		return;
+LABELV $258
+line 517
+;516:	}
+;517:}
+LABELV $251
+endproc UI_LegsSequencing 8 8
+proc UI_PositionEntityOnTag 84 24
+line 526
+;518:
+;519:
+;520:/*
+;521:======================
+;522:UI_PositionEntityOnTag
+;523:======================
+;524:*/
+;525:static void UI_PositionEntityOnTag( refEntity_t *entity, const refEntity_t *parent, 
+;526:							clipHandle_t parentModel, char *tagName ) {
+line 531
+;527:	int				i;
+;528:	orientation_t	lerped;
+;529:	
+;530:	// lerp the tag
+;531:	trap_CM_LerpTag( &lerped, parentModel, parent->oldframe, parent->frame,
+ADDRLP4 4
+ARGP4
+ADDRFP4 8
+INDIRI4
+ARGI4
+ADDRLP4 52
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 52
+INDIRP4
+CNSTI4 96
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 52
+INDIRP4
+CNSTI4 80
+ADDP4
+INDIRI4
+ARGI4
+CNSTF4 1065353216
+ADDRLP4 52
+INDIRP4
+CNSTI4 100
+ADDP4
+INDIRF4
+SUBF4
+ARGF4
+ADDRFP4 12
+INDIRP4
+ARGP4
+ADDRGP4 trap_CM_LerpTag
+CALLI4
+pop
+line 535
+;532:		1.0 - parent->backlerp, tagName );
+;533:
+;534:	// FIXME: allow origin offsets along tag?
+;535:	VectorCopy( parent->origin, entity->origin );
+ADDRLP4 56
+CNSTI4 68
+ASGNI4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 56
+INDIRI4
+ADDP4
+ADDRFP4 4
+INDIRP4
+ADDRLP4 56
+INDIRI4
+ADDP4
+INDIRB
+ASGNB 12
+line 536
+;536:	for ( i = 0 ; i < 3 ; i++ ) {
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+LABELV $261
+line 537
+;537:		VectorMA( entity->origin, lerped.origin[i], parent->axis[i], entity->origin );
+ADDRLP4 60
+ADDRFP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ASGNP4
+ADDRLP4 60
+INDIRP4
+ADDRLP4 60
+INDIRP4
+INDIRF4
+CNSTI4 12
+ADDRLP4 0
+INDIRI4
+MULI4
+ADDRFP4 4
+INDIRP4
+CNSTI4 28
+ADDP4
+ADDP4
+INDIRF4
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRLP4 4
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 68
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 68
+INDIRP4
+ADDRLP4 68
+INDIRP4
+INDIRF4
+CNSTI4 12
+ADDRLP4 0
+INDIRI4
+MULI4
+ADDRFP4 4
+INDIRP4
+CNSTI4 28
+ADDP4
+ADDP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRLP4 4
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 76
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 76
+INDIRP4
+ADDRLP4 76
+INDIRP4
+INDIRF4
+CNSTI4 12
+ADDRLP4 0
+INDIRI4
+MULI4
+ADDRFP4 4
+INDIRP4
+CNSTI4 28
+ADDP4
+ADDP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRLP4 4
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 538
+;538:	}
+LABELV $262
+line 536
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 3
+LTI4 $261
+line 541
+;539:
+;540:	// cast away const because of compiler problems
+;541:	MatrixMultiply( lerped.axis, ((refEntity_t*)parent)->axis, entity->axis );
+ADDRLP4 4+12
+ARGP4
+ADDRLP4 60
+CNSTI4 28
+ASGNI4
+ADDRFP4 4
+INDIRP4
+ADDRLP4 60
+INDIRI4
+ADDP
+ARGP4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 60
+INDIRI4
+ADDP4
+ARGP4
+ADDRGP4 MatrixMultiply
+CALLV
+pop
+line 542
+;542:	entity->backlerp = parent->backlerp;
+ADDRLP4 64
+CNSTI4 100
+ASGNI4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 64
+INDIRI4
+ADDP4
+ADDRFP4 4
+INDIRP4
+ADDRLP4 64
+INDIRI4
+ADDP4
+INDIRF4
+ASGNF4
+line 543
+;543:}
+LABELV $260
+endproc UI_PositionEntityOnTag 84 24
+proc UI_PositionRotatedEntityOnTag 120 24
+line 552
+;544:
+;545:
+;546:/*
+;547:======================
+;548:UI_PositionRotatedEntityOnTag
+;549:======================
+;550:*/
+;551:static void UI_PositionRotatedEntityOnTag( refEntity_t *entity, const refEntity_t *parent, 
+;552:							clipHandle_t parentModel, char *tagName ) {
+line 558
+;553:	int				i;
+;554:	orientation_t	lerped;
+;555:	vec3_t			tempAxis[3];
+;556:
+;557:	// lerp the tag
+;558:	trap_CM_LerpTag( &lerped, parentModel, parent->oldframe, parent->frame,
+ADDRLP4 4
+ARGP4
+ADDRFP4 8
+INDIRI4
+ARGI4
+ADDRLP4 88
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 88
+INDIRP4
+CNSTI4 96
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 88
+INDIRP4
+CNSTI4 80
+ADDP4
+INDIRI4
+ARGI4
+CNSTF4 1065353216
+ADDRLP4 88
+INDIRP4
+CNSTI4 100
+ADDP4
+INDIRF4
+SUBF4
+ARGF4
+ADDRFP4 12
+INDIRP4
+ARGP4
+ADDRGP4 trap_CM_LerpTag
+CALLI4
+pop
+line 562
+;559:		1.0 - parent->backlerp, tagName );
+;560:
+;561:	// FIXME: allow origin offsets along tag?
+;562:	VectorCopy( parent->origin, entity->origin );
+ADDRLP4 92
+CNSTI4 68
+ASGNI4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 92
+INDIRI4
+ADDP4
+ADDRFP4 4
+INDIRP4
+ADDRLP4 92
+INDIRI4
+ADDP4
+INDIRB
+ASGNB 12
+line 563
+;563:	for ( i = 0 ; i < 3 ; i++ ) {
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+LABELV $267
+line 564
+;564:		VectorMA( entity->origin, lerped.origin[i], parent->axis[i], entity->origin );
+ADDRLP4 96
+ADDRFP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ASGNP4
+ADDRLP4 96
+INDIRP4
+ADDRLP4 96
+INDIRP4
+INDIRF4
+CNSTI4 12
+ADDRLP4 0
+INDIRI4
+MULI4
+ADDRFP4 4
+INDIRP4
+CNSTI4 28
+ADDP4
+ADDP4
+INDIRF4
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRLP4 4
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 104
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 104
+INDIRP4
+ADDRLP4 104
+INDIRP4
+INDIRF4
+CNSTI4 12
+ADDRLP4 0
+INDIRI4
+MULI4
+ADDRFP4 4
+INDIRP4
+CNSTI4 28
+ADDP4
+ADDP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRLP4 4
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 112
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 112
+INDIRP4
+ADDRLP4 112
+INDIRP4
+INDIRF4
+CNSTI4 12
+ADDRLP4 0
+INDIRI4
+MULI4
+ADDRFP4 4
+INDIRP4
+CNSTI4 28
+ADDP4
+ADDP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRLP4 4
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 565
+;565:	}
+LABELV $268
+line 563
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 3
+LTI4 $267
+line 568
+;566:
+;567:	// cast away const because of compiler problems
+;568:	MatrixMultiply( entity->axis, ((refEntity_t *)parent)->axis, tempAxis );
+ADDRLP4 96
+CNSTI4 28
+ASGNI4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 96
+INDIRI4
+ADDP4
+ARGP4
+ADDRFP4 4
+INDIRP4
+ADDRLP4 96
+INDIRI4
+ADDP
+ARGP4
+ADDRLP4 52
+ARGP4
+ADDRGP4 MatrixMultiply
+CALLV
+pop
+line 569
+;569:	MatrixMultiply( lerped.axis, tempAxis, entity->axis );
+ADDRLP4 4+12
+ARGP4
+ADDRLP4 52
+ARGP4
+ADDRFP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ARGP4
+ADDRGP4 MatrixMultiply
+CALLV
+pop
+line 570
+;570:}
+LABELV $266
+endproc UI_PositionRotatedEntityOnTag 120 24
+proc UI_SetLerpFrameAnimation 12 8
+line 578
+;571:
+;572:
+;573:/*
+;574:===============
+;575:UI_SetLerpFrameAnimation
+;576:===============
+;577:*/
+;578:static void UI_SetLerpFrameAnimation( playerInfo_t *ci, lerpFrame_t *lf, int newAnimation ) {
+line 581
+;579:	animation_t	*anim;
+;580:
+;581:	lf->animationNumber = newAnimation;
+ADDRFP4 4
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRFP4 8
+INDIRI4
+ASGNI4
+line 582
+;582:	newAnimation &= ~ANIM_TOGGLEBIT;
+ADDRFP4 8
+ADDRFP4 8
+INDIRI4
+CNSTI4 -129
+BANDI4
+ASGNI4
+line 584
+;583:
+;584:	if ( newAnimation < 0 || newAnimation >= MAX_ANIMATIONS ) {
+ADDRLP4 4
+ADDRFP4 8
+INDIRI4
+ASGNI4
+ADDRLP4 4
+INDIRI4
+CNSTI4 0
+LTI4 $275
+ADDRLP4 4
+INDIRI4
+CNSTI4 31
+LTI4 $273
+LABELV $275
+line 585
+;585:		trap_Error( va("Bad animation number: %i", newAnimation) );
+ADDRGP4 $276
+ARGP4
+ADDRFP4 8
+INDIRI4
+ARGI4
+ADDRLP4 8
+ADDRGP4 va
+CALLP4
+ASGNP4
+ADDRLP4 8
+INDIRP4
+ARGP4
+ADDRGP4 trap_Error
+CALLV
+pop
+line 586
+;586:	}
+LABELV $273
+line 588
+;587:
+;588:	anim = &ci->animations[ newAnimation ];
+ADDRLP4 0
+CNSTI4 28
+ADDRFP4 8
+INDIRI4
+MULI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 132
+ADDP4
+ADDP4
+ASGNP4
+line 590
+;589:
+;590:	lf->animation = anim;
+ADDRFP4 4
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 591
+;591:	lf->animationTime = lf->frameTime + anim->initialLerp;
+ADDRLP4 8
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 8
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 8
+INDIRP4
+CNSTI4 12
+ADDP4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 16
+ADDP4
+INDIRI4
+ADDI4
+ASGNI4
+line 592
+;592:}
+LABELV $272
+endproc UI_SetLerpFrameAnimation 12 8
+proc UI_RunLerpFrame 32 12
+line 600
+;593:
+;594:
+;595:/*
+;596:===============
+;597:UI_RunLerpFrame
+;598:===============
+;599:*/
+;600:static void UI_RunLerpFrame( playerInfo_t *ci, lerpFrame_t *lf, int newAnimation ) {
+line 605
+;601:	int			f;
+;602:	animation_t	*anim;
+;603:
+;604:	// see if the animation sequence is switching
+;605:	if ( newAnimation != lf->animationNumber || !lf->animation ) {
+ADDRLP4 8
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRFP4 8
+INDIRI4
+ADDRLP4 8
+INDIRP4
+CNSTI4 36
+ADDP4
+INDIRI4
+NEI4 $280
+ADDRLP4 8
+INDIRP4
+CNSTI4 40
+ADDP4
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $278
+LABELV $280
+line 606
+;606:		UI_SetLerpFrameAnimation( ci, lf, newAnimation );
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRFP4 4
+INDIRP4
+ARGP4
+ADDRFP4 8
+INDIRI4
+ARGI4
+ADDRGP4 UI_SetLerpFrameAnimation
+CALLV
+pop
+line 607
+;607:	}
+LABELV $278
+line 611
+;608:
+;609:	// if we have passed the current frame, move it to
+;610:	// oldFrame and calculate a new frame
+;611:	if ( dp_realtime >= lf->frameTime ) {
+ADDRGP4 dp_realtime
+INDIRI4
+ADDRFP4 4
+INDIRP4
+CNSTI4 12
+ADDP4
+INDIRI4
+LTI4 $281
+line 612
+;612:		lf->oldFrame = lf->frame;
+ADDRLP4 12
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 12
+INDIRP4
+ADDRLP4 12
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRI4
+ASGNI4
+line 613
+;613:		lf->oldFrameTime = lf->frameTime;
+ADDRLP4 16
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 16
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRLP4 16
+INDIRP4
+CNSTI4 12
+ADDP4
+INDIRI4
+ASGNI4
+line 616
+;614:
+;615:		// get the next frame based on the animation
+;616:		anim = lf->animation;
+ADDRLP4 0
+ADDRFP4 4
+INDIRP4
+CNSTI4 40
+ADDP4
+INDIRP4
+ASGNP4
+line 617
+;617:		if ( dp_realtime < lf->animationTime ) {
+ADDRGP4 dp_realtime
+INDIRI4
+ADDRFP4 4
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+GEI4 $283
+line 618
+;618:			lf->frameTime = lf->animationTime;		// initial lerp
+ADDRLP4 20
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 20
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRLP4 20
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+ASGNI4
+line 619
+;619:		} else {
+ADDRGP4 $284
+JUMPV
+LABELV $283
+line 620
+;620:			lf->frameTime = lf->oldFrameTime + anim->frameLerp;
+ADDRLP4 20
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 24
+CNSTI4 12
+ASGNI4
+ADDRLP4 20
+INDIRP4
+ADDRLP4 24
+INDIRI4
+ADDP4
+ADDRLP4 20
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+ADDRLP4 24
+INDIRI4
+ADDP4
+INDIRI4
+ADDI4
+ASGNI4
+line 621
+;621:		}
+LABELV $284
+line 622
+;622:		f = ( lf->frameTime - lf->animationTime ) / anim->frameLerp;
+ADDRLP4 20
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 24
+CNSTI4 12
+ASGNI4
+ADDRLP4 4
+ADDRLP4 20
+INDIRP4
+ADDRLP4 24
+INDIRI4
+ADDP4
+INDIRI4
+ADDRLP4 20
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRI4
+SUBI4
+ADDRLP4 0
+INDIRP4
+ADDRLP4 24
+INDIRI4
+ADDP4
+INDIRI4
+DIVI4
+ASGNI4
+line 623
+;623:		if ( f >= anim->numFrames ) {
+ADDRLP4 4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+LTI4 $285
+line 624
+;624:			f -= anim->numFrames;
+ADDRLP4 4
+ADDRLP4 4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+SUBI4
+ASGNI4
+line 625
+;625:			if ( anim->loopFrames ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $287
+line 626
+;626:				f %= anim->loopFrames;
+ADDRLP4 4
+ADDRLP4 4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRI4
+MODI4
+ASGNI4
+line 627
+;627:				f += anim->numFrames - anim->loopFrames;
+ADDRLP4 4
+ADDRLP4 4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRI4
+SUBI4
+ADDI4
+ASGNI4
+line 628
+;628:			} else {
+ADDRGP4 $288
+JUMPV
+LABELV $287
+line 629
+;629:				f = anim->numFrames - 1;
+ADDRLP4 4
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+CNSTI4 1
+SUBI4
+ASGNI4
+line 632
+;630:				// the animation is stuck at the end, so it
+;631:				// can immediately transition to another sequence
+;632:				lf->frameTime = dp_realtime;
+ADDRFP4 4
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRGP4 dp_realtime
+INDIRI4
+ASGNI4
+line 633
+;633:			}
+LABELV $288
+line 634
+;634:		}
+LABELV $285
+line 635
+;635:		lf->frame = anim->firstFrame + f;
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRLP4 0
+INDIRP4
+INDIRI4
+ADDRLP4 4
+INDIRI4
+ADDI4
+ASGNI4
+line 636
+;636:		if ( dp_realtime > lf->frameTime ) {
+ADDRGP4 dp_realtime
+INDIRI4
+ADDRFP4 4
+INDIRP4
+CNSTI4 12
+ADDP4
+INDIRI4
+LEI4 $289
+line 637
+;637:			lf->frameTime = dp_realtime;
+ADDRFP4 4
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRGP4 dp_realtime
+INDIRI4
+ASGNI4
+line 638
+;638:		}
+LABELV $289
+line 639
+;639:	}
+LABELV $281
+line 641
+;640:
+;641:	if ( lf->frameTime > dp_realtime + 200 ) {
+ADDRFP4 4
+INDIRP4
+CNSTI4 12
+ADDP4
+INDIRI4
+ADDRGP4 dp_realtime
+INDIRI4
+CNSTI4 200
+ADDI4
+LEI4 $291
+line 642
+;642:		lf->frameTime = dp_realtime;
+ADDRFP4 4
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRGP4 dp_realtime
+INDIRI4
+ASGNI4
+line 643
+;643:	}
+LABELV $291
+line 645
+;644:
+;645:	if ( lf->oldFrameTime > dp_realtime ) {
+ADDRFP4 4
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+ADDRGP4 dp_realtime
+INDIRI4
+LEI4 $293
+line 646
+;646:		lf->oldFrameTime = dp_realtime;
+ADDRFP4 4
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 dp_realtime
+INDIRI4
+ASGNI4
+line 647
+;647:	}
+LABELV $293
+line 649
+;648:	// calculate current lerp value
+;649:	if ( lf->frameTime == lf->oldFrameTime ) {
+ADDRLP4 12
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 12
+INDIRP4
+CNSTI4 12
+ADDP4
+INDIRI4
+ADDRLP4 12
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+NEI4 $295
+line 650
+;650:		lf->backlerp = 0;
+ADDRFP4 4
+INDIRP4
+CNSTI4 16
+ADDP4
+CNSTF4 0
+ASGNF4
+line 651
+;651:	} else {
+ADDRGP4 $296
+JUMPV
+LABELV $295
+line 652
+;652:		lf->backlerp = 1.0 - (float)( dp_realtime - lf->oldFrameTime ) / ( lf->frameTime - lf->oldFrameTime );
+ADDRLP4 16
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 20
+ADDRLP4 16
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 16
+INDIRP4
+CNSTI4 16
+ADDP4
+CNSTF4 1065353216
+ADDRGP4 dp_realtime
+INDIRI4
+ADDRLP4 20
+INDIRI4
+SUBI4
+CVIF4 4
+ADDRLP4 16
+INDIRP4
+CNSTI4 12
+ADDP4
+INDIRI4
+ADDRLP4 20
+INDIRI4
+SUBI4
+CVIF4 4
+DIVF4
+SUBF4
+ASGNF4
+line 653
+;653:	}
+LABELV $296
+line 654
+;654:}
+LABELV $277
+endproc UI_RunLerpFrame 32 12
+proc UI_PlayerAnimation 16 12
+line 663
+;655:
+;656:
+;657:/*
+;658:===============
+;659:UI_PlayerAnimation
+;660:===============
+;661:*/
+;662:static void UI_PlayerAnimation( playerInfo_t *pi, int *legsOld, int *legs, float *legsBackLerp,
+;663:						int *torsoOld, int *torso, float *torsoBackLerp ) {
+line 666
+;664:
+;665:	// legs animation
+;666:	pi->legsAnimationTimer -= uis.frametime;
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+CNSTI4 1100
+ADDP4
+ASGNP4
+ADDRLP4 0
+INDIRP4
+ADDRLP4 0
+INDIRP4
+INDIRI4
+ADDRGP4 uis
+INDIRI4
+SUBI4
+ASGNI4
+line 667
+;667:	if ( pi->legsAnimationTimer < 0 ) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 1100
+ADDP4
+INDIRI4
+CNSTI4 0
+GEI4 $298
+line 668
+;668:		pi->legsAnimationTimer = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1100
+ADDP4
+CNSTI4 0
+ASGNI4
+line 669
+;669:	}
+LABELV $298
+line 671
+;670:
+;671:	UI_LegsSequencing( pi );
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 UI_LegsSequencing
+CALLV
+pop
+line 673
+;672:
+;673:	if ( pi->legs.yawing && ( pi->legsAnim & ~ANIM_TOGGLEBIT ) == LEGS_IDLE ) {
+ADDRLP4 4
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 4
+INDIRP4
+CNSTI4 36
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $300
+ADDRLP4 4
+INDIRP4
+CNSTI4 1064
+ADDP4
+INDIRI4
+CNSTI4 -129
+BANDI4
+CNSTI4 22
+NEI4 $300
+line 674
+;674:		UI_RunLerpFrame( pi, &pi->legs, LEGS_TURN );
+ADDRLP4 8
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 8
+INDIRP4
+ARGP4
+ADDRLP4 8
+INDIRP4
+CNSTI4 12
+ADDP4
+ARGP4
+CNSTI4 24
+ARGI4
+ADDRGP4 UI_RunLerpFrame
+CALLV
+pop
+line 675
+;675:	} else {
+ADDRGP4 $301
+JUMPV
+LABELV $300
+line 676
+;676:		UI_RunLerpFrame( pi, &pi->legs, pi->legsAnim );
+ADDRLP4 8
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 8
+INDIRP4
+ARGP4
+ADDRLP4 8
+INDIRP4
+CNSTI4 12
+ADDP4
+ARGP4
+ADDRLP4 8
+INDIRP4
+CNSTI4 1064
+ADDP4
+INDIRI4
+ARGI4
+ADDRGP4 UI_RunLerpFrame
+CALLV
+pop
+line 677
+;677:	}
+LABELV $301
+line 678
+;678:	*legsOld = pi->legs.oldFrame;
+ADDRFP4 4
+INDIRP4
+ADDRFP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+INDIRI4
+ASGNI4
+line 679
+;679:	*legs = pi->legs.frame;
+ADDRFP4 8
+INDIRP4
+ADDRFP4 0
+INDIRP4
+CNSTI4 20
+ADDP4
+INDIRI4
+ASGNI4
+line 680
+;680:	*legsBackLerp = pi->legs.backlerp;
+ADDRFP4 12
+INDIRP4
+ADDRFP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+INDIRF4
+ASGNF4
+line 683
+;681:
+;682:	// torso animation
+;683:	pi->torsoAnimationTimer -= uis.frametime;
+ADDRLP4 8
+ADDRFP4 0
+INDIRP4
+CNSTI4 1092
+ADDP4
+ASGNP4
+ADDRLP4 8
+INDIRP4
+ADDRLP4 8
+INDIRP4
+INDIRI4
+ADDRGP4 uis
+INDIRI4
+SUBI4
+ASGNI4
+line 684
+;684:	if ( pi->torsoAnimationTimer < 0 ) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 1092
+ADDP4
+INDIRI4
+CNSTI4 0
+GEI4 $302
+line 685
+;685:		pi->torsoAnimationTimer = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1092
+ADDP4
+CNSTI4 0
+ASGNI4
+line 686
+;686:	}
+LABELV $302
+line 688
+;687:
+;688:	UI_TorsoSequencing( pi );
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 UI_TorsoSequencing
+CALLV
+pop
+line 690
+;689:
+;690:	UI_RunLerpFrame( pi, &pi->torso, pi->torsoAnim );
+ADDRLP4 12
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 12
+INDIRP4
+ARGP4
+ADDRLP4 12
+INDIRP4
+CNSTI4 72
+ADDP4
+ARGP4
+ADDRLP4 12
+INDIRP4
+CNSTI4 1068
+ADDP4
+INDIRI4
+ARGI4
+ADDRGP4 UI_RunLerpFrame
+CALLV
+pop
+line 691
+;691:	*torsoOld = pi->torso.oldFrame;
+ADDRFP4 16
+INDIRP4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRI4
+ASGNI4
+line 692
+;692:	*torso = pi->torso.frame;
+ADDRFP4 20
+INDIRP4
+ADDRFP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+INDIRI4
+ASGNI4
+line 693
+;693:	*torsoBackLerp = pi->torso.backlerp;
+ADDRFP4 24
+INDIRP4
+ADDRFP4 0
+INDIRP4
+CNSTI4 88
+ADDP4
+INDIRF4
+ASGNF4
+line 694
+;694:}
+LABELV $297
+endproc UI_PlayerAnimation 16 12
+proc UI_SwingAngles 28 8
+line 703
+;695:
+;696:
+;697:/*
+;698:==================
+;699:UI_SwingAngles
+;700:==================
+;701:*/
+;702:static void UI_SwingAngles( float destination, float swingTolerance, float clampTolerance,
+;703:					float speed, float *angle, qboolean *swinging ) {
+line 708
+;704:	float	swing;
+;705:	float	move;
+;706:	float	scale;
+;707:
+;708:	if ( !*swinging ) {
+ADDRFP4 20
+INDIRP4
+INDIRI4
+CNSTI4 0
+NEI4 $305
+line 710
+;709:		// see if a swing should be started
+;710:		swing = AngleSubtract( *angle, destination );
+ADDRFP4 16
+INDIRP4
+INDIRF4
+ARGF4
+ADDRFP4 0
+INDIRF4
+ARGF4
+ADDRLP4 12
+ADDRGP4 AngleSubtract
+CALLF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 12
+INDIRF4
+ASGNF4
+line 711
+;711:		if ( swing > swingTolerance || swing < -swingTolerance ) {
+ADDRLP4 20
+ADDRFP4 4
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRF4
+ADDRLP4 20
+INDIRF4
+GTF4 $309
+ADDRLP4 0
+INDIRF4
+ADDRLP4 20
+INDIRF4
+NEGF4
+GEF4 $307
+LABELV $309
+line 712
+;712:			*swinging = qtrue;
+ADDRFP4 20
+INDIRP4
+CNSTI4 1
+ASGNI4
+line 713
+;713:		}
+LABELV $307
+line 714
+;714:	}
+LABELV $305
+line 716
+;715:
+;716:	if ( !*swinging ) {
+ADDRFP4 20
+INDIRP4
+INDIRI4
+CNSTI4 0
+NEI4 $310
+line 717
+;717:		return;
+ADDRGP4 $304
+JUMPV
+LABELV $310
+line 722
+;718:	}
+;719:	
+;720:	// modify the speed depending on the delta
+;721:	// so it doesn't seem so linear
+;722:	swing = AngleSubtract( destination, *angle );
+ADDRFP4 0
+INDIRF4
+ARGF4
+ADDRFP4 16
+INDIRP4
+INDIRF4
+ARGF4
+ADDRLP4 12
+ADDRGP4 AngleSubtract
+CALLF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 12
+INDIRF4
+ASGNF4
+line 723
+;723:	scale = fabs( swing );
+ADDRLP4 0
+INDIRF4
+ARGF4
+ADDRLP4 16
+ADDRGP4 fabs
+CALLF4
+ASGNF4
+ADDRLP4 4
+ADDRLP4 16
+INDIRF4
+ASGNF4
+line 724
+;724:	if ( scale < swingTolerance * 0.5 ) {
+ADDRLP4 4
+INDIRF4
+CNSTF4 1056964608
+ADDRFP4 4
+INDIRF4
+MULF4
+GEF4 $312
+line 725
+;725:		scale = 0.5;
+ADDRLP4 4
+CNSTF4 1056964608
+ASGNF4
+line 726
+;726:	} else if ( scale < swingTolerance ) {
+ADDRGP4 $313
+JUMPV
+LABELV $312
+ADDRLP4 4
+INDIRF4
+ADDRFP4 4
+INDIRF4
+GEF4 $314
+line 727
+;727:		scale = 1.0;
+ADDRLP4 4
+CNSTF4 1065353216
+ASGNF4
+line 728
+;728:	} else {
+ADDRGP4 $315
+JUMPV
+LABELV $314
+line 729
+;729:		scale = 2.0;
+ADDRLP4 4
+CNSTF4 1073741824
+ASGNF4
+line 730
+;730:	}
+LABELV $315
+LABELV $313
+line 733
+;731:
+;732:	// swing towards the destination angle
+;733:	if ( swing >= 0 ) {
+ADDRLP4 0
+INDIRF4
+CNSTF4 0
+LTF4 $316
+line 734
+;734:		move = uis.frametime * scale * speed;
+ADDRLP4 8
+ADDRGP4 uis
+INDIRI4
+CVIF4 4
+ADDRLP4 4
+INDIRF4
+MULF4
+ADDRFP4 12
+INDIRF4
+MULF4
+ASGNF4
+line 735
+;735:		if ( move >= swing ) {
+ADDRLP4 8
+INDIRF4
+ADDRLP4 0
+INDIRF4
+LTF4 $318
+line 736
+;736:			move = swing;
+ADDRLP4 8
+ADDRLP4 0
+INDIRF4
+ASGNF4
+line 737
+;737:			*swinging = qfalse;
+ADDRFP4 20
+INDIRP4
+CNSTI4 0
+ASGNI4
+line 738
+;738:		}
+LABELV $318
+line 739
+;739:		*angle = AngleMod( *angle + move );
+ADDRLP4 20
+ADDRFP4 16
+INDIRP4
+ASGNP4
+ADDRLP4 20
+INDIRP4
+INDIRF4
+ADDRLP4 8
+INDIRF4
+ADDF4
+ARGF4
+ADDRLP4 24
+ADDRGP4 AngleMod
+CALLF4
+ASGNF4
+ADDRLP4 20
+INDIRP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+line 740
+;740:	} else if ( swing < 0 ) {
+ADDRGP4 $317
+JUMPV
+LABELV $316
+ADDRLP4 0
+INDIRF4
+CNSTF4 0
+GEF4 $320
+line 741
+;741:		move = uis.frametime * scale * -speed;
+ADDRLP4 8
+ADDRGP4 uis
+INDIRI4
+CVIF4 4
+ADDRLP4 4
+INDIRF4
+MULF4
+ADDRFP4 12
+INDIRF4
+NEGF4
+MULF4
+ASGNF4
+line 742
+;742:		if ( move <= swing ) {
+ADDRLP4 8
+INDIRF4
+ADDRLP4 0
+INDIRF4
+GTF4 $322
+line 743
+;743:			move = swing;
+ADDRLP4 8
+ADDRLP4 0
+INDIRF4
+ASGNF4
+line 744
+;744:			*swinging = qfalse;
+ADDRFP4 20
+INDIRP4
+CNSTI4 0
+ASGNI4
+line 745
+;745:		}
+LABELV $322
+line 746
+;746:		*angle = AngleMod( *angle + move );
+ADDRLP4 20
+ADDRFP4 16
+INDIRP4
+ASGNP4
+ADDRLP4 20
+INDIRP4
+INDIRF4
+ADDRLP4 8
+INDIRF4
+ADDF4
+ARGF4
+ADDRLP4 24
+ADDRGP4 AngleMod
+CALLF4
+ASGNF4
+ADDRLP4 20
+INDIRP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+line 747
+;747:	}
+LABELV $320
+LABELV $317
+line 750
+;748:
+;749:	// clamp to no more than tolerance
+;750:	swing = AngleSubtract( destination, *angle );
+ADDRFP4 0
+INDIRF4
+ARGF4
+ADDRFP4 16
+INDIRP4
+INDIRF4
+ARGF4
+ADDRLP4 20
+ADDRGP4 AngleSubtract
+CALLF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 20
+INDIRF4
+ASGNF4
+line 751
+;751:	if ( swing > clampTolerance ) {
+ADDRLP4 0
+INDIRF4
+ADDRFP4 8
+INDIRF4
+LEF4 $324
+line 752
+;752:		*angle = AngleMod( destination - (clampTolerance - 1) );
+ADDRFP4 0
+INDIRF4
+ADDRFP4 8
+INDIRF4
+CNSTF4 1065353216
+SUBF4
+SUBF4
+ARGF4
+ADDRLP4 24
+ADDRGP4 AngleMod
+CALLF4
+ASGNF4
+ADDRFP4 16
+INDIRP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+line 753
+;753:	} else if ( swing < -clampTolerance ) {
+ADDRGP4 $325
+JUMPV
+LABELV $324
+ADDRLP4 0
+INDIRF4
+ADDRFP4 8
+INDIRF4
+NEGF4
+GEF4 $326
+line 754
+;754:		*angle = AngleMod( destination + (clampTolerance - 1) );
+ADDRFP4 0
+INDIRF4
+ADDRFP4 8
+INDIRF4
+CNSTF4 1065353216
+SUBF4
+ADDF4
+ARGF4
+ADDRLP4 24
+ADDRGP4 AngleMod
+CALLF4
+ASGNF4
+ADDRFP4 16
+INDIRP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+line 755
+;755:	}
+LABELV $326
+LABELV $325
+line 756
+;756:}
+LABELV $304
+endproc UI_SwingAngles 28 8
+proc UI_MovedirAdjustment 72 16
+line 764
+;757:
+;758:
+;759:/*
+;760:======================
+;761:UI_MovedirAdjustment
+;762:======================
+;763:*/
+;764:static float UI_MovedirAdjustment( playerInfo_t *pi ) {
+line 768
+;765:	vec3_t		relativeAngles;
+;766:	vec3_t		moveVector;
+;767:
+;768:	VectorSubtract( pi->viewAngles, pi->moveAngles, relativeAngles );
+ADDRLP4 24
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 12
+ADDRLP4 24
+INDIRP4
+CNSTI4 1036
+ADDP4
+INDIRF4
+ADDRLP4 24
+INDIRP4
+CNSTI4 1048
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+ADDRLP4 12+4
+ADDRLP4 24
+INDIRP4
+CNSTI4 1040
+ADDP4
+INDIRF4
+ADDRLP4 24
+INDIRP4
+CNSTI4 1052
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+ADDRLP4 28
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 12+8
+ADDRLP4 28
+INDIRP4
+CNSTI4 1044
+ADDP4
+INDIRF4
+ADDRLP4 28
+INDIRP4
+CNSTI4 1056
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+line 769
+;769:	AngleVectors( relativeAngles, moveVector, NULL, NULL );
+ADDRLP4 12
+ARGP4
+ADDRLP4 0
+ARGP4
+ADDRLP4 32
+CNSTP4 0
+ASGNP4
+ADDRLP4 32
+INDIRP4
+ARGP4
+ADDRLP4 32
+INDIRP4
+ARGP4
+ADDRGP4 AngleVectors
+CALLV
+pop
+line 770
+;770:	if ( Q_fabs( moveVector[0] ) < 0.01 ) {
+ADDRLP4 0
+INDIRF4
+ARGF4
+ADDRLP4 36
+ADDRGP4 Q_fabs
+CALLF4
+ASGNF4
+ADDRLP4 36
+INDIRF4
+CNSTF4 1008981770
+GEF4 $331
+line 771
+;771:		moveVector[0] = 0.0;
+ADDRLP4 0
+CNSTF4 0
+ASGNF4
+line 772
+;772:	}
+LABELV $331
+line 773
+;773:	if ( Q_fabs( moveVector[1] ) < 0.01 ) {
+ADDRLP4 0+4
+INDIRF4
+ARGF4
+ADDRLP4 40
+ADDRGP4 Q_fabs
+CALLF4
+ASGNF4
+ADDRLP4 40
+INDIRF4
+CNSTF4 1008981770
+GEF4 $333
+line 774
+;774:		moveVector[1] = 0.0;
+ADDRLP4 0+4
+CNSTF4 0
+ASGNF4
+line 775
+;775:	}
+LABELV $333
+line 777
+;776:
+;777:	if ( moveVector[1] == 0 && moveVector[0] > 0 ) {
+ADDRLP4 44
+CNSTF4 0
+ASGNF4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 44
+INDIRF4
+NEF4 $337
+ADDRLP4 0
+INDIRF4
+ADDRLP4 44
+INDIRF4
+LEF4 $337
+line 778
+;778:		return 0;
+CNSTF4 0
+RETF4
+ADDRGP4 $328
+JUMPV
+LABELV $337
+line 780
+;779:	}
+;780:	if ( moveVector[1] < 0 && moveVector[0] > 0 ) {
+ADDRLP4 48
+CNSTF4 0
+ASGNF4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 48
+INDIRF4
+GEF4 $340
+ADDRLP4 0
+INDIRF4
+ADDRLP4 48
+INDIRF4
+LEF4 $340
+line 781
+;781:		return 22;
+CNSTF4 1102053376
+RETF4
+ADDRGP4 $328
+JUMPV
+LABELV $340
+line 783
+;782:	}
+;783:	if ( moveVector[1] < 0 && moveVector[0] == 0 ) {
+ADDRLP4 52
+CNSTF4 0
+ASGNF4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 52
+INDIRF4
+GEF4 $343
+ADDRLP4 0
+INDIRF4
+ADDRLP4 52
+INDIRF4
+NEF4 $343
+line 784
+;784:		return 45;
+CNSTF4 1110704128
+RETF4
+ADDRGP4 $328
+JUMPV
+LABELV $343
+line 786
+;785:	}
+;786:	if ( moveVector[1] < 0 && moveVector[0] < 0 ) {
+ADDRLP4 56
+CNSTF4 0
+ASGNF4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 56
+INDIRF4
+GEF4 $346
+ADDRLP4 0
+INDIRF4
+ADDRLP4 56
+INDIRF4
+GEF4 $346
+line 787
+;787:		return -22;
+CNSTF4 3249537024
+RETF4
+ADDRGP4 $328
+JUMPV
+LABELV $346
+line 789
+;788:	}
+;789:	if ( moveVector[1] == 0 && moveVector[0] < 0 ) {
+ADDRLP4 60
+CNSTF4 0
+ASGNF4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 60
+INDIRF4
+NEF4 $349
+ADDRLP4 0
+INDIRF4
+ADDRLP4 60
+INDIRF4
+GEF4 $349
+line 790
+;790:		return 0;
+CNSTF4 0
+RETF4
+ADDRGP4 $328
+JUMPV
+LABELV $349
+line 792
+;791:	}
+;792:	if ( moveVector[1] > 0 && moveVector[0] < 0 ) {
+ADDRLP4 64
+CNSTF4 0
+ASGNF4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 64
+INDIRF4
+LEF4 $352
+ADDRLP4 0
+INDIRF4
+ADDRLP4 64
+INDIRF4
+GEF4 $352
+line 793
+;793:		return 22;
+CNSTF4 1102053376
+RETF4
+ADDRGP4 $328
+JUMPV
+LABELV $352
+line 795
+;794:	}
+;795:	if ( moveVector[1] > 0 && moveVector[0] == 0 ) {
+ADDRLP4 68
+CNSTF4 0
+ASGNF4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 68
+INDIRF4
+LEF4 $355
+ADDRLP4 0
+INDIRF4
+ADDRLP4 68
+INDIRF4
+NEF4 $355
+line 796
+;796:		return  -45;
+CNSTF4 3258187776
+RETF4
+ADDRGP4 $328
+JUMPV
+LABELV $355
+line 799
+;797:	}
+;798:
+;799:	return -22;
+CNSTF4 3249537024
+RETF4
+LABELV $328
+endproc UI_MovedirAdjustment 72 16
+proc UI_PlayerAngles 104 24
+line 808
+;800:}
+;801:
+;802:
+;803:/*
+;804:===============
+;805:UI_PlayerAngles
+;806:===============
+;807:*/
+;808:static void UI_PlayerAngles( modelAnim_t* m, vec3_t legs[3], vec3_t torso[3], vec3_t head[3] ) {
+line 816
+;809:	vec3_t		legsAngles, torsoAngles, headAngles;
+;810:	float		dest;
+;811:	float		adjust;
+;812:	float		delta;
+;813:	playerInfo_t *pi;
+;814:	modelRotate_t* mr;
+;815:
+;816:	pi = &m->player;
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+ASGNP4
+line 817
+;817:	VectorCopy( pi->viewAngles, headAngles );
+ADDRLP4 28
+ADDRLP4 0
+INDIRP4
+CNSTI4 1036
+ADDP4
+INDIRB
+ASGNB 12
+line 818
+;818:	headAngles[YAW] = AngleMod( headAngles[YAW] );
+ADDRLP4 28+4
+INDIRF4
+ARGF4
+ADDRLP4 56
+ADDRGP4 AngleMod
+CALLF4
+ASGNF4
+ADDRLP4 28+4
+ADDRLP4 56
+INDIRF4
+ASGNF4
+line 819
+;819:	VectorClear( legsAngles );
+ADDRLP4 60
+CNSTF4 0
+ASGNF4
+ADDRLP4 16+8
+ADDRLP4 60
+INDIRF4
+ASGNF4
+ADDRLP4 16+4
+ADDRLP4 60
+INDIRF4
+ASGNF4
+ADDRLP4 16
+ADDRLP4 60
+INDIRF4
+ASGNF4
+line 820
+;820:	VectorClear( torsoAngles );
+ADDRLP4 64
+CNSTF4 0
+ASGNF4
+ADDRLP4 4+8
+ADDRLP4 64
+INDIRF4
+ASGNF4
+ADDRLP4 4+4
+ADDRLP4 64
+INDIRF4
+ASGNF4
+ADDRLP4 4
+ADDRLP4 64
+INDIRF4
+ASGNF4
+line 825
+;821:
+;822:	// --------- yaw -------------
+;823:
+;824:	// allow yaw to drift a bit
+;825:	if ( ( pi->legsAnim & ~ANIM_TOGGLEBIT ) != LEGS_IDLE
+ADDRLP4 72
+CNSTI4 -129
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 1064
+ADDP4
+INDIRI4
+ADDRLP4 72
+INDIRI4
+BANDI4
+CNSTI4 22
+NEI4 $367
+ADDRLP4 0
+INDIRP4
+CNSTI4 1068
+ADDP4
+INDIRI4
+ADDRLP4 72
+INDIRI4
+BANDI4
+CNSTI4 11
+EQI4 $365
+LABELV $367
+line 826
+;826:		|| ( pi->torsoAnim & ~ANIM_TOGGLEBIT ) != TORSO_STAND  ) {
+line 828
+;827:		// if not standing still, always point all in the same direction
+;828:		pi->torso.yawing = qtrue;	// always center
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+CNSTI4 1
+ASGNI4
+line 829
+;829:		pi->torso.pitching = qtrue;	// always center
+ADDRLP4 0
+INDIRP4
+CNSTI4 104
+ADDP4
+CNSTI4 1
+ASGNI4
+line 830
+;830:		pi->legs.yawing = qtrue;	// always center
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+CNSTI4 1
+ASGNI4
+line 831
+;831:	}
+LABELV $365
+line 834
+;832:
+;833:	// adjust legs for movement dir
+;834:	adjust = UI_MovedirAdjustment( pi );
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRLP4 76
+ADDRGP4 UI_MovedirAdjustment
+CALLF4
+ASGNF4
+ADDRLP4 44
+ADDRLP4 76
+INDIRF4
+ASGNF4
+line 835
+;835:	legsAngles[YAW] = headAngles[YAW] + adjust;
+ADDRLP4 16+4
+ADDRLP4 28+4
+INDIRF4
+ADDRLP4 44
+INDIRF4
+ADDF4
+ASGNF4
+line 836
+;836:	torsoAngles[YAW] = headAngles[YAW] + 0.25 * adjust;
+ADDRLP4 4+4
+ADDRLP4 28+4
+INDIRF4
+CNSTF4 1048576000
+ADDRLP4 44
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 840
+;837:
+;838:
+;839:	// torso
+;840:	UI_SwingAngles( torsoAngles[YAW], 25.0f, 90.0f, SWINGSPEED, &pi->torso.yawAngle, &pi->torso.yawing );
+ADDRLP4 4+4
+INDIRF4
+ARGF4
+CNSTF4 1103626240
+ARGF4
+CNSTF4 1119092736
+ARGF4
+CNSTF4 1050253722
+ARGF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 92
+ADDP4
+ARGP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ARGP4
+ADDRGP4 UI_SwingAngles
+CALLV
+pop
+line 841
+;841:	UI_SwingAngles( legsAngles[YAW], 40.0f, 90.0f, SWINGSPEED, &pi->legs.yawAngle, &pi->legs.yawing );
+ADDRLP4 16+4
+INDIRF4
+ARGF4
+CNSTF4 1109393408
+ARGF4
+CNSTF4 1119092736
+ARGF4
+CNSTF4 1050253722
+ARGF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+ARGP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ARGP4
+ADDRGP4 UI_SwingAngles
+CALLV
+pop
+line 843
+;842:
+;843:	torsoAngles[YAW] = pi->torso.yawAngle;
+ADDRLP4 4+4
+ADDRLP4 0
+INDIRP4
+CNSTI4 92
+ADDP4
+INDIRF4
+ASGNF4
+line 844
+;844:	legsAngles[YAW] = pi->legs.yawAngle;
+ADDRLP4 16+4
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+INDIRF4
+ASGNF4
+line 849
+;845:
+;846:	// --------- pitch -------------
+;847:
+;848:	// only show a fraction of the pitch angle in the torso
+;849:	if ( headAngles[PITCH] > 180 ) {
+ADDRLP4 28
+INDIRF4
+CNSTF4 1127481344
+LEF4 $376
+line 850
+;850:		dest = (-360 + headAngles[PITCH]) * 0.75;
+ADDRLP4 48
+CNSTF4 1061158912
+ADDRLP4 28
+INDIRF4
+CNSTF4 3283353600
+ADDF4
+MULF4
+ASGNF4
+line 851
+;851:	} else {
+ADDRGP4 $377
+JUMPV
+LABELV $376
+line 852
+;852:		dest = headAngles[PITCH] * 0.75;
+ADDRLP4 48
+CNSTF4 1061158912
+ADDRLP4 28
+INDIRF4
+MULF4
+ASGNF4
+line 853
+;853:	}
+LABELV $377
+line 854
+;854:	UI_SwingAngles( dest, 15, 30, 0.1f, &pi->torso.pitchAngle, &pi->torso.pitching );
+ADDRLP4 48
+INDIRF4
+ARGF4
+CNSTF4 1097859072
+ARGF4
+CNSTF4 1106247680
+ARGF4
+CNSTF4 1036831949
+ARGF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 100
+ADDP4
+ARGP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 104
+ADDP4
+ARGP4
+ADDRGP4 UI_SwingAngles
+CALLV
+pop
+line 855
+;855:	torsoAngles[PITCH] = pi->torso.pitchAngle;
+ADDRLP4 4
+ADDRLP4 0
+INDIRP4
+CNSTI4 100
+ADDP4
+INDIRF4
+ASGNF4
+line 857
+;856:
+;857:	if (pi->fixedtorso) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 1108
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $378
+line 858
+;858:		torsoAngles[PITCH] = 0.0f;
+ADDRLP4 4
+CNSTF4 0
+ASGNF4
+line 859
+;859:	}
+LABELV $378
+line 861
+;860:
+;861:	if (pi->fixedlegs) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 1104
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $380
+line 862
+;862:		legsAngles[YAW] = torsoAngles[YAW];
+ADDRLP4 16+4
+ADDRLP4 4+4
+INDIRF4
+ASGNF4
+line 863
+;863:		legsAngles[PITCH] = 0.0f;
+ADDRLP4 16
+CNSTF4 0
+ASGNF4
+line 864
+;864:		legsAngles[ROLL] = 0.0f;
+ADDRLP4 16+8
+CNSTF4 0
+ASGNF4
+line 865
+;865:	}
+LABELV $380
+line 868
+;866:
+;867:	// pull the angles back out of the hierarchial chain
+;868:	AnglesSubtract( headAngles, torsoAngles, headAngles );
+ADDRLP4 28
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRLP4 28
+ARGP4
+ADDRGP4 AnglesSubtract
+CALLV
+pop
+line 869
+;869:	AnglesSubtract( torsoAngles, legsAngles, torsoAngles );
+ADDRLP4 4
+ARGP4
+ADDRLP4 16
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRGP4 AnglesSubtract
+CALLV
+pop
+line 876
+;870:
+;871:	// ------------- model rotation ----------------
+;872:
+;873:	// Insert model rotation into legs only
+;874:	// Torso and head are relative to the legs
+;875:	// Do this here, before animation makes model "step" to rotate 
+;876:	mr = &m->spin;
+ADDRLP4 40
+ADDRFP4 0
+INDIRP4
+CNSTI4 1640
+ADDP4
+ASGNP4
+line 877
+;877:	if (mr->useSpin) {
+ADDRLP4 40
+INDIRP4
+CNSTI4 476
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $385
+line 878
+;878:		delta = 0.0;
+ADDRLP4 52
+CNSTF4 0
+ASGNF4
+line 879
+;879:		if (!mr->paused) {
+ADDRLP4 40
+INDIRP4
+CNSTI4 472
+ADDP4
+INDIRI4
+CNSTI4 0
+NEI4 $387
+line 882
+;880:			// roate at 90 degrees every 4 seconds
+;881:			// or multiples of
+;882:			delta = (float)(mr->rotate * uis.frametime) * 0.0225;
+ADDRLP4 52
+CNSTF4 1018712556
+ADDRLP4 40
+INDIRP4
+CNSTI4 468
+ADDP4
+INDIRI4
+ADDRGP4 uis
+INDIRI4
+MULI4
+CVIF4 4
+MULF4
+ASGNF4
+line 884
+;883:
+;884:			mr->yaw += delta;
+ADDRLP4 92
+ADDRLP4 40
+INDIRP4
+CNSTI4 464
+ADDP4
+ASGNP4
+ADDRLP4 92
+INDIRP4
+ADDRLP4 92
+INDIRP4
+INDIRF4
+ADDRLP4 52
+INDIRF4
+ADDF4
+ASGNF4
+line 885
+;885:			if (mr->yaw > 360.0)
+ADDRLP4 40
+INDIRP4
+CNSTI4 464
+ADDP4
+INDIRF4
+CNSTF4 1135869952
+LEF4 $389
+line 886
+;886:				mr->yaw -= 360.0;
+ADDRLP4 96
+ADDRLP4 40
+INDIRP4
+CNSTI4 464
+ADDP4
+ASGNP4
+ADDRLP4 96
+INDIRP4
+ADDRLP4 96
+INDIRP4
+INDIRF4
+CNSTF4 1135869952
+SUBF4
+ASGNF4
+LABELV $389
+line 888
+;887:
+;888:			if (mr->yaw < -360.0)
+ADDRLP4 40
+INDIRP4
+CNSTI4 464
+ADDP4
+INDIRF4
+CNSTF4 3283353600
+GEF4 $391
+line 889
+;889:				mr->yaw += 360.0;
+ADDRLP4 100
+ADDRLP4 40
+INDIRP4
+CNSTI4 464
+ADDP4
+ASGNP4
+ADDRLP4 100
+INDIRP4
+ADDRLP4 100
+INDIRP4
+INDIRF4
+CNSTF4 1135869952
+ADDF4
+ASGNF4
+LABELV $391
+line 891
+;890:
+;891:		}
+LABELV $387
+line 892
+;892:		legsAngles[YAW] += mr->yaw;
+ADDRLP4 16+4
+ADDRLP4 16+4
+INDIRF4
+ADDRLP4 40
+INDIRP4
+CNSTI4 464
+ADDP4
+INDIRF4
+ADDF4
+ASGNF4
+line 893
+;893:	}
+LABELV $385
+line 895
+;894:
+;895:	AnglesToAxis( legsAngles, legs );
+ADDRLP4 16
+ARGP4
+ADDRFP4 4
+INDIRP4
+ARGP4
+ADDRGP4 AnglesToAxis
+CALLV
+pop
+line 896
+;896:	AnglesToAxis( torsoAngles, torso );
+ADDRLP4 4
+ARGP4
+ADDRFP4 8
+INDIRP4
+ARGP4
+ADDRGP4 AnglesToAxis
+CALLV
+pop
+line 897
+;897:	AnglesToAxis( headAngles, head );
+ADDRLP4 28
+ARGP4
+ADDRFP4 12
+INDIRP4
+ARGP4
+ADDRGP4 AnglesToAxis
+CALLV
+pop
+line 898
+;898:}
+LABELV $358
+endproc UI_PlayerAngles 104 24
+proc UI_PlayerFloatSprite 176 12
+line 906
+;899:
+;900:
+;901:/*
+;902:===============
+;903:UI_PlayerFloatSprite
+;904:===============
+;905:*/
+;906:static void UI_PlayerFloatSprite( playerInfo_t *pi, vec3_t origin, qhandle_t shader ) {
+line 909
+;907:	refEntity_t		ent;
+;908:
+;909:	memset( &ent, 0, sizeof( ent ) );
+ADDRLP4 0
+ARGP4
+CNSTI4 0
+ARGI4
+CNSTI4 176
+ARGI4
+ADDRGP4 memset
+CALLP4
+pop
+line 910
+;910:	VectorCopy( origin, ent.origin );
+ADDRLP4 0+68
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 911
+;911:	ent.origin[2] += 48;
+ADDRLP4 0+68+8
+ADDRLP4 0+68+8
+INDIRF4
+CNSTF4 1111490560
+ADDF4
+ASGNF4
+line 912
+;912:	ent.reType = RT_SPRITE;
+ADDRLP4 0
+CNSTI4 2
+ASGNI4
+line 913
+;913:	ent.customShader = shader;
+ADDRLP4 0+112
+ADDRFP4 8
+INDIRI4
+ASGNI4
+line 914
+;914:	ent.radius = 10;
+ADDRLP4 0+132
+CNSTF4 1092616192
+ASGNF4
+line 915
+;915:	ent.renderfx = 0;
+ADDRLP4 0+4
+CNSTI4 0
+ASGNI4
+line 916
+;916:	trap_R_AddRefEntityToScene( &ent );
+ADDRLP4 0
+ARGP4
+ADDRGP4 trap_R_AddRefEntityToScene
+CALLV
+pop
+line 917
+;917:}
+LABELV $394
+endproc UI_PlayerFloatSprite 176 12
+export UI_MachinegunSpinAngle
+proc UI_MachinegunSpinAngle 28 4
+line 925
+;918:
+;919:
+;920:/*
+;921:======================
+;922:UI_MachinegunSpinAngle
+;923:======================
+;924:*/
+;925:float	UI_MachinegunSpinAngle( playerInfo_t *pi ) {
+line 931
+;926:	int		delta;
+;927:	float	angle;
+;928:	float	speed;
+;929:	int		torsoAnim;
+;930:
+;931:	delta = dp_realtime - pi->barrelTime;
+ADDRLP4 4
+ADDRGP4 dp_realtime
+INDIRI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1128
+ADDP4
+INDIRI4
+SUBI4
+ASGNI4
+line 932
+;932:	if ( pi->barrelSpinning ) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 1120
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $402
+line 933
+;933:		angle = pi->barrelAngle + delta * SPIN_SPEED;
+ADDRLP4 8
+ADDRFP4 0
+INDIRP4
+CNSTI4 1124
+ADDP4
+INDIRF4
+CNSTF4 1063675494
+ADDRLP4 4
+INDIRI4
+CVIF4 4
+MULF4
+ADDF4
+ASGNF4
+line 934
+;934:	} else {
+ADDRGP4 $403
+JUMPV
+LABELV $402
+line 935
+;935:		if ( delta > COAST_TIME ) {
+ADDRLP4 4
+INDIRI4
+CNSTI4 1000
+LEI4 $404
+line 936
+;936:			delta = COAST_TIME;
+ADDRLP4 4
+CNSTI4 1000
+ASGNI4
+line 937
+;937:		}
+LABELV $404
+line 939
+;938:
+;939:		speed = 0.5 * ( SPIN_SPEED + (float)( COAST_TIME - delta ) / COAST_TIME );
+ADDRLP4 12
+CNSTF4 1056964608
+CNSTI4 1000
+ADDRLP4 4
+INDIRI4
+SUBI4
+CVIF4 4
+CNSTF4 1148846080
+DIVF4
+CNSTF4 1063675494
+ADDF4
+MULF4
+ASGNF4
+line 940
+;940:		angle = pi->barrelAngle + delta * speed;
+ADDRLP4 8
+ADDRFP4 0
+INDIRP4
+CNSTI4 1124
+ADDP4
+INDIRF4
+ADDRLP4 4
+INDIRI4
+CVIF4 4
+ADDRLP4 12
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 941
+;941:	}
+LABELV $403
+line 943
+;942:
+;943:	torsoAnim = pi->torsoAnim  & ~ANIM_TOGGLEBIT;
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+CNSTI4 1068
+ADDP4
+INDIRI4
+CNSTI4 -129
+BANDI4
+ASGNI4
+line 944
+;944:	if( torsoAnim == TORSO_ATTACK2 ) {
+ADDRLP4 0
+INDIRI4
+CNSTI4 8
+NEI4 $406
+line 945
+;945:		torsoAnim = TORSO_ATTACK;
+ADDRLP4 0
+CNSTI4 7
+ASGNI4
+line 946
+;946:	}
+LABELV $406
+line 947
+;947:	if ( pi->barrelSpinning == !(torsoAnim == TORSO_ATTACK) ) {
+ADDRLP4 0
+INDIRI4
+CNSTI4 7
+EQI4 $411
+ADDRLP4 16
+CNSTI4 1
+ASGNI4
+ADDRGP4 $412
+JUMPV
+LABELV $411
+ADDRLP4 16
+CNSTI4 0
+ASGNI4
+LABELV $412
+ADDRFP4 0
+INDIRP4
+CNSTI4 1120
+ADDP4
+INDIRI4
+ADDRLP4 16
+INDIRI4
+NEI4 $408
+line 948
+;948:		pi->barrelTime = dp_realtime;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1128
+ADDP4
+ADDRGP4 dp_realtime
+INDIRI4
+ASGNI4
+line 949
+;949:		pi->barrelAngle = AngleMod( angle );
+ADDRLP4 8
+INDIRF4
+ARGF4
+ADDRLP4 20
+ADDRGP4 AngleMod
+CALLF4
+ASGNF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1124
+ADDP4
+ADDRLP4 20
+INDIRF4
+ASGNF4
+line 950
+;950:		pi->barrelSpinning = !!(torsoAnim == TORSO_ATTACK);
+ADDRLP4 0
+INDIRI4
+CNSTI4 7
+NEI4 $414
+ADDRLP4 24
+CNSTI4 1
+ASGNI4
+ADDRGP4 $415
+JUMPV
+LABELV $414
+ADDRLP4 24
+CNSTI4 0
+ASGNI4
+LABELV $415
+ADDRFP4 0
+INDIRP4
+CNSTI4 1120
+ADDP4
+ADDRLP4 24
+INDIRI4
+ASGNI4
+line 951
+;951:	}
+LABELV $408
+line 953
+;952:
+;953:	return angle;
+ADDRLP4 8
+INDIRF4
+RETF4
+LABELV $401
+endproc UI_MachinegunSpinAngle 28 4
+lit
+align 4
+LABELV $417
+byte 4 3246391296
+byte 4 3246391296
+byte 4 3250585600
+align 4
+LABELV $418
+byte 4 1098907648
+byte 4 1098907648
+byte 4 1107296256
+code
+proc UI_DrawPlayer 1632 28
+line 962
+;954:}
+;955:
+;956:
+;957:/*
+;958:===============
+;959:UI_DrawPlayer
+;960:===============
+;961:*/
+;962:static void UI_DrawPlayer( float x, float y, float w, float h, modelAnim_t *m, int time ) {
+line 972
+;963:	refdef_t		refdef;
+;964:	refEntity_t		legs;
+;965:	refEntity_t		torso;
+;966:	refEntity_t		head;
+;967:	refEntity_t		gun;
+;968:	refEntity_t		barrel;
+;969:	refEntity_t		flash;
+;970:	vec3_t			origin;
+;971:	int				renderfx;
+;972:	vec3_t			mins = {-16, -16, -24};
+ADDRLP4 1268
+ADDRGP4 $417
+INDIRB
+ASGNB 12
+line 973
+;973:	vec3_t			maxs = {16, 16, 32};
+ADDRLP4 1280
+ADDRGP4 $418
+INDIRB
+ASGNB 12
+line 978
+;974:	float			len;
+;975:	float			xx;
+;976:	playerInfo_t	*pi;
+;977:
+;978:	pi = &m->player;	
+ADDRLP4 0
+ADDRFP4 16
+INDIRP4
+ASGNP4
+line 979
+;979:	if ( !pi->legsModel || !pi->torsoModel || !pi->headModel || !pi->animations[0].numFrames ) {
+ADDRLP4 1480
+CNSTI4 0
+ASGNI4
+ADDRLP4 0
+INDIRP4
+INDIRI4
+ADDRLP4 1480
+INDIRI4
+EQI4 $423
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+INDIRI4
+ADDRLP4 1480
+INDIRI4
+EQI4 $423
+ADDRLP4 0
+INDIRP4
+CNSTI4 120
+ADDP4
+INDIRI4
+ADDRLP4 1480
+INDIRI4
+EQI4 $423
+ADDRLP4 0
+INDIRP4
+CNSTI4 136
+ADDP4
+INDIRI4
+ADDRLP4 1480
+INDIRI4
+NEI4 $419
+LABELV $423
+line 980
+;980:		return;
+ADDRGP4 $416
+JUMPV
+LABELV $419
+line 983
+;981:	}
+;982:
+;983:	dp_realtime = time;
+ADDRGP4 dp_realtime
+ADDRFP4 20
+INDIRI4
+ASGNI4
+line 985
+;984:
+;985:	if ( pi->pendingWeapon != -1 && dp_realtime > pi->weaponTimer ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 1080
+ADDP4
+INDIRI4
+CNSTI4 -1
+EQI4 $424
+ADDRGP4 dp_realtime
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 1084
+ADDP4
+INDIRI4
+LEI4 $424
+line 986
+;986:		pi->weapon = pi->pendingWeapon;
+ADDRLP4 0
+INDIRP4
+CNSTI4 1072
+ADDP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 1080
+ADDP4
+INDIRI4
+ASGNI4
+line 987
+;987:		pi->lastWeapon = pi->pendingWeapon;
+ADDRLP4 0
+INDIRP4
+CNSTI4 1076
+ADDP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 1080
+ADDP4
+INDIRI4
+ASGNI4
+line 988
+;988:		pi->pendingWeapon = -1;
+ADDRLP4 0
+INDIRP4
+CNSTI4 1080
+ADDP4
+CNSTI4 -1
+ASGNI4
+line 989
+;989:		pi->weaponTimer = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 1084
+ADDP4
+CNSTI4 0
+ASGNI4
+line 990
+;990:		if( pi->currentWeapon != pi->weapon ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 1060
+ADDP4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 1072
+ADDP4
+INDIRI4
+EQI4 $426
+line 991
+;991:			if (uie_animsfx.integer)
+ADDRGP4 uie_animsfx+12
+INDIRI4
+CNSTI4 0
+EQI4 $428
+line 992
+;992:				trap_S_StartLocalSound( trap_S_RegisterSound( "sound/weapons/change.wav", qfalse ), CHAN_WEAPON );
+ADDRGP4 $431
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 1500
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRLP4 1500
+INDIRI4
+ARGI4
+CNSTI4 2
+ARGI4
+ADDRGP4 trap_S_StartLocalSound
+CALLV
+pop
+LABELV $428
+line 993
+;993:		}
+LABELV $426
+line 994
+;994:	}
+LABELV $424
+line 996
+;995:
+;996:	UI_AdjustFrom640( &x, &y, &w, &h );
+ADDRFP4 0
+ARGP4
+ADDRFP4 4
+ARGP4
+ADDRFP4 8
+ARGP4
+ADDRFP4 12
+ARGP4
+ADDRGP4 UI_AdjustFrom640
+CALLV
+pop
+line 998
+;997:
+;998:	y -= jumpHeight;
+ADDRFP4 4
+ADDRFP4 4
+INDIRF4
+ADDRGP4 jumpHeight
+INDIRF4
+SUBF4
+ASGNF4
+line 1000
+;999:
+;1000:	memset( &refdef, 0, sizeof( refdef ) );
+ADDRLP4 356
+ARGP4
+CNSTI4 0
+ARGI4
+CNSTI4 368
+ARGI4
+ADDRGP4 memset
+CALLP4
+pop
+line 1001
+;1001:	memset( &legs, 0, sizeof(legs) );
+ADDRLP4 4
+ARGP4
+CNSTI4 0
+ARGI4
+CNSTI4 176
+ARGI4
+ADDRGP4 memset
+CALLP4
+pop
+line 1002
+;1002:	memset( &torso, 0, sizeof(torso) );
+ADDRLP4 180
+ARGP4
+CNSTI4 0
+ARGI4
+CNSTI4 176
+ARGI4
+ADDRGP4 memset
+CALLP4
+pop
+line 1003
+;1003:	memset( &head, 0, sizeof(head) );
+ADDRLP4 736
+ARGP4
+CNSTI4 0
+ARGI4
+CNSTI4 176
+ARGI4
+ADDRGP4 memset
+CALLP4
+pop
+line 1005
+;1004:
+;1005:	refdef.rdflags = RDF_NOWORLDMODEL;
+ADDRLP4 356+76
+CNSTI4 1
+ASGNI4
+line 1007
+;1006:
+;1007:	AxisClear( refdef.viewaxis );
+ADDRLP4 356+36
+ARGP4
+ADDRGP4 AxisClear
+CALLV
+pop
+line 1009
+;1008:
+;1009:	refdef.x = x;
+ADDRLP4 356
+ADDRFP4 0
+INDIRF4
+CVFI4 4
+ASGNI4
+line 1010
+;1010:	refdef.y = y;
+ADDRLP4 356+4
+ADDRFP4 4
+INDIRF4
+CVFI4 4
+ASGNI4
+line 1011
+;1011:	refdef.width = w;
+ADDRLP4 356+8
+ADDRFP4 8
+INDIRF4
+CVFI4 4
+ASGNI4
+line 1012
+;1012:	refdef.height = h;
+ADDRLP4 356+12
+ADDRFP4 12
+INDIRF4
+CVFI4 4
+ASGNI4
+line 1014
+;1013:
+;1014:	refdef.fov_x = (int)((float)refdef.width / 640.0f * 90.0f);
+ADDRLP4 356+16
+CNSTF4 1119092736
+ADDRLP4 356+8
+INDIRI4
+CVIF4 4
+CNSTF4 1142947840
+DIVF4
+MULF4
+CVFI4 4
+CVIF4 4
+ASGNF4
+line 1015
+;1015:	xx = refdef.width / tan( refdef.fov_x / 360 * M_PI );
+CNSTF4 1078530011
+ADDRLP4 356+16
+INDIRF4
+CNSTF4 1135869952
+DIVF4
+MULF4
+ARGF4
+ADDRLP4 1488
+ADDRGP4 tan
+CALLF4
+ASGNF4
+ADDRLP4 1472
+ADDRLP4 356+8
+INDIRI4
+CVIF4 4
+ADDRLP4 1488
+INDIRF4
+DIVF4
+ASGNF4
+line 1016
+;1016:	refdef.fov_y = atan2( refdef.height, xx );
+ADDRLP4 356+12
+INDIRI4
+CVIF4 4
+ARGF4
+ADDRLP4 1472
+INDIRF4
+ARGF4
+ADDRLP4 1492
+ADDRGP4 atan2
+CALLF4
+ASGNF4
+ADDRLP4 356+20
+ADDRLP4 1492
+INDIRF4
+ASGNF4
+line 1017
+;1017:	refdef.fov_y *= ( 360 / M_PI );
+ADDRLP4 356+20
+CNSTF4 1122316001
+ADDRLP4 356+20
+INDIRF4
+MULF4
+ASGNF4
+line 1020
+;1018:
+;1019:	// calculate distance so the player nearly fills the box
+;1020:	len = 0.7 * ( maxs[2] - mins[2] );		
+ADDRLP4 1468
+CNSTF4 1060320051
+ADDRLP4 1280+8
+INDIRF4
+ADDRLP4 1268+8
+INDIRF4
+SUBF4
+MULF4
+ASGNF4
+line 1021
+;1021:	origin[0] = len / tan( DEG2RAD(refdef.fov_x) * 0.5 );
+CNSTF4 1056964608
+CNSTF4 1078530011
+ADDRLP4 356+16
+INDIRF4
+MULF4
+CNSTF4 1127481344
+DIVF4
+MULF4
+ARGF4
+ADDRLP4 1496
+ADDRGP4 tan
+CALLF4
+ASGNF4
+ADDRLP4 724
+ADDRLP4 1468
+INDIRF4
+ADDRLP4 1496
+INDIRF4
+DIVF4
+ASGNF4
+line 1022
+;1022:	origin[1] = 0.5 * ( mins[1] + maxs[1] );
+ADDRLP4 724+4
+CNSTF4 1056964608
+ADDRLP4 1268+4
+INDIRF4
+ADDRLP4 1280+4
+INDIRF4
+ADDF4
+MULF4
+ASGNF4
+line 1023
+;1023:	origin[2] = -0.5 * ( mins[2] + maxs[2] );
+ADDRLP4 724+8
+CNSTF4 3204448256
+ADDRLP4 1268+8
+INDIRF4
+ADDRLP4 1280+8
+INDIRF4
+ADDF4
+MULF4
+ASGNF4
+line 1025
+;1024:
+;1025:	refdef.time = dp_realtime;
+ADDRLP4 356+72
+ADDRGP4 dp_realtime
+INDIRI4
+ASGNI4
+line 1027
+;1026:
+;1027:	trap_R_ClearScene();
+ADDRGP4 trap_R_ClearScene
+CALLV
+pop
+line 1030
+;1028:
+;1029:	// get the rotation information
+;1030:	UI_PlayerAngles( m, legs.axis, torso.axis, head.axis );
+ADDRFP4 16
+INDIRP4
+ARGP4
+ADDRLP4 4+28
+ARGP4
+ADDRLP4 180+28
+ARGP4
+ADDRLP4 736+28
+ARGP4
+ADDRGP4 UI_PlayerAngles
+CALLV
+pop
+line 1033
+;1031:	
+;1032:	// get the animation state (after rotation, to allow feet shuffle)
+;1033:	UI_PlayerAnimation( pi, &legs.oldframe, &legs.frame, &legs.backlerp,
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRLP4 4+96
+ARGP4
+ADDRLP4 4+80
+ARGP4
+ADDRLP4 4+100
+ARGP4
+ADDRLP4 180+96
+ARGP4
+ADDRLP4 180+80
+ARGP4
+ADDRLP4 180+100
+ARGP4
+ADDRGP4 UI_PlayerAnimation
+CALLV
+pop
+line 1036
+;1034:		 &torso.oldframe, &torso.frame, &torso.backlerp );
+;1035:
+;1036:	renderfx = RF_LIGHTING_ORIGIN | RF_NOSHADOW;
+ADDRLP4 912
+CNSTI4 192
+ASGNI4
+line 1041
+;1037:
+;1038:	//
+;1039:	// add the legs
+;1040:	//
+;1041:	legs.hModel = pi->legsModel;
+ADDRLP4 4+8
+ADDRLP4 0
+INDIRP4
+INDIRI4
+ASGNI4
+line 1042
+;1042:	legs.customSkin = pi->legsSkin;
+ADDRLP4 4+108
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+ASGNI4
+line 1043
+;1043:	legs.customShader = pi->legsShader;
+ADDRLP4 4+112
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRI4
+ASGNI4
+line 1044
+;1044:	legs.shaderRGBA[0] = trap_Cvar_VariableValue( "cg_plightred");
+ADDRGP4 $467
+ARGP4
+ADDRLP4 1504
+ADDRGP4 trap_Cvar_VariableValue
+CALLF4
+ASGNF4
+ADDRLP4 1508
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 1504
+INDIRF4
+ADDRLP4 1508
+INDIRF4
+LTF4 $469
+ADDRLP4 1500
+ADDRLP4 1504
+INDIRF4
+ADDRLP4 1508
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $470
+JUMPV
+LABELV $469
+ADDRLP4 1500
+ADDRLP4 1504
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $470
+ADDRLP4 4+116
+ADDRLP4 1500
+INDIRU4
+CVUU1 4
+ASGNU1
+line 1045
+;1045:	legs.shaderRGBA[1] = trap_Cvar_VariableValue( "cg_plightgreen");
+ADDRGP4 $473
+ARGP4
+ADDRLP4 1516
+ADDRGP4 trap_Cvar_VariableValue
+CALLF4
+ASGNF4
+ADDRLP4 1520
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 1516
+INDIRF4
+ADDRLP4 1520
+INDIRF4
+LTF4 $475
+ADDRLP4 1512
+ADDRLP4 1516
+INDIRF4
+ADDRLP4 1520
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $476
+JUMPV
+LABELV $475
+ADDRLP4 1512
+ADDRLP4 1516
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $476
+ADDRLP4 4+116+1
+ADDRLP4 1512
+INDIRU4
+CVUU1 4
+ASGNU1
+line 1046
+;1046:	legs.shaderRGBA[2] = trap_Cvar_VariableValue( "cg_plightblue");
+ADDRGP4 $479
+ARGP4
+ADDRLP4 1528
+ADDRGP4 trap_Cvar_VariableValue
+CALLF4
+ASGNF4
+ADDRLP4 1532
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 1528
+INDIRF4
+ADDRLP4 1532
+INDIRF4
+LTF4 $481
+ADDRLP4 1524
+ADDRLP4 1528
+INDIRF4
+ADDRLP4 1532
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $482
+JUMPV
+LABELV $481
+ADDRLP4 1524
+ADDRLP4 1528
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $482
+ADDRLP4 4+116+2
+ADDRLP4 1524
+INDIRU4
+CVUU1 4
+ASGNU1
+line 1047
+;1047:	legs.shaderRGBA[3] = 255;
+ADDRLP4 4+116+3
+CNSTU1 255
+ASGNU1
+line 1049
+;1048:
+;1049:	VectorCopy( origin, legs.origin );
+ADDRLP4 4+68
+ADDRLP4 724
+INDIRB
+ASGNB 12
+line 1051
+;1050:
+;1051:	VectorCopy( origin, legs.lightingOrigin );
+ADDRLP4 4+12
+ADDRLP4 724
+INDIRB
+ASGNB 12
+line 1052
+;1052:	legs.renderfx = renderfx;
+ADDRLP4 4+4
+ADDRLP4 912
+INDIRI4
+ASGNI4
+line 1053
+;1053:	VectorCopy (legs.origin, legs.oldorigin);
+ADDRLP4 4+84
+ADDRLP4 4+68
+INDIRB
+ASGNB 12
+line 1055
+;1054:
+;1055:	trap_R_AddRefEntityToScene( &legs );
+ADDRLP4 4
+ARGP4
+ADDRGP4 trap_R_AddRefEntityToScene
+CALLV
+pop
+line 1057
+;1056:
+;1057:	if (!legs.hModel) {
+ADDRLP4 4+8
+INDIRI4
+CNSTI4 0
+NEI4 $490
+line 1058
+;1058:		return;
+ADDRGP4 $416
+JUMPV
+LABELV $490
+line 1064
+;1059:	}
+;1060:
+;1061:	//
+;1062:	// add the torso
+;1063:	//
+;1064:	torso.hModel = pi->torsoModel;
+ADDRLP4 180+8
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+INDIRI4
+ASGNI4
+line 1065
+;1065:	if (!torso.hModel) {
+ADDRLP4 180+8
+INDIRI4
+CNSTI4 0
+NEI4 $494
+line 1066
+;1066:		return;
+ADDRGP4 $416
+JUMPV
+LABELV $494
+line 1070
+;1067:	}
+;1068:
+;1069:
+;1070:	torso.customSkin = pi->torsoSkin;
+ADDRLP4 180+108
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+ASGNI4
+line 1071
+;1071:	if(!torso.customSkin){
+ADDRLP4 180+108
+INDIRI4
+CNSTI4 0
+NEI4 $498
+line 1072
+;1072:	torso.customShader = pi->torsoShader;
+ADDRLP4 180+112
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+INDIRI4
+ASGNI4
+line 1073
+;1073:	}
+LABELV $498
+line 1074
+;1074:	torso.shaderRGBA[0] = trap_Cvar_VariableValue( "cg_tolightred");
+ADDRGP4 $503
+ARGP4
+ADDRLP4 1540
+ADDRGP4 trap_Cvar_VariableValue
+CALLF4
+ASGNF4
+ADDRLP4 1544
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 1540
+INDIRF4
+ADDRLP4 1544
+INDIRF4
+LTF4 $505
+ADDRLP4 1536
+ADDRLP4 1540
+INDIRF4
+ADDRLP4 1544
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $506
+JUMPV
+LABELV $505
+ADDRLP4 1536
+ADDRLP4 1540
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $506
+ADDRLP4 180+116
+ADDRLP4 1536
+INDIRU4
+CVUU1 4
+ASGNU1
+line 1075
+;1075:	torso.shaderRGBA[1] = trap_Cvar_VariableValue( "cg_tolightgreen");
+ADDRGP4 $509
+ARGP4
+ADDRLP4 1552
+ADDRGP4 trap_Cvar_VariableValue
+CALLF4
+ASGNF4
+ADDRLP4 1556
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 1552
+INDIRF4
+ADDRLP4 1556
+INDIRF4
+LTF4 $511
+ADDRLP4 1548
+ADDRLP4 1552
+INDIRF4
+ADDRLP4 1556
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $512
+JUMPV
+LABELV $511
+ADDRLP4 1548
+ADDRLP4 1552
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $512
+ADDRLP4 180+116+1
+ADDRLP4 1548
+INDIRU4
+CVUU1 4
+ASGNU1
+line 1076
+;1076:	torso.shaderRGBA[2] = trap_Cvar_VariableValue( "cg_tolightblue");
+ADDRGP4 $515
+ARGP4
+ADDRLP4 1564
+ADDRGP4 trap_Cvar_VariableValue
+CALLF4
+ASGNF4
+ADDRLP4 1568
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 1564
+INDIRF4
+ADDRLP4 1568
+INDIRF4
+LTF4 $517
+ADDRLP4 1560
+ADDRLP4 1564
+INDIRF4
+ADDRLP4 1568
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $518
+JUMPV
+LABELV $517
+ADDRLP4 1560
+ADDRLP4 1564
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $518
+ADDRLP4 180+116+2
+ADDRLP4 1560
+INDIRU4
+CVUU1 4
+ASGNU1
+line 1077
+;1077:	torso.shaderRGBA[3] = 255;
+ADDRLP4 180+116+3
+CNSTU1 255
+ASGNU1
+line 1079
+;1078:
+;1079:	VectorCopy( origin, torso.lightingOrigin );
+ADDRLP4 180+12
+ADDRLP4 724
+INDIRB
+ASGNB 12
+line 1081
+;1080:
+;1081:	UI_PositionRotatedEntityOnTag( &torso, &legs, pi->legsModel, "tag_torso");
+ADDRLP4 180
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRLP4 0
+INDIRP4
+INDIRI4
+ARGI4
+ADDRGP4 $522
+ARGP4
+ADDRGP4 UI_PositionRotatedEntityOnTag
+CALLV
+pop
+line 1083
+;1082:
+;1083:	torso.renderfx = renderfx;
+ADDRLP4 180+4
+ADDRLP4 912
+INDIRI4
+ASGNI4
+line 1085
+;1084:
+;1085:	trap_R_AddRefEntityToScene( &torso );
+ADDRLP4 180
+ARGP4
+ADDRGP4 trap_R_AddRefEntityToScene
+CALLV
+pop
+line 1090
+;1086:
+;1087:	//
+;1088:	// add the head
+;1089:	//
+;1090:	head.hModel = pi->headModel;
+ADDRLP4 736+8
+ADDRLP4 0
+INDIRP4
+CNSTI4 120
+ADDP4
+INDIRI4
+ASGNI4
+line 1091
+;1091:	if (!head.hModel) {
+ADDRLP4 736+8
+INDIRI4
+CNSTI4 0
+NEI4 $525
+line 1092
+;1092:		return;
+ADDRGP4 $416
+JUMPV
+LABELV $525
+line 1094
+;1093:	}
+;1094:	head.customSkin = pi->headSkin;
+ADDRLP4 736+108
+ADDRLP4 0
+INDIRP4
+CNSTI4 124
+ADDP4
+INDIRI4
+ASGNI4
+line 1095
+;1095:	if(!head.customSkin){
+ADDRLP4 736+108
+INDIRI4
+CNSTI4 0
+NEI4 $529
+line 1096
+;1096:	head.customShader = pi->headShader;
+ADDRLP4 736+112
+ADDRLP4 0
+INDIRP4
+CNSTI4 128
+ADDP4
+INDIRI4
+ASGNI4
+line 1097
+;1097:	}
+LABELV $529
+line 1098
+;1098:	head.shaderRGBA[0] = trap_Cvar_VariableValue( "cg_helightred");
+ADDRGP4 $534
+ARGP4
+ADDRLP4 1576
+ADDRGP4 trap_Cvar_VariableValue
+CALLF4
+ASGNF4
+ADDRLP4 1580
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 1576
+INDIRF4
+ADDRLP4 1580
+INDIRF4
+LTF4 $536
+ADDRLP4 1572
+ADDRLP4 1576
+INDIRF4
+ADDRLP4 1580
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $537
+JUMPV
+LABELV $536
+ADDRLP4 1572
+ADDRLP4 1576
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $537
+ADDRLP4 736+116
+ADDRLP4 1572
+INDIRU4
+CVUU1 4
+ASGNU1
+line 1099
+;1099:	head.shaderRGBA[1] = trap_Cvar_VariableValue( "cg_helightgreen");
+ADDRGP4 $540
+ARGP4
+ADDRLP4 1588
+ADDRGP4 trap_Cvar_VariableValue
+CALLF4
+ASGNF4
+ADDRLP4 1592
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 1588
+INDIRF4
+ADDRLP4 1592
+INDIRF4
+LTF4 $542
+ADDRLP4 1584
+ADDRLP4 1588
+INDIRF4
+ADDRLP4 1592
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $543
+JUMPV
+LABELV $542
+ADDRLP4 1584
+ADDRLP4 1588
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $543
+ADDRLP4 736+116+1
+ADDRLP4 1584
+INDIRU4
+CVUU1 4
+ASGNU1
+line 1100
+;1100:	head.shaderRGBA[2] = trap_Cvar_VariableValue( "cg_helightblue");
+ADDRGP4 $546
+ARGP4
+ADDRLP4 1600
+ADDRGP4 trap_Cvar_VariableValue
+CALLF4
+ASGNF4
+ADDRLP4 1604
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 1600
+INDIRF4
+ADDRLP4 1604
+INDIRF4
+LTF4 $548
+ADDRLP4 1596
+ADDRLP4 1600
+INDIRF4
+ADDRLP4 1604
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $549
+JUMPV
+LABELV $548
+ADDRLP4 1596
+ADDRLP4 1600
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $549
+ADDRLP4 736+116+2
+ADDRLP4 1596
+INDIRU4
+CVUU1 4
+ASGNU1
+line 1101
+;1101:	head.shaderRGBA[3] = 255;
+ADDRLP4 736+116+3
+CNSTU1 255
+ASGNU1
+line 1103
+;1102:
+;1103:	VectorCopy( origin, head.lightingOrigin );
+ADDRLP4 736+12
+ADDRLP4 724
+INDIRB
+ASGNB 12
+line 1105
+;1104:
+;1105:	UI_PositionRotatedEntityOnTag( &head, &torso, pi->torsoModel, "tag_head");
+ADDRLP4 736
+ARGP4
+ADDRLP4 180
+ARGP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+INDIRI4
+ARGI4
+ADDRGP4 $553
+ARGP4
+ADDRGP4 UI_PositionRotatedEntityOnTag
+CALLV
+pop
+line 1107
+;1106:
+;1107:	head.renderfx = renderfx;
+ADDRLP4 736+4
+ADDRLP4 912
+INDIRI4
+ASGNI4
+line 1109
+;1108:
+;1109:	trap_R_AddRefEntityToScene( &head );
+ADDRLP4 736
+ARGP4
+ADDRGP4 trap_R_AddRefEntityToScene
+CALLV
+pop
+line 1114
+;1110:
+;1111:	//
+;1112:	// add the gun
+;1113:	//
+;1114:	if ( pi->currentWeapon != WP_NONE ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 1060
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $555
+line 1115
+;1115:		memset( &gun, 0, sizeof(gun) );
+ADDRLP4 916
+ARGP4
+CNSTI4 0
+ARGI4
+CNSTI4 176
+ARGI4
+ADDRGP4 memset
+CALLP4
+pop
+line 1116
+;1116:		gun.hModel = pi->weaponModel;
+ADDRLP4 916+8
+ADDRLP4 0
+INDIRP4
+CNSTI4 1000
+ADDP4
+INDIRI4
+ASGNI4
+line 1117
+;1117:		VectorCopy( origin, gun.lightingOrigin );
+ADDRLP4 916+12
+ADDRLP4 724
+INDIRB
+ASGNB 12
+line 1118
+;1118:		UI_PositionEntityOnTag( &gun, &torso, pi->torsoModel, "tag_weapon");
+ADDRLP4 916
+ARGP4
+ADDRLP4 180
+ARGP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+INDIRI4
+ARGI4
+ADDRGP4 $559
+ARGP4
+ADDRGP4 UI_PositionEntityOnTag
+CALLV
+pop
+line 1119
+;1119:		gun.renderfx = renderfx;
+ADDRLP4 916+4
+ADDRLP4 912
+INDIRI4
+ASGNI4
+line 1120
+;1120:		trap_R_AddRefEntityToScene( &gun );
+ADDRLP4 916
+ARGP4
+ADDRGP4 trap_R_AddRefEntityToScene
+CALLV
+pop
+line 1121
+;1121:	}
+LABELV $555
+line 1126
+;1122:
+;1123:	//
+;1124:	// add the spinning barrel
+;1125:	//
+;1126:	if ( pi->realWeapon == WP_MACHINEGUN || pi->realWeapon == WP_GAUNTLET || pi->realWeapon == WP_BFG || pi->realWeapon == WP_CHAINGUN ) {
+ADDRLP4 1608
+ADDRLP4 0
+INDIRP4
+CNSTI4 1132
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 1608
+INDIRI4
+CNSTI4 2
+EQI4 $565
+ADDRLP4 1608
+INDIRI4
+CNSTI4 1
+EQI4 $565
+ADDRLP4 1608
+INDIRI4
+CNSTI4 9
+EQI4 $565
+ADDRLP4 1608
+INDIRI4
+CNSTI4 13
+NEI4 $561
+LABELV $565
+line 1129
+;1127:		vec3_t	angles;
+;1128:
+;1129:		memset( &barrel, 0, sizeof(barrel) );
+ADDRLP4 1092
+ARGP4
+CNSTI4 0
+ARGI4
+CNSTI4 176
+ARGI4
+ADDRGP4 memset
+CALLP4
+pop
+line 1130
+;1130:		VectorCopy( origin, barrel.lightingOrigin );
+ADDRLP4 1092+12
+ADDRLP4 724
+INDIRB
+ASGNB 12
+line 1131
+;1131:		barrel.renderfx = renderfx;
+ADDRLP4 1092+4
+ADDRLP4 912
+INDIRI4
+ASGNI4
+line 1133
+;1132:
+;1133:		barrel.hModel = pi->barrelModel;
+ADDRLP4 1092+8
+ADDRLP4 0
+INDIRP4
+CNSTI4 1004
+ADDP4
+INDIRI4
+ASGNI4
+line 1134
+;1134:		angles[YAW] = 0;
+ADDRLP4 1612+4
+CNSTF4 0
+ASGNF4
+line 1135
+;1135:		angles[PITCH] = 0;
+ADDRLP4 1612
+CNSTF4 0
+ASGNF4
+line 1136
+;1136:		angles[ROLL] = UI_MachinegunSpinAngle( pi );
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRLP4 1624
+ADDRGP4 UI_MachinegunSpinAngle
+CALLF4
+ASGNF4
+ADDRLP4 1612+8
+ADDRLP4 1624
+INDIRF4
+ASGNF4
+line 1137
+;1137:		if( pi->realWeapon == WP_GAUNTLET || pi->realWeapon == WP_BFG ) {
+ADDRLP4 1628
+ADDRLP4 0
+INDIRP4
+CNSTI4 1132
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 1628
+INDIRI4
+CNSTI4 1
+EQI4 $573
+ADDRLP4 1628
+INDIRI4
+CNSTI4 9
+NEI4 $571
+LABELV $573
+line 1138
+;1138:			angles[PITCH] = angles[ROLL];
+ADDRLP4 1612
+ADDRLP4 1612+8
+INDIRF4
+ASGNF4
+line 1139
+;1139:			angles[ROLL] = 0;
+ADDRLP4 1612+8
+CNSTF4 0
+ASGNF4
+line 1140
+;1140:		}
+LABELV $571
+line 1141
+;1141:		AnglesToAxis( angles, barrel.axis );
+ADDRLP4 1612
+ARGP4
+ADDRLP4 1092+28
+ARGP4
+ADDRGP4 AnglesToAxis
+CALLV
+pop
+line 1143
+;1142:
+;1143:		UI_PositionRotatedEntityOnTag( &barrel, &gun, pi->weaponModel, "tag_barrel");
+ADDRLP4 1092
+ARGP4
+ADDRLP4 916
+ARGP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 1000
+ADDP4
+INDIRI4
+ARGI4
+ADDRGP4 $577
+ARGP4
+ADDRGP4 UI_PositionRotatedEntityOnTag
+CALLV
+pop
+line 1145
+;1144:
+;1145:		trap_R_AddRefEntityToScene( &barrel );
+ADDRLP4 1092
+ARGP4
+ADDRGP4 trap_R_AddRefEntityToScene
+CALLV
+pop
+line 1146
+;1146:	}
+LABELV $561
+line 1151
+;1147:
+;1148:	//
+;1149:	// add muzzle flash
+;1150:	//
+;1151:	if ( dp_realtime <= pi->muzzleFlashTime) {
+ADDRGP4 dp_realtime
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 1024
+ADDP4
+INDIRI4
+GTI4 $578
+line 1153
+;1152:
+;1153:		if ( pi->flashModel ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 1008
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $580
+line 1154
+;1154:			memset( &flash, 0, sizeof(flash) );
+ADDRLP4 1292
+ARGP4
+CNSTI4 0
+ARGI4
+CNSTI4 176
+ARGI4
+ADDRGP4 memset
+CALLP4
+pop
+line 1155
+;1155:			flash.hModel = pi->flashModel;
+ADDRLP4 1292+8
+ADDRLP4 0
+INDIRP4
+CNSTI4 1008
+ADDP4
+INDIRI4
+ASGNI4
+line 1156
+;1156:			VectorCopy( origin, flash.lightingOrigin );
+ADDRLP4 1292+12
+ADDRLP4 724
+INDIRB
+ASGNB 12
+line 1157
+;1157:			UI_PositionEntityOnTag( &flash, &gun, pi->weaponModel, "tag_flash");
+ADDRLP4 1292
+ARGP4
+ADDRLP4 916
+ARGP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 1000
+ADDP4
+INDIRI4
+ARGI4
+ADDRGP4 $584
+ARGP4
+ADDRGP4 UI_PositionEntityOnTag
+CALLV
+pop
+line 1158
+;1158:			flash.renderfx = renderfx;
+ADDRLP4 1292+4
+ADDRLP4 912
+INDIRI4
+ASGNI4
+line 1159
+;1159:			trap_R_AddRefEntityToScene( &flash );
+ADDRLP4 1292
+ARGP4
+ADDRGP4 trap_R_AddRefEntityToScene
+CALLV
+pop
+line 1160
+;1160:		}
+LABELV $580
+line 1163
+;1161:
+;1162:		// make a dlight for the flash
+;1163:		if ( pi->flashDlightColor[0] || pi->flashDlightColor[1] || pi->flashDlightColor[2] ) {
+ADDRLP4 1616
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 1012
+ADDP4
+INDIRF4
+ADDRLP4 1616
+INDIRF4
+NEF4 $589
+ADDRLP4 0
+INDIRP4
+CNSTI4 1016
+ADDP4
+INDIRF4
+ADDRLP4 1616
+INDIRF4
+NEF4 $589
+ADDRLP4 0
+INDIRP4
+CNSTI4 1020
+ADDP4
+INDIRF4
+ADDRLP4 1616
+INDIRF4
+EQF4 $586
+LABELV $589
+line 1164
+;1164:			trap_R_AddLightToScene( flash.origin, 200 + (rand()&31), pi->flashDlightColor[0],
+ADDRLP4 1620
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 1292+68
+ARGP4
+ADDRLP4 1620
+INDIRI4
+CNSTI4 31
+BANDI4
+CNSTI4 200
+ADDI4
+CVIF4 4
+ARGF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 1012
+ADDP4
+INDIRF4
+ARGF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 1016
+ADDP4
+INDIRF4
+ARGF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 1020
+ADDP4
+INDIRF4
+ARGF4
+ADDRGP4 trap_R_AddLightToScene
+CALLV
+pop
+line 1166
+;1165:				pi->flashDlightColor[1], pi->flashDlightColor[2] );
+;1166:		}
+LABELV $586
+line 1167
+;1167:	}
+LABELV $578
+line 1172
+;1168:
+;1169:	//
+;1170:	// add the chat icon
+;1171:	//
+;1172:	if ( pi->chat ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 1112
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $591
+line 1173
+;1173:		UI_PlayerFloatSprite( pi, origin, trap_R_RegisterShaderNoMip( "sprites/balloon3" ) );
+ADDRGP4 $593
+ARGP4
+ADDRLP4 1612
+ADDRGP4 trap_R_RegisterShaderNoMip
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRLP4 724
+ARGP4
+ADDRLP4 1612
+INDIRI4
+ARGI4
+ADDRGP4 UI_PlayerFloatSprite
+CALLV
+pop
+line 1174
+;1174:	}
+LABELV $591
+line 1179
+;1175:
+;1176:	//
+;1177:	// add an accent light
+;1178:	//
+;1179:	origin[0] -= 100;	// + = behind, - = in front
+ADDRLP4 724
+ADDRLP4 724
+INDIRF4
+CNSTF4 1120403456
+SUBF4
+ASGNF4
+line 1180
+;1180:	origin[1] += 100;	// + = left, - = right
+ADDRLP4 724+4
+ADDRLP4 724+4
+INDIRF4
+CNSTF4 1120403456
+ADDF4
+ASGNF4
+line 1181
+;1181:	origin[2] += 100;	// + = above, - = below
+ADDRLP4 724+8
+ADDRLP4 724+8
+INDIRF4
+CNSTF4 1120403456
+ADDF4
+ASGNF4
+line 1182
+;1182:	trap_R_AddLightToScene( origin, 500, 1.0, 1.0, 1.0 );
+ADDRLP4 724
+ARGP4
+CNSTF4 1140457472
+ARGF4
+ADDRLP4 1612
+CNSTF4 1065353216
+ASGNF4
+ADDRLP4 1612
+INDIRF4
+ARGF4
+ADDRLP4 1612
+INDIRF4
+ARGF4
+ADDRLP4 1612
+INDIRF4
+ARGF4
+ADDRGP4 trap_R_AddLightToScene
+CALLV
+pop
+line 1184
+;1183:
+;1184:	origin[0] -= 100;
+ADDRLP4 724
+ADDRLP4 724
+INDIRF4
+CNSTF4 1120403456
+SUBF4
+ASGNF4
+line 1185
+;1185:	origin[1] -= 100;
+ADDRLP4 724+4
+ADDRLP4 724+4
+INDIRF4
+CNSTF4 1120403456
+SUBF4
+ASGNF4
+line 1186
+;1186:	origin[2] -= 100;
+ADDRLP4 724+8
+ADDRLP4 724+8
+INDIRF4
+CNSTF4 1120403456
+SUBF4
+ASGNF4
+line 1187
+;1187:	trap_R_AddLightToScene( origin, 500, 1.0, 0.0, 0.0 );
+ADDRLP4 724
+ARGP4
+CNSTF4 1140457472
+ARGF4
+CNSTF4 1065353216
+ARGF4
+ADDRLP4 1616
+CNSTF4 0
+ASGNF4
+ADDRLP4 1616
+INDIRF4
+ARGF4
+ADDRLP4 1616
+INDIRF4
+ARGF4
+ADDRGP4 trap_R_AddLightToScene
+CALLV
+pop
+line 1189
+;1188:
+;1189:	trap_R_RenderScene( &refdef );
+ADDRLP4 356
+ARGP4
+ADDRGP4 trap_R_RenderScene
+CALLV
+pop
+line 1190
+;1190:}
+LABELV $416
+endproc UI_DrawPlayer 1632 28
+proc UI_RegisterClientSkin 80 20
+line 1199
+;1191:
+;1192:
+;1193:/*
+;1194:==========================
+;1195:UI_RegisterClientSkin
+;1196:==========================
+;1197:*/
+;1198:static qboolean UI_RegisterClientSkin( playerInfo_t *pi, const char *modelName, const char *skinName, qboolean head, qboolean legs, qboolean model)
+;1199:{
+line 1201
+;1200:	char		filename[MAX_QPATH];
+;1201:	qboolean 	skinLoaded = qfalse;
+ADDRLP4 64
+CNSTI4 0
+ASGNI4
+line 1203
+;1202:
+;1203:	if (head)
+ADDRFP4 12
+INDIRI4
+CNSTI4 0
+EQI4 $599
+line 1204
+;1204:	{
+line 1205
+;1205:		Com_sprintf( filename, sizeof( filename ), "models/players/%s/head_%s.skin", modelName, skinName );
+ADDRLP4 0
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 $601
+ARGP4
+ADDRFP4 4
+INDIRP4
+ARGP4
+ADDRFP4 8
+INDIRP4
+ARGP4
+ADDRGP4 Com_sprintf
+CALLV
+pop
+line 1206
+;1206:		pi->headSkin = trap_R_RegisterSkin( filename );
+ADDRLP4 0
+ARGP4
+ADDRLP4 68
+ADDRGP4 trap_R_RegisterSkin
+CALLI4
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 124
+ADDP4
+ADDRLP4 68
+INDIRI4
+ASGNI4
+line 1207
+;1207:		if(!pi->headSkin){
+ADDRFP4 0
+INDIRP4
+CNSTI4 124
+ADDP4
+INDIRI4
+CNSTI4 0
+NEI4 $602
+line 1208
+;1208:		Com_sprintf( filename, sizeof( filename ), "models/players/%s/head_%s", modelName, skinName );
+ADDRLP4 0
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 $604
+ARGP4
+ADDRFP4 4
+INDIRP4
+ARGP4
+ADDRFP4 8
+INDIRP4
+ARGP4
+ADDRGP4 Com_sprintf
+CALLV
+pop
+line 1209
+;1209:		pi->headShader = trap_R_RegisterShaderNoMip( filename );
+ADDRLP4 0
+ARGP4
+ADDRLP4 72
+ADDRGP4 trap_R_RegisterShaderNoMip
+CALLI4
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 128
+ADDP4
+ADDRLP4 72
+INDIRI4
+ASGNI4
+line 1210
+;1210:		}
+LABELV $602
+line 1212
+;1211:
+;1212:		if (pi->headSkin || pi->headShader )
+ADDRLP4 72
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 76
+CNSTI4 0
+ASGNI4
+ADDRLP4 72
+INDIRP4
+CNSTI4 124
+ADDP4
+INDIRI4
+ADDRLP4 76
+INDIRI4
+NEI4 $607
+ADDRLP4 72
+INDIRP4
+CNSTI4 128
+ADDP4
+INDIRI4
+ADDRLP4 76
+INDIRI4
+EQI4 $605
+LABELV $607
+line 1213
+;1213:			skinLoaded = qtrue;
+ADDRLP4 64
+CNSTI4 1
+ASGNI4
+LABELV $605
+line 1214
+;1214:		}
+LABELV $599
+line 1215
+;1215:	if (legs)
+ADDRFP4 16
+INDIRI4
+CNSTI4 0
+EQI4 $608
+line 1216
+;1216:	{
+line 1217
+;1217:		Com_sprintf( filename, sizeof( filename ), "models/players/%s/lower_%s.skin", modelName, skinName );
+ADDRLP4 0
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 $610
+ARGP4
+ADDRFP4 4
+INDIRP4
+ARGP4
+ADDRFP4 8
+INDIRP4
+ARGP4
+ADDRGP4 Com_sprintf
+CALLV
+pop
+line 1218
+;1218:		pi->legsSkin = trap_R_RegisterSkin( filename );
+ADDRLP4 0
+ARGP4
+ADDRLP4 68
+ADDRGP4 trap_R_RegisterSkin
+CALLI4
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRLP4 68
+INDIRI4
+ASGNI4
+line 1219
+;1219:		if(!pi->legsSkin){
+ADDRFP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+CNSTI4 0
+NEI4 $611
+line 1220
+;1220:		Com_sprintf( filename, sizeof( filename ), "models/players/%s/lower_%s", modelName, skinName );
+ADDRLP4 0
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 $613
+ARGP4
+ADDRFP4 4
+INDIRP4
+ARGP4
+ADDRFP4 8
+INDIRP4
+ARGP4
+ADDRGP4 Com_sprintf
+CALLV
+pop
+line 1221
+;1221:		pi->legsShader = trap_R_RegisterShaderNoMip( filename );
+ADDRLP4 0
+ARGP4
+ADDRLP4 72
+ADDRGP4 trap_R_RegisterShaderNoMip
+CALLI4
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRLP4 72
+INDIRI4
+ASGNI4
+line 1222
+;1222:		}
+LABELV $611
+line 1224
+;1223:		
+;1224:		if ( pi->legsSkin || pi->legsShader ) {
+ADDRLP4 72
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 76
+CNSTI4 0
+ASGNI4
+ADDRLP4 72
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+ADDRLP4 76
+INDIRI4
+NEI4 $616
+ADDRLP4 72
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRI4
+ADDRLP4 76
+INDIRI4
+EQI4 $614
+LABELV $616
+line 1225
+;1225:			skinLoaded = qtrue;
+ADDRLP4 64
+CNSTI4 1
+ASGNI4
+line 1226
+;1226:		}
+LABELV $614
+line 1227
+;1227:	}		
+LABELV $608
+line 1228
+;1228:	if (model)
+ADDRFP4 20
+INDIRI4
+CNSTI4 0
+EQI4 $617
+line 1229
+;1229:	{
+line 1230
+;1230:		Com_sprintf( filename, sizeof( filename ), "models/players/%s/upper_%s.skin", modelName, skinName );
+ADDRLP4 0
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 $619
+ARGP4
+ADDRFP4 4
+INDIRP4
+ARGP4
+ADDRFP4 8
+INDIRP4
+ARGP4
+ADDRGP4 Com_sprintf
+CALLV
+pop
+line 1231
+;1231:		pi->torsoSkin = trap_R_RegisterSkin( filename );
+ADDRLP4 0
+ARGP4
+ADDRLP4 68
+ADDRGP4 trap_R_RegisterSkin
+CALLI4
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+ADDRLP4 68
+INDIRI4
+ASGNI4
+line 1232
+;1232:		if(!pi->torsoSkin){
+ADDRFP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+CNSTI4 0
+NEI4 $620
+line 1233
+;1233:		Com_sprintf( filename, sizeof( filename ), "models/players/%s/upper_%s", modelName, skinName );
+ADDRLP4 0
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 $622
+ARGP4
+ADDRFP4 4
+INDIRP4
+ARGP4
+ADDRFP4 8
+INDIRP4
+ARGP4
+ADDRGP4 Com_sprintf
+CALLV
+pop
+line 1234
+;1234:		pi->torsoShader = trap_R_RegisterShaderNoMip( filename );
+ADDRLP4 0
+ARGP4
+ADDRLP4 72
+ADDRGP4 trap_R_RegisterShaderNoMip
+CALLI4
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRLP4 72
+INDIRI4
+ASGNI4
+line 1235
+;1235:		}
+LABELV $620
+line 1237
+;1236:
+;1237:		if (pi->torsoSkin || pi->torsoShader ) {
+ADDRLP4 72
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 76
+CNSTI4 0
+ASGNI4
+ADDRLP4 72
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+ADDRLP4 76
+INDIRI4
+NEI4 $625
+ADDRLP4 72
+INDIRP4
+CNSTI4 68
+ADDP4
+INDIRI4
+ADDRLP4 76
+INDIRI4
+EQI4 $623
+LABELV $625
+line 1238
+;1238:			skinLoaded = qtrue;
+ADDRLP4 64
+CNSTI4 1
+ASGNI4
+line 1239
+;1239:		}
+LABELV $623
+line 1240
+;1240:	}
+LABELV $617
+line 1242
+;1241:
+;1242:	if (skinLoaded) {
+ADDRLP4 64
+INDIRI4
+CNSTI4 0
+EQI4 $626
+line 1243
+;1243:		return qtrue;
+CNSTI4 1
+RETI4
+ADDRGP4 $598
+JUMPV
+LABELV $626
+line 1244
+;1244:	} else {
+line 1245
+;1245:		return qfalse;
+CNSTI4 0
+RETI4
+LABELV $598
+endproc UI_RegisterClientSkin 80 20
+proc UI_ParseAnimationFile 20076 12
+line 1255
+;1246:	}
+;1247:}
+;1248:
+;1249:
+;1250:/*
+;1251:======================
+;1252:UI_ParseAnimationFile
+;1253:======================
+;1254:*/
+;1255:static qboolean UI_ParseAnimationFile( const char *filename, playerInfo_t* pi) {
+line 1266
+;1256:	char		*text_p, *prev;
+;1257:	int			len;
+;1258:	int			i;
+;1259:	char		*token;
+;1260:	float		fps;
+;1261:	int			skip;
+;1262:	char		text[20000];
+;1263:	fileHandle_t	f;
+;1264:	animation_t* animations;
+;1265:
+;1266:	animations = pi->animations;
+ADDRLP4 12
+ADDRFP4 4
+INDIRP4
+CNSTI4 132
+ADDP4
+ASGNP4
+line 1268
+;1267:
+;1268:	memset( animations, 0, sizeof( animation_t ) * MAX_ANIMATIONS );
+ADDRLP4 12
+INDIRP4
+ARGP4
+CNSTI4 0
+ARGI4
+CNSTI4 868
+ARGI4
+ADDRGP4 memset
+CALLP4
+pop
+line 1271
+;1269:
+;1270:	// load the file
+;1271:	len = trap_FS_FOpenFile( filename, &f, FS_READ );
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRLP4 20032
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 20036
+ADDRGP4 trap_FS_FOpenFile
+CALLI4
+ASGNI4
+ADDRLP4 28
+ADDRLP4 20036
+INDIRI4
+ASGNI4
+line 1272
+;1272:	if ( len <= 0 ) {
+ADDRLP4 28
+INDIRI4
+CNSTI4 0
+GTI4 $629
+line 1273
+;1273:		return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $628
+JUMPV
+LABELV $629
+line 1275
+;1274:	}
+;1275:	if ( len >= ( sizeof( text ) - 1 ) ) {
+ADDRLP4 28
+INDIRI4
+CVIU4 4
+CNSTU4 19999
+LTU4 $631
+line 1276
+;1276:		Com_Printf( "File %s too long\n", filename );
+ADDRGP4 $633
+ARGP4
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 Com_Printf
+CALLV
+pop
+line 1277
+;1277:		return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $628
+JUMPV
+LABELV $631
+line 1279
+;1278:	}
+;1279:	trap_FS_Read( text, len, f );
+ADDRLP4 32
+ARGP4
+ADDRLP4 28
+INDIRI4
+ARGI4
+ADDRLP4 20032
+INDIRI4
+ARGI4
+ADDRGP4 trap_FS_Read
+CALLV
+pop
+line 1280
+;1280:	text[len] = 0;
+ADDRLP4 28
+INDIRI4
+ADDRLP4 32
+ADDP4
+CNSTI1 0
+ASGNI1
+line 1281
+;1281:	trap_FS_FCloseFile( f );
+ADDRLP4 20032
+INDIRI4
+ARGI4
+ADDRGP4 trap_FS_FCloseFile
+CALLV
+pop
+line 1284
+;1282:
+;1283:	// parse the text
+;1284:	text_p = text;
+ADDRLP4 8
+ADDRLP4 32
+ASGNP4
+line 1285
+;1285:	skip = 0;	// quite the compiler warning
+ADDRLP4 24
+CNSTI4 0
+ASGNI4
+line 1286
+;1286:	sfxModel.footsteps = FOOTSTEP_NORMAL;
+ADDRGP4 sfxModel+32
+CNSTI4 0
+ASGNI4
+line 1287
+;1287:	pi->fixedtorso = qfalse;
+ADDRFP4 4
+INDIRP4
+CNSTI4 1108
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1288
+;1288:	pi->fixedlegs = qfalse;
+ADDRFP4 4
+INDIRP4
+CNSTI4 1104
+ADDP4
+CNSTI4 0
+ASGNI4
+ADDRGP4 $636
+JUMPV
+LABELV $635
+line 1291
+;1289:
+;1290:	// read optional parameters
+;1291:	while ( 1 ) {
+line 1292
+;1292:		prev = text_p;	// so we can unget
+ADDRLP4 20
+ADDRLP4 8
+INDIRP4
+ASGNP4
+line 1293
+;1293:		token = COM_Parse( &text_p );
+ADDRLP4 8
+ARGP4
+ADDRLP4 20040
+ADDRGP4 COM_Parse
+CALLP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 20040
+INDIRP4
+ASGNP4
+line 1294
+;1294:		if ( !token ) {
+ADDRLP4 0
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $638
+line 1295
+;1295:			break;
+ADDRGP4 $637
+JUMPV
+LABELV $638
+line 1297
+;1296:		}
+;1297:		if ( !Q_stricmp( token, "footsteps" ) ) {
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRGP4 $642
+ARGP4
+ADDRLP4 20044
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 20044
+INDIRI4
+CNSTI4 0
+NEI4 $640
+line 1298
+;1298:			token = COM_Parse( &text_p );
+ADDRLP4 8
+ARGP4
+ADDRLP4 20048
+ADDRGP4 COM_Parse
+CALLP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 20048
+INDIRP4
+ASGNP4
+line 1299
+;1299:			if ( !token ) {
+ADDRLP4 0
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $643
+line 1300
+;1300:				break;
+ADDRGP4 $637
+JUMPV
+LABELV $643
+line 1302
+;1301:			}
+;1302:			if ( !Q_stricmp( token, "default" ) || !Q_stricmp( token, "normal" ) ) {
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRGP4 $647
+ARGP4
+ADDRLP4 20052
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 20052
+INDIRI4
+CNSTI4 0
+EQI4 $649
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRGP4 $648
+ARGP4
+ADDRLP4 20056
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 20056
+INDIRI4
+CNSTI4 0
+NEI4 $645
+LABELV $649
+line 1303
+;1303:				sfxModel.footsteps = FOOTSTEP_NORMAL;
+ADDRGP4 sfxModel+32
+CNSTI4 0
+ASGNI4
+line 1304
+;1304:			} else if ( !Q_stricmp( token, "boot" ) ) {
+ADDRGP4 $636
+JUMPV
+LABELV $645
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRGP4 $84
+ARGP4
+ADDRLP4 20060
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 20060
+INDIRI4
+CNSTI4 0
+NEI4 $651
+line 1305
+;1305:				sfxModel.footsteps = FOOTSTEP_BOOT;
+ADDRGP4 sfxModel+32
+CNSTI4 1
+ASGNI4
+line 1306
+;1306:			} else if ( !Q_stricmp( token, "flesh" ) ) {
+ADDRGP4 $636
+JUMPV
+LABELV $651
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRGP4 $85
+ARGP4
+ADDRLP4 20064
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 20064
+INDIRI4
+CNSTI4 0
+NEI4 $654
+line 1307
+;1307:				sfxModel.footsteps = FOOTSTEP_FLESH;
+ADDRGP4 sfxModel+32
+CNSTI4 2
+ASGNI4
+line 1308
+;1308:			} else if ( !Q_stricmp( token, "mech" ) ) {
+ADDRGP4 $636
+JUMPV
+LABELV $654
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRGP4 $86
+ARGP4
+ADDRLP4 20068
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 20068
+INDIRI4
+CNSTI4 0
+NEI4 $657
+line 1309
+;1309:				sfxModel.footsteps = FOOTSTEP_MECH;
+ADDRGP4 sfxModel+32
+CNSTI4 3
+ASGNI4
+line 1310
+;1310:			} else if ( !Q_stricmp( token, "energy" ) ) {
+ADDRGP4 $636
+JUMPV
+LABELV $657
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRGP4 $87
+ARGP4
+ADDRLP4 20072
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 20072
+INDIRI4
+CNSTI4 0
+NEI4 $660
+line 1311
+;1311:				sfxModel.footsteps = FOOTSTEP_ENERGY;
+ADDRGP4 sfxModel+32
+CNSTI4 4
+ASGNI4
+line 1312
+;1312:			} else {
+ADDRGP4 $636
+JUMPV
+LABELV $660
+line 1313
+;1313:				Com_Printf( "Bad footsteps parm in %s: %s\n", filename, token );
+ADDRGP4 $663
+ARGP4
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRGP4 Com_Printf
+CALLV
+pop
+line 1314
+;1314:			}
+line 1315
+;1315:			continue;
+ADDRGP4 $636
+JUMPV
+LABELV $640
+line 1316
+;1316:		} else if ( !Q_stricmp( token, "headoffset" ) ) {
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRGP4 $666
+ARGP4
+ADDRLP4 20048
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 20048
+INDIRI4
+CNSTI4 0
+NEI4 $664
+line 1317
+;1317:			for ( i = 0 ; i < 3 ; i++ ) {
+ADDRLP4 4
+CNSTI4 0
+ASGNI4
+LABELV $667
+line 1318
+;1318:				token = COM_Parse( &text_p );
+ADDRLP4 8
+ARGP4
+ADDRLP4 20052
+ADDRGP4 COM_Parse
+CALLP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 20052
+INDIRP4
+ASGNP4
+line 1319
+;1319:				if ( !token ) {
+ADDRLP4 0
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $671
+line 1320
+;1320:					break;
+ADDRGP4 $636
+JUMPV
+LABELV $671
+line 1322
+;1321:				}
+;1322:			}
+LABELV $668
+line 1317
+ADDRLP4 4
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 4
+INDIRI4
+CNSTI4 3
+LTI4 $667
+line 1323
+;1323:			continue;
+ADDRGP4 $636
+JUMPV
+LABELV $664
+line 1324
+;1324:		} else if ( !Q_stricmp( token, "sex" ) ) {
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRGP4 $675
+ARGP4
+ADDRLP4 20052
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 20052
+INDIRI4
+CNSTI4 0
+NEI4 $673
+line 1325
+;1325:			token = COM_Parse( &text_p );
+ADDRLP4 8
+ARGP4
+ADDRLP4 20056
+ADDRGP4 COM_Parse
+CALLP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 20056
+INDIRP4
+ASGNP4
+line 1326
+;1326:			if ( !token ) {
+ADDRLP4 0
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $636
+line 1327
+;1327:				break;
+ADDRGP4 $637
+JUMPV
+line 1329
+;1328:			}
+;1329:			continue;
+LABELV $673
+line 1330
+;1330:		} else if ( !Q_stricmp( token, "fixedlegs" ) ) {
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRGP4 $680
+ARGP4
+ADDRLP4 20056
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 20056
+INDIRI4
+CNSTI4 0
+NEI4 $678
+line 1331
+;1331:			pi->fixedlegs = qtrue;
+ADDRFP4 4
+INDIRP4
+CNSTI4 1104
+ADDP4
+CNSTI4 1
+ASGNI4
+line 1332
+;1332:			continue;
+ADDRGP4 $636
+JUMPV
+LABELV $678
+line 1333
+;1333:		} else if ( !Q_stricmp( token, "fixedtorso" ) ) {
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRGP4 $683
+ARGP4
+ADDRLP4 20060
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 20060
+INDIRI4
+CNSTI4 0
+NEI4 $681
+line 1334
+;1334:			pi->fixedtorso = qtrue;
+ADDRFP4 4
+INDIRP4
+CNSTI4 1108
+ADDP4
+CNSTI4 1
+ASGNI4
+line 1335
+;1335:			continue;
+ADDRGP4 $636
+JUMPV
+LABELV $681
+line 1339
+;1336:		}
+;1337:
+;1338:		// if it is a number, start parsing animations
+;1339:		if ( token[0] >= '0' && token[0] <= '9' ) {
+ADDRLP4 20064
+ADDRLP4 0
+INDIRP4
+INDIRI1
+CVII4 1
+ASGNI4
+ADDRLP4 20064
+INDIRI4
+CNSTI4 48
+LTI4 $684
+ADDRLP4 20064
+INDIRI4
+CNSTI4 57
+GTI4 $684
+line 1340
+;1340:			text_p = prev;	// unget the token
+ADDRLP4 8
+ADDRLP4 20
+INDIRP4
+ASGNP4
+line 1341
+;1341:			break;
+ADDRGP4 $637
+JUMPV
+LABELV $684
+line 1344
+;1342:		}
+;1343:
+;1344:		Com_Printf( "unknown token '%s' is %s\n", token, filename );
+ADDRGP4 $686
+ARGP4
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 Com_Printf
+CALLV
+pop
+line 1345
+;1345:	}
+LABELV $636
+line 1291
+ADDRGP4 $635
+JUMPV
+LABELV $637
+line 1348
+;1346:
+;1347:	// read information for each frame
+;1348:	for ( i = 0 ; i < MAX_ANIMATIONS ; i++ ) {
+ADDRLP4 4
+CNSTI4 0
+ASGNI4
+LABELV $687
+line 1350
+;1349:
+;1350:		token = COM_Parse( &text_p );
+ADDRLP4 8
+ARGP4
+ADDRLP4 20040
+ADDRGP4 COM_Parse
+CALLP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 20040
+INDIRP4
+ASGNP4
+line 1351
+;1351:		if ( !token ) {
+ADDRLP4 0
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $691
+line 1352
+;1352:			break;
+ADDRGP4 $689
+JUMPV
+LABELV $691
+line 1354
+;1353:		}
+;1354:		animations[i].firstFrame = atoi( token );
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRLP4 20044
+ADDRGP4 atoi
+CALLI4
+ASGNI4
+CNSTI4 28
+ADDRLP4 4
+INDIRI4
+MULI4
+ADDRLP4 12
+INDIRP4
+ADDP4
+ADDRLP4 20044
+INDIRI4
+ASGNI4
+line 1356
+;1355:		// leg only frames are adjusted to not count the upper body only frames
+;1356:		if ( i == LEGS_WALKCR ) {
+ADDRLP4 4
+INDIRI4
+CNSTI4 13
+NEI4 $693
+line 1357
+;1357:			skip = animations[LEGS_WALKCR].firstFrame - animations[TORSO_GESTURE].firstFrame;
+ADDRLP4 24
+ADDRLP4 12
+INDIRP4
+CNSTI4 364
+ADDP4
+INDIRI4
+ADDRLP4 12
+INDIRP4
+CNSTI4 168
+ADDP4
+INDIRI4
+SUBI4
+ASGNI4
+line 1358
+;1358:		}
+LABELV $693
+line 1359
+;1359:		if ( i >= LEGS_WALKCR ) {
+ADDRLP4 4
+INDIRI4
+CNSTI4 13
+LTI4 $695
+line 1360
+;1360:			animations[i].firstFrame -= skip;
+ADDRLP4 20048
+CNSTI4 28
+ADDRLP4 4
+INDIRI4
+MULI4
+ADDRLP4 12
+INDIRP4
+ADDP4
+ASGNP4
+ADDRLP4 20048
+INDIRP4
+ADDRLP4 20048
+INDIRP4
+INDIRI4
+ADDRLP4 24
+INDIRI4
+SUBI4
+ASGNI4
+line 1361
+;1361:		}
+LABELV $695
+line 1363
+;1362:
+;1363:		token = COM_Parse( &text_p );
+ADDRLP4 8
+ARGP4
+ADDRLP4 20048
+ADDRGP4 COM_Parse
+CALLP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 20048
+INDIRP4
+ASGNP4
+line 1364
+;1364:		if ( !token ) {
+ADDRLP4 0
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $697
+line 1365
+;1365:			break;
+ADDRGP4 $689
+JUMPV
+LABELV $697
+line 1367
+;1366:		}
+;1367:		animations[i].numFrames = atoi( token );
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRLP4 20052
+ADDRGP4 atoi
+CALLI4
+ASGNI4
+CNSTI4 28
+ADDRLP4 4
+INDIRI4
+MULI4
+ADDRLP4 12
+INDIRP4
+ADDP4
+CNSTI4 4
+ADDP4
+ADDRLP4 20052
+INDIRI4
+ASGNI4
+line 1369
+;1368:
+;1369:		token = COM_Parse( &text_p );
+ADDRLP4 8
+ARGP4
+ADDRLP4 20056
+ADDRGP4 COM_Parse
+CALLP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 20056
+INDIRP4
+ASGNP4
+line 1370
+;1370:		if ( !token ) {
+ADDRLP4 0
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $699
+line 1371
+;1371:			break;
+ADDRGP4 $689
+JUMPV
+LABELV $699
+line 1373
+;1372:		}
+;1373:		animations[i].loopFrames = atoi( token );
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRLP4 20060
+ADDRGP4 atoi
+CALLI4
+ASGNI4
+CNSTI4 28
+ADDRLP4 4
+INDIRI4
+MULI4
+ADDRLP4 12
+INDIRP4
+ADDP4
+CNSTI4 8
+ADDP4
+ADDRLP4 20060
+INDIRI4
+ASGNI4
+line 1375
+;1374:
+;1375:		token = COM_Parse( &text_p );
+ADDRLP4 8
+ARGP4
+ADDRLP4 20064
+ADDRGP4 COM_Parse
+CALLP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 20064
+INDIRP4
+ASGNP4
+line 1376
+;1376:		if ( !token ) {
+ADDRLP4 0
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $701
+line 1377
+;1377:			break;
+ADDRGP4 $689
+JUMPV
+LABELV $701
+line 1379
+;1378:		}
+;1379:		fps = atof( token );
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRLP4 20068
+ADDRGP4 atof
+CALLF4
+ASGNF4
+ADDRLP4 16
+ADDRLP4 20068
+INDIRF4
+ASGNF4
+line 1380
+;1380:		if ( fps == 0 ) {
+ADDRLP4 16
+INDIRF4
+CNSTF4 0
+NEF4 $703
+line 1381
+;1381:			fps = 1;
+ADDRLP4 16
+CNSTF4 1065353216
+ASGNF4
+line 1382
+;1382:		}
+LABELV $703
+line 1383
+;1383:		animations[i].frameLerp = 1000 / fps;
+CNSTI4 28
+ADDRLP4 4
+INDIRI4
+MULI4
+ADDRLP4 12
+INDIRP4
+ADDP4
+CNSTI4 12
+ADDP4
+CNSTF4 1148846080
+ADDRLP4 16
+INDIRF4
+DIVF4
+CVFI4 4
+ASGNI4
+line 1384
+;1384:		animations[i].initialLerp = 1000 / fps;
+CNSTI4 28
+ADDRLP4 4
+INDIRI4
+MULI4
+ADDRLP4 12
+INDIRP4
+ADDP4
+CNSTI4 16
+ADDP4
+CNSTF4 1148846080
+ADDRLP4 16
+INDIRF4
+DIVF4
+CVFI4 4
+ASGNI4
+line 1385
+;1385:	}
+LABELV $688
+line 1348
+ADDRLP4 4
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 4
+INDIRI4
+CNSTI4 31
+LTI4 $687
+LABELV $689
+line 1387
+;1386:
+;1387:	if ( i != MAX_ANIMATIONS ) {
+ADDRLP4 4
+INDIRI4
+CNSTI4 31
+EQI4 $705
+line 1388
+;1388:		Com_Printf( "Error parsing animation file: %s", filename );
+ADDRGP4 $707
+ARGP4
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 Com_Printf
+CALLV
+pop
+line 1389
+;1389:		return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $628
+JUMPV
+LABELV $705
+line 1392
+;1390:	}
+;1391:
+;1392:	return qtrue;
+CNSTI4 1
+RETI4
+LABELV $628
+endproc UI_ParseAnimationFile 20076 12
+export UI_RegisterClientModelname
+proc UI_RegisterClientModelname 512 24
+line 1402
+;1393:}
+;1394:
+;1395:
+;1396:/*
+;1397:==========================
+;1398:UI_RegisterClientModelname
+;1399:==========================
+;1400:*/
+;1401:qboolean UI_RegisterClientModelname( modelAnim_t* m)
+;1402:{
+line 1419
+;1403:	playerInfo_t *pi;
+;1404:
+;1405:	// separated skin and model names
+;1406:	char		bodyName[MAX_QPATH];
+;1407:	char		headName[MAX_QPATH];
+;1408:	char		legsName[MAX_QPATH];
+;1409:	char		skinBodyName[MAX_QPATH];
+;1410:	char		skinHeadName[MAX_QPATH];
+;1411:	char		skinLegsName[MAX_QPATH];
+;1412:
+;1413:	char		filename[MAX_QPATH];
+;1414:	char		*slash;
+;1415:
+;1416:	// combined model and skin name, before splitting
+;1417:	char		*modelSkinName, *modelHeadName, *modelLegsName;
+;1418:
+;1419:	pi = &m->player;
+ADDRLP4 64
+ADDRFP4 0
+INDIRP4
+ASGNP4
+line 1421
+;1420:
+;1421:	pi->torsoModel = 0;
+ADDRLP4 64
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1422
+;1422:	pi->headModel = 0;
+ADDRLP4 64
+INDIRP4
+CNSTI4 120
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1425
+;1423:
+;1424:	// define which model we're working with
+;1425:	if (UIE_PlayerInfo_IsTeamModel())
+ADDRLP4 468
+ADDRGP4 UIE_PlayerInfo_IsTeamModel
+CALLI4
+ASGNI4
+ADDRLP4 468
+INDIRI4
+CNSTI4 0
+EQI4 $709
+line 1426
+;1426:	{
+line 1427
+;1427:		modelSkinName = m->team_modelskin;
+ADDRLP4 456
+ADDRFP4 0
+INDIRP4
+CNSTI4 1332
+ADDP4
+ASGNP4
+line 1428
+;1428:		modelHeadName = m->team_headskin;
+ADDRLP4 460
+ADDRFP4 0
+INDIRP4
+CNSTI4 1396
+ADDP4
+ASGNP4
+line 1429
+;1429:		modelLegsName = m->team_legsskin;
+ADDRLP4 464
+ADDRFP4 0
+INDIRP4
+CNSTI4 1460
+ADDP4
+ASGNP4
+line 1430
+;1430:	}
+ADDRGP4 $710
+JUMPV
+LABELV $709
+line 1432
+;1431:	else
+;1432:	{
+line 1433
+;1433:		modelSkinName = m->modelskin;
+ADDRLP4 456
+ADDRFP4 0
+INDIRP4
+CNSTI4 1140
+ADDP4
+ASGNP4
+line 1434
+;1434:		modelHeadName = m->headskin;
+ADDRLP4 460
+ADDRFP4 0
+INDIRP4
+CNSTI4 1204
+ADDP4
+ASGNP4
+line 1435
+;1435:		modelLegsName = m->legsskin;
+ADDRLP4 464
+ADDRFP4 0
+INDIRP4
+CNSTI4 1268
+ADDP4
+ASGNP4
+line 1436
+;1436:	}
+LABELV $710
+line 1439
+;1437:
+;1438:	// validate
+;1439:	m->bUnknownModel = qfalse;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2236
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1440
+;1440:	m->bUnknownHeadModel = qfalse;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2240
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1441
+;1441:	m->bUnknownLegsModel = qfalse;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2244
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1462
+;1442:	/*if ( !modelSkinName[0])
+;1443:	{
+;1444:		m->bUnknownModel = qtrue;
+;1445:		return qfalse;
+;1446:	}
+;1447:
+;1448:	if (!modelHeadName[0])
+;1449:	{
+;1450:		m->bUnknownHeadModel = qtrue;
+;1451:		return qfalse;
+;1452:	}
+;1453:	
+;1454:	if (!modelLegsName[0])
+;1455:	{
+;1456:		m->bUnknownLegsModel = qtrue;
+;1457:		return qfalse;
+;1458:	}*/
+;1459:	
+;1460:
+;1461:	// do the body model
+;1462:	Q_strncpyz( bodyName, modelSkinName, sizeof( bodyName ) );
+ADDRLP4 72
+ARGP4
+ADDRLP4 456
+INDIRP4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 Q_strncpyz
+CALLV
+pop
+line 1464
+;1463:
+;1464:	slash = strchr( bodyName, '/' );
+ADDRLP4 72
+ARGP4
+CNSTI4 47
+ARGI4
+ADDRLP4 472
+ADDRGP4 strchr
+CALLP4
+ASGNP4
+ADDRLP4 68
+ADDRLP4 472
+INDIRP4
+ASGNP4
+line 1465
+;1465:	if ( !slash ) {
+ADDRLP4 68
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $711
+line 1467
+;1466:		// modelName did not include a skin name
+;1467:		Q_strncpyz( skinBodyName, "default", sizeof( skinBodyName ) );
+ADDRLP4 264
+ARGP4
+ADDRGP4 $647
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 Q_strncpyz
+CALLV
+pop
+line 1468
+;1468:	} else {
+ADDRGP4 $712
+JUMPV
+LABELV $711
+line 1469
+;1469:		Q_strncpyz( skinBodyName, slash + 1, sizeof( skinBodyName ) );
+ADDRLP4 264
+ARGP4
+ADDRLP4 68
+INDIRP4
+CNSTI4 1
+ADDP4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 Q_strncpyz
+CALLV
+pop
+line 1471
+;1470:		// truncate bodyName
+;1471:		*slash = 0;
+ADDRLP4 68
+INDIRP4
+CNSTI1 0
+ASGNI1
+line 1472
+;1472:	}
+LABELV $712
+line 1475
+;1473:	
+;1474:	// do the legs model
+;1475:	Q_strncpyz( legsName, modelLegsName, sizeof( legsName ) );
+ADDRLP4 200
+ARGP4
+ADDRLP4 464
+INDIRP4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 Q_strncpyz
+CALLV
+pop
+line 1477
+;1476:
+;1477:	slash = strchr( legsName, '/' );
+ADDRLP4 200
+ARGP4
+CNSTI4 47
+ARGI4
+ADDRLP4 476
+ADDRGP4 strchr
+CALLP4
+ASGNP4
+ADDRLP4 68
+ADDRLP4 476
+INDIRP4
+ASGNP4
+line 1478
+;1478:	if ( !slash ) {
+ADDRLP4 68
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $713
+line 1480
+;1479:		// modelName did not include a skin name
+;1480:		Q_strncpyz( skinLegsName, "default", sizeof( skinLegsName ) );
+ADDRLP4 392
+ARGP4
+ADDRGP4 $647
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 Q_strncpyz
+CALLV
+pop
+line 1481
+;1481:	} else {
+ADDRGP4 $714
+JUMPV
+LABELV $713
+line 1482
+;1482:		Q_strncpyz( skinLegsName, slash + 1, sizeof( skinLegsName ) );
+ADDRLP4 392
+ARGP4
+ADDRLP4 68
+INDIRP4
+CNSTI4 1
+ADDP4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 Q_strncpyz
+CALLV
+pop
+line 1484
+;1483:		// truncate bodyName
+;1484:		*slash = 0;
+ADDRLP4 68
+INDIRP4
+CNSTI1 0
+ASGNI1
+line 1485
+;1485:	}
+LABELV $714
+line 1488
+;1486:
+;1487:	// do the head model separately
+;1488:	Q_strncpyz( headName, modelHeadName, sizeof( headName ) );
+ADDRLP4 136
+ARGP4
+ADDRLP4 460
+INDIRP4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 Q_strncpyz
+CALLV
+pop
+line 1490
+;1489:
+;1490:	slash = strchr( headName, '/' );
+ADDRLP4 136
+ARGP4
+CNSTI4 47
+ARGI4
+ADDRLP4 480
+ADDRGP4 strchr
+CALLP4
+ASGNP4
+ADDRLP4 68
+ADDRLP4 480
+INDIRP4
+ASGNP4
+line 1491
+;1491:	if ( !slash ) {
+ADDRLP4 68
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $715
+line 1493
+;1492:		// modelName did not include a skin name
+;1493:		Q_strncpyz( skinHeadName, "default", sizeof( skinHeadName ) );
+ADDRLP4 328
+ARGP4
+ADDRGP4 $647
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 Q_strncpyz
+CALLV
+pop
+line 1494
+;1494:	} else {
+ADDRGP4 $716
+JUMPV
+LABELV $715
+line 1495
+;1495:		Q_strncpyz( skinHeadName, slash + 1, sizeof( skinHeadName ) );
+ADDRLP4 328
+ARGP4
+ADDRLP4 68
+INDIRP4
+CNSTI4 1
+ADDP4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 Q_strncpyz
+CALLV
+pop
+line 1497
+;1496:		// truncate modelName
+;1497:		*slash = 0;
+ADDRLP4 68
+INDIRP4
+CNSTI1 0
+ASGNI1
+line 1498
+;1498:	}
+LABELV $716
+line 1501
+;1499:
+;1500:	// load cmodels before models so filecache works
+;1501:	Com_sprintf( filename, sizeof( filename ), "models/players/%s/lower.md3", bodyName );
+ADDRLP4 0
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 $717
+ARGP4
+ADDRLP4 72
+ARGP4
+ADDRGP4 Com_sprintf
+CALLV
+pop
+line 1502
+;1502:	pi->legsModel = trap_R_RegisterModel( filename );
+ADDRLP4 0
+ARGP4
+ADDRLP4 484
+ADDRGP4 trap_R_RegisterModel
+CALLI4
+ASGNI4
+ADDRLP4 64
+INDIRP4
+ADDRLP4 484
+INDIRI4
+ASGNI4
+line 1503
+;1503:	if ( !pi->legsModel ) {
+ADDRLP4 64
+INDIRP4
+INDIRI4
+CNSTI4 0
+NEI4 $718
+line 1504
+;1504:		Com_Printf( "Failed to load model file %s\n", filename );
+ADDRGP4 $720
+ARGP4
+ADDRLP4 0
+ARGP4
+ADDRGP4 Com_Printf
+CALLV
+pop
+line 1505
+;1505:		m->bUnknownModel = qtrue;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2236
+ADDP4
+CNSTI4 1
+ASGNI4
+line 1506
+;1506:		return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $708
+JUMPV
+LABELV $718
+line 1509
+;1507:	}
+;1508:
+;1509:	Com_sprintf( filename, sizeof( filename ), "models/players/%s/upper.md3", bodyName );
+ADDRLP4 0
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 $721
+ARGP4
+ADDRLP4 72
+ARGP4
+ADDRGP4 Com_sprintf
+CALLV
+pop
+line 1510
+;1510:	pi->torsoModel = trap_R_RegisterModel( filename );
+ADDRLP4 0
+ARGP4
+ADDRLP4 488
+ADDRGP4 trap_R_RegisterModel
+CALLI4
+ASGNI4
+ADDRLP4 64
+INDIRP4
+CNSTI4 60
+ADDP4
+ADDRLP4 488
+INDIRI4
+ASGNI4
+line 1511
+;1511:	if ( !pi->torsoModel ) {
+ADDRLP4 64
+INDIRP4
+CNSTI4 60
+ADDP4
+INDIRI4
+CNSTI4 0
+NEI4 $722
+line 1512
+;1512:		Com_Printf( "Failed to load model file %s\n", filename );
+ADDRGP4 $720
+ARGP4
+ADDRLP4 0
+ARGP4
+ADDRGP4 Com_Printf
+CALLV
+pop
+line 1513
+;1513:		m->bUnknownModel = qtrue;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2236
+ADDP4
+CNSTI4 1
+ASGNI4
+line 1514
+;1514:		return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $708
+JUMPV
+LABELV $722
+line 1517
+;1515:	}
+;1516:
+;1517:	Com_sprintf( filename, sizeof( filename ), "models/players/%s/head.md3", headName );
+ADDRLP4 0
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 $724
+ARGP4
+ADDRLP4 136
+ARGP4
+ADDRGP4 Com_sprintf
+CALLV
+pop
+line 1518
+;1518:	pi->headModel = trap_R_RegisterModel( filename );
+ADDRLP4 0
+ARGP4
+ADDRLP4 492
+ADDRGP4 trap_R_RegisterModel
+CALLI4
+ASGNI4
+ADDRLP4 64
+INDIRP4
+CNSTI4 120
+ADDP4
+ADDRLP4 492
+INDIRI4
+ASGNI4
+line 1519
+;1519:	if ( !pi->headModel ) {
+ADDRLP4 64
+INDIRP4
+CNSTI4 120
+ADDP4
+INDIRI4
+CNSTI4 0
+NEI4 $725
+line 1520
+;1520:		Com_Printf( "Failed to load model file %s\n", filename );
+ADDRGP4 $720
+ARGP4
+ADDRLP4 0
+ARGP4
+ADDRGP4 Com_Printf
+CALLV
+pop
+line 1521
+;1521:		m->bUnknownHeadModel = qtrue;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2240
+ADDP4
+CNSTI4 1
+ASGNI4
+line 1522
+;1522:		return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $708
+JUMPV
+LABELV $725
+line 1526
+;1523:	}
+;1524:
+;1525:	// this is the body part of the model
+;1526:	UI_RegisterClientSkin( pi, bodyName, skinBodyName, qfalse, qfalse, qtrue );
+ADDRLP4 64
+INDIRP4
+ARGP4
+ADDRLP4 72
+ARGP4
+ADDRLP4 264
+ARGP4
+ADDRLP4 496
+CNSTI4 0
+ASGNI4
+ADDRLP4 496
+INDIRI4
+ARGI4
+ADDRLP4 496
+INDIRI4
+ARGI4
+CNSTI4 1
+ARGI4
+ADDRGP4 UI_RegisterClientSkin
+CALLI4
+pop
+line 1529
+;1527:
+;1528:	// and this is the head part of the model
+;1529:	UI_RegisterClientSkin( pi, headName, skinHeadName, qtrue, qfalse, qfalse );
+ADDRLP4 64
+INDIRP4
+ARGP4
+ADDRLP4 136
+ARGP4
+ADDRLP4 328
+ARGP4
+CNSTI4 1
+ARGI4
+ADDRLP4 500
+CNSTI4 0
+ASGNI4
+ADDRLP4 500
+INDIRI4
+ARGI4
+ADDRLP4 500
+INDIRI4
+ARGI4
+ADDRGP4 UI_RegisterClientSkin
+CALLI4
+pop
+line 1532
+;1530:	
+;1531:	// and this is the legs part of the model
+;1532:	UI_RegisterClientSkin( pi, legsName, skinLegsName, qfalse, qtrue, qfalse );
+ADDRLP4 64
+INDIRP4
+ARGP4
+ADDRLP4 200
+ARGP4
+ADDRLP4 392
+ARGP4
+ADDRLP4 504
+CNSTI4 0
+ASGNI4
+ADDRLP4 504
+INDIRI4
+ARGI4
+CNSTI4 1
+ARGI4
+ADDRLP4 504
+INDIRI4
+ARGI4
+ADDRGP4 UI_RegisterClientSkin
+CALLI4
+pop
+line 1536
+;1533:
+;1534:	// load the animations
+;1535:	// always for the body, never the head!
+;1536:	Com_sprintf( filename, sizeof( filename ), "models/players/%s/animation.cfg", bodyName );
+ADDRLP4 0
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 $727
+ARGP4
+ADDRLP4 72
+ARGP4
+ADDRGP4 Com_sprintf
+CALLV
+pop
+line 1537
+;1537:	if ( !UI_ParseAnimationFile( filename, pi ) ) {
+ADDRLP4 0
+ARGP4
+ADDRLP4 64
+INDIRP4
+ARGP4
+ADDRLP4 508
+ADDRGP4 UI_ParseAnimationFile
+CALLI4
+ASGNI4
+ADDRLP4 508
+INDIRI4
+CNSTI4 0
+NEI4 $728
+line 1538
+;1538:		Com_Printf( "Failed to load animation file %s\n", filename );
+ADDRGP4 $730
+ARGP4
+ADDRLP4 0
+ARGP4
+ADDRGP4 Com_Printf
+CALLV
+pop
+line 1539
+;1539:		return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $708
+JUMPV
+LABELV $728
+line 1542
+;1540:	}
+;1541:
+;1542:	return qtrue;
+CNSTI4 1
+RETI4
+LABELV $708
+endproc UI_RegisterClientModelname 512 24
+proc UI_PlayerInfo_SetModel 12 8
+line 1552
+;1543:}
+;1544:
+;1545:
+;1546:/*
+;1547:===============
+;1548:UI_PlayerInfo_SetModel
+;1549:===============
+;1550:*/
+;1551:static qboolean UI_PlayerInfo_SetModel( modelAnim_t* m, int weapon )
+;1552:{
+line 1555
+;1553:	playerInfo_t *pi;
+;1554:
+;1555:	pi = &m->player;
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+ASGNP4
+line 1556
+;1556:	if (!UI_RegisterClientModelname( m ))
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRLP4 4
+ADDRGP4 UI_RegisterClientModelname
+CALLI4
+ASGNI4
+ADDRLP4 4
+INDIRI4
+CNSTI4 0
+NEI4 $732
+line 1557
+;1557:		return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $731
+JUMPV
+LABELV $732
+line 1559
+;1558:
+;1559:	pi->weapon = weapon;
+ADDRLP4 0
+INDIRP4
+CNSTI4 1072
+ADDP4
+ADDRFP4 4
+INDIRI4
+ASGNI4
+line 1560
+;1560:	pi->currentWeapon = weapon;
+ADDRLP4 0
+INDIRP4
+CNSTI4 1060
+ADDP4
+ADDRFP4 4
+INDIRI4
+ASGNI4
+line 1561
+;1561:	pi->lastWeapon = weapon;
+ADDRLP4 0
+INDIRP4
+CNSTI4 1076
+ADDP4
+ADDRFP4 4
+INDIRI4
+ASGNI4
+line 1562
+;1562:	pi->pendingWeapon = -1;
+ADDRLP4 0
+INDIRP4
+CNSTI4 1080
+ADDP4
+CNSTI4 -1
+ASGNI4
+line 1563
+;1563:	pi->weaponTimer = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 1084
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1564
+;1564:	pi->chat = qfalse;
+ADDRLP4 0
+INDIRP4
+CNSTI4 1112
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1565
+;1565:	pi->newModel = qtrue;
+ADDRLP4 0
+INDIRP4
+CNSTI4 1116
+ADDP4
+CNSTI4 1
+ASGNI4
+line 1566
+;1566:	UI_PlayerInfo_SetWeapon( pi, pi->weapon );
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 1072
+ADDP4
+INDIRI4
+ARGI4
+ADDRGP4 UI_PlayerInfo_SetWeapon
+CALLV
+pop
+line 1568
+;1567:
+;1568:	return qtrue;
+CNSTI4 1
+RETI4
+LABELV $731
+endproc UI_PlayerInfo_SetModel 12 8
+proc UI_PlayerInfo_SetInfo 52 8
+line 1577
+;1569:}
+;1570:
+;1571:
+;1572:/*
+;1573:===============
+;1574:UI_PlayerInfo_SetInfo
+;1575:===============
+;1576:*/
+;1577:static void UI_PlayerInfo_SetInfo( playerInfo_t *pi, int legsAnim, int torsoAnim, vec3_t viewAngles, vec3_t moveAngles, weapon_t weaponNumber, qboolean chat ) {
+line 1583
+;1578:	int			currentAnim;
+;1579:	weapon_t	weaponNum;
+;1580:	int 		deathAnim;
+;1581:	qboolean	useDeathAnim;
+;1582:
+;1583:	pi->chat = chat;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1112
+ADDP4
+ADDRFP4 24
+INDIRI4
+ASGNI4
+line 1586
+;1584:
+;1585:	// view angles
+;1586:	VectorCopy( viewAngles, pi->viewAngles );
+ADDRFP4 0
+INDIRP4
+CNSTI4 1036
+ADDP4
+ADDRFP4 12
+INDIRP4
+INDIRB
+ASGNB 12
+line 1589
+;1587:
+;1588:	// move angles
+;1589:	VectorCopy( moveAngles, pi->moveAngles );
+ADDRFP4 0
+INDIRP4
+CNSTI4 1048
+ADDP4
+ADDRFP4 16
+INDIRP4
+INDIRB
+ASGNB 12
+line 1591
+;1590:
+;1591:	if ( pi->newModel ) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 1116
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $735
+line 1592
+;1592:		pi->newModel = qfalse;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1116
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1594
+;1593:
+;1594:		jumpHeight = 0;
+ADDRGP4 jumpHeight
+CNSTF4 0
+ASGNF4
+line 1595
+;1595:		pi->pendingLegsAnim = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1088
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1596
+;1596:		UI_ForceLegsAnim( pi, legsAnim );
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRFP4 4
+INDIRI4
+ARGI4
+ADDRGP4 UI_ForceLegsAnim
+CALLV
+pop
+line 1597
+;1597:		pi->legs.yawAngle = viewAngles[YAW];
+ADDRFP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+ADDRFP4 12
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ASGNF4
+line 1598
+;1598:		pi->legs.yawing = qfalse;
+ADDRFP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1600
+;1599:
+;1600:		pi->pendingTorsoAnim = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1096
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1601
+;1601:		UI_ForceTorsoAnim( pi, torsoAnim );
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRFP4 8
+INDIRI4
+ARGI4
+ADDRGP4 UI_ForceTorsoAnim
+CALLV
+pop
+line 1602
+;1602:		pi->torso.yawAngle = viewAngles[YAW];
+ADDRFP4 0
+INDIRP4
+CNSTI4 92
+ADDP4
+ADDRFP4 12
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ASGNF4
+line 1603
+;1603:		pi->torso.yawing = qfalse;
+ADDRFP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1604
+;1604:		pi->torso.pitchAngle = viewAngles[PITCH];
+ADDRFP4 0
+INDIRP4
+CNSTI4 100
+ADDP4
+ADDRFP4 12
+INDIRP4
+INDIRF4
+ASGNF4
+line 1605
+;1605:		pi->torso.pitching = qfalse;
+ADDRFP4 0
+INDIRP4
+CNSTI4 104
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1607
+;1606:
+;1607:		if ( weaponNumber != -1 ) {
+ADDRFP4 20
+INDIRI4
+CNSTI4 -1
+EQI4 $734
+line 1608
+;1608:			pi->weapon = weaponNumber;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1072
+ADDP4
+ADDRFP4 20
+INDIRI4
+ASGNI4
+line 1609
+;1609:			pi->currentWeapon = weaponNumber;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1060
+ADDP4
+ADDRFP4 20
+INDIRI4
+ASGNI4
+line 1610
+;1610:			pi->lastWeapon = weaponNumber;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1076
+ADDP4
+ADDRFP4 20
+INDIRI4
+ASGNI4
+line 1611
+;1611:			pi->pendingWeapon = -1;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1080
+ADDP4
+CNSTI4 -1
+ASGNI4
+line 1612
+;1612:			pi->weaponTimer = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1084
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1613
+;1613:			UI_PlayerInfo_SetWeapon( pi, pi->weapon );
+ADDRLP4 16
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 16
+INDIRP4
+ARGP4
+ADDRLP4 16
+INDIRP4
+CNSTI4 1072
+ADDP4
+INDIRI4
+ARGI4
+ADDRGP4 UI_PlayerInfo_SetWeapon
+CALLV
+pop
+line 1614
+;1614:		}
+line 1616
+;1615:
+;1616:		return;
+ADDRGP4 $734
+JUMPV
+LABELV $735
+line 1620
+;1617:	}
+;1618:
+;1619:	// weapon
+;1620:	weaponNum = pi->lastWeapon;
+ADDRLP4 4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1076
+ADDP4
+INDIRI4
+ASGNI4
+line 1621
+;1621:	pi->weapon = weaponNum;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1072
+ADDP4
+ADDRLP4 4
+INDIRI4
+ASGNI4
+line 1622
+;1622:	if ( weaponNumber == -1 ) {
+ADDRFP4 20
+INDIRI4
+CNSTI4 -1
+NEI4 $739
+line 1623
+;1623:		pi->pendingWeapon = -1;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1080
+ADDP4
+CNSTI4 -1
+ASGNI4
+line 1624
+;1624:		pi->weaponTimer = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1084
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1625
+;1625:	}
+ADDRGP4 $740
+JUMPV
+LABELV $739
+line 1626
+;1626:	else if ( weaponNumber != WP_NONE ) {
+ADDRFP4 20
+INDIRI4
+CNSTI4 0
+EQI4 $741
+line 1627
+;1627:		pi->pendingWeapon = weaponNumber;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1080
+ADDP4
+ADDRFP4 20
+INDIRI4
+ASGNI4
+line 1628
+;1628:		pi->weaponTimer = dp_realtime + UI_TIMER_WEAPON_DELAY;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1084
+ADDP4
+ADDRGP4 dp_realtime
+INDIRI4
+CNSTI4 250
+ADDI4
+ASGNI4
+line 1629
+;1629:		if (weaponNumber != weaponNum)
+ADDRFP4 20
+INDIRI4
+ADDRLP4 4
+INDIRI4
+EQI4 $743
+line 1630
+;1630:			weaponNum = weaponNumber;
+ADDRLP4 4
+ADDRFP4 20
+INDIRI4
+ASGNI4
+LABELV $743
+line 1631
+;1631:	}
+LABELV $741
+LABELV $740
+line 1633
+;1632:
+;1633:	deathAnim = 0;
+ADDRLP4 12
+CNSTI4 0
+ASGNI4
+line 1634
+;1634:	useDeathAnim = qfalse;
+ADDRLP4 8
+CNSTI4 0
+ASGNI4
+line 1635
+;1635:	if (torsoAnim == BOTH_DEATH1 || torsoAnim == BOTH_DEATH2 || torsoAnim == BOTH_DEATH3) {
+ADDRLP4 16
+ADDRFP4 8
+INDIRI4
+ASGNI4
+ADDRLP4 16
+INDIRI4
+CNSTI4 0
+EQI4 $748
+ADDRLP4 16
+INDIRI4
+CNSTI4 2
+EQI4 $748
+ADDRLP4 16
+INDIRI4
+CNSTI4 4
+NEI4 $745
+LABELV $748
+line 1636
+;1636:		deathAnim = torsoAnim;
+ADDRLP4 12
+ADDRFP4 8
+INDIRI4
+ASGNI4
+line 1637
+;1637:		useDeathAnim = qtrue;
+ADDRLP4 8
+CNSTI4 1
+ASGNI4
+line 1638
+;1638:	}
+LABELV $745
+line 1639
+;1639:	if (legsAnim == BOTH_DEATH1 || legsAnim == BOTH_DEATH2 || legsAnim == BOTH_DEATH3) {
+ADDRLP4 20
+ADDRFP4 4
+INDIRI4
+ASGNI4
+ADDRLP4 20
+INDIRI4
+CNSTI4 0
+EQI4 $752
+ADDRLP4 20
+INDIRI4
+CNSTI4 2
+EQI4 $752
+ADDRLP4 20
+INDIRI4
+CNSTI4 4
+NEI4 $749
+LABELV $752
+line 1640
+;1640:		deathAnim = legsAnim;
+ADDRLP4 12
+ADDRFP4 4
+INDIRI4
+ASGNI4
+line 1641
+;1641:		useDeathAnim = qtrue;
+ADDRLP4 8
+CNSTI4 1
+ASGNI4
+line 1642
+;1642:	}
+LABELV $749
+line 1645
+;1643:
+;1644:	// play sfx
+;1645:	PlayerInfo_PlayModelSound(torsoAnim, legsAnim);
+ADDRFP4 8
+INDIRI4
+ARGI4
+ADDRFP4 4
+INDIRI4
+ARGI4
+ADDRGP4 PlayerInfo_PlayModelSound
+CALLV
+pop
+line 1647
+;1646:
+;1647:	if ( useDeathAnim ) {
+ADDRLP4 8
+INDIRI4
+CNSTI4 0
+EQI4 $753
+line 1648
+;1648:		torsoAnim = legsAnim = deathAnim;
+ADDRLP4 24
+ADDRLP4 12
+INDIRI4
+ASGNI4
+ADDRFP4 4
+ADDRLP4 24
+INDIRI4
+ASGNI4
+ADDRFP4 8
+ADDRLP4 24
+INDIRI4
+ASGNI4
+line 1649
+;1649:		pi->weapon = pi->currentWeapon = WP_NONE;
+ADDRLP4 28
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 32
+CNSTI4 0
+ASGNI4
+ADDRLP4 28
+INDIRP4
+CNSTI4 1060
+ADDP4
+ADDRLP4 32
+INDIRI4
+ASGNI4
+ADDRLP4 28
+INDIRP4
+CNSTI4 1072
+ADDP4
+ADDRLP4 32
+INDIRI4
+ASGNI4
+line 1650
+;1650:		UI_PlayerInfo_SetWeapon( pi, pi->weapon );
+ADDRLP4 36
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 36
+INDIRP4
+ARGP4
+ADDRLP4 36
+INDIRP4
+CNSTI4 1072
+ADDP4
+INDIRI4
+ARGI4
+ADDRGP4 UI_PlayerInfo_SetWeapon
+CALLV
+pop
+line 1652
+;1651:
+;1652:		jumpHeight = 0;
+ADDRGP4 jumpHeight
+CNSTF4 0
+ASGNF4
+line 1653
+;1653:		pi->pendingLegsAnim = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1088
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1654
+;1654:		UI_ForceLegsAnim( pi, legsAnim );
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRFP4 4
+INDIRI4
+ARGI4
+ADDRGP4 UI_ForceLegsAnim
+CALLV
+pop
+line 1656
+;1655:
+;1656:		pi->pendingTorsoAnim = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1096
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1657
+;1657:		UI_ForceTorsoAnim( pi, torsoAnim );
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRFP4 8
+INDIRI4
+ARGI4
+ADDRGP4 UI_ForceTorsoAnim
+CALLV
+pop
+line 1659
+;1658:
+;1659:		return;
+ADDRGP4 $734
+JUMPV
+LABELV $753
+line 1663
+;1660:	}
+;1661:
+;1662:	// leg animation
+;1663:	currentAnim = pi->legsAnim & ~ANIM_TOGGLEBIT;
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+CNSTI4 1064
+ADDP4
+INDIRI4
+CNSTI4 -129
+BANDI4
+ASGNI4
+line 1664
+;1664:	if ( legsAnim != LEGS_JUMP && ( currentAnim == LEGS_JUMP || currentAnim == LEGS_LAND ) ) {
+ADDRLP4 24
+CNSTI4 18
+ASGNI4
+ADDRFP4 4
+INDIRI4
+ADDRLP4 24
+INDIRI4
+EQI4 $755
+ADDRLP4 0
+INDIRI4
+ADDRLP4 24
+INDIRI4
+EQI4 $757
+ADDRLP4 0
+INDIRI4
+CNSTI4 19
+NEI4 $755
+LABELV $757
+line 1665
+;1665:		pi->pendingLegsAnim = legsAnim;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1088
+ADDP4
+ADDRFP4 4
+INDIRI4
+ASGNI4
+line 1666
+;1666:	}
+ADDRGP4 $756
+JUMPV
+LABELV $755
+line 1667
+;1667:	else if ( legsAnim != currentAnim ) {
+ADDRFP4 4
+INDIRI4
+ADDRLP4 0
+INDIRI4
+EQI4 $758
+line 1668
+;1668:		jumpHeight = 0;
+ADDRGP4 jumpHeight
+CNSTF4 0
+ASGNF4
+line 1669
+;1669:		pi->pendingLegsAnim = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1088
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1670
+;1670:		UI_ForceLegsAnim( pi, legsAnim );
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRFP4 4
+INDIRI4
+ARGI4
+ADDRGP4 UI_ForceLegsAnim
+CALLV
+pop
+line 1671
+;1671:	}
+LABELV $758
+LABELV $756
+line 1674
+;1672:
+;1673:	// torso animation
+;1674:	if ( torsoAnim == TORSO_STAND || torsoAnim == TORSO_STAND2 ) {
+ADDRLP4 32
+ADDRFP4 8
+INDIRI4
+ASGNI4
+ADDRLP4 32
+INDIRI4
+CNSTI4 11
+EQI4 $762
+ADDRLP4 32
+INDIRI4
+CNSTI4 12
+NEI4 $760
+LABELV $762
+line 1675
+;1675:		if ( weaponNum == WP_NONE || weaponNum == WP_GAUNTLET ) {
+ADDRLP4 4
+INDIRI4
+CNSTI4 0
+EQI4 $765
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+NEI4 $763
+LABELV $765
+line 1676
+;1676:			torsoAnim = TORSO_STAND2;
+ADDRFP4 8
+CNSTI4 12
+ASGNI4
+line 1677
+;1677:		}
+ADDRGP4 $764
+JUMPV
+LABELV $763
+line 1678
+;1678:		else {
+line 1679
+;1679:			torsoAnim = TORSO_STAND;
+ADDRFP4 8
+CNSTI4 11
+ASGNI4
+line 1680
+;1680:		}
+LABELV $764
+line 1681
+;1681:	}
+LABELV $760
+line 1683
+;1682:
+;1683:	if ( torsoAnim == TORSO_ATTACK || torsoAnim == TORSO_ATTACK2 ) {
+ADDRLP4 36
+ADDRFP4 8
+INDIRI4
+ASGNI4
+ADDRLP4 36
+INDIRI4
+CNSTI4 7
+EQI4 $768
+ADDRLP4 36
+INDIRI4
+CNSTI4 8
+NEI4 $766
+LABELV $768
+line 1684
+;1684:		if ( weaponNum == WP_NONE || weaponNum == WP_GAUNTLET ) {
+ADDRLP4 4
+INDIRI4
+CNSTI4 0
+EQI4 $771
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+NEI4 $769
+LABELV $771
+line 1685
+;1685:			torsoAnim = TORSO_ATTACK2;
+ADDRFP4 8
+CNSTI4 8
+ASGNI4
+line 1686
+;1686:		}
+ADDRGP4 $770
+JUMPV
+LABELV $769
+line 1687
+;1687:		else {
+line 1688
+;1688:			torsoAnim = TORSO_ATTACK;
+ADDRFP4 8
+CNSTI4 7
+ASGNI4
+line 1689
+;1689:		}
+LABELV $770
+line 1691
+;1690:
+;1691:		if (weaponNum == WP_GAUNTLET) {
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+NEI4 $772
+line 1692
+;1692:			pi->delayFireTimer = PlayerInfo_WeaponCycleTime(pi) / 2;
+ADDRLP4 44
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 44
+INDIRP4
+ARGP4
+ADDRLP4 48
+ADDRGP4 PlayerInfo_WeaponCycleTime
+CALLI4
+ASGNI4
+ADDRLP4 44
+INDIRP4
+CNSTI4 1032
+ADDP4
+ADDRLP4 48
+INDIRI4
+CNSTI4 2
+DIVI4
+ASGNI4
+line 1693
+;1693:		}
+ADDRGP4 $773
+JUMPV
+LABELV $772
+line 1695
+;1694:		else
+;1695:			PlayerInfo_FireWeaponSound(pi);
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 PlayerInfo_FireWeaponSound
+CALLV
+pop
+LABELV $773
+line 1696
+;1696:	}
+LABELV $766
+line 1698
+;1697:
+;1698:	currentAnim = pi->torsoAnim & ~ANIM_TOGGLEBIT;
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+CNSTI4 1068
+ADDP4
+INDIRI4
+CNSTI4 -129
+BANDI4
+ASGNI4
+line 1700
+;1699:
+;1700:	if ( weaponNum != pi->currentWeapon || currentAnim == TORSO_RAISE || currentAnim == TORSO_DROP ) {
+ADDRLP4 4
+INDIRI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1060
+ADDP4
+INDIRI4
+NEI4 $777
+ADDRLP4 0
+INDIRI4
+CNSTI4 10
+EQI4 $777
+ADDRLP4 0
+INDIRI4
+CNSTI4 9
+NEI4 $774
+LABELV $777
+line 1701
+;1701:		pi->pendingTorsoAnim = torsoAnim;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1096
+ADDP4
+ADDRFP4 8
+INDIRI4
+ASGNI4
+line 1702
+;1702:	}
+ADDRGP4 $775
+JUMPV
+LABELV $774
+line 1703
+;1703:	else if ( ( currentAnim == TORSO_GESTURE || currentAnim == TORSO_ATTACK ) && ( torsoAnim != currentAnim ) ) {
+ADDRLP4 0
+INDIRI4
+CNSTI4 6
+EQI4 $780
+ADDRLP4 0
+INDIRI4
+CNSTI4 7
+NEI4 $778
+LABELV $780
+ADDRFP4 8
+INDIRI4
+ADDRLP4 0
+INDIRI4
+EQI4 $778
+line 1704
+;1704:		pi->pendingTorsoAnim = torsoAnim;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1096
+ADDP4
+ADDRFP4 8
+INDIRI4
+ASGNI4
+line 1705
+;1705:	}
+ADDRGP4 $779
+JUMPV
+LABELV $778
+line 1706
+;1706:	else if ( torsoAnim != currentAnim ) {
+ADDRFP4 8
+INDIRI4
+ADDRLP4 0
+INDIRI4
+EQI4 $781
+line 1707
+;1707:		pi->pendingTorsoAnim = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1096
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1708
+;1708:		UI_ForceTorsoAnim( pi, torsoAnim );
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRFP4 8
+INDIRI4
+ARGI4
+ADDRGP4 UI_ForceTorsoAnim
+CALLV
+pop
+line 1709
+;1709:	}
+LABELV $781
+LABELV $779
+LABELV $775
+line 1710
+;1710:}
+LABELV $734
+endproc UI_PlayerInfo_SetInfo 52 8
+data
+align 4
+LABELV currentWeapon
+byte 4 2
+code
+proc PlayerInfo_MergeModelViewAngles 32 0
+line 1727
+;1711:
+;1712:
+;1713:
+;1714://------------------------------------------------------------------------
+;1715:
+;1716:
+;1717:// allows a new model to inherit previous weapon
+;1718:static int currentWeapon = WP_MACHINEGUN;
+;1719:
+;1720:
+;1721:
+;1722:/*
+;1723:=================
+;1724:PlayerInfo_MergeModelViewAngles
+;1725:=================
+;1726:*/
+;1727:static void PlayerInfo_MergeModelViewAngles( modelAnim_t* m) {
+line 1728
+;1728:	switch( m->anim ) {
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+CNSTI4 2120
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 7
+LTI4 $785
+ADDRLP4 0
+INDIRI4
+CNSTI4 12
+GTI4 $785
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 $793-28
+ADDP4
+INDIRP4
+JUMPV
+lit
+align 4
+LABELV $793
+address $789
+address $790
+address $787
+address $788
+address $791
+address $792
+code
+LABELV $787
+line 1730
+;1729:	case ANIM_TURNLEFT:
+;1730:		m->viewangles[YAW] += 90;
+ADDRLP4 8
+ADDRFP4 0
+INDIRP4
+CNSTI4 2144
+ADDP4
+ASGNP4
+ADDRLP4 8
+INDIRP4
+ADDRLP4 8
+INDIRP4
+INDIRF4
+CNSTF4 1119092736
+ADDF4
+ASGNF4
+line 1731
+;1731:		break;
+ADDRGP4 $785
+JUMPV
+LABELV $788
+line 1734
+;1732:
+;1733:	case ANIM_TURNRIGHT:
+;1734:		m->viewangles[YAW] -= 90;
+ADDRLP4 12
+ADDRFP4 0
+INDIRP4
+CNSTI4 2144
+ADDP4
+ASGNP4
+ADDRLP4 12
+INDIRP4
+ADDRLP4 12
+INDIRP4
+INDIRF4
+CNSTF4 1119092736
+SUBF4
+ASGNF4
+line 1735
+;1735:		break;
+ADDRGP4 $785
+JUMPV
+LABELV $789
+line 1738
+;1736:
+;1737:	case ANIM_STEPLEFT:
+;1738:		m->moveangles[YAW] = m->viewangles[YAW] + 90;
+ADDRLP4 16
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 16
+INDIRP4
+CNSTI4 2156
+ADDP4
+ADDRLP4 16
+INDIRP4
+CNSTI4 2144
+ADDP4
+INDIRF4
+CNSTF4 1119092736
+ADDF4
+ASGNF4
+line 1739
+;1739:		break;
+ADDRGP4 $785
+JUMPV
+LABELV $790
+line 1742
+;1740:
+;1741:	case ANIM_STEPRIGHT:
+;1742:		m->moveangles[YAW] = m->viewangles[YAW] - 90;
+ADDRLP4 20
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 20
+INDIRP4
+CNSTI4 2156
+ADDP4
+ADDRLP4 20
+INDIRP4
+CNSTI4 2144
+ADDP4
+INDIRF4
+CNSTF4 1119092736
+SUBF4
+ASGNF4
+line 1743
+;1743:		break;
+ADDRGP4 $785
+JUMPV
+LABELV $791
+line 1746
+;1744:
+;1745:	case ANIM_LOOKUP:
+;1746:		m->viewangles[PITCH] += -45;
+ADDRLP4 24
+ADDRFP4 0
+INDIRP4
+CNSTI4 2140
+ADDP4
+ASGNP4
+ADDRLP4 24
+INDIRP4
+ADDRLP4 24
+INDIRP4
+INDIRF4
+CNSTF4 3258187776
+ADDF4
+ASGNF4
+line 1747
+;1747:		break;
+ADDRGP4 $785
+JUMPV
+LABELV $792
+line 1750
+;1748:
+;1749:	case ANIM_LOOKDOWN:
+;1750:		m->viewangles[PITCH] += 45;
+ADDRLP4 28
+ADDRFP4 0
+INDIRP4
+CNSTI4 2140
+ADDP4
+ASGNP4
+ADDRLP4 28
+INDIRP4
+ADDRLP4 28
+INDIRP4
+INDIRF4
+CNSTF4 1110704128
+ADDF4
+ASGNF4
+line 1751
+;1751:		break;
+line 1753
+;1752:	default:
+;1753:		break;
+LABELV $785
+line 1755
+;1754:	}
+;1755:}
+LABELV $783
+endproc PlayerInfo_MergeModelViewAngles 32 0
+proc PlayerInfo_SetAnimation 68 8
+line 1766
+;1756:
+;1757:
+;1758:
+;1759:
+;1760:/*
+;1761:=================
+;1762:PlayerInfo_SetAnimation
+;1763:=================
+;1764:*/
+;1765:static void PlayerInfo_SetAnimation( modelAnim_t* m)
+;1766:{
+line 1767
+;1767:	m->playerChat = qfalse;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2136
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1769
+;1768:
+;1769:	switch( m->anim ) {
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+CNSTI4 2120
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+LTI4 $796
+ADDRLP4 0
+INDIRI4
+CNSTI4 34
+GTI4 $796
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 $834-4
+ADDP4
+INDIRP4
+JUMPV
+lit
+align 4
+LABELV $834
+address $800
+address $802
+address $803
+address $804
+address $805
+address $806
+address $809
+address $810
+address $797
+address $797
+address $797
+address $797
+address $813
+address $814
+address $815
+address $816
+address $817
+address $818
+address $819
+address $820
+address $821
+address $822
+address $823
+address $824
+address $825
+address $826
+address $827
+address $828
+address $829
+address $830
+address $831
+address $832
+address $801
+address $799
+code
+LABELV $799
+line 1771
+;1770:	case ANIM_CHAT:
+;1771:		m->playerChat = qtrue;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2136
+ADDP4
+CNSTI4 1
+ASGNI4
+line 1772
+;1772:		m->playerLegs		     = LEGS_IDLE;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 22
+ASGNI4
+line 1773
+;1773:		m->playerTorso			 = TORSO_STAND;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2128
+ADDP4
+CNSTI4 11
+ASGNI4
+line 1774
+;1774:		m->playerWeapon			 = -1;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+CNSTI4 -1
+ASGNI4
+line 1775
+;1775:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $800
+line 1778
+;1776:
+;1777:	case ANIM_IDLE:
+;1778:		m->playerLegs		     = LEGS_IDLE;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 22
+ASGNI4
+line 1779
+;1779:		m->playerTorso			 = TORSO_STAND;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2128
+ADDP4
+CNSTI4 11
+ASGNI4
+line 1780
+;1780:		m->playerWeapon			 = -1;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+CNSTI4 -1
+ASGNI4
+line 1781
+;1781:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $801
+line 1784
+;1782:
+;1783:	case ANIM_SWIM:
+;1784:		m->playerLegs = LEGS_SWIM;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 17
+ASGNI4
+line 1785
+;1785:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $802
+line 1788
+;1786:
+;1787:	case ANIM_RUN:
+;1788:		m->playerLegs = LEGS_RUN;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 15
+ASGNI4
+line 1789
+;1789:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $803
+line 1792
+;1790:
+;1791:	case ANIM_WALK:
+;1792:		m->playerLegs = LEGS_WALK;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 14
+ASGNI4
+line 1793
+;1793:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $804
+line 1796
+;1794:
+;1795:	case ANIM_BACK:
+;1796:		m->playerLegs = LEGS_BACK;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 16
+ASGNI4
+line 1797
+;1797:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $805
+line 1800
+;1798:
+;1799:	case ANIM_JUMP:
+;1800:		m->playerLegs = LEGS_JUMP;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 18
+ASGNI4
+line 1801
+;1801:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $806
+line 1804
+;1802:
+;1803:	case ANIM_CROUCH:
+;1804:		m->playerLegs = LEGS_IDLECR;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 23
+ASGNI4
+line 1805
+;1805:		break;
+ADDRGP4 $797
+JUMPV
+line 1808
+;1806:
+;1807:	case ANIM_TURNLEFT:
+;1808:		break;
+line 1811
+;1809:
+;1810:	case ANIM_TURNRIGHT:
+;1811:		break;
+LABELV $809
+line 1814
+;1812:
+;1813:	case ANIM_STEPLEFT:
+;1814:		m->playerLegs = LEGS_WALK;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 14
+ASGNI4
+line 1815
+;1815:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $810
+line 1818
+;1816:
+;1817:	case ANIM_STEPRIGHT:
+;1818:		m->playerLegs = LEGS_WALK;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 14
+ASGNI4
+line 1819
+;1819:		break;
+ADDRGP4 $797
+JUMPV
+line 1822
+;1820:
+;1821:	case ANIM_LOOKUP:
+;1822:		break;
+line 1825
+;1823:
+;1824:	case ANIM_LOOKDOWN:
+;1825:		break;
+LABELV $813
+line 1828
+;1826:
+;1827:	case ANIM_WEAPON1:
+;1828:		currentWeapon = m->playerWeapon = WP_GAUNTLET;
+ADDRLP4 8
+CNSTI4 1
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+ADDRLP4 8
+INDIRI4
+ASGNI4
+ADDRGP4 currentWeapon
+ADDRLP4 8
+INDIRI4
+ASGNI4
+line 1829
+;1829:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $814
+line 1832
+;1830:
+;1831:	case ANIM_WEAPON2:
+;1832:		currentWeapon = m->playerWeapon = WP_MACHINEGUN;
+ADDRLP4 12
+CNSTI4 2
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+ADDRLP4 12
+INDIRI4
+ASGNI4
+ADDRGP4 currentWeapon
+ADDRLP4 12
+INDIRI4
+ASGNI4
+line 1833
+;1833:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $815
+line 1836
+;1834:
+;1835:	case ANIM_WEAPON3:
+;1836:		currentWeapon = m->playerWeapon = WP_SHOTGUN;
+ADDRLP4 16
+CNSTI4 3
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+ADDRLP4 16
+INDIRI4
+ASGNI4
+ADDRGP4 currentWeapon
+ADDRLP4 16
+INDIRI4
+ASGNI4
+line 1837
+;1837:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $816
+line 1840
+;1838:
+;1839:	case ANIM_WEAPON4:
+;1840:		currentWeapon = m->playerWeapon = WP_GRENADE_LAUNCHER;
+ADDRLP4 20
+CNSTI4 4
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+ADDRLP4 20
+INDIRI4
+ASGNI4
+ADDRGP4 currentWeapon
+ADDRLP4 20
+INDIRI4
+ASGNI4
+line 1841
+;1841:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $817
+line 1844
+;1842:
+;1843:	case ANIM_WEAPON5:
+;1844:		currentWeapon = m->playerWeapon = WP_ROCKET_LAUNCHER;
+ADDRLP4 24
+CNSTI4 5
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+ADDRLP4 24
+INDIRI4
+ASGNI4
+ADDRGP4 currentWeapon
+ADDRLP4 24
+INDIRI4
+ASGNI4
+line 1845
+;1845:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $818
+line 1848
+;1846:
+;1847:	case ANIM_WEAPON6:
+;1848:		currentWeapon = m->playerWeapon = WP_LIGHTNING;
+ADDRLP4 28
+CNSTI4 6
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+ADDRLP4 28
+INDIRI4
+ASGNI4
+ADDRGP4 currentWeapon
+ADDRLP4 28
+INDIRI4
+ASGNI4
+line 1849
+;1849:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $819
+line 1852
+;1850:
+;1851:	case ANIM_WEAPON7:
+;1852:		currentWeapon = m->playerWeapon = WP_RAILGUN;
+ADDRLP4 32
+CNSTI4 7
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+ADDRLP4 32
+INDIRI4
+ASGNI4
+ADDRGP4 currentWeapon
+ADDRLP4 32
+INDIRI4
+ASGNI4
+line 1853
+;1853:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $820
+line 1856
+;1854:
+;1855:	case ANIM_WEAPON8:
+;1856:		currentWeapon = m->playerWeapon = WP_PLASMAGUN;
+ADDRLP4 36
+CNSTI4 8
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+ADDRLP4 36
+INDIRI4
+ASGNI4
+ADDRGP4 currentWeapon
+ADDRLP4 36
+INDIRI4
+ASGNI4
+line 1857
+;1857:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $821
+line 1860
+;1858:
+;1859:	case ANIM_WEAPON9:
+;1860:		currentWeapon = m->playerWeapon = WP_BFG;
+ADDRLP4 40
+CNSTI4 9
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+ADDRLP4 40
+INDIRI4
+ASGNI4
+ADDRGP4 currentWeapon
+ADDRLP4 40
+INDIRI4
+ASGNI4
+line 1861
+;1861:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $822
+line 1864
+;1862:
+;1863:	case ANIM_WEAPON10:
+;1864:		currentWeapon = m->playerWeapon = WP_GRAPPLING_HOOK;
+ADDRLP4 44
+CNSTI4 10
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+ADDRLP4 44
+INDIRI4
+ASGNI4
+ADDRGP4 currentWeapon
+ADDRLP4 44
+INDIRI4
+ASGNI4
+line 1865
+;1865:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $823
+line 1868
+;1866:		
+;1867:	case ANIM_WEAPON11:
+;1868:		currentWeapon = m->playerWeapon = WP_NAILGUN;
+ADDRLP4 48
+CNSTI4 11
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+ADDRLP4 48
+INDIRI4
+ASGNI4
+ADDRGP4 currentWeapon
+ADDRLP4 48
+INDIRI4
+ASGNI4
+line 1869
+;1869:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $824
+line 1872
+;1870:
+;1871:	case ANIM_WEAPON12:
+;1872:		currentWeapon = m->playerWeapon = WP_PROX_LAUNCHER;
+ADDRLP4 52
+CNSTI4 12
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+ADDRLP4 52
+INDIRI4
+ASGNI4
+ADDRGP4 currentWeapon
+ADDRLP4 52
+INDIRI4
+ASGNI4
+line 1873
+;1873:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $825
+line 1876
+;1874:		
+;1875:	case ANIM_WEAPON13:
+;1876:		currentWeapon = m->playerWeapon = WP_CHAINGUN;
+ADDRLP4 56
+CNSTI4 13
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+ADDRLP4 56
+INDIRI4
+ASGNI4
+ADDRGP4 currentWeapon
+ADDRLP4 56
+INDIRI4
+ASGNI4
+line 1877
+;1877:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $826
+line 1880
+;1878:
+;1879:	case ANIM_WEAPON14:
+;1880:		currentWeapon = m->playerWeapon = WP_FLAMETHROWER;
+ADDRLP4 60
+CNSTI4 14
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+ADDRLP4 60
+INDIRI4
+ASGNI4
+ADDRGP4 currentWeapon
+ADDRLP4 60
+INDIRI4
+ASGNI4
+line 1881
+;1881:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $827
+line 1884
+;1882:		
+;1883:	case ANIM_WEAPON15:
+;1884:		currentWeapon = m->playerWeapon = WP_ANTIMATTER;
+ADDRLP4 64
+CNSTI4 15
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+ADDRLP4 64
+INDIRI4
+ASGNI4
+ADDRGP4 currentWeapon
+ADDRLP4 64
+INDIRI4
+ASGNI4
+line 1885
+;1885:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $828
+line 1888
+;1886:
+;1887:	case ANIM_ATTACK:
+;1888:		m->playerTorso = TORSO_ATTACK;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2128
+ADDP4
+CNSTI4 7
+ASGNI4
+line 1889
+;1889:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $829
+line 1892
+;1890:
+;1891:	case ANIM_GESTURE:
+;1892:		m->playerTorso = TORSO_GESTURE;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2128
+ADDP4
+CNSTI4 6
+ASGNI4
+line 1893
+;1893:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $830
+line 1896
+;1894:
+;1895:	case ANIM_DIE:
+;1896:		m->playerLegs = BOTH_DEATH1;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1897
+;1897:		m->playerTorso = BOTH_DEATH1;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2128
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1898
+;1898:		m->playerWeapon = WP_NONE;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1899
+;1899:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $831
+line 1902
+;1900:
+;1901:	case ANIM_DIE2:
+;1902:		m->playerLegs = BOTH_DEATH2;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 2
+ASGNI4
+line 1903
+;1903:		m->playerTorso = BOTH_DEATH2;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2128
+ADDP4
+CNSTI4 2
+ASGNI4
+line 1904
+;1904:		m->playerWeapon = WP_NONE;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1905
+;1905:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $832
+line 1908
+;1906:
+;1907:	case ANIM_DIE3:
+;1908:		m->playerLegs = BOTH_DEATH3;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 4
+ASGNI4
+line 1909
+;1909:		m->playerTorso = BOTH_DEATH3;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2128
+ADDP4
+CNSTI4 4
+ASGNI4
+line 1910
+;1910:		m->playerWeapon = WP_NONE;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1911
+;1911:		break;
+ADDRGP4 $797
+JUMPV
+LABELV $796
+line 1914
+;1912:
+;1913:	default:
+;1914:		Com_Printf( "Unknown anim: %i\n", m->anim );
+ADDRGP4 $833
+ARGP4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2120
+ADDP4
+INDIRI4
+ARGI4
+ADDRGP4 Com_Printf
+CALLV
+pop
+line 1915
+;1915:		break;
+LABELV $797
+line 1917
+;1916:	}
+;1917:}
+LABELV $795
+endproc PlayerInfo_SetAnimation 68 8
+proc PlayerInfo_IsWeaponAnim 4 0
+line 1928
+;1918:
+;1919:
+;1920:
+;1921:
+;1922:/*
+;1923:=================
+;1924:PlayerInfo_IsWeaponAnim
+;1925:=================
+;1926:*/
+;1927:static qboolean PlayerInfo_IsWeaponAnim( int anim)
+;1928:{
+line 1929
+;1929:	switch (anim) {
+ADDRLP4 0
+ADDRFP4 0
+INDIRI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 13
+LTI4 $837
+ADDRLP4 0
+INDIRI4
+CNSTI4 27
+GTI4 $837
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 $840-52
+ADDP4
+INDIRP4
+JUMPV
+lit
+align 4
+LABELV $840
+address $839
+address $839
+address $839
+address $839
+address $839
+address $839
+address $839
+address $839
+address $839
+address $839
+address $839
+address $839
+address $839
+address $839
+address $839
+code
+LABELV $839
+line 1945
+;1930:	case ANIM_WEAPON1:
+;1931:	case ANIM_WEAPON2:
+;1932:	case ANIM_WEAPON3:
+;1933:	case ANIM_WEAPON4:
+;1934:	case ANIM_WEAPON5:
+;1935:	case ANIM_WEAPON6:
+;1936:	case ANIM_WEAPON7:
+;1937:	case ANIM_WEAPON8:
+;1938:	case ANIM_WEAPON9:
+;1939:	case ANIM_WEAPON10:
+;1940:	case ANIM_WEAPON11:
+;1941:	case ANIM_WEAPON12:
+;1942:	case ANIM_WEAPON13:
+;1943:	case ANIM_WEAPON14:
+;1944:	case ANIM_WEAPON15:
+;1945:		return qtrue;
+CNSTI4 1
+RETI4
+ADDRGP4 $836
+JUMPV
+LABELV $837
+line 1947
+;1946:	}
+;1947:	return qfalse;
+CNSTI4 0
+RETI4
+LABELV $836
+endproc PlayerInfo_IsWeaponAnim 4 0
+proc PlayerInfo_IsDeathAnim 4 0
+line 1958
+;1948:}
+;1949:
+;1950:
+;1951:
+;1952:/*
+;1953:=================
+;1954:PlayerInfo_IsDeathAnim
+;1955:=================
+;1956:*/
+;1957:static qboolean PlayerInfo_IsDeathAnim( int anim)
+;1958:{
+line 1959
+;1959:	if (anim == ANIM_DIE || anim == ANIM_DIE2 || anim == ANIM_DIE3)
+ADDRLP4 0
+ADDRFP4 0
+INDIRI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 30
+EQI4 $846
+ADDRLP4 0
+INDIRI4
+CNSTI4 31
+EQI4 $846
+ADDRLP4 0
+INDIRI4
+CNSTI4 32
+NEI4 $843
+LABELV $846
+line 1960
+;1960:		return qtrue;
+CNSTI4 1
+RETI4
+ADDRGP4 $842
+JUMPV
+LABELV $843
+line 1962
+;1961:
+;1962:	return qfalse;
+CNSTI4 0
+RETI4
+LABELV $842
+endproc PlayerInfo_IsDeathAnim 4 0
+proc PlayerInfo_UsableAnimation 40 4
+line 1974
+;1963:}
+;1964:
+;1965:
+;1966:
+;1967:
+;1968:/*
+;1969:=================
+;1970:PlayerInfo_UsableAnimation
+;1971:=================
+;1972:*/
+;1973:static qboolean PlayerInfo_UsableAnimation( modelAnim_t* m, int anim)
+;1974:{
+line 1980
+;1975:	int i;
+;1976:	int a;
+;1977:	qboolean weapon;
+;1978:	qboolean death;
+;1979:
+;1980:	if (anim == 0 || anim == ANIM_IDLE || anim == ANIM_WEAPON10 || anim == ANIM_CHAT)
+ADDRLP4 16
+ADDRFP4 4
+INDIRI4
+ASGNI4
+ADDRLP4 16
+INDIRI4
+CNSTI4 0
+EQI4 $852
+ADDRLP4 16
+INDIRI4
+CNSTI4 1
+EQI4 $852
+ADDRLP4 16
+INDIRI4
+CNSTI4 22
+EQI4 $852
+ADDRLP4 16
+INDIRI4
+CNSTI4 34
+NEI4 $848
+LABELV $852
+line 1981
+;1981:		return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $847
+JUMPV
+LABELV $848
+line 1984
+;1982:
+;1983:	// infrequent swimmer	
+;1984:	if (anim == ANIM_SWIM && random() > 0.3)
+ADDRFP4 4
+INDIRI4
+CNSTI4 33
+NEI4 $853
+ADDRLP4 20
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 20
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1050253722
+LEF4 $853
+line 1985
+;1985:		return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $847
+JUMPV
+LABELV $853
+line 1989
+;1986:
+;1987:	// check anim not used recently
+;1988:	// reject any recent weapon change, or death anim
+;1989:	weapon = qfalse;
+ADDRLP4 12
+CNSTI4 0
+ASGNI4
+line 1990
+;1990:	death = PlayerInfo_IsDeathAnim(anim);
+ADDRFP4 4
+INDIRI4
+ARGI4
+ADDRLP4 24
+ADDRGP4 PlayerInfo_IsDeathAnim
+CALLI4
+ASGNI4
+ADDRLP4 8
+ADDRLP4 24
+INDIRI4
+ASGNI4
+line 1991
+;1991:	for (i = 0; i < MAX_RECENT_ANIMS; i++) {
+ADDRLP4 4
+CNSTI4 0
+ASGNI4
+LABELV $855
+line 1992
+;1992:		a = m->recent_anims[i];
+ADDRLP4 0
+ADDRLP4 4
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2180
+ADDP4
+ADDP4
+INDIRI4
+ASGNI4
+line 1993
+;1993:		if ( a == anim)
+ADDRLP4 0
+INDIRI4
+ADDRFP4 4
+INDIRI4
+NEI4 $859
+line 1994
+;1994:			return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $847
+JUMPV
+LABELV $859
+line 1995
+;1995:		if (PlayerInfo_IsWeaponAnim(a))
+ADDRLP4 0
+INDIRI4
+ARGI4
+ADDRLP4 28
+ADDRGP4 PlayerInfo_IsWeaponAnim
+CALLI4
+ASGNI4
+ADDRLP4 28
+INDIRI4
+CNSTI4 0
+EQI4 $861
+line 1996
+;1996:			weapon = qtrue;
+ADDRLP4 12
+CNSTI4 1
+ASGNI4
+LABELV $861
+line 1997
+;1997:		if (death && PlayerInfo_IsDeathAnim(a))
+ADDRLP4 8
+INDIRI4
+CNSTI4 0
+EQI4 $863
+ADDRLP4 0
+INDIRI4
+ARGI4
+ADDRLP4 32
+ADDRGP4 PlayerInfo_IsDeathAnim
+CALLI4
+ASGNI4
+ADDRLP4 32
+INDIRI4
+CNSTI4 0
+EQI4 $863
+line 1998
+;1998:			return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $847
+JUMPV
+LABELV $863
+line 1999
+;1999:	}
+LABELV $856
+line 1991
+ADDRLP4 4
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 4
+INDIRI4
+CNSTI4 10
+LTI4 $855
+line 2003
+;2000:
+;2001:	// prevent weapon fire after death anim
+;2002:	// firing starts too early, and it looks ugly
+;2003:	if (anim == ANIM_ATTACK && PlayerInfo_IsDeathAnim(m->anim))
+ADDRFP4 4
+INDIRI4
+CNSTI4 28
+NEI4 $865
+ADDRFP4 0
+INDIRP4
+CNSTI4 2120
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 28
+ADDRGP4 PlayerInfo_IsDeathAnim
+CALLI4
+ASGNI4
+ADDRLP4 28
+INDIRI4
+CNSTI4 0
+EQI4 $865
+line 2004
+;2004:		return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $847
+JUMPV
+LABELV $865
+line 2007
+;2005:
+;2006:	// refuse if we have a recent weapon change
+;2007:	if (PlayerInfo_IsWeaponAnim(anim)) {
+ADDRFP4 4
+INDIRI4
+ARGI4
+ADDRLP4 32
+ADDRGP4 PlayerInfo_IsWeaponAnim
+CALLI4
+ASGNI4
+ADDRLP4 32
+INDIRI4
+CNSTI4 0
+EQI4 $867
+line 2008
+;2008:		if (weapon)
+ADDRLP4 12
+INDIRI4
+CNSTI4 0
+EQI4 $869
+line 2009
+;2009:			return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $847
+JUMPV
+LABELV $869
+line 2011
+;2010:
+;2011:		if (anim == m->current_weapon)
+ADDRFP4 4
+INDIRI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2224
+ADDP4
+INDIRI4
+NEI4 $871
+line 2012
+;2012:			return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $847
+JUMPV
+LABELV $871
+line 2014
+;2013:
+;2014:		m->current_weapon = anim;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2224
+ADDP4
+ADDRFP4 4
+INDIRI4
+ASGNI4
+line 2015
+;2015:	}
+LABELV $867
+line 2018
+;2016:
+;2017:	// reduce frequency of death animation
+;2018:	if (death && random() < 0.25) {
+ADDRLP4 8
+INDIRI4
+CNSTI4 0
+EQI4 $873
+ADDRLP4 36
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 36
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1048576000
+GEF4 $873
+line 2019
+;2019:		return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $847
+JUMPV
+LABELV $873
+line 2022
+;2020:	}
+;2021:
+;2022:	return qtrue;
+CNSTI4 1
+RETI4
+LABELV $847
+endproc PlayerInfo_UsableAnimation 40 4
+proc PlayerInfo_WeaponCycleTime 12 0
+line 2035
+;2023:}
+;2024:
+;2025:
+;2026:
+;2027:
+;2028:
+;2029:/*
+;2030:=================
+;2031:PlayerInfo_WeaponCycleTime
+;2032:=================
+;2033:*/
+;2034:static int PlayerInfo_WeaponCycleTime( playerInfo_t* pi)
+;2035:{
+line 2042
+;2036:	int addTime;
+;2037:
+;2038:	//
+;2039:	// lifted directly from PM_Weapon() in bg_pmove.c
+;2040:	//
+;2041:
+;2042:	addTime = 0;
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+line 2043
+;2043:	switch( pi->currentWeapon ) {
+ADDRLP4 4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1060
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+LTI4 $876
+ADDRLP4 4
+INDIRI4
+CNSTI4 15
+GTI4 $876
+ADDRLP4 4
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 $894-4
+ADDP4
+INDIRP4
+JUMPV
+lit
+align 4
+LABELV $894
+address $879
+address $882
+address $881
+address $883
+address $884
+address $880
+address $886
+address $885
+address $887
+address $888
+address $889
+address $890
+address $891
+address $892
+address $893
+code
+LABELV $876
+LABELV $879
+line 2046
+;2044:	default:
+;2045:	case WP_GAUNTLET:
+;2046:		addTime = 800;
+ADDRLP4 0
+CNSTI4 800
+ASGNI4
+line 2047
+;2047:		break;
+ADDRGP4 $877
+JUMPV
+LABELV $880
+line 2049
+;2048:	case WP_LIGHTNING:
+;2049:		addTime = 50;
+ADDRLP4 0
+CNSTI4 50
+ASGNI4
+line 2050
+;2050:		break;
+ADDRGP4 $877
+JUMPV
+LABELV $881
+line 2052
+;2051:	case WP_SHOTGUN:
+;2052:		addTime = 1000;
+ADDRLP4 0
+CNSTI4 1000
+ASGNI4
+line 2053
+;2053:		break;
+ADDRGP4 $877
+JUMPV
+LABELV $882
+line 2055
+;2054:	case WP_MACHINEGUN:
+;2055:		addTime = 100;
+ADDRLP4 0
+CNSTI4 100
+ASGNI4
+line 2056
+;2056:		break;
+ADDRGP4 $877
+JUMPV
+LABELV $883
+line 2058
+;2057:	case WP_GRENADE_LAUNCHER:
+;2058:		addTime = 800;
+ADDRLP4 0
+CNSTI4 800
+ASGNI4
+line 2059
+;2059:		break;
+ADDRGP4 $877
+JUMPV
+LABELV $884
+line 2061
+;2060:	case WP_ROCKET_LAUNCHER:
+;2061:		addTime = 800;
+ADDRLP4 0
+CNSTI4 800
+ASGNI4
+line 2062
+;2062:		break;
+ADDRGP4 $877
+JUMPV
+LABELV $885
+line 2064
+;2063:	case WP_PLASMAGUN:
+;2064:		addTime = 100;
+ADDRLP4 0
+CNSTI4 100
+ASGNI4
+line 2065
+;2065:		break;
+ADDRGP4 $877
+JUMPV
+LABELV $886
+line 2067
+;2066:	case WP_RAILGUN:
+;2067:		addTime = 1500;
+ADDRLP4 0
+CNSTI4 1500
+ASGNI4
+line 2068
+;2068:		break;
+ADDRGP4 $877
+JUMPV
+LABELV $887
+line 2070
+;2069:	case WP_BFG:
+;2070:		addTime = 200;
+ADDRLP4 0
+CNSTI4 200
+ASGNI4
+line 2071
+;2071:		break;
+ADDRGP4 $877
+JUMPV
+LABELV $888
+line 2073
+;2072:	case WP_GRAPPLING_HOOK:
+;2073:		addTime = 400;
+ADDRLP4 0
+CNSTI4 400
+ASGNI4
+line 2074
+;2074:		break;
+ADDRGP4 $877
+JUMPV
+LABELV $889
+line 2076
+;2075:	case WP_NAILGUN:
+;2076:		addTime = 1000;
+ADDRLP4 0
+CNSTI4 1000
+ASGNI4
+line 2077
+;2077:		break;
+ADDRGP4 $877
+JUMPV
+LABELV $890
+line 2079
+;2078:	case WP_PROX_LAUNCHER:
+;2079:		addTime = 800;
+ADDRLP4 0
+CNSTI4 800
+ASGNI4
+line 2080
+;2080:		break;
+ADDRGP4 $877
+JUMPV
+LABELV $891
+line 2082
+;2081:	case WP_CHAINGUN:
+;2082:		addTime = 30;
+ADDRLP4 0
+CNSTI4 30
+ASGNI4
+line 2083
+;2083:		break;
+ADDRGP4 $877
+JUMPV
+LABELV $892
+line 2085
+;2084:	case WP_FLAMETHROWER:
+;2085:		addTime = 40;
+ADDRLP4 0
+CNSTI4 40
+ASGNI4
+line 2086
+;2086:		break;
+ADDRGP4 $877
+JUMPV
+LABELV $893
+line 2088
+;2087:	case WP_ANTIMATTER:
+;2088:		addTime = 40;
+ADDRLP4 0
+CNSTI4 40
+ASGNI4
+line 2089
+;2089:	break;
+LABELV $877
+line 2092
+;2090:	}
+;2091:
+;2092:	return addTime;
+ADDRLP4 0
+INDIRI4
+RETI4
+LABELV $875
+endproc PlayerInfo_WeaponCycleTime 12 0
+proc PlayerInfo_ChangeTimedAnimation 44 8
+line 2104
+;2093:}
+;2094:
+;2095:
+;2096:
+;2097:
+;2098:/*
+;2099:=================
+;2100:PlayerInfo_ChangeTimedAnimation
+;2101:=================
+;2102:*/
+;2103:static void PlayerInfo_ChangeTimedAnimation( modelAnim_t* m)
+;2104:{
+line 2109
+;2105:	int changetime;
+;2106:	int anim;
+;2107:	int firetime;
+;2108:
+;2109:	if (forceNextAnim) {
+ADDRGP4 forceNextAnim
+INDIRI4
+CNSTI4 0
+EQI4 $897
+line 2110
+;2110:		anim = forceNextAnim;
+ADDRLP4 0
+ADDRGP4 forceNextAnim
+INDIRI4
+ASGNI4
+line 2111
+;2111:		forceNextAnim = 0;
+ADDRGP4 forceNextAnim
+CNSTI4 0
+ASGNI4
+line 2112
+;2112:	}
+ADDRGP4 $898
+JUMPV
+LABELV $897
+LABELV $899
+line 2114
+;2113:	else
+;2114:		do {
+line 2115
+;2115:			anim = Clamp_Random(ANIM_MAX - 1);
+CNSTI4 34
+ARGI4
+ADDRLP4 12
+ADDRGP4 Clamp_Random
+CALLI4
+ASGNI4
+ADDRLP4 0
+ADDRLP4 12
+INDIRI4
+ASGNI4
+line 2116
+;2116:		} while (!PlayerInfo_UsableAnimation(m, anim));
+LABELV $900
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRLP4 0
+INDIRI4
+ARGI4
+ADDRLP4 12
+ADDRGP4 PlayerInfo_UsableAnimation
+CALLI4
+ASGNI4
+ADDRLP4 12
+INDIRI4
+CNSTI4 0
+EQI4 $899
+LABELV $898
+line 2118
+;2117:
+;2118:	changetime = 5000;
+ADDRLP4 4
+CNSTI4 5000
+ASGNI4
+line 2120
+;2119:
+;2120:	switch( anim ) {
+ADDRLP4 20
+CNSTI4 2
+ASGNI4
+ADDRLP4 0
+INDIRI4
+ADDRLP4 20
+INDIRI4
+LTI4 $903
+ADDRLP4 0
+INDIRI4
+CNSTI4 34
+GTI4 $903
+ADDRLP4 0
+INDIRI4
+ADDRLP4 20
+INDIRI4
+LSHI4
+ADDRGP4 $920-8
+ADDP4
+INDIRP4
+JUMPV
+lit
+align 4
+LABELV $920
+address $903
+address $903
+address $903
+address $905
+address $903
+address $903
+address $903
+address $903
+address $903
+address $909
+address $909
+address $910
+address $910
+address $910
+address $910
+address $910
+address $910
+address $910
+address $910
+address $910
+address $910
+address $910
+address $910
+address $910
+address $910
+address $910
+address $913
+address $917
+address $918
+address $918
+address $918
+address $903
+address $919
+code
+line 2125
+;2121:	case ANIM_RUN:
+;2122:	case ANIM_WALK:
+;2123:	case ANIM_BACK:
+;2124:	case ANIM_SWIM:
+;2125:		break;
+LABELV $905
+line 2128
+;2126:
+;2127:	case ANIM_JUMP:
+;2128:		changetime = 3000;
+ADDRLP4 4
+CNSTI4 3000
+ASGNI4
+line 2129
+;2129:		break;
+ADDRGP4 $903
+JUMPV
+line 2132
+;2130:
+;2131:	case ANIM_CROUCH:
+;2132:		break;
+line 2136
+;2133:
+;2134:	case ANIM_TURNLEFT:
+;2135:	case ANIM_TURNRIGHT:
+;2136:		break;
+line 2140
+;2137:
+;2138:	case ANIM_STEPLEFT:
+;2139:	case ANIM_STEPRIGHT:
+;2140:		break;
+LABELV $909
+line 2144
+;2141:
+;2142:	case ANIM_LOOKUP:
+;2143:	case ANIM_LOOKDOWN:
+;2144:		changetime = 2500;
+ADDRLP4 4
+CNSTI4 2500
+ASGNI4
+line 2145
+;2145:		break;
+ADDRGP4 $903
+JUMPV
+LABELV $910
+line 2162
+;2146:
+;2147:	case ANIM_WEAPON1:
+;2148:	case ANIM_WEAPON2:
+;2149:	case ANIM_WEAPON3:
+;2150:	case ANIM_WEAPON4:
+;2151:	case ANIM_WEAPON5:
+;2152:	case ANIM_WEAPON6:
+;2153:	case ANIM_WEAPON7:
+;2154:	case ANIM_WEAPON8:
+;2155:	case ANIM_WEAPON9:
+;2156:	case ANIM_WEAPON10:
+;2157:	case ANIM_WEAPON11:
+;2158:	case ANIM_WEAPON12:
+;2159:	case ANIM_WEAPON13:
+;2160:	case ANIM_WEAPON14:
+;2161:	case ANIM_WEAPON15:
+;2162:		if (m->bDoingIdleAnim && random() < 0.3)
+ADDRFP4 0
+INDIRP4
+CNSTI4 2176
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $911
+ADDRLP4 24
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 24
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1050253722
+GEF4 $911
+line 2163
+;2163:			forceNextAnim = ANIM_ATTACK;
+ADDRGP4 forceNextAnim
+CNSTI4 28
+ASGNI4
+LABELV $911
+line 2164
+;2164:		changetime = 3000;
+ADDRLP4 4
+CNSTI4 3000
+ASGNI4
+line 2165
+;2165:		break;
+ADDRGP4 $903
+JUMPV
+LABELV $913
+line 2168
+;2166:
+;2167:	case ANIM_ATTACK:
+;2168:		firetime = PlayerInfo_WeaponCycleTime(&m->player);
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRLP4 28
+ADDRGP4 PlayerInfo_WeaponCycleTime
+CALLI4
+ASGNI4
+ADDRLP4 8
+ADDRLP4 28
+INDIRI4
+ASGNI4
+line 2169
+;2169:		changetime = 4000;
+ADDRLP4 4
+CNSTI4 4000
+ASGNI4
+line 2170
+;2170:		m->shotsRemaining = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2228
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2171
+;2171:		if (firetime) {
+ADDRLP4 8
+INDIRI4
+CNSTI4 0
+EQI4 $903
+line 2174
+;2172:			// allow for fixed duration of lightning "hum", so it doesn't
+;2173:			// over-run the firing by much
+;2174:			m->nextFireTime = uis.realtime + firetime;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2232
+ADDP4
+ADDRGP4 uis+4
+INDIRI4
+ADDRLP4 8
+INDIRI4
+ADDI4
+ASGNI4
+line 2175
+;2175:			m->shotsRemaining = (LIGHTNING_SFX_DURATION * 3) / firetime + 1;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2228
+ADDP4
+CNSTI4 2892
+ADDRLP4 8
+INDIRI4
+DIVI4
+CNSTI4 1
+ADDI4
+ASGNI4
+line 2176
+;2176:		}
+line 2177
+;2177:		break;
+ADDRGP4 $903
+JUMPV
+LABELV $917
+line 2180
+;2178:
+;2179:	case ANIM_GESTURE:
+;2180:		changetime = 5000;
+ADDRLP4 4
+CNSTI4 5000
+ASGNI4
+line 2181
+;2181:		break;
+ADDRGP4 $903
+JUMPV
+LABELV $918
+line 2186
+;2182:
+;2183:	case ANIM_DIE:
+;2184:	case ANIM_DIE2:
+;2185:	case ANIM_DIE3:
+;2186:		changetime = 5000;
+ADDRLP4 4
+CNSTI4 5000
+ASGNI4
+line 2187
+;2187:		break;
+ADDRGP4 $903
+JUMPV
+LABELV $919
+line 2190
+;2188:
+;2189:	case ANIM_CHAT:
+;2190:		changetime = 2000;
+ADDRLP4 4
+CNSTI4 2000
+ASGNI4
+line 2191
+;2191:		break;
+line 2194
+;2192:
+;2193:	default:
+;2194:		break;
+LABELV $903
+line 2197
+;2195:	}
+;2196:
+;2197:	if (anim != ANIM_ATTACK) {
+ADDRLP4 0
+INDIRI4
+CNSTI4 28
+EQI4 $922
+line 2198
+;2198:		m->shotsRemaining = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2228
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2199
+;2199:		m->player.humTimer = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1028
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2200
+;2200:		m->player.delayFireTimer = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1032
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2201
+;2201:	}
+LABELV $922
+line 2204
+;2202:
+;2203:	// store the anim value
+;2204:	if (m->bDoingIdleAnim)
+ADDRFP4 0
+INDIRP4
+CNSTI4 2176
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $924
+line 2205
+;2205:	{
+line 2206
+;2206:		m->recent_anims[ m->recent_anims_index++ ] = anim;
+ADDRLP4 28
+ADDRFP4 0
+INDIRP4
+CNSTI4 2220
+ADDP4
+ASGNP4
+ADDRLP4 24
+ADDRLP4 28
+INDIRP4
+INDIRI4
+ASGNI4
+ADDRLP4 28
+INDIRP4
+ADDRLP4 24
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 24
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2180
+ADDP4
+ADDP4
+ADDRLP4 0
+INDIRI4
+ASGNI4
+line 2207
+;2207:		if (m->recent_anims_index == MAX_RECENT_ANIMS)
+ADDRFP4 0
+INDIRP4
+CNSTI4 2220
+ADDP4
+INDIRI4
+CNSTI4 10
+NEI4 $926
+line 2208
+;2208:			m->recent_anims_index = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2220
+ADDP4
+CNSTI4 0
+ASGNI4
+LABELV $926
+line 2209
+;2209:	}
+LABELV $924
+line 2212
+;2210:
+;2211:	// reset current anims that cause problems
+;2212:	if (PlayerInfo_IsDeathAnim(m->anim) || m->anim == ANIM_GESTURE || m->anim == ANIM_JUMP || m->anim == ANIM_ATTACK) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 2120
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 24
+ADDRGP4 PlayerInfo_IsDeathAnim
+CALLI4
+ASGNI4
+ADDRLP4 24
+INDIRI4
+CNSTI4 0
+NEI4 $932
+ADDRLP4 28
+ADDRFP4 0
+INDIRP4
+CNSTI4 2120
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 28
+INDIRI4
+CNSTI4 29
+EQI4 $932
+ADDRLP4 28
+INDIRI4
+CNSTI4 5
+EQI4 $932
+ADDRLP4 28
+INDIRI4
+CNSTI4 28
+NEI4 $928
+LABELV $932
+line 2213
+;2213:		m->playerTorso = TORSO_STAND;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2128
+ADDP4
+CNSTI4 11
+ASGNI4
+line 2214
+;2214:		m->playerLegs = LEGS_IDLE;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 22
+ASGNI4
+line 2215
+;2215:		m->playerWeapon = -1;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+CNSTI4 -1
+ASGNI4
+line 2216
+;2216:		if (m->bDoingIdleAnim)
+ADDRFP4 0
+INDIRP4
+CNSTI4 2176
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $933
+line 2217
+;2217:		{
+line 2218
+;2218:			switch (Clamp_Random(5)) {
+CNSTI4 5
+ARGI4
+ADDRLP4 36
+ADDRGP4 Clamp_Random
+CALLI4
+ASGNI4
+ADDRLP4 32
+ADDRLP4 36
+INDIRI4
+ASGNI4
+ADDRLP4 32
+INDIRI4
+CNSTI4 0
+LTI4 $935
+ADDRLP4 32
+INDIRI4
+CNSTI4 5
+GTI4 $935
+ADDRLP4 32
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 $944
+ADDP4
+INDIRP4
+JUMPV
+lit
+align 4
+LABELV $944
+address $938
+address $939
+address $940
+address $941
+address $942
+address $943
+code
+LABELV $935
+LABELV $938
+line 2221
+;2219:			default:
+;2220:			case 0:
+;2221:				m->playerLegs = LEGS_IDLE; break;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 22
+ASGNI4
+ADDRGP4 $936
+JUMPV
+LABELV $939
+line 2223
+;2222:			case 1:
+;2223:				m->playerLegs = LEGS_RUN; break;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 15
+ASGNI4
+ADDRGP4 $936
+JUMPV
+LABELV $940
+line 2225
+;2224:			case 2:
+;2225:				m->playerLegs = LEGS_WALK; break;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 14
+ASGNI4
+ADDRGP4 $936
+JUMPV
+LABELV $941
+line 2227
+;2226:			case 3:
+;2227:				m->playerLegs = LEGS_IDLECR; break;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 23
+ASGNI4
+ADDRGP4 $936
+JUMPV
+LABELV $942
+line 2229
+;2228:			case 4:
+;2229:				m->playerLegs = LEGS_BACK; break;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 16
+ASGNI4
+ADDRGP4 $936
+JUMPV
+LABELV $943
+line 2231
+;2230:			case 5:
+;2231:				m->playerLegs = LEGS_SWIM; break;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+CNSTI4 17
+ASGNI4
+LABELV $936
+line 2233
+;2232:			}
+;2233:		}
+LABELV $933
+line 2234
+;2234:	}
+LABELV $928
+line 2237
+;2235:
+;2236:	// make the anim change
+;2237:	UIE_PlayerInfo_ChangeAnimation(m, anim);
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRLP4 0
+INDIRI4
+ARGI4
+ADDRGP4 UIE_PlayerInfo_ChangeAnimation
+CALLV
+pop
+line 2238
+;2238:	m->NextIdleAnimTime = uis.realtime + changetime;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2172
+ADDP4
+ADDRGP4 uis+4
+INDIRI4
+ADDRLP4 4
+INDIRI4
+ADDI4
+ASGNI4
+line 2239
+;2239:}
+LABELV $896
+endproc PlayerInfo_ChangeTimedAnimation 44 8
+export UIE_PlayerInfo_ChangeTimedAnimation
+proc UIE_PlayerInfo_ChangeTimedAnimation 0 4
+line 2249
+;2240:
+;2241:
+;2242:
+;2243:/*
+;2244:=================
+;2245:UIE_PlayerInfo_ChangeTimedAnimation
+;2246:=================
+;2247:*/
+;2248:void UIE_PlayerInfo_ChangeTimedAnimation( modelAnim_t* m, int anim)
+;2249:{
+line 2250
+;2250:	if (crashProtected)
+ADDRGP4 crashProtected
+INDIRI4
+CNSTI4 0
+EQI4 $947
+line 2251
+;2251:		return;
+ADDRGP4 $946
+JUMPV
+LABELV $947
+line 2253
+;2252:
+;2253:	forceNextAnim = anim;
+ADDRGP4 forceNextAnim
+ADDRFP4 4
+INDIRI4
+ASGNI4
+line 2254
+;2254:	PlayerInfo_ChangeTimedAnimation(m);
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 PlayerInfo_ChangeTimedAnimation
+CALLV
+pop
+line 2255
+;2255:}
+LABELV $946
+endproc UIE_PlayerInfo_ChangeTimedAnimation 0 4
+proc PlayerInfo_CursorChanged 4 8
+line 2265
+;2256:
+;2257:
+;2258:
+;2259:/*
+;2260:=================
+;2261:PlayerInfo_CursorChanged
+;2262:=================
+;2263:*/
+;2264:static qboolean PlayerInfo_CursorChanged( modelAnim_t* m)
+;2265:{
+line 2267
+;2266:	// check for cursor position change
+;2267:	if (uis.cursorx != m->cursorx || uis.cursory != m->cursory) {
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRGP4 uis+8
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 2164
+ADDP4
+INDIRI4
+NEI4 $954
+ADDRGP4 uis+12
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 2168
+ADDP4
+INDIRI4
+EQI4 $950
+LABELV $954
+line 2268
+;2268:		if (m->bDoingIdleAnim) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 2176
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $955
+line 2269
+;2269:			UIE_PlayerInfo_ChangeAnimation(m, ANIM_IDLE);
+ADDRFP4 0
+INDIRP4
+ARGP4
+CNSTI4 1
+ARGI4
+ADDRGP4 UIE_PlayerInfo_ChangeAnimation
+CALLV
+pop
+line 2270
+;2270:			m->bDoingIdleAnim = qfalse;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2176
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2271
+;2271:		}
+LABELV $955
+line 2272
+;2272:		m->cursorx = uis.cursorx;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2164
+ADDP4
+ADDRGP4 uis+8
+INDIRI4
+ASGNI4
+line 2273
+;2273:		m->cursory = uis.cursory;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2168
+ADDP4
+ADDRGP4 uis+12
+INDIRI4
+ASGNI4
+line 2275
+;2274:
+;2275:		return qtrue;
+CNSTI4 1
+RETI4
+ADDRGP4 $949
+JUMPV
+LABELV $950
+line 2278
+;2276:	}
+;2277:
+;2278:	return qfalse;
+CNSTI4 0
+RETI4
+LABELV $949
+endproc PlayerInfo_CursorChanged 4 8
+proc PlayerInfo_ModelTrackCursor 72 8
+line 2290
+;2279:}
+;2280:
+;2281:
+;2282:
+;2283:
+;2284:/*
+;2285:=================
+;2286:PlayerInfo_ModelTrackCursor
+;2287:=================
+;2288:*/
+;2289:static void PlayerInfo_ModelTrackCursor( modelAnim_t* m)
+;2290:{
+line 2294
+;2291:	vec3_t cursor3d;
+;2292:	menubitmap_s* b;
+;2293:
+;2294:	b = &m->bitmap;
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+CNSTI4 1524
+ADDP4
+ASGNP4
+line 2295
+;2295:	cursor3d[0] = 175.0;
+ADDRLP4 4
+CNSTF4 1127153664
+ASGNF4
+line 2296
+;2296:	cursor3d[1] = ( m->cursorx - ( b->generic.x + b->width/4 ));
+ADDRLP4 4+4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2164
+ADDP4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 104
+ADDP4
+INDIRI4
+CNSTI4 4
+DIVI4
+ADDI4
+SUBI4
+CVIF4 4
+ASGNF4
+line 2297
+;2297:	cursor3d[2] = ( m->cursory - ( b->generic.y + b->height/4 ));
+ADDRLP4 4+8
+ADDRFP4 0
+INDIRP4
+CNSTI4 2168
+ADDP4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 108
+ADDP4
+INDIRI4
+CNSTI4 4
+DIVI4
+ADDI4
+SUBI4
+CVIF4 4
+ASGNF4
+line 2299
+;2298:
+;2299:	VectorClear(m->viewangles);
+ADDRLP4 24
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 28
+CNSTF4 0
+ASGNF4
+ADDRLP4 24
+INDIRP4
+CNSTI4 2148
+ADDP4
+ADDRLP4 28
+INDIRF4
+ASGNF4
+ADDRLP4 24
+INDIRP4
+CNSTI4 2144
+ADDP4
+ADDRLP4 28
+INDIRF4
+ASGNF4
+ADDRLP4 24
+INDIRP4
+CNSTI4 2140
+ADDP4
+ADDRLP4 28
+INDIRF4
+ASGNF4
+line 2300
+;2300:	VectorClear(m->moveangles);
+ADDRLP4 32
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 36
+CNSTF4 0
+ASGNF4
+ADDRLP4 32
+INDIRP4
+CNSTI4 2160
+ADDP4
+ADDRLP4 36
+INDIRF4
+ASGNF4
+ADDRLP4 32
+INDIRP4
+CNSTI4 2156
+ADDP4
+ADDRLP4 36
+INDIRF4
+ASGNF4
+ADDRLP4 32
+INDIRP4
+CNSTI4 2152
+ADDP4
+ADDRLP4 36
+INDIRF4
+ASGNF4
+line 2302
+;2301:
+;2302:	vectoangles(cursor3d, m->viewangles);
+ADDRLP4 4
+ARGP4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2140
+ADDP4
+ARGP4
+ADDRGP4 vectoangles
+CALLV
+pop
+line 2305
+;2303:
+;2304:	// prevent cursor movement "rotating" while body is spinning
+;2305:	if (m->spin.useSpin && m->spin.rotate)
+ADDRLP4 40
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 44
+CNSTI4 0
+ASGNI4
+ADDRLP4 40
+INDIRP4
+CNSTI4 2116
+ADDP4
+INDIRI4
+ADDRLP4 44
+INDIRI4
+EQI4 $962
+ADDRLP4 40
+INDIRP4
+CNSTI4 2108
+ADDP4
+INDIRI4
+ADDRLP4 44
+INDIRI4
+EQI4 $962
+line 2306
+;2306:		m->viewangles[YAW] = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2144
+ADDP4
+CNSTF4 0
+ASGNF4
+LABELV $962
+line 2308
+;2307:
+;2308:	VectorCopy(m->viewangles, m->moveangles);
+ADDRLP4 48
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 48
+INDIRP4
+CNSTI4 2152
+ADDP4
+ADDRLP4 48
+INDIRP4
+CNSTI4 2140
+ADDP4
+INDIRB
+ASGNB 12
+line 2311
+;2309:
+;2310:	// prevent stoop or back-breaking during attract mode
+;2311:	if (m->bDoingIdleAnim) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 2176
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $964
+line 2312
+;2312:		if (m->viewangles[PITCH] > 20)
+ADDRFP4 0
+INDIRP4
+CNSTI4 2140
+ADDP4
+INDIRF4
+CNSTF4 1101004800
+LEF4 $966
+line 2313
+;2313:			m->viewangles[PITCH] = 20;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2140
+ADDP4
+CNSTF4 1101004800
+ASGNF4
+ADDRGP4 $967
+JUMPV
+LABELV $966
+line 2315
+;2314:		else
+;2315:		if (m->viewangles[PITCH] < -20)
+ADDRFP4 0
+INDIRP4
+CNSTI4 2140
+ADDP4
+INDIRF4
+CNSTF4 3248488448
+GEF4 $968
+line 2316
+;2316:			m->viewangles[PITCH] = -20;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2140
+ADDP4
+CNSTF4 3248488448
+ASGNF4
+LABELV $968
+LABELV $967
+line 2317
+;2317:	}
+LABELV $964
+line 2320
+;2318:
+;2319:	// prevent cursor moving torso during death
+;2320:	if (PlayerInfo_IsDeathAnim(m->anim))
+ADDRFP4 0
+INDIRP4
+CNSTI4 2120
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 52
+ADDRGP4 PlayerInfo_IsDeathAnim
+CALLI4
+ASGNI4
+ADDRLP4 52
+INDIRI4
+CNSTI4 0
+EQI4 $970
+line 2321
+;2321:		m->viewangles[PITCH] = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2140
+ADDP4
+CNSTF4 0
+ASGNF4
+LABELV $970
+line 2324
+;2322:
+;2323:	// orient for co-ordinate system	
+;2324:	m->viewangles[PITCH] = -m->viewangles[PITCH];
+ADDRLP4 56
+ADDRFP4 0
+INDIRP4
+CNSTI4 2140
+ADDP4
+ASGNP4
+ADDRLP4 56
+INDIRP4
+ADDRLP4 56
+INDIRP4
+INDIRF4
+NEGF4
+ASGNF4
+line 2325
+;2325:	m->viewangles[YAW]   += 180;
+ADDRLP4 60
+ADDRFP4 0
+INDIRP4
+CNSTI4 2144
+ADDP4
+ASGNP4
+ADDRLP4 60
+INDIRP4
+ADDRLP4 60
+INDIRP4
+INDIRF4
+CNSTF4 1127481344
+ADDF4
+ASGNF4
+line 2327
+;2326:
+;2327:	PlayerInfo_MergeModelViewAngles(m);
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 PlayerInfo_MergeModelViewAngles
+CALLV
+pop
+line 2329
+;2328:
+;2329:	VectorCopy(m->viewangles, m->player.viewAngles);
+ADDRLP4 64
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 64
+INDIRP4
+CNSTI4 1036
+ADDP4
+ADDRLP4 64
+INDIRP4
+CNSTI4 2140
+ADDP4
+INDIRB
+ASGNB 12
+line 2330
+;2330:	VectorCopy(m->moveangles, m->player.moveAngles);
+ADDRLP4 68
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 68
+INDIRP4
+CNSTI4 1048
+ADDP4
+ADDRLP4 68
+INDIRP4
+CNSTI4 2152
+ADDP4
+INDIRB
+ASGNB 12
+line 2331
+;2331:}
+LABELV $959
+endproc PlayerInfo_ModelTrackCursor 72 8
+proc PlayerInfo_SetupNewModel 220 12
+line 2341
+;2332:
+;2333:
+;2334:
+;2335:/*
+;2336:=================
+;2337:PlayerInfo_SetupNewModel
+;2338:=================
+;2339:*/
+;2340:static void PlayerInfo_SetupNewModel( modelAnim_t* m)
+;2341:{
+line 2352
+;2342:	char dir[MODELNAME_BUFFER];
+;2343:	int i;
+;2344:	char* fallback;
+;2345:	char* slash;
+;2346:	char* str;
+;2347:	vec3_t tmp_view;
+;2348:	vec3_t tmp_move;
+;2349:
+;2350:	// store current orientation to avoid too much
+;2351:	// snap movement when changing models
+;2352:	if (m->bForceUpdate) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 2256
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $973
+line 2353
+;2353:		VectorCopy(m->player.viewAngles, tmp_view );
+ADDRLP4 68
+ADDRFP4 0
+INDIRP4
+CNSTI4 1036
+ADDP4
+INDIRB
+ASGNB 12
+line 2354
+;2354:		VectorCopy(m->player.moveAngles, tmp_move);
+ADDRLP4 80
+ADDRFP4 0
+INDIRP4
+CNSTI4 1048
+ADDP4
+INDIRB
+ASGNB 12
+line 2355
+;2355:	}
+ADDRGP4 $974
+JUMPV
+LABELV $973
+line 2356
+;2356:	else {
+line 2357
+;2357:		VectorClear(tmp_view);
+ADDRLP4 104
+CNSTF4 0
+ASGNF4
+ADDRLP4 68+8
+ADDRLP4 104
+INDIRF4
+ASGNF4
+ADDRLP4 68+4
+ADDRLP4 104
+INDIRF4
+ASGNF4
+ADDRLP4 68
+ADDRLP4 104
+INDIRF4
+ASGNF4
+line 2358
+;2358:		VectorClear(tmp_move);
+ADDRLP4 108
+CNSTF4 0
+ASGNF4
+ADDRLP4 80+8
+ADDRLP4 108
+INDIRF4
+ASGNF4
+ADDRLP4 80+4
+ADDRLP4 108
+INDIRF4
+ASGNF4
+ADDRLP4 80
+ADDRLP4 108
+INDIRF4
+ASGNF4
+line 2360
+;2359:
+;2360:		tmp_view[YAW] = 180 - 30;
+ADDRLP4 68+4
+CNSTF4 1125515264
+ASGNF4
+line 2361
+;2361:	}
+LABELV $974
+line 2363
+;2362:
+;2363:	forceNextAnim = ANIM_IDLE;
+ADDRGP4 forceNextAnim
+CNSTI4 1
+ASGNI4
+line 2364
+;2364:	memset( &m->player, 0, sizeof(playerInfo_t));
+ADDRFP4 0
+INDIRP4
+ARGP4
+CNSTI4 0
+ARGI4
+CNSTI4 1140
+ARGI4
+ADDRGP4 memset
+CALLP4
+pop
+line 2365
+;2365:	memset( &sfxModel, 0, sizeof(sfxModel_t));
+ADDRGP4 sfxModel
+ARGP4
+CNSTI4 0
+ARGI4
+CNSTI4 52
+ARGI4
+ADDRGP4 memset
+CALLP4
+pop
+line 2367
+;2366:
+;2367:	VectorCopy(tmp_view, m->viewangles);
+ADDRFP4 0
+INDIRP4
+CNSTI4 2140
+ADDP4
+ADDRLP4 68
+INDIRB
+ASGNB 12
+line 2368
+;2368:	VectorCopy(tmp_move, m->moveangles);
+ADDRFP4 0
+INDIRP4
+CNSTI4 2152
+ADDP4
+ADDRLP4 80
+INDIRB
+ASGNB 12
+line 2369
+;2369:	VectorCopy(tmp_view, m->player.viewAngles);
+ADDRFP4 0
+INDIRP4
+CNSTI4 1036
+ADDP4
+ADDRLP4 68
+INDIRB
+ASGNB 12
+line 2370
+;2370:	VectorCopy(tmp_move, m->player.moveAngles);
+ADDRFP4 0
+INDIRP4
+CNSTI4 1048
+ADDP4
+ADDRLP4 80
+INDIRB
+ASGNB 12
+line 2372
+;2371:
+;2372:	m->bUnknownModel = qfalse;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2236
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2373
+;2373:	if (!UI_PlayerInfo_SetModel( m, currentWeapon )) {
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 currentWeapon
+INDIRI4
+ARGI4
+ADDRLP4 104
+ADDRGP4 UI_PlayerInfo_SetModel
+CALLI4
+ASGNI4
+ADDRLP4 104
+INDIRI4
+CNSTI4 0
+NEI4 $980
+line 2374
+;2374:		m->bForceUpdate = qfalse;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2256
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2375
+;2375:		return;
+ADDRGP4 $972
+JUMPV
+LABELV $980
+line 2382
+;2376:	}
+;2377:
+;2378:	//
+;2379:	// load sfx for model
+;2380:	//
+;2381:
+;2382:	if (!weaponSfxInit)
+ADDRGP4 weaponSfxInit
+INDIRI4
+CNSTI4 0
+NEI4 $982
+line 2383
+;2383:		PlayerInfo_CacheWeaponSfx();
+ADDRGP4 PlayerInfo_CacheWeaponSfx
+CALLV
+pop
+LABELV $982
+line 2386
+;2384:
+;2385:	// get model name only, handle case where "/default" assumed
+;2386:	slash = 0;
+ADDRLP4 96
+CNSTP4 0
+ASGNP4
+line 2387
+;2387:	fallback = DEFAULT_MODEL;
+ADDRLP4 92
+ADDRGP4 $984
+ASGNP4
+line 2388
+;2388:	if (UIE_PlayerInfo_IsTeamModel())
+ADDRLP4 108
+ADDRGP4 UIE_PlayerInfo_IsTeamModel
+CALLI4
+ASGNI4
+ADDRLP4 108
+INDIRI4
+CNSTI4 0
+EQI4 $985
+line 2389
+;2389:		str = m->team_modelskin;
+ADDRLP4 100
+ADDRFP4 0
+INDIRP4
+CNSTI4 1332
+ADDP4
+ASGNP4
+ADDRGP4 $986
+JUMPV
+LABELV $985
+line 2391
+;2390:	else
+;2391:		str = m->modelskin;
+ADDRLP4 100
+ADDRFP4 0
+INDIRP4
+CNSTI4 1140
+ADDP4
+ASGNP4
+LABELV $986
+line 2393
+;2392:
+;2393:	slash = strchr(str, '/');
+ADDRLP4 100
+INDIRP4
+ARGP4
+CNSTI4 47
+ARGI4
+ADDRLP4 112
+ADDRGP4 strchr
+CALLP4
+ASGNP4
+ADDRLP4 96
+ADDRLP4 112
+INDIRP4
+ASGNP4
+line 2394
+;2394:	if (slash)
+ADDRLP4 96
+INDIRP4
+CVPU4 4
+CNSTU4 0
+EQU4 $987
+line 2395
+;2395:	{
+line 2396
+;2396:		Q_strncpyz(dir, str, slash - str + 1);
+ADDRLP4 4
+ARGP4
+ADDRLP4 100
+INDIRP4
+ARGP4
+ADDRLP4 96
+INDIRP4
+CVPU4 4
+ADDRLP4 100
+INDIRP4
+CVPU4 4
+SUBU4
+CVUI4 4
+CNSTI4 1
+ADDI4
+ARGI4
+ADDRGP4 Q_strncpyz
+CALLV
+pop
+line 2397
+;2397:	}
+ADDRGP4 $988
+JUMPV
+LABELV $987
+line 2399
+;2398:	else
+;2399:	{
+line 2400
+;2400:		strcpy(dir, str);
+ADDRLP4 4
+ARGP4
+ADDRLP4 100
+INDIRP4
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 2401
+;2401:	}
+LABELV $988
+line 2404
+;2402:
+;2403:	// load the sfx, using fallback if not provided
+;2404:	sfxModel.gesture = trap_S_RegisterSound( va("sound/player/%s/taunt.wav", dir), qfalse );
+ADDRGP4 $989
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRLP4 116
+ADDRGP4 va
+CALLP4
+ASGNP4
+ADDRLP4 116
+INDIRP4
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 120
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxModel
+ADDRLP4 120
+INDIRI4
+ASGNI4
+line 2405
+;2405:	if (!sfxModel.gesture)
+ADDRGP4 sfxModel
+INDIRI4
+CNSTI4 0
+NEI4 $990
+line 2406
+;2406:		sfxModel.gesture = trap_S_RegisterSound( va("sound/player/%s/taunt.wav", fallback), qfalse );
+ADDRGP4 $989
+ARGP4
+ADDRLP4 92
+INDIRP4
+ARGP4
+ADDRLP4 124
+ADDRGP4 va
+CALLP4
+ASGNP4
+ADDRLP4 124
+INDIRP4
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 128
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxModel
+ADDRLP4 128
+INDIRI4
+ASGNI4
+LABELV $990
+line 2408
+;2407:
+;2408:	sfxModel.death1 = trap_S_RegisterSound( va("sound/player/%s/death1.wav", dir), qfalse );
+ADDRGP4 $993
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRLP4 132
+ADDRGP4 va
+CALLP4
+ASGNP4
+ADDRLP4 132
+INDIRP4
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 136
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxModel+16
+ADDRLP4 136
+INDIRI4
+ASGNI4
+line 2409
+;2409:	if (!sfxModel.death1)
+ADDRGP4 sfxModel+16
+INDIRI4
+CNSTI4 0
+NEI4 $994
+line 2410
+;2410:		sfxModel.death1 = trap_S_RegisterSound( va("sound/player/%s/death1.wav", fallback), qfalse );
+ADDRGP4 $993
+ARGP4
+ADDRLP4 92
+INDIRP4
+ARGP4
+ADDRLP4 140
+ADDRGP4 va
+CALLP4
+ASGNP4
+ADDRLP4 140
+INDIRP4
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 144
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxModel+16
+ADDRLP4 144
+INDIRI4
+ASGNI4
+LABELV $994
+line 2412
+;2411:
+;2412:	sfxModel.death2 = trap_S_RegisterSound( va("sound/player/%s/death2.wav", dir), qfalse );
+ADDRGP4 $999
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRLP4 148
+ADDRGP4 va
+CALLP4
+ASGNP4
+ADDRLP4 148
+INDIRP4
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 152
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxModel+20
+ADDRLP4 152
+INDIRI4
+ASGNI4
+line 2413
+;2413:	if (!sfxModel.death2)
+ADDRGP4 sfxModel+20
+INDIRI4
+CNSTI4 0
+NEI4 $1000
+line 2414
+;2414:		sfxModel.death2 = trap_S_RegisterSound( va("sound/player/%s/death2.wav", fallback), qfalse );
+ADDRGP4 $999
+ARGP4
+ADDRLP4 92
+INDIRP4
+ARGP4
+ADDRLP4 156
+ADDRGP4 va
+CALLP4
+ASGNP4
+ADDRLP4 156
+INDIRP4
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 160
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxModel+20
+ADDRLP4 160
+INDIRI4
+ASGNI4
+LABELV $1000
+line 2416
+;2415:
+;2416:	sfxModel.death3 = trap_S_RegisterSound( va("sound/player/%s/death3.wav", dir), qfalse );
+ADDRGP4 $1005
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRLP4 164
+ADDRGP4 va
+CALLP4
+ASGNP4
+ADDRLP4 164
+INDIRP4
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 168
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxModel+24
+ADDRLP4 168
+INDIRI4
+ASGNI4
+line 2417
+;2417:	if (!sfxModel.death3)
+ADDRGP4 sfxModel+24
+INDIRI4
+CNSTI4 0
+NEI4 $1006
+line 2418
+;2418:		sfxModel.death3 = trap_S_RegisterSound( va("sound/player/%s/death3.wav", fallback), qfalse );
+ADDRGP4 $1005
+ARGP4
+ADDRLP4 92
+INDIRP4
+ARGP4
+ADDRLP4 172
+ADDRGP4 va
+CALLP4
+ASGNP4
+ADDRLP4 172
+INDIRP4
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 176
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxModel+24
+ADDRLP4 176
+INDIRI4
+ASGNI4
+LABELV $1006
+line 2420
+;2419:
+;2420:	sfxModel.jump = trap_S_RegisterSound( va("sound/player/%s/jump1.wav", dir), qfalse );
+ADDRGP4 $1011
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRLP4 180
+ADDRGP4 va
+CALLP4
+ASGNP4
+ADDRLP4 180
+INDIRP4
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 184
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxModel+8
+ADDRLP4 184
+INDIRI4
+ASGNI4
+line 2421
+;2421:	if (!sfxModel.jump)
+ADDRGP4 sfxModel+8
+INDIRI4
+CNSTI4 0
+NEI4 $1012
+line 2422
+;2422:		sfxModel.jump= trap_S_RegisterSound( va("sound/player/%s/jump1.wav", fallback), qfalse );
+ADDRGP4 $1011
+ARGP4
+ADDRLP4 92
+INDIRP4
+ARGP4
+ADDRLP4 188
+ADDRGP4 va
+CALLP4
+ASGNP4
+ADDRLP4 188
+INDIRP4
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 192
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxModel+8
+ADDRLP4 192
+INDIRI4
+ASGNI4
+LABELV $1012
+line 2424
+;2423:
+;2424:	sfxModel.land = trap_S_RegisterSound( "sound/player/land1.wav", qfalse );
+ADDRGP4 $1017
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 196
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxModel+12
+ADDRLP4 196
+INDIRI4
+ASGNI4
+line 2425
+;2425:	sfxModel.drop = trap_S_RegisterSound( "sound/weapons/change.wav", qfalse );
+ADDRGP4 $431
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 200
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRGP4 sfxModel+28
+ADDRLP4 200
+INDIRI4
+ASGNI4
+line 2427
+;2426:
+;2427:	for (i = 0; i < 4; i++) {
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+LABELV $1019
+line 2428
+;2428:		sfxModel.step[i] = trap_S_RegisterSound( va("sound/player/footsteps/%s%i.wav",
+ADDRGP4 $1024
+ARGP4
+ADDRLP4 204
+CNSTI4 2
+ASGNI4
+ADDRGP4 sfxModel+32
+INDIRI4
+ADDRLP4 204
+INDIRI4
+LSHI4
+ADDRGP4 ui_footstepName
+ADDP4
+INDIRP4
+ARGP4
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ARGI4
+ADDRLP4 212
+ADDRGP4 va
+CALLP4
+ASGNP4
+ADDRLP4 212
+INDIRP4
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRLP4 216
+ADDRGP4 trap_S_RegisterSound
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+ADDRLP4 204
+INDIRI4
+LSHI4
+ADDRGP4 sfxModel+36
+ADDP4
+ADDRLP4 216
+INDIRI4
+ASGNI4
+line 2430
+;2429:			ui_footstepName[sfxModel.footsteps], i+1), qfalse );
+;2430:	}
+LABELV $1020
+line 2427
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 4
+LTI4 $1019
+line 2433
+;2431:
+;2432:	// update animation
+;2433:	UIE_PlayerInfo_ChangeAnimation( m, ANIM_IDLE );
+ADDRFP4 0
+INDIRP4
+ARGP4
+CNSTI4 1
+ARGI4
+ADDRGP4 UIE_PlayerInfo_ChangeAnimation
+CALLV
+pop
+line 2436
+;2434:
+;2435:	// model change done
+;2436:	m->cursorx = m->cursory = -1;
+ADDRLP4 204
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 208
+CNSTI4 -1
+ASGNI4
+ADDRLP4 204
+INDIRP4
+CNSTI4 2168
+ADDP4
+ADDRLP4 208
+INDIRI4
+ASGNI4
+ADDRLP4 204
+INDIRP4
+CNSTI4 2164
+ADDP4
+ADDRLP4 208
+INDIRI4
+ASGNI4
+line 2437
+;2437:	m->NextIdleAnimTime = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2172
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2438
+;2438:}
+LABELV $972
+endproc PlayerInfo_SetupNewModel 220 12
+export UIE_PlayerInfo_ChangeAnimation
+proc UIE_PlayerInfo_ChangeAnimation 4 28
+line 2448
+;2439:
+;2440:
+;2441:
+;2442:/*
+;2443:=================
+;2444:UIE_PlayerInfo_ChangeAnimation
+;2445:=================
+;2446:*/
+;2447:void UIE_PlayerInfo_ChangeAnimation( modelAnim_t* m, int anim)
+;2448:{
+line 2449
+;2449:	if (crashProtected)
+ADDRGP4 crashProtected
+INDIRI4
+CNSTI4 0
+EQI4 $1027
+line 2450
+;2450:		return;
+ADDRGP4 $1026
+JUMPV
+LABELV $1027
+line 2452
+;2451:
+;2452:	m->anim = anim;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2120
+ADDP4
+ADDRFP4 4
+INDIRI4
+ASGNI4
+line 2453
+;2453:	PlayerInfo_SetAnimation(m);
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 PlayerInfo_SetAnimation
+CALLV
+pop
+line 2454
+;2454:	PlayerInfo_ModelTrackCursor(m);
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 PlayerInfo_ModelTrackCursor
+CALLV
+pop
+line 2456
+;2455:
+;2456:	UI_PlayerInfo_SetInfo( &m->player, m->playerLegs, m->playerTorso,
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 2124
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 2128
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 2140
+ADDP4
+ARGP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 2152
+ADDP4
+ARGP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 2132
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 2136
+ADDP4
+INDIRI4
+ARGI4
+ADDRGP4 UI_PlayerInfo_SetInfo
+CALLV
+pop
+line 2458
+;2457:		m->viewangles, m->moveangles, m->playerWeapon, m->playerChat );
+;2458:}
+LABELV $1026
+endproc UIE_PlayerInfo_ChangeAnimation 4 28
+proc UIE_PlayerInfo_SetupCrashProtection 8 12
+line 2468
+;2459:
+;2460:
+;2461:
+;2462:/*
+;2463:=================
+;2464:UIE_PlayerInfo_SetupCrashProtection
+;2465:=================
+;2466:*/
+;2467:static void UIE_PlayerInfo_SetupCrashProtection( void )
+;2468:{
+line 2471
+;2469:	int crash;
+;2470:
+;2471:	if (!startupCrashDetect)
+ADDRGP4 startupCrashDetect
+INDIRI4
+CNSTI4 0
+NEI4 $1030
+line 2472
+;2472:		return;
+ADDRGP4 $1029
+JUMPV
+LABELV $1030
+line 2474
+;2473:
+;2474:	startupCrashDetect = qfalse;
+ADDRGP4 startupCrashDetect
+CNSTI4 0
+ASGNI4
+line 2476
+;2475:
+;2476:	crash = (int)trap_Cvar_VariableValue("uie_crashprotection");
+ADDRGP4 $1032
+ARGP4
+ADDRLP4 4
+ADDRGP4 trap_Cvar_VariableValue
+CALLF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 4
+INDIRF4
+CVFI4 4
+ASGNI4
+line 2477
+;2477:	if (crash)
+ADDRLP4 0
+INDIRI4
+CNSTI4 0
+EQI4 $1033
+line 2478
+;2478:	{
+line 2480
+;2479:		//crashProtected = qtrue;
+;2480:		return;
+ADDRGP4 $1029
+JUMPV
+LABELV $1033
+line 2484
+;2481:	}
+;2482:
+;2483:	// create cvar with default value of 0
+;2484:	trap_Cvar_Create( "uie_crashprotection", "0", CVAR_ROM);
+ADDRGP4 $1032
+ARGP4
+ADDRGP4 $1035
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 trap_Cvar_Create
+CALLV
+pop
+line 2485
+;2485:	trap_Cvar_Set( "uie_crashprotection", "1");
+ADDRGP4 $1032
+ARGP4
+ADDRGP4 $1036
+ARGP4
+ADDRGP4 trap_Cvar_Set
+CALLV
+pop
+line 2486
+;2486:}
+LABELV $1029
+endproc UIE_PlayerInfo_SetupCrashProtection 8 12
+proc UIE_PlayerInfo_ClearCrashProtection 0 8
+line 2496
+;2487:
+;2488:
+;2489:
+;2490:/*
+;2491:=================
+;2492:UIE_PlayerInfo_ClearCrashProtection
+;2493:=================
+;2494:*/
+;2495:static void UIE_PlayerInfo_ClearCrashProtection( void )
+;2496:{
+line 2497
+;2497:	trap_Cvar_Set( "uie_crashprotection", "0");
+ADDRGP4 $1032
+ARGP4
+ADDRGP4 $1035
+ARGP4
+ADDRGP4 trap_Cvar_Set
+CALLV
+pop
+line 2498
+;2498:}
+LABELV $1037
+endproc UIE_PlayerInfo_ClearCrashProtection 0 8
+export UIE_PlayerInfo_InitModel
+proc UIE_PlayerInfo_InitModel 68 12
+line 2510
+;2499:
+;2500:
+;2501:
+;2502:
+;2503:
+;2504:/*
+;2505:=================
+;2506:UIE_PlayerInfo_InitModel
+;2507:=================
+;2508:*/
+;2509:void UIE_PlayerInfo_InitModel(modelAnim_t* m)
+;2510:{
+line 2514
+;2511:	char 	buffer[MODELNAME_BUFFER];
+;2512:	int 	i;
+;2513:
+;2514:	UIE_PlayerInfo_SetupCrashProtection();
+ADDRGP4 UIE_PlayerInfo_SetupCrashProtection
+CALLV
+pop
+line 2516
+;2515:
+;2516:	if (crashProtected)
+ADDRGP4 crashProtected
+INDIRI4
+CNSTI4 0
+EQI4 $1039
+line 2517
+;2517:		return;
+ADDRGP4 $1038
+JUMPV
+LABELV $1039
+line 2519
+;2518:
+;2519:	trap_Cvar_VariableStringBuffer( "model", buffer, MODELNAME_BUFFER );
+ADDRGP4 $1041
+ARGP4
+ADDRLP4 4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 trap_Cvar_VariableStringBuffer
+CALLV
+pop
+line 2520
+;2520:	strcpy(m->modelskin, buffer);
+ADDRFP4 0
+INDIRP4
+CNSTI4 1140
+ADDP4
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 2522
+;2521:
+;2522:	trap_Cvar_VariableStringBuffer( "headmodel", buffer, MODELNAME_BUFFER );
+ADDRGP4 $1042
+ARGP4
+ADDRLP4 4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 trap_Cvar_VariableStringBuffer
+CALLV
+pop
+line 2523
+;2523:	strcpy(m->headskin, buffer);
+ADDRFP4 0
+INDIRP4
+CNSTI4 1204
+ADDP4
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 2525
+;2524:	
+;2525:	trap_Cvar_VariableStringBuffer( "legsskin", buffer, MODELNAME_BUFFER );
+ADDRGP4 $1043
+ARGP4
+ADDRLP4 4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 trap_Cvar_VariableStringBuffer
+CALLV
+pop
+line 2526
+;2526:	strcpy(m->legsskin, buffer);
+ADDRFP4 0
+INDIRP4
+CNSTI4 1268
+ADDP4
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 2528
+;2527:
+;2528:	trap_Cvar_VariableStringBuffer( "team_model", buffer, MODELNAME_BUFFER );
+ADDRGP4 $1044
+ARGP4
+ADDRLP4 4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 trap_Cvar_VariableStringBuffer
+CALLV
+pop
+line 2529
+;2529:	strcpy(m->team_modelskin, buffer);
+ADDRFP4 0
+INDIRP4
+CNSTI4 1332
+ADDP4
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 2531
+;2530:
+;2531:	trap_Cvar_VariableStringBuffer( "team_headmodel", buffer, MODELNAME_BUFFER );
+ADDRGP4 $1045
+ARGP4
+ADDRLP4 4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 trap_Cvar_VariableStringBuffer
+CALLV
+pop
+line 2532
+;2532:	strcpy(m->team_headskin, buffer);
+ADDRFP4 0
+INDIRP4
+CNSTI4 1396
+ADDP4
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 2534
+;2533:	
+;2534:	trap_Cvar_VariableStringBuffer( "team_legsskin", buffer, MODELNAME_BUFFER );
+ADDRGP4 $1046
+ARGP4
+ADDRLP4 4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 trap_Cvar_VariableStringBuffer
+CALLV
+pop
+line 2535
+;2535:	strcpy(m->team_legsskin, buffer);
+ADDRFP4 0
+INDIRP4
+CNSTI4 1460
+ADDP4
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 2538
+;2536:
+;2537:	// init the recent animations history
+;2538:	for (i = 0; i < MAX_RECENT_ANIMS; i++) {
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+LABELV $1047
+line 2539
+;2539:		m->recent_anims[i] = ANIM_IDLE;
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2180
+ADDP4
+ADDP4
+CNSTI4 1
+ASGNI4
+line 2540
+;2540:	}
+LABELV $1048
+line 2538
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 10
+LTI4 $1047
+line 2542
+;2541:
+;2542:	PlayerInfo_SetupNewModel(m);
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 PlayerInfo_SetupNewModel
+CALLV
+pop
+line 2543
+;2543:}
+LABELV $1038
+endproc UIE_PlayerInfo_InitModel 68 12
+proc PlayerInfo_UpdateIdleAnimation 24 8
+line 2553
+;2544:
+;2545:
+;2546:
+;2547:/*
+;2548:=================
+;2549:PlayerInfo_UpdateIdleAnimation
+;2550:=================
+;2551:*/
+;2552:static void PlayerInfo_UpdateIdleAnimation( modelAnim_t* m)
+;2553:{
+line 2557
+;2554:	int weapon;
+;2555:	playerInfo_t* pi;
+;2556:
+;2557:	pi = &m->player;
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+ASGNP4
+line 2558
+;2558:	weapon = pi->weapon;
+ADDRLP4 4
+ADDRLP4 0
+INDIRP4
+CNSTI4 1072
+ADDP4
+INDIRI4
+ASGNI4
+line 2561
+;2559:
+;2560:	// handle repeated firing animation
+;2561:	if (m->shotsRemaining && uis.realtime > m->nextFireTime)
+ADDRLP4 8
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 8
+INDIRP4
+CNSTI4 2228
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $1052
+ADDRGP4 uis+4
+INDIRI4
+ADDRLP4 8
+INDIRP4
+CNSTI4 2232
+ADDP4
+INDIRI4
+LEI4 $1052
+line 2562
+;2562:	{
+line 2563
+;2563:		m->shotsRemaining--;
+ADDRLP4 12
+ADDRFP4 0
+INDIRP4
+CNSTI4 2228
+ADDP4
+ASGNP4
+ADDRLP4 12
+INDIRP4
+ADDRLP4 12
+INDIRP4
+INDIRI4
+CNSTI4 1
+SUBI4
+ASGNI4
+line 2564
+;2564:		UIE_PlayerInfo_ChangeAnimation(m, ANIM_ATTACK);
+ADDRFP4 0
+INDIRP4
+ARGP4
+CNSTI4 28
+ARGI4
+ADDRGP4 UIE_PlayerInfo_ChangeAnimation
+CALLV
+pop
+line 2565
+;2565:		if (m->shotsRemaining)
+ADDRFP4 0
+INDIRP4
+CNSTI4 2228
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $1055
+line 2566
+;2566:		{
+line 2567
+;2567:			m->nextFireTime = uis.realtime + PlayerInfo_WeaponCycleTime(&m->player);
+ADDRLP4 16
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 16
+INDIRP4
+ARGP4
+ADDRLP4 20
+ADDRGP4 PlayerInfo_WeaponCycleTime
+CALLI4
+ASGNI4
+ADDRLP4 16
+INDIRP4
+CNSTI4 2232
+ADDP4
+ADDRGP4 uis+4
+INDIRI4
+ADDRLP4 20
+INDIRI4
+ADDI4
+ASGNI4
+line 2568
+;2568:		}
+LABELV $1055
+line 2569
+;2569:	}
+LABELV $1052
+line 2571
+;2570:
+;2571:	if ((weapon == WP_LIGHTNING || weapon == WP_GAUNTLET) && pi->humTimer > 0) {
+ADDRLP4 4
+INDIRI4
+CNSTI4 6
+EQI4 $1060
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+NEI4 $1058
+LABELV $1060
+ADDRLP4 0
+INDIRP4
+CNSTI4 1028
+ADDP4
+INDIRI4
+CNSTI4 0
+LEI4 $1058
+line 2572
+;2572:		pi->humTimer -= uis.frametime;
+ADDRLP4 16
+ADDRLP4 0
+INDIRP4
+CNSTI4 1028
+ADDP4
+ASGNP4
+ADDRLP4 16
+INDIRP4
+ADDRLP4 16
+INDIRP4
+INDIRI4
+ADDRGP4 uis
+INDIRI4
+SUBI4
+ASGNI4
+line 2573
+;2573:		if (pi->humTimer <= 0  && m->shotsRemaining) {
+ADDRLP4 20
+CNSTI4 0
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 1028
+ADDP4
+INDIRI4
+ADDRLP4 20
+INDIRI4
+GTI4 $1061
+ADDRFP4 0
+INDIRP4
+CNSTI4 2228
+ADDP4
+INDIRI4
+ADDRLP4 20
+INDIRI4
+EQI4 $1061
+line 2574
+;2574:			trap_S_StartLocalSound( sfxWeapon.firing[weapon], CHAN_ITEM );
+ADDRLP4 4
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 sfxWeapon+304
+ADDP4
+INDIRI4
+ARGI4
+CNSTI4 4
+ARGI4
+ADDRGP4 trap_S_StartLocalSound
+CALLV
+pop
+line 2575
+;2575:			pi->humTimer = 965;
+ADDRLP4 0
+INDIRP4
+CNSTI4 1028
+ADDP4
+CNSTI4 965
+ASGNI4
+line 2576
+;2576:		}
+LABELV $1061
+line 2577
+;2577:	}
+LABELV $1058
+line 2580
+;2578:
+;2579:	// handle delayed firing weapon sfx
+;2580:	if (pi->delayFireTimer > 0) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 1032
+ADDP4
+INDIRI4
+CNSTI4 0
+LEI4 $1064
+line 2581
+;2581:		pi->delayFireTimer -= uis.frametime;
+ADDRLP4 16
+ADDRLP4 0
+INDIRP4
+CNSTI4 1032
+ADDP4
+ASGNP4
+ADDRLP4 16
+INDIRP4
+ADDRLP4 16
+INDIRP4
+INDIRI4
+ADDRGP4 uis
+INDIRI4
+SUBI4
+ASGNI4
+line 2582
+;2582:		if (pi->delayFireTimer <= 0) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 1032
+ADDP4
+INDIRI4
+CNSTI4 0
+GTI4 $1066
+line 2583
+;2583:			pi->delayFireTimer = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 1032
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2584
+;2584:			PlayerInfo_FireWeaponSound(pi);
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRGP4 PlayerInfo_FireWeaponSound
+CALLV
+pop
+line 2585
+;2585:		}
+LABELV $1066
+line 2586
+;2586:	}
+LABELV $1064
+line 2589
+;2587:
+;2588:	// check its time to change the animation
+;2589:	if (uis.realtime >= m->NextIdleAnimTime && !m->bNoIdleAnim) {
+ADDRLP4 16
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRGP4 uis+4
+INDIRI4
+ADDRLP4 16
+INDIRP4
+CNSTI4 2172
+ADDP4
+INDIRI4
+LTI4 $1068
+ADDRLP4 16
+INDIRP4
+CNSTI4 2248
+ADDP4
+INDIRI4
+CNSTI4 0
+NEI4 $1068
+line 2591
+;2590:		// make the animation change
+;2591:		m->bDoingIdleAnim = qtrue;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2176
+ADDP4
+CNSTI4 1
+ASGNI4
+line 2592
+;2592:		PlayerInfo_ChangeTimedAnimation(m);
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 PlayerInfo_ChangeTimedAnimation
+CALLV
+pop
+line 2593
+;2593:	}
+LABELV $1068
+line 2594
+;2594:}
+LABELV $1051
+endproc PlayerInfo_UpdateIdleAnimation 24 8
+export UIE_PlayerInfo_DrawTeamModel
+proc UIE_PlayerInfo_DrawTeamModel 0 0
+line 2605
+;2595:
+;2596:
+;2597:
+;2598:
+;2599:/*
+;2600:=================
+;2601:UIE_PlayerInfo_SetTeamModel
+;2602:=================
+;2603:*/
+;2604:void UIE_PlayerInfo_DrawTeamModel( modelAnim_t* m, qboolean teamModel )
+;2605:{
+line 2606
+;2606:	if (teamModel != drawTeamModel)
+ADDRFP4 4
+INDIRI4
+ADDRGP4 drawTeamModel
+INDIRI4
+EQI4 $1072
+line 2607
+;2607:	{
+line 2608
+;2608:		drawTeamModel = teamModel;
+ADDRGP4 drawTeamModel
+ADDRFP4 4
+INDIRI4
+ASGNI4
+line 2609
+;2609:		m->bForceUpdate = qtrue;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2256
+ADDP4
+CNSTI4 1
+ASGNI4
+line 2610
+;2610:	}
+LABELV $1072
+line 2611
+;2611:}
+LABELV $1071
+endproc UIE_PlayerInfo_DrawTeamModel 0 0
+export UIE_PlayerInfo_IsTeamModel
+proc UIE_PlayerInfo_IsTeamModel 0 0
+line 2621
+;2612:
+;2613:
+;2614:
+;2615:/*
+;2616:=================
+;2617:UIE_PlayerInfo_IsTeamModel
+;2618:=================
+;2619:*/
+;2620:qboolean UIE_PlayerInfo_IsTeamModel( void )
+;2621:{
+line 2622
+;2622:	return drawTeamModel;
+ADDRGP4 drawTeamModel
+INDIRI4
+RETI4
+LABELV $1074
+endproc UIE_PlayerInfo_IsTeamModel 0 0
+bss
+align 1
+LABELV $1076
+skip 64
+export UIE_ModelSkin
+code
+proc UIE_ModelSkin 12 8
+line 2634
+;2623:}
+;2624:
+;2625:
+;2626:
+;2627:
+;2628:/*
+;2629:=================
+;2630:UIE_ModelSkin
+;2631:=================
+;2632:*/
+;2633:const char* UIE_ModelSkin( const char* modelname )
+;2634:{
+line 2638
+;2635:	static char skin[MODELNAME_BUFFER];
+;2636:	char* ptr;
+;2637:
+;2638:	skin[0] = 0;
+ADDRGP4 $1076
+CNSTI1 0
+ASGNI1
+line 2639
+;2639:	if (!modelname || !modelname[0])
+ADDRLP4 4
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 4
+INDIRP4
+CVPU4 4
+CNSTU4 0
+EQU4 $1079
+ADDRLP4 4
+INDIRP4
+INDIRI1
+CVII4 1
+CNSTI4 0
+NEI4 $1077
+LABELV $1079
+line 2640
+;2640:	{
+line 2641
+;2641:		ptr = "default";
+ADDRLP4 0
+ADDRGP4 $647
+ASGNP4
+line 2642
+;2642:	}
+ADDRGP4 $1078
+JUMPV
+LABELV $1077
+line 2644
+;2643:	else
+;2644:	{
+line 2645
+;2645:		ptr = strchr(modelname, '/');
+ADDRFP4 0
+INDIRP4
+ARGP4
+CNSTI4 47
+ARGI4
+ADDRLP4 8
+ADDRGP4 strchr
+CALLP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 8
+INDIRP4
+ASGNP4
+line 2646
+;2646:		if (!ptr) {
+ADDRLP4 0
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1080
+line 2647
+;2647:			ptr = "default";
+ADDRLP4 0
+ADDRGP4 $647
+ASGNP4
+line 2648
+;2648:		}
+ADDRGP4 $1081
+JUMPV
+LABELV $1080
+line 2649
+;2649:		else {
+line 2650
+;2650:			ptr++;
+ADDRLP4 0
+ADDRLP4 0
+INDIRP4
+CNSTI4 1
+ADDP4
+ASGNP4
+line 2651
+;2651:		}
+LABELV $1081
+line 2652
+;2652:	}
+LABELV $1078
+line 2654
+;2653:
+;2654:	strcpy(skin, ptr);
+ADDRGP4 $1076
+ARGP4
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 2655
+;2655:	return skin;
+ADDRGP4 $1076
+RETP4
+LABELV $1075
+endproc UIE_ModelSkin 12 8
+bss
+align 1
+LABELV $1083
+skip 64
+export UIE_ModelName
+code
+proc UIE_ModelName 16 12
+line 2665
+;2656:}
+;2657:
+;2658:
+;2659:/*
+;2660:=================
+;2661:UIE_ModelName
+;2662:=================
+;2663:*/
+;2664:const char* UIE_ModelName( const char* modelname )
+;2665:{
+line 2669
+;2666:	static char model[MODELNAME_BUFFER];
+;2667:	char* ptr;
+;2668:
+;2669:	model[0] = 0;
+ADDRGP4 $1083
+CNSTI1 0
+ASGNI1
+line 2670
+;2670:	if (!modelname || !modelname[0])
+ADDRLP4 4
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 4
+INDIRP4
+CVPU4 4
+CNSTU4 0
+EQU4 $1086
+ADDRLP4 4
+INDIRP4
+INDIRI1
+CVII4 1
+CNSTI4 0
+NEI4 $1084
+LABELV $1086
+line 2671
+;2671:	{
+line 2672
+;2672:		strcpy(model, DEFAULT_MODEL);
+ADDRGP4 $1083
+ARGP4
+ADDRGP4 $984
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 2673
+;2673:		return model;
+ADDRGP4 $1083
+RETP4
+ADDRGP4 $1082
+JUMPV
+LABELV $1084
+line 2677
+;2674:	}
+;2675:
+;2676:
+;2677:	ptr = strchr(modelname, '/');
+ADDRFP4 0
+INDIRP4
+ARGP4
+CNSTI4 47
+ARGI4
+ADDRLP4 8
+ADDRGP4 strchr
+CALLP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 8
+INDIRP4
+ASGNP4
+line 2679
+;2678:
+;2679:	if (ptr)
+ADDRLP4 0
+INDIRP4
+CVPU4 4
+CNSTU4 0
+EQU4 $1087
+line 2680
+;2680:		Q_strncpyz(model, modelname, ptr - modelname + 1);
+ADDRGP4 $1083
+ARGP4
+ADDRLP4 12
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 12
+INDIRP4
+ARGP4
+ADDRLP4 0
+INDIRP4
+CVPU4 4
+ADDRLP4 12
+INDIRP4
+CVPU4 4
+SUBU4
+CVUI4 4
+CNSTI4 1
+ADDI4
+ARGI4
+ADDRGP4 Q_strncpyz
+CALLV
+pop
+ADDRGP4 $1088
+JUMPV
+LABELV $1087
+line 2681
+;2681:	else {
+line 2682
+;2682:		strcpy(model, modelname);
+ADDRGP4 $1083
+ARGP4
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 2683
+;2683:	}
+LABELV $1088
+line 2685
+;2684:
+;2685:	return model;
+ADDRGP4 $1083
+RETP4
+LABELV $1082
+endproc UIE_ModelName 16 12
+export UIE_PlayerInfo_AnimateModel
+proc UIE_PlayerInfo_AnimateModel 124 24
+line 2697
+;2686:}
+;2687:
+;2688:
+;2689:
+;2690:
+;2691:/*
+;2692:=================
+;2693:UIE_PlayerInfo_AnimateModel
+;2694:=================
+;2695:*/
+;2696:void UIE_PlayerInfo_AnimateModel( modelAnim_t* m)
+;2697:{
+line 2703
+;2698:	menubitmap_s* b;
+;2699:	char buffer[MODELNAME_BUFFER];
+;2700:	int modelchange, team_modelchange, draw_team;
+;2701:	float f;
+;2702:
+;2703:	b = &m->bitmap;
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+CNSTI4 1524
+ADDP4
+ASGNP4
+line 2705
+;2704:
+;2705:	if( crashProtected ) {
+ADDRGP4 crashProtected
+INDIRI4
+CNSTI4 0
+EQI4 $1090
+line 2706
+;2706:		UI_DrawString( b->generic.x, b->generic.y + b->height / 2, "CRASH DETECTED", UI_LEFT, color_white );
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 108
+ADDP4
+INDIRI4
+CNSTI4 2
+DIVI4
+ADDI4
+ARGI4
+ADDRGP4 $1092
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRGP4 color_white
+ARGP4
+ADDRGP4 UI_DrawString
+CALLV
+pop
+line 2707
+;2707:		return;
+ADDRGP4 $1089
+JUMPV
+LABELV $1090
+line 2710
+;2708:	}
+;2709:
+;2710:	if (crashAnimCount > 0)
+ADDRGP4 crashAnimCount
+INDIRI4
+CNSTI4 0
+LEI4 $1093
+line 2711
+;2711:	{
+line 2712
+;2712:		crashAnimCount--;
+ADDRLP4 84
+ADDRGP4 crashAnimCount
+ASGNP4
+ADDRLP4 84
+INDIRP4
+ADDRLP4 84
+INDIRP4
+INDIRI4
+CNSTI4 1
+SUBI4
+ASGNI4
+line 2713
+;2713:		if (crashAnimCount == 0)
+ADDRGP4 crashAnimCount
+INDIRI4
+CNSTI4 0
+NEI4 $1095
+line 2714
+;2714:			UIE_PlayerInfo_ClearCrashProtection();
+ADDRGP4 UIE_PlayerInfo_ClearCrashProtection
+CALLV
+pop
+LABELV $1095
+line 2715
+;2715:	}
+LABELV $1093
+line 2717
+;2716:
+;2717:	if( trap_MemoryRemaining() <= LOW_MEMORY ) {
+ADDRLP4 84
+ADDRGP4 trap_MemoryRemaining
+CALLI4
+ASGNI4
+ADDRLP4 84
+INDIRI4
+CNSTI4 5242880
+GTI4 $1097
+line 2718
+;2718:		UI_DrawString( b->generic.x, b->generic.y + b->height / 2, "LOW MEMORY", UI_LEFT, color_white );
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 108
+ADDP4
+INDIRI4
+CNSTI4 2
+DIVI4
+ADDI4
+ARGI4
+ADDRGP4 $1099
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRGP4 color_white
+ARGP4
+ADDRGP4 UI_DrawString
+CALLV
+pop
+line 2719
+;2719:		return;
+ADDRGP4 $1089
+JUMPV
+LABELV $1097
+line 2724
+;2720:	}
+;2721:
+;2722:	// check if model has changed
+;2723:	// only update models when we're actually viewing them
+;2724:	modelchange = 0;
+ADDRLP4 68
+CNSTI4 0
+ASGNI4
+line 2725
+;2725:	team_modelchange = 0;
+ADDRLP4 72
+CNSTI4 0
+ASGNI4
+line 2726
+;2726:	draw_team = UIE_PlayerInfo_IsTeamModel();
+ADDRLP4 88
+ADDRGP4 UIE_PlayerInfo_IsTeamModel
+CALLI4
+ASGNI4
+ADDRLP4 76
+ADDRLP4 88
+INDIRI4
+ASGNI4
+line 2727
+;2727:	if (!m->bNoAutoUpdate)
+ADDRFP4 0
+INDIRP4
+CNSTI4 2252
+ADDP4
+INDIRI4
+CNSTI4 0
+NEI4 $1100
+line 2728
+;2728:	{
+line 2729
+;2729:		trap_Cvar_VariableStringBuffer( "model", buffer, MODELNAME_BUFFER );
+ADDRGP4 $1041
+ARGP4
+ADDRLP4 4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 trap_Cvar_VariableStringBuffer
+CALLV
+pop
+line 2730
+;2730:		if (Q_stricmp(buffer, m->modelskin) ) {
+ADDRLP4 4
+ARGP4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1140
+ADDP4
+ARGP4
+ADDRLP4 92
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 92
+INDIRI4
+CNSTI4 0
+EQI4 $1102
+line 2731
+;2731:			strcpy(m->modelskin, buffer);
+ADDRFP4 0
+INDIRP4
+CNSTI4 1140
+ADDP4
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 2732
+;2732:			modelchange = 1;
+ADDRLP4 68
+CNSTI4 1
+ASGNI4
+line 2733
+;2733:		}
+LABELV $1102
+line 2735
+;2734:
+;2735:		trap_Cvar_VariableStringBuffer( "headmodel", buffer, MODELNAME_BUFFER );
+ADDRGP4 $1042
+ARGP4
+ADDRLP4 4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 trap_Cvar_VariableStringBuffer
+CALLV
+pop
+line 2736
+;2736:		if (Q_stricmp(buffer, m->headskin) ) {
+ADDRLP4 4
+ARGP4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1204
+ADDP4
+ARGP4
+ADDRLP4 96
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 96
+INDIRI4
+CNSTI4 0
+EQI4 $1104
+line 2737
+;2737:			strcpy(m->headskin, buffer);
+ADDRFP4 0
+INDIRP4
+CNSTI4 1204
+ADDP4
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 2738
+;2738:			modelchange = 1;
+ADDRLP4 68
+CNSTI4 1
+ASGNI4
+line 2739
+;2739:		}
+LABELV $1104
+line 2741
+;2740:		
+;2741:		trap_Cvar_VariableStringBuffer( "legsskin", buffer, MODELNAME_BUFFER );
+ADDRGP4 $1043
+ARGP4
+ADDRLP4 4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 trap_Cvar_VariableStringBuffer
+CALLV
+pop
+line 2742
+;2742:		if (Q_stricmp(buffer, m->legsskin) ) {
+ADDRLP4 4
+ARGP4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1268
+ADDP4
+ARGP4
+ADDRLP4 100
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 100
+INDIRI4
+CNSTI4 0
+EQI4 $1106
+line 2743
+;2743:			strcpy(m->legsskin, buffer);
+ADDRFP4 0
+INDIRP4
+CNSTI4 1268
+ADDP4
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 2744
+;2744:			modelchange = 1;
+ADDRLP4 68
+CNSTI4 1
+ASGNI4
+line 2745
+;2745:		}
+LABELV $1106
+line 2747
+;2746:
+;2747:		trap_Cvar_VariableStringBuffer( "team_model", buffer, MODELNAME_BUFFER );
+ADDRGP4 $1044
+ARGP4
+ADDRLP4 4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 trap_Cvar_VariableStringBuffer
+CALLV
+pop
+line 2748
+;2748:		if (Q_stricmp(buffer, m->team_modelskin) ) {
+ADDRLP4 4
+ARGP4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1332
+ADDP4
+ARGP4
+ADDRLP4 104
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 104
+INDIRI4
+CNSTI4 0
+EQI4 $1108
+line 2749
+;2749:			strcpy(m->team_modelskin, buffer);
+ADDRFP4 0
+INDIRP4
+CNSTI4 1332
+ADDP4
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 2750
+;2750:			team_modelchange = 1;
+ADDRLP4 72
+CNSTI4 1
+ASGNI4
+line 2751
+;2751:		}
+LABELV $1108
+line 2753
+;2752:
+;2753:		trap_Cvar_VariableStringBuffer( "team_headmodel", buffer, MODELNAME_BUFFER );
+ADDRGP4 $1045
+ARGP4
+ADDRLP4 4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 trap_Cvar_VariableStringBuffer
+CALLV
+pop
+line 2754
+;2754:		if (Q_stricmp(buffer, m->team_headskin) ) {
+ADDRLP4 4
+ARGP4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1396
+ADDP4
+ARGP4
+ADDRLP4 108
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 108
+INDIRI4
+CNSTI4 0
+EQI4 $1110
+line 2755
+;2755:			strcpy(m->team_headskin, buffer);
+ADDRFP4 0
+INDIRP4
+CNSTI4 1396
+ADDP4
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 2756
+;2756:			team_modelchange = 1;
+ADDRLP4 72
+CNSTI4 1
+ASGNI4
+line 2757
+;2757:		}
+LABELV $1110
+line 2759
+;2758:		
+;2759:		trap_Cvar_VariableStringBuffer( "team_legsskin", buffer, MODELNAME_BUFFER );
+ADDRGP4 $1046
+ARGP4
+ADDRLP4 4
+ARGP4
+CNSTI4 64
+ARGI4
+ADDRGP4 trap_Cvar_VariableStringBuffer
+CALLV
+pop
+line 2760
+;2760:		if (Q_stricmp(buffer, m->team_legsskin) ) {
+ADDRLP4 4
+ARGP4
+ADDRFP4 0
+INDIRP4
+CNSTI4 1460
+ADDP4
+ARGP4
+ADDRLP4 112
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 112
+INDIRI4
+CNSTI4 0
+EQI4 $1112
+line 2761
+;2761:			strcpy(m->team_legsskin, buffer);
+ADDRFP4 0
+INDIRP4
+CNSTI4 1460
+ADDP4
+ARGP4
+ADDRLP4 4
+ARGP4
+ADDRGP4 strcpy
+CALLP4
+pop
+line 2762
+;2762:			team_modelchange = 1;
+ADDRLP4 72
+CNSTI4 1
+ASGNI4
+line 2763
+;2763:		}
+LABELV $1112
+line 2765
+;2764:
+;2765:		if ((modelchange && !draw_team) || (team_modelchange && draw_team))
+ADDRLP4 116
+CNSTI4 0
+ASGNI4
+ADDRLP4 68
+INDIRI4
+ADDRLP4 116
+INDIRI4
+EQI4 $1117
+ADDRLP4 76
+INDIRI4
+ADDRLP4 116
+INDIRI4
+EQI4 $1116
+LABELV $1117
+ADDRLP4 120
+CNSTI4 0
+ASGNI4
+ADDRLP4 72
+INDIRI4
+ADDRLP4 120
+INDIRI4
+EQI4 $1114
+ADDRLP4 76
+INDIRI4
+ADDRLP4 120
+INDIRI4
+EQI4 $1114
+LABELV $1116
+line 2766
+;2766:			m->bForceUpdate = qtrue;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2256
+ADDP4
+CNSTI4 1
+ASGNI4
+LABELV $1114
+line 2767
+;2767:	}
+LABELV $1100
+line 2770
+;2768:
+;2769:	// update might be forced from elsewhere
+;2770:	if (m->bForceUpdate || uis.firstdraw) {
+ADDRLP4 92
+CNSTI4 0
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 2256
+ADDP4
+INDIRI4
+ADDRLP4 92
+INDIRI4
+NEI4 $1121
+ADDRGP4 uis+11496
+INDIRI4
+ADDRLP4 92
+INDIRI4
+EQI4 $1118
+LABELV $1121
+line 2771
+;2771:		PlayerInfo_SetupNewModel(m);
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 PlayerInfo_SetupNewModel
+CALLV
+pop
+line 2772
+;2772:	}
+LABELV $1118
+line 2774
+;2773:
+;2774:	if( m->bUnknownModel ) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 2236
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $1122
+line 2775
+;2775:		UI_DrawString( b->generic.x, b->generic.y + b->height / 2, "UNKNOWN MODEL", UI_LEFT, color_white );
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 108
+ADDP4
+INDIRI4
+CNSTI4 2
+DIVI4
+ADDI4
+ARGI4
+ADDRGP4 $1124
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRGP4 color_white
+ARGP4
+ADDRGP4 UI_DrawString
+CALLV
+pop
+line 2776
+;2776:		return;
+ADDRGP4 $1089
+JUMPV
+LABELV $1122
+line 2779
+;2777:	}
+;2778:
+;2779:	if( m->bUnknownHeadModel ) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 2240
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $1125
+line 2780
+;2780:		UI_DrawString( b->generic.x, b->generic.y + b->height / 2, "UNKNOWN HEAD", UI_LEFT, color_white );
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 108
+ADDP4
+INDIRI4
+CNSTI4 2
+DIVI4
+ADDI4
+ARGI4
+ADDRGP4 $1127
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRGP4 color_white
+ARGP4
+ADDRGP4 UI_DrawString
+CALLV
+pop
+line 2781
+;2781:		return;
+ADDRGP4 $1089
+JUMPV
+LABELV $1125
+line 2784
+;2782:	}
+;2783:	
+;2784:	if( m->bUnknownLegsModel ) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 2244
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $1128
+line 2785
+;2785:		UI_DrawString( b->generic.x, b->generic.y + b->height / 2, "UNKNOWN LEGS", UI_LEFT, color_white );
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 108
+ADDP4
+INDIRI4
+CNSTI4 2
+DIVI4
+ADDI4
+ARGI4
+ADDRGP4 $1130
+ARGP4
+CNSTI4 0
+ARGI4
+ADDRGP4 color_white
+ARGP4
+ADDRGP4 UI_DrawString
+CALLV
+pop
+line 2786
+;2786:		return;
+ADDRGP4 $1089
+JUMPV
+LABELV $1128
+line 2789
+;2787:	}
+;2788:
+;2789:	if (PlayerInfo_CursorChanged(m) || m->bForceUpdate) {
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRLP4 96
+ADDRGP4 PlayerInfo_CursorChanged
+CALLI4
+ASGNI4
+ADDRLP4 100
+CNSTI4 0
+ASGNI4
+ADDRLP4 96
+INDIRI4
+ADDRLP4 100
+INDIRI4
+NEI4 $1133
+ADDRFP4 0
+INDIRP4
+CNSTI4 2256
+ADDP4
+INDIRI4
+ADDRLP4 100
+INDIRI4
+EQI4 $1131
+LABELV $1133
+line 2791
+;2790:		// follow cursor, and delay idle animation
+;2791:		PlayerInfo_ModelTrackCursor(m);
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 PlayerInfo_ModelTrackCursor
+CALLV
+pop
+line 2792
+;2792:		if (!m->allowCursorFire) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 2260
+ADDP4
+INDIRI4
+CNSTI4 0
+NEI4 $1134
+line 2793
+;2793:			m->shotsRemaining = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2228
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2794
+;2794:			m->player.delayFireTimer = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 1032
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2795
+;2795:		}
+LABELV $1134
+line 2796
+;2796:		m->NextIdleAnimTime = uis.realtime + IDLE_ANIM_STARTTIME;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2172
+ADDP4
+ADDRGP4 uis+4
+INDIRI4
+CNSTI4 8000
+ADDI4
+ASGNI4
+line 2797
+;2797:	}
+LABELV $1131
+line 2799
+;2798:
+;2799:	m->bForceUpdate = qfalse;
+ADDRFP4 0
+INDIRP4
+CNSTI4 2256
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2803
+;2800:
+;2801:	// shift random number generator
+;2802:	// otherwise we see identical model animation sequences
+;2803:	f = random();
+ADDRLP4 104
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 80
+ADDRLP4 104
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+ASGNF4
+line 2805
+;2804:
+;2805:	PlayerInfo_UpdateIdleAnimation(m);
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 PlayerInfo_UpdateIdleAnimation
+CALLV
+pop
+line 2807
+;2806:
+;2807:	UI_DrawPlayer( b->generic.x, b->generic.y, b->width, b->height, m, uis.realtime/ANIM_SLOWDOWN );
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+INDIRI4
+CVIF4 4
+ARGF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+INDIRI4
+CVIF4 4
+ARGF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 104
+ADDP4
+INDIRI4
+CVIF4 4
+ARGF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 108
+ADDP4
+INDIRI4
+CVIF4 4
+ARGF4
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 uis+4
+INDIRI4
+CVIF4 4
+CNSTF4 1071225242
+DIVF4
+CVFI4 4
+ARGI4
+ADDRGP4 UI_DrawPlayer
+CALLV
+pop
+line 2808
+;2808:	PlayerInfo_PlayModelFootstep(&m->player);
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 PlayerInfo_PlayModelFootstep
+CALLV
+pop
+line 2809
+;2809:}
+LABELV $1089
+endproc UIE_PlayerInfo_AnimateModel 124 24
+export PlayerInfo_ModelSpinEvent
+proc PlayerInfo_ModelSpinEvent 28 0
+line 2826
+;2810:
+;2811:
+;2812:
+;2813:
+;2814://----------------------------------------------
+;2815:
+;2816:
+;2817:#define ROTATION_MAX 6
+;2818:
+;2819:
+;2820:/*
+;2821:=================
+;2822:PlayerInfo_ModelSpinEvent
+;2823:=================
+;2824:*/
+;2825:void PlayerInfo_ModelSpinEvent( modelRotate_t* rm, int id)
+;2826:{
+line 2827
+;2827:	rm->pause.generic.flags &= ~QMF_HIGHLIGHT;
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+CNSTI4 188
+ADDP4
+ASGNP4
+ADDRLP4 0
+INDIRP4
+ADDRLP4 0
+INDIRP4
+INDIRU4
+CNSTI4 -65
+CVIU4 4
+BANDU4
+ASGNU4
+line 2828
+;2828:	rm->pause.generic.flags |= QMF_PULSEIFFOCUS;
+ADDRLP4 4
+ADDRFP4 0
+INDIRP4
+CNSTI4 188
+ADDP4
+ASGNP4
+ADDRLP4 4
+INDIRP4
+ADDRLP4 4
+INDIRP4
+INDIRU4
+CNSTU4 256
+BORU4
+ASGNU4
+line 2830
+;2829:
+;2830:	switch (id) {
+ADDRLP4 8
+ADDRFP4 4
+INDIRI4
+ASGNI4
+ADDRLP4 8
+INDIRI4
+CNSTI4 1
+LTI4 $1139
+ADDRLP4 8
+INDIRI4
+CNSTI4 4
+GTI4 $1139
+ADDRLP4 8
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 $1151-4
+ADDP4
+INDIRP4
+JUMPV
+lit
+align 4
+LABELV $1151
+address $1147
+address $1141
+address $1144
+address $1148
+code
+LABELV $1141
+line 2832
+;2831:	case ID_MODELSPIN_LEFT:
+;2832:		rm->paused = qfalse;
+ADDRFP4 0
+INDIRP4
+CNSTI4 472
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2833
+;2833:		if (rm->rotate > -ROTATION_MAX)
+ADDRFP4 0
+INDIRP4
+CNSTI4 468
+ADDP4
+INDIRI4
+CNSTI4 -6
+LEI4 $1140
+line 2834
+;2834:			rm->rotate--;
+ADDRLP4 12
+ADDRFP4 0
+INDIRP4
+CNSTI4 468
+ADDP4
+ASGNP4
+ADDRLP4 12
+INDIRP4
+ADDRLP4 12
+INDIRP4
+INDIRI4
+CNSTI4 1
+SUBI4
+ASGNI4
+line 2835
+;2835:		break;
+ADDRGP4 $1140
+JUMPV
+LABELV $1144
+line 2838
+;2836:
+;2837:	case ID_MODELSPIN_RIGHT:
+;2838:		rm->paused = qfalse;
+ADDRFP4 0
+INDIRP4
+CNSTI4 472
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2839
+;2839:		if (rm->rotate < ROTATION_MAX)
+ADDRFP4 0
+INDIRP4
+CNSTI4 468
+ADDP4
+INDIRI4
+CNSTI4 6
+GEI4 $1140
+line 2840
+;2840:			rm->rotate++;
+ADDRLP4 16
+ADDRFP4 0
+INDIRP4
+CNSTI4 468
+ADDP4
+ASGNP4
+ADDRLP4 16
+INDIRP4
+ADDRLP4 16
+INDIRP4
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+line 2841
+;2841:		break;
+ADDRGP4 $1140
+JUMPV
+LABELV $1147
+line 2844
+;2842:
+;2843:	case ID_MODELSPIN_STOP:
+;2844:		rm->paused = qfalse;
+ADDRFP4 0
+INDIRP4
+CNSTI4 472
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2845
+;2845:		rm->rotate = 0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 468
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2846
+;2846:		rm->yaw = 0.0;
+ADDRFP4 0
+INDIRP4
+CNSTI4 464
+ADDP4
+CNSTF4 0
+ASGNF4
+line 2847
+;2847:		break;
+ADDRGP4 $1140
+JUMPV
+LABELV $1148
+line 2850
+;2848:
+;2849:	case ID_MODELSPIN_PAUSE:
+;2850:		if (rm->paused) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 472
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $1149
+line 2851
+;2851:			rm->paused = qfalse;
+ADDRFP4 0
+INDIRP4
+CNSTI4 472
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2852
+;2852:		}
+ADDRGP4 $1140
+JUMPV
+LABELV $1149
+line 2853
+;2853:		else {
+line 2854
+;2854:			rm->pause.generic.flags |= QMF_HIGHLIGHT;
+ADDRLP4 20
+ADDRFP4 0
+INDIRP4
+CNSTI4 188
+ADDP4
+ASGNP4
+ADDRLP4 20
+INDIRP4
+ADDRLP4 20
+INDIRP4
+INDIRU4
+CNSTU4 64
+BORU4
+ASGNU4
+line 2855
+;2855:			rm->pause.generic.flags &= ~QMF_PULSEIFFOCUS;
+ADDRLP4 24
+ADDRFP4 0
+INDIRP4
+CNSTI4 188
+ADDP4
+ASGNP4
+ADDRLP4 24
+INDIRP4
+ADDRLP4 24
+INDIRP4
+INDIRU4
+CNSTI4 -257
+CVIU4 4
+BANDU4
+ASGNU4
+line 2856
+;2856:			rm->paused = qtrue;
+ADDRFP4 0
+INDIRP4
+CNSTI4 472
+ADDP4
+CNSTI4 1
+ASGNI4
+line 2857
+;2857:		}
+line 2858
+;2858:		break;
+LABELV $1139
+LABELV $1140
+line 2860
+;2859:
+;2860:	};
+line 2861
+;2861:}
+LABELV $1138
+endproc PlayerInfo_ModelSpinEvent 28 0
+export UIE_PlayerInfo_InitRotateModel
+proc UIE_PlayerInfo_InitRotateModel 4 8
+line 2870
+;2862:
+;2863:
+;2864:/*
+;2865:=================
+;2866:UIE_PlayerInfo_InitRotateModel
+;2867:=================
+;2868:*/
+;2869:void UIE_PlayerInfo_InitRotateModel(menuframework_s* mf, modelRotate_t* rm, callbackFunc event_handler, int x, int y)
+;2870:{
+line 2871
+;2871:	rm->yaw = 0.0;
+ADDRFP4 4
+INDIRP4
+CNSTI4 464
+ADDP4
+CNSTF4 0
+ASGNF4
+line 2872
+;2872:	rm->rotate = 0;
+ADDRFP4 4
+INDIRP4
+CNSTI4 468
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2873
+;2873:	rm->paused = qtrue;
+ADDRFP4 4
+INDIRP4
+CNSTI4 472
+ADDP4
+CNSTI4 1
+ASGNI4
+line 2875
+;2874:
+;2875:	rm->left.generic.type	    = MTYPE_BITMAP;
+ADDRFP4 4
+INDIRP4
+CNSTI4 232
+ADDP4
+CNSTI4 6
+ASGNI4
+line 2876
+;2876:	rm->left.generic.name     = MODELSPIN_LEFT;
+ADDRFP4 4
+INDIRP4
+CNSTI4 236
+ADDP4
+ADDRGP4 $1154
+ASGNP4
+line 2877
+;2877:	rm->left.generic.flags    = QMF_PULSEIFFOCUS;
+ADDRFP4 4
+INDIRP4
+CNSTI4 304
+ADDP4
+CNSTU4 256
+ASGNU4
+line 2878
+;2878:	rm->left.generic.callback = event_handler;
+ADDRFP4 4
+INDIRP4
+CNSTI4 308
+ADDP4
+ADDRFP4 8
+INDIRP4
+ASGNP4
+line 2879
+;2879:	rm->left.generic.id	    = ID_MODELSPIN_LEFT;
+ADDRFP4 4
+INDIRP4
+CNSTI4 256
+ADDP4
+CNSTI4 2
+ASGNI4
+line 2880
+;2880:	rm->left.generic.x		= x;
+ADDRFP4 4
+INDIRP4
+CNSTI4 260
+ADDP4
+ADDRFP4 12
+INDIRI4
+ASGNI4
+line 2881
+;2881:	rm->left.generic.y		= y;
+ADDRFP4 4
+INDIRP4
+CNSTI4 264
+ADDP4
+ADDRFP4 16
+INDIRI4
+ASGNI4
+line 2882
+;2882:	rm->left.width  		    = 32;
+ADDRFP4 4
+INDIRP4
+CNSTI4 336
+ADDP4
+CNSTI4 32
+ASGNI4
+line 2883
+;2883:	rm->left.height  		    = 32;
+ADDRFP4 4
+INDIRP4
+CNSTI4 340
+ADDP4
+CNSTI4 32
+ASGNI4
+line 2884
+;2884:	rm->left.focuspic         = MODELSPIN_LEFT1;
+ADDRFP4 4
+INDIRP4
+CNSTI4 320
+ADDP4
+ADDRGP4 $1155
+ASGNP4
+line 2886
+;2885:
+;2886:	rm->right.generic.type	    = MTYPE_BITMAP;
+ADDRFP4 4
+INDIRP4
+CNSTI4 348
+ADDP4
+CNSTI4 6
+ASGNI4
+line 2887
+;2887:	rm->right.generic.name     = MODELSPIN_RIGHT;
+ADDRFP4 4
+INDIRP4
+CNSTI4 352
+ADDP4
+ADDRGP4 $1156
+ASGNP4
+line 2888
+;2888:	rm->right.generic.flags    = QMF_PULSEIFFOCUS;
+ADDRFP4 4
+INDIRP4
+CNSTI4 420
+ADDP4
+CNSTU4 256
+ASGNU4
+line 2889
+;2889:	rm->right.generic.callback = event_handler;
+ADDRFP4 4
+INDIRP4
+CNSTI4 424
+ADDP4
+ADDRFP4 8
+INDIRP4
+ASGNP4
+line 2890
+;2890:	rm->right.generic.id	    = ID_MODELSPIN_RIGHT;
+ADDRFP4 4
+INDIRP4
+CNSTI4 372
+ADDP4
+CNSTI4 3
+ASGNI4
+line 2891
+;2891:	rm->right.generic.x		= x + 32;
+ADDRFP4 4
+INDIRP4
+CNSTI4 376
+ADDP4
+ADDRFP4 12
+INDIRI4
+CNSTI4 32
+ADDI4
+ASGNI4
+line 2892
+;2892:	rm->right.generic.y		= y;
+ADDRFP4 4
+INDIRP4
+CNSTI4 380
+ADDP4
+ADDRFP4 16
+INDIRI4
+ASGNI4
+line 2893
+;2893:	rm->right.width  		    = 32;
+ADDRFP4 4
+INDIRP4
+CNSTI4 452
+ADDP4
+CNSTI4 32
+ASGNI4
+line 2894
+;2894:	rm->right.height  		    = 32;
+ADDRFP4 4
+INDIRP4
+CNSTI4 456
+ADDP4
+CNSTI4 32
+ASGNI4
+line 2895
+;2895:	rm->right.focuspic         = MODELSPIN_RIGHT1;
+ADDRFP4 4
+INDIRP4
+CNSTI4 436
+ADDP4
+ADDRGP4 $1157
+ASGNP4
+line 2897
+;2896:
+;2897:	rm->stop.generic.type	    = MTYPE_BITMAP;
+ADDRFP4 4
+INDIRP4
+CNSTI4 6
+ASGNI4
+line 2898
+;2898:	rm->stop.generic.name     = MODELSPIN_STOP;
+ADDRFP4 4
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 $1158
+ASGNP4
+line 2899
+;2899:	rm->stop.generic.flags    = QMF_PULSEIFFOCUS;
+ADDRFP4 4
+INDIRP4
+CNSTI4 72
+ADDP4
+CNSTU4 256
+ASGNU4
+line 2900
+;2900:	rm->stop.generic.callback = event_handler;
+ADDRFP4 4
+INDIRP4
+CNSTI4 76
+ADDP4
+ADDRFP4 8
+INDIRP4
+ASGNP4
+line 2901
+;2901:	rm->stop.generic.id	    = ID_MODELSPIN_STOP;
+ADDRFP4 4
+INDIRP4
+CNSTI4 24
+ADDP4
+CNSTI4 1
+ASGNI4
+line 2902
+;2902:	rm->stop.generic.x		= x;
+ADDRFP4 4
+INDIRP4
+CNSTI4 28
+ADDP4
+ADDRFP4 12
+INDIRI4
+ASGNI4
+line 2903
+;2903:	rm->stop.generic.y		= y + 32;
+ADDRLP4 0
+CNSTI4 32
+ASGNI4
+ADDRFP4 4
+INDIRP4
+ADDRLP4 0
+INDIRI4
+ADDP4
+ADDRFP4 16
+INDIRI4
+ADDRLP4 0
+INDIRI4
+ADDI4
+ASGNI4
+line 2904
+;2904:	rm->stop.width  		    = 32;
+ADDRFP4 4
+INDIRP4
+CNSTI4 104
+ADDP4
+CNSTI4 32
+ASGNI4
+line 2905
+;2905:	rm->stop.height  		    = 32;
+ADDRFP4 4
+INDIRP4
+CNSTI4 108
+ADDP4
+CNSTI4 32
+ASGNI4
+line 2906
+;2906:	rm->stop.focuspic         = MODELSPIN_STOP1;
+ADDRFP4 4
+INDIRP4
+CNSTI4 88
+ADDP4
+ADDRGP4 $1159
+ASGNP4
+line 2908
+;2907:
+;2908:	rm->pause.generic.type	    = MTYPE_BITMAP;
+ADDRFP4 4
+INDIRP4
+CNSTI4 116
+ADDP4
+CNSTI4 6
+ASGNI4
+line 2909
+;2909:	rm->pause.generic.name     = MODELSPIN_PAUSE;
+ADDRFP4 4
+INDIRP4
+CNSTI4 120
+ADDP4
+ADDRGP4 $1160
+ASGNP4
+line 2910
+;2910:	rm->pause.generic.flags    = QMF_PULSEIFFOCUS;
+ADDRFP4 4
+INDIRP4
+CNSTI4 188
+ADDP4
+CNSTU4 256
+ASGNU4
+line 2911
+;2911:	rm->pause.generic.callback = event_handler;
+ADDRFP4 4
+INDIRP4
+CNSTI4 192
+ADDP4
+ADDRFP4 8
+INDIRP4
+ASGNP4
+line 2912
+;2912:	rm->pause.generic.id	    = ID_MODELSPIN_PAUSE;
+ADDRFP4 4
+INDIRP4
+CNSTI4 140
+ADDP4
+CNSTI4 4
+ASGNI4
+line 2913
+;2913:	rm->pause.generic.x		= x + 32;
+ADDRFP4 4
+INDIRP4
+CNSTI4 144
+ADDP4
+ADDRFP4 12
+INDIRI4
+CNSTI4 32
+ADDI4
+ASGNI4
+line 2914
+;2914:	rm->pause.generic.y		= y + 32;
+ADDRFP4 4
+INDIRP4
+CNSTI4 148
+ADDP4
+ADDRFP4 16
+INDIRI4
+CNSTI4 32
+ADDI4
+ASGNI4
+line 2915
+;2915:	rm->pause.width  		    = 32;
+ADDRFP4 4
+INDIRP4
+CNSTI4 220
+ADDP4
+CNSTI4 32
+ASGNI4
+line 2916
+;2916:	rm->pause.height  		    = 32;
+ADDRFP4 4
+INDIRP4
+CNSTI4 224
+ADDP4
+CNSTI4 32
+ASGNI4
+line 2917
+;2917:	rm->pause.focuspic         = MODELSPIN_PAUSE1;
+ADDRFP4 4
+INDIRP4
+CNSTI4 204
+ADDP4
+ADDRGP4 $1161
+ASGNP4
+line 2919
+;2918:
+;2919:	Menu_AddItem(mf, &rm->left);
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 232
+ADDP4
+ARGP4
+ADDRGP4 Menu_AddItem
+CALLV
+pop
+line 2920
+;2920:	Menu_AddItem(mf, &rm->right);
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 348
+ADDP4
+ARGP4
+ADDRGP4 Menu_AddItem
+CALLV
+pop
+line 2921
+;2921:	Menu_AddItem(mf, &rm->stop);
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRFP4 4
+INDIRP4
+ARGP4
+ADDRGP4 Menu_AddItem
+CALLV
+pop
+line 2922
+;2922:	Menu_AddItem(mf, &rm->pause);
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 116
+ADDP4
+ARGP4
+ADDRGP4 Menu_AddItem
+CALLV
+pop
+line 2924
+;2923:
+;2924:	rm->useSpin = qtrue;
+ADDRFP4 4
+INDIRP4
+CNSTI4 476
+ADDP4
+CNSTI4 1
+ASGNI4
+line 2925
+;2925:}
+LABELV $1153
+endproc UIE_PlayerInfo_InitRotateModel 4 8
+import COM_StripExtensionOld
+bss
+align 4
+LABELV crashProtected
+skip 4
+align 4
+LABELV forceNextAnim
+skip 4
+align 4
+LABELV jumpHeight
+skip 4
+align 4
+LABELV dp_realtime
+skip 4
+align 4
+LABELV sfxModel
+skip 52
+align 4
+LABELV sfxWeapon
+skip 380
+import UI_MapCallVote
+import UI_saveMapEdMenu
+import UI_saveMapEdMenu_Cache
+import UI_loadMapEdMenu
+import UI_loadMapEd_Cache
+import UI_SPKickDupe_f
+import UI_RankStatusMenu
+import RankStatus_Cache
+import UI_SignupMenu
+import Signup_Cache
+import UI_LoginMenu
+import Login_Cache
+import UI_RankingsMenu
+import Rankings_Cache
+import Rankings_DrawPassword
+import Rankings_DrawName
+import Rankings_DrawText
+import UI_InitGameinfo
+import UI_SPUnlockMedals_f
+import UI_SPUnlock_f
+import UI_GetAwardLevel
+import UI_LogAwardData
+import UI_NewGame
+import UI_GetCurrentGame
+import UI_CanShowTierVideo
+import UI_ShowTierVideo
+import UI_TierCompleted
+import UI_SetBestScore
+import UI_GetBestScore
+import UI_GetNumBots
+import UI_GetBotNumByName
+import UI_GetBotInfoByName
+import UI_GetBotInfoByNumber
+import UI_GetNumSPTiers
+import UI_GetNumSPArenas
+import UI_GetNumArenas
+import UI_GetSpecialArenaInfo
+import UI_GetArenaInfoByMap
+import UI_GetArenaInfoByNumber
+import UI_SetDefaultCvar
+import UI_UpdateCvars
+import UI_RegisterCvars
+import MainMenu_ReloadGame
+import UI_MainMenu
+import MainMenu_Cache
+import color_translucent
+import UI_NetworkOptionsMenu
+import UI_NetworkOptionsMenu_Cache
+import UI_SoundOptionsMenu
+import UI_SoundOptionsMenu_Cache
+import UI_DisplayOptionsMenu
+import UI_DisplayOptionsMenu_Cache
+import UI_ConfigMenu
+import UI_SaveConfigMenu
+import UI_LoadConfigMenu
+import UI_LoadConfig_Cache
+import LoadConfig_SetStatusText
+import UI_TeamOrdersMenu_Cache
+import UI_TeamOrdersMenu_f
+import UI_TeamOrdersMenu
+import UI_RemoveBotsMenu
+import UI_RemoveBots_Cache
+import UI_AddBotsMenu
+import UI_AddBots_Cache
+import trap_SetPbClStatus
+import trap_RealTime
+import trap_VerifyCDKey
+import trap_SetCDKey
+import trap_GetCDKey
+import trap_MemoryRemaining
+import trap_LAN_GetPingInfo
+import trap_LAN_GetPing
+import trap_LAN_ClearPing
+import trap_LAN_ServerStatus
+import trap_LAN_GetPingQueueCount
+import trap_LAN_GetServerInfo
+import trap_LAN_GetServerAddressString
+import trap_LAN_GetServerCount
+import trap_GetConfigString
+import trap_GetGlconfig
+import trap_GetClientState
+import trap_GetClipboardData
+import trap_Key_SetCatcher
+import trap_Key_GetCatcher
+import trap_Key_ClearStates
+import trap_Key_SetOverstrikeMode
+import trap_Key_GetOverstrikeMode
+import trap_Key_IsDown
+import trap_Key_SetBinding
+import trap_Key_GetBindingBuf
+import trap_Key_KeynumToStringBuf
+import trap_S_RegisterSound
+import trap_S_StartLocalSound
+import trap_CM_LerpTag
+import trap_UpdateScreen
+import trap_R_DrawStretchPic
+import trap_R_SetColor
+import trap_R_RenderScene
+import trap_R_AddLightToScene
+import trap_R_AddPolyToScene
+import trap_R_AddRefEntityToScene
+import trap_R_ClearScene
+import trap_R_RegisterShaderNoMip
+import trap_R_RegisterSkin
+import trap_R_RegisterModel
+import trap_FS_Seek
+import trap_FS_GetFileList
+import trap_FS_FCloseFile
+import trap_FS_Write
+import trap_FS_Read
+import trap_FS_FOpenFile
+import trap_Cmd_ExecuteText
+import trap_Argv
+import trap_Argc
+import trap_Cvar_InfoStringBuffer
+import trap_Cvar_Create
+import trap_Cvar_Reset
+import trap_Cvar_SetValue
+import trap_Cvar_VariableStringBuffer
+import trap_Cvar_VariableValue
+import trap_Cvar_Set
+import trap_Cvar_Update
+import trap_Cvar_Register
+import trap_Milliseconds
+import trap_Error
+import trap_Print
+import UI_SPSkillMenu_Cache
+import UI_SPSkillMenu
+import UI_SPPostgameMenu_f
+import UI_SPPostgameMenu_Cache
+import UI_SPArena_Start
+import UI_SPLevelMenu_ReInit
+import UI_SPLevelMenu_f
+import UI_SPLevelMenu
+import UI_SPLevelMenu_Cache
+import UIE_AwardIcons_DrawValues
+import UIE_AwardIcons_PlaySound
+import UIE_AwardIcons_InitControls
+import UIE_AwardIcons_Cache
+import uis
+import m_entersound
+import UI_StartDemoLoop
+import UI_Cvar_VariableString
+import UI_Argv
+import UI_ForceMenuOff
+import UI_PopMenu
+import UI_PushMenu
+import UI_SetActiveMenu
+import UI_IsFullscreen
+import UI_DrawTextBox
+import UI_AdjustFrom640
+import UI_CursorInRect
+import UI_DrawCharCustom
+import UI_DrawChar
+import UI_DrawStringCustom
+import UI_DrawString
+import UI_ProportionalStringWidth
+import UI_DrawProportionalString_AutoWrapped
+import UI_DrawProportionalString
+import UI_DrawScaledProportionalString
+import UI_ProportionalSizeScale
+import UI_DrawBannerString
+import UI_LerpColor
+import UI_SetColor
+import UI_UpdateScreen
+import UI_DrawRect
+import UI_FillRect
+import UI_DrawRoundedRect
+import vycalc
+import vxcalc
+import vy
+import vx
+import UI_DrawHandlePic
+import UI_DrawNamedPic
+import UI_ClampCvar
+import UI_ConsoleCommand
+import UI_Refresh
+import UI_MouseEvent
+import UI_KeyEvent
+import UI_Shutdown
+import UI_Init
+import DriverInfo_Cache
+import GraphicsOptions_Cache
+import UI_GraphicsOptionsMenu
+import ServerInfo_Cache
+import UI_ServerInfoMenu
+import UIE_DefaultIconFromGameType
+import UIE_StartServer_RegisterDisableCvars
+import UIE_InGame_EnabledItems
+import UI_ServerPlayerIcon
+import Clamp_Random
+import UI_BotSelect_Cache
+import UI_BotSelect
+import ServerOptions_Cache
+import StartServer_Cache
+import UI_StartServerMenu
+import ArenaServers_Cache
+import UI_ArenaServersMenu
+import SpecifyServer_Cache
+import UI_SpecifyServerMenu
+import SpecifyLeague_Cache
+import UI_SpecifyLeagueMenu
+import Preferences_Cache
+import UI_PreferencesMenu
+import PlayerSettings_Cache
+import UI_PlayerSettingsMenu
+import PlayerModel_Cache
+import UI_PlayerModelMenu
+import UI_CDKeyMenu_f
+import UI_CDKeyMenu_Cache
+import UI_CDKeyMenu
+import UI_WorkshopMenu_Cache
+import UI_WorkshopMenu
+import UI_ModsMenu_Cache
+import UI_ModsMenu
+import UI_CinematicsMenu_Cache
+import UI_CinematicsMenu_f
+import UI_CinematicsMenu
+import Demos_Cache
+import UI_DemosMenu
+import Controls_Cache
+import UI_ControlsMenu
+import UI_DrawConnectScreen
+import TeamMain_Cache
+import UI_TeamMainMenu
+import UI_SetupMenu
+import UI_SetupMenu_Cache
+import UI_SandboxMainMenu
+import UI_Message
+import UI_ConfirmMenu_Style
+import UI_ConfirmMenu
+import ConfirmMenu_Cache
+import UI_BotCommandMenu_f
+import UI_DynamicMenuCache
+import UI_InGameMenu
+import InGame_Cache
+import UI_CurrentPlayerTeam
+import UI_CreditMenu
+import MenuField_Key
+import MenuField_Draw
+import MenuField_Init
+import MField_DrawCustom
+import MField_Draw
+import MField_CharEvent
+import MField_KeyDownEvent
+import MField_Clear
+import UI_AdvancedMenu_Cache
+import UI_AdvancedMenu
+import MGUI_Load
+import UI_ArenaScriptAutoFloat
+import UI_ArenaScriptAutoChar
+import UI_ArenaScriptAutoInt
+import ui_medalSounds
+import ui_medalPicNames
+import ui_medalNames
+import SpinControl_Init
+import RadioButton_Init
+import ScrollList_Init
+import PText_Init
+import text_color_highlighty
+import text_color_highlight
+import text_color_normal
+import text_color_disabled
+import pulse_color
+import listbar_color
+import list_color
+import name_color
+import s_sandboxmain_color1
+import color_green
+import color_dim
+import color_realred
+import color_red
+import color_orange
+import color_blue
+import color_yellow
+import color_white
+import color_black
+import menu_dim_color
+import menu_black_color
+import menu_red_color
+import menu_highlight_color
+import menu_dark_color
+import menu_grayed_color
+import menu_text_color
+import weaponChangeSound
+import menu_null_sound
+import menu_buzz_sound
+import menu_out_sound
+import menu_move_sound
+import menu_in_sound
+import ScrollList_Key
+import ScrollList_Draw
+import UIObject_Draw
+import UIObject_Init
+import Bitmap_Draw
+import Bitmap_Init
+import Menu_DefaultKey
+import Menu_SetCursorToItem
+import Menu_SetCursor
+import Menu_ActivateItem
+import Menu_ItemAtCursor
+import Menu_Draw
+import Menu_AdjustCursor
+import Menu_AddItem
+import Menu_Focus
+import Menu_Cache
+import UI_IsValidCvar
+import uie_olditemmenu
+import uie_ingame_dynamicmenu
+import uie_autoclosebotmenu
+import uie_mapicons
+import uie_animsfx
+import ui_cdkeychecked
+import ui_cdkey
+import ui_server32
+import ui_server31
+import ui_server30
+import ui_server29
+import ui_server28
+import ui_server27
+import ui_server26
+import ui_server25
+import ui_server24
+import ui_server23
+import ui_server22
+import ui_server21
+import ui_server20
+import ui_server19
+import ui_server18
+import ui_server17
+import ui_server16
+import ui_server15
+import ui_server14
+import ui_server13
+import ui_server12
+import ui_server11
+import ui_server10
+import ui_server9
+import ui_server8
+import ui_server7
+import ui_server6
+import ui_server5
+import ui_server4
+import ui_server3
+import ui_server2
+import ui_server1
+import ui_marks
+import ui_drawCrosshairNames
+import ui_drawCrosshair
+import ui_brassTime
+import ui_browserShowEmpty
+import ui_browserShowFull
+import ui_browserSortKey
+import ui_browserGameType
+import ui_browserMaster
+import ui_spSelection
+import ui_spSkill
+import ui_spVideos
+import ui_spAwards
+import ui_spScores5
+import ui_spScores4
+import ui_spScores3
+import ui_spScores2
+import ui_spScores1
+import ui_botsFile
+import ui_arenasFile
+import ui_ctf_friendly
+import ui_ctf_timelimit
+import ui_ctf_capturelimit
+import ui_team_friendly
+import ui_team_timelimit
+import ui_team_fraglimit
+import ui_tourney_timelimit
+import ui_tourney_fraglimit
+import ui_ffa_timelimit
+import ui_ffa_fraglimit
+import ui_backcolors
+import cl_screenoffset
+import ui_loaded
+import cl_language
+import cl_selectedmod
+import team_legsskin
+import sensitivitymenu
+import legsskin
+import ui_singlemode
+import ui_3dmap
+import ui_scrollbtnsize
+import sbt_wallpaper
+import sbt_color3_3
+import sbt_color3_2
+import sbt_color3_1
+import sbt_color3_0
+import sbt_color2_3
+import sbt_color2_2
+import sbt_color2_1
+import sbt_color2_0
+import sbt_color1_3
+import sbt_color1_2
+import sbt_color1_1
+import sbt_color1_0
+import sbt_color0_3
+import sbt_color0_2
+import sbt_color0_1
+import sbt_color0_0
+import mgui_none
+import mgui_api_active
+import cl_sprun
+import toolgun_disabledarg4
+import toolgun_disabledarg3
+import toolgun_disabledarg2
+import toolgun_disabledarg1
+import toolgun_toolset18
+import toolgun_toolset17
+import toolgun_toolset16
+import toolgun_toolset15
+import toolgun_toolset14
+import toolgun_toolset13
+import toolgun_toolset12
+import toolgun_toolset11
+import toolgun_toolset10
+import toolgun_toolset9
+import toolgun_toolset8
+import toolgun_toolset7
+import toolgun_toolset6
+import toolgun_toolset5
+import toolgun_toolset4
+import toolgun_toolset3
+import toolgun_toolset2
+import toolgun_toolset1
+import tool_modifypreset4
+import tool_modifypreset3
+import tool_modifypreset2
+import tool_modifypreset
+import tool_spawnpreset
+import spawn_preset
+import sb_tab
+import sb_texturenum
+import sb_classnum
+import sb_modelnum
+import sb_grid
+import sb_texturename
+import sb_texture
+import sb_private
+import test9
+import test8
+import test7
+import test6
+import test5
+import test4
+import test3
+import test2
+import test1
+import cl_giantcharheight
+import cl_giantcharwidth
+import cl_bigcharheight
+import cl_bigcharwidth
+import cl_smallcharheight
+import cl_smallcharwidth
+import cl_propgapwidth
+import cl_propspacewidth
+import cl_propheight
+import cl_propsmallsizescale
+import BG_TeamName
+import BG_GetVehicleSettings
+import BG_VehicleCheckClass
+import BG_PlayerTouchesItem
+import BG_PlayerStateToEntityStateExtraPolate
+import BG_PlayerStateToEntityState
+import BG_TouchJumpPad
+import BG_AddPredictableEventToPlayerstate
+import BG_EvaluateTrajectoryDelta
+import BG_EvaluateTrajectory
+import BG_DefragmentMemory
+import BG_Free
+import BG_InitMemory
+import BG_Alloc
+import BG_CanAlloc
+import BG_CanItemBeGrabbed
+import BG_FindItemForBackpack
+import BG_FindItemForHoldable
+import BG_FindItemForPowerup
+import BG_FindItemForWeapon
+import BG_FindSwepAmmo
+import BG_FindSwep
+import BG_FindItem
+import bg_numItems
+import bg_itemlist
+import Pmove
+import PM_UpdateViewAngles
+import COM_LoadLevelScores
+import COM_CalculatePlayerScore
+import Com_Printf
+import Com_Error
+import Info_NextPair
+import Info_Validate
+import Info_SetValueForKey_Big
+import Info_SetValueForKey
+import Info_RemoveKey_big
+import Info_RemoveKey
+import Info_ValueForKey
+import vectoyaw
+import AngleDifference
+import Com_TruncateLongString
+import va
+import Q_CountChar
+import Q_CleanStr
+import Q_PrintStrlen
+import Q_strcat
+import Q_strncpyz
+import Q_stristr
+import Q_strupr
+import Q_strlwr
+import Q_stricmpn
+import Q_strncmp
+import Q_stricmp
+import Q_isalpha
+import Q_isupper
+import Q_islower
+import Q_isprint
+import Com_RandomBytes
+import Com_SkipCharset
+import Com_SkipTokens
+import Com_sprintf
+import Parse3DMatrix
+import Parse2DMatrix
+import Parse1DMatrix
+import SkipRestOfLine
+import SkipBracedSection
+import COM_MatchToken
+import COM_ParseWarning
+import COM_ParseError
+import COM_Compress
+import COM_ParseExt
+import COM_Parse
+import COM_GetCurrentParseLine
+import COM_BeginParseSession
+import COM_DefaultExtension
+import COM_StripExtension
+import COM_GetExtension
+import COM_SkipPath
+import Com_Clamp
+import Q_isnan
+import PerpendicularVector
+import AngleVectors
+import MatrixMultiply
+import MakeNormalVectors
+import RotateAroundDirection
+import RotatePointAroundVector
+import ProjectPointOnPlane
+import PlaneFromPoints
+import AngleDelta
+import AngleNormalize180
+import AngleNormalize360
+import AnglesSubtract
+import AngleSubtract
+import LerpAngle
+import AngleMod
+import BoundsIntersectPoint
+import BoundsIntersectSphere
+import BoundsIntersect
+import BoxOnPlaneSide
+import SetPlaneSignbits
+import AxisCopy
+import AxisClear
+import Lerp
+import VelocityToAxis
+import AnglesToAxis
+import vectoangles
+import Q_crandom
+import Q_random
+import Q_rand
+import Q_acos
+import Q_log2
+import VectorRotate
+import Vector4Scale
+import VectorNormalize2
+import VectorNormalize
+import CrossProduct
+import VectorInverse
+import VectorNormalizeFast
+import DistanceSquared
+import Distance
+import VectorLengthSquared
+import VectorLength
+import VectorCompare
+import AddPointToBounds
+import ClearBounds
+import RadiusFromBounds
+import NormalizeColor
+import ColorBytes4
+import ColorBytes3
+import _VectorMA
+import _VectorScale
+import _VectorCopy
+import _VectorAdd
+import _VectorSubtract
+import _DotProduct
+import ByteToDir
+import DirToByte
+import ClampShort
+import ClampChar
+import Q_rsqrt
+import Q_fabs
+import axisDefault
+import vec3_origin
+import g_color_table
+import colorDkGrey
+import colorMdGrey
+import colorLtGrey
+import colorWhite
+import colorCyan
+import colorMagenta
+import colorYellow
+import colorBlue
+import colorGreen
+import colorRed
+import colorBlack
+import bytedirs
+import Hunk_Alloc
+import FloatSwap
+import LongSwap
+import ShortSwap
+import acos
+import fabs
+import abs
+import tan
+import atan2
+import cos
+import sin
+import sqrt
+import floor
+import ceil
+import memcpy
+import memset
+import memmove
+import sscanf
+import Q_snprintf
+import Q_vsnprintf
+import strtol
+import _atoi
+import atoi
+import strtod
+import _atof
+import atof
+import toupper
+import tolower
+import strncpy
+import strstr
+import strrchr
+import strchr
+import strcmp
+import strcpy
+import strcat
+import ifstrlenru
+import strlenru
+import strlen
+import rand
+import srand
+import qsort
+lit
+align 1
+LABELV $1161
+byte 1 109
+byte 1 101
+byte 1 110
+byte 1 117
+byte 1 47
+byte 1 117
+byte 1 105
+byte 1 101
+byte 1 95
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 47
+byte 1 114
+byte 1 111
+byte 1 116
+byte 1 97
+byte 1 116
+byte 1 101
+byte 1 95
+byte 1 112
+byte 1 97
+byte 1 117
+byte 1 115
+byte 1 101
+byte 1 49
+byte 1 0
+align 1
+LABELV $1160
+byte 1 109
+byte 1 101
+byte 1 110
+byte 1 117
+byte 1 47
+byte 1 117
+byte 1 105
+byte 1 101
+byte 1 95
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 47
+byte 1 114
+byte 1 111
+byte 1 116
+byte 1 97
+byte 1 116
+byte 1 101
+byte 1 95
+byte 1 112
+byte 1 97
+byte 1 117
+byte 1 115
+byte 1 101
+byte 1 0
+align 1
+LABELV $1159
+byte 1 109
+byte 1 101
+byte 1 110
+byte 1 117
+byte 1 47
+byte 1 117
+byte 1 105
+byte 1 101
+byte 1 95
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 47
+byte 1 114
+byte 1 111
+byte 1 116
+byte 1 97
+byte 1 116
+byte 1 101
+byte 1 95
+byte 1 115
+byte 1 116
+byte 1 111
+byte 1 112
+byte 1 49
+byte 1 0
+align 1
+LABELV $1158
+byte 1 109
+byte 1 101
+byte 1 110
+byte 1 117
+byte 1 47
+byte 1 117
+byte 1 105
+byte 1 101
+byte 1 95
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 47
+byte 1 114
+byte 1 111
+byte 1 116
+byte 1 97
+byte 1 116
+byte 1 101
+byte 1 95
+byte 1 115
+byte 1 116
+byte 1 111
+byte 1 112
+byte 1 0
+align 1
+LABELV $1157
+byte 1 109
+byte 1 101
+byte 1 110
+byte 1 117
+byte 1 47
+byte 1 117
+byte 1 105
+byte 1 101
+byte 1 95
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 47
+byte 1 114
+byte 1 111
+byte 1 116
+byte 1 97
+byte 1 116
+byte 1 101
+byte 1 95
+byte 1 114
+byte 1 105
+byte 1 103
+byte 1 104
+byte 1 116
+byte 1 49
+byte 1 0
+align 1
+LABELV $1156
+byte 1 109
+byte 1 101
+byte 1 110
+byte 1 117
+byte 1 47
+byte 1 117
+byte 1 105
+byte 1 101
+byte 1 95
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 47
+byte 1 114
+byte 1 111
+byte 1 116
+byte 1 97
+byte 1 116
+byte 1 101
+byte 1 95
+byte 1 114
+byte 1 105
+byte 1 103
+byte 1 104
+byte 1 116
+byte 1 0
+align 1
+LABELV $1155
+byte 1 109
+byte 1 101
+byte 1 110
+byte 1 117
+byte 1 47
+byte 1 117
+byte 1 105
+byte 1 101
+byte 1 95
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 47
+byte 1 114
+byte 1 111
+byte 1 116
+byte 1 97
+byte 1 116
+byte 1 101
+byte 1 95
+byte 1 108
+byte 1 101
+byte 1 102
+byte 1 116
+byte 1 49
+byte 1 0
+align 1
+LABELV $1154
+byte 1 109
+byte 1 101
+byte 1 110
+byte 1 117
+byte 1 47
+byte 1 117
+byte 1 105
+byte 1 101
+byte 1 95
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 47
+byte 1 114
+byte 1 111
+byte 1 116
+byte 1 97
+byte 1 116
+byte 1 101
+byte 1 95
+byte 1 108
+byte 1 101
+byte 1 102
+byte 1 116
+byte 1 0
+align 1
+LABELV $1130
+byte 1 85
+byte 1 78
+byte 1 75
+byte 1 78
+byte 1 79
+byte 1 87
+byte 1 78
+byte 1 32
+byte 1 76
+byte 1 69
+byte 1 71
+byte 1 83
+byte 1 0
+align 1
+LABELV $1127
+byte 1 85
+byte 1 78
+byte 1 75
+byte 1 78
+byte 1 79
+byte 1 87
+byte 1 78
+byte 1 32
+byte 1 72
+byte 1 69
+byte 1 65
+byte 1 68
+byte 1 0
+align 1
+LABELV $1124
+byte 1 85
+byte 1 78
+byte 1 75
+byte 1 78
+byte 1 79
+byte 1 87
+byte 1 78
+byte 1 32
+byte 1 77
+byte 1 79
+byte 1 68
+byte 1 69
+byte 1 76
+byte 1 0
+align 1
+LABELV $1099
+byte 1 76
+byte 1 79
+byte 1 87
+byte 1 32
+byte 1 77
+byte 1 69
+byte 1 77
+byte 1 79
+byte 1 82
+byte 1 89
+byte 1 0
+align 1
+LABELV $1092
+byte 1 67
+byte 1 82
+byte 1 65
+byte 1 83
+byte 1 72
+byte 1 32
+byte 1 68
+byte 1 69
+byte 1 84
+byte 1 69
+byte 1 67
+byte 1 84
+byte 1 69
+byte 1 68
+byte 1 0
+align 1
+LABELV $1046
+byte 1 116
+byte 1 101
+byte 1 97
+byte 1 109
+byte 1 95
+byte 1 108
+byte 1 101
+byte 1 103
+byte 1 115
+byte 1 115
+byte 1 107
+byte 1 105
+byte 1 110
+byte 1 0
+align 1
+LABELV $1045
+byte 1 116
+byte 1 101
+byte 1 97
+byte 1 109
+byte 1 95
+byte 1 104
+byte 1 101
+byte 1 97
+byte 1 100
+byte 1 109
+byte 1 111
+byte 1 100
+byte 1 101
+byte 1 108
+byte 1 0
+align 1
+LABELV $1044
+byte 1 116
+byte 1 101
+byte 1 97
+byte 1 109
+byte 1 95
+byte 1 109
+byte 1 111
+byte 1 100
+byte 1 101
+byte 1 108
+byte 1 0
+align 1
+LABELV $1043
+byte 1 108
+byte 1 101
+byte 1 103
+byte 1 115
+byte 1 115
+byte 1 107
+byte 1 105
+byte 1 110
+byte 1 0
+align 1
+LABELV $1042
+byte 1 104
+byte 1 101
+byte 1 97
+byte 1 100
+byte 1 109
+byte 1 111
+byte 1 100
+byte 1 101
+byte 1 108
+byte 1 0
+align 1
+LABELV $1041
+byte 1 109
+byte 1 111
+byte 1 100
+byte 1 101
+byte 1 108
+byte 1 0
+align 1
+LABELV $1036
+byte 1 49
+byte 1 0
+align 1
+LABELV $1035
+byte 1 48
+byte 1 0
+align 1
+LABELV $1032
+byte 1 117
+byte 1 105
+byte 1 101
+byte 1 95
+byte 1 99
+byte 1 114
+byte 1 97
+byte 1 115
+byte 1 104
+byte 1 112
+byte 1 114
+byte 1 111
+byte 1 116
+byte 1 101
+byte 1 99
+byte 1 116
+byte 1 105
+byte 1 111
+byte 1 110
+byte 1 0
+align 1
+LABELV $1024
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 121
+byte 1 101
+byte 1 114
+byte 1 47
+byte 1 102
+byte 1 111
+byte 1 111
+byte 1 116
+byte 1 115
+byte 1 116
+byte 1 101
+byte 1 112
+byte 1 115
+byte 1 47
+byte 1 37
+byte 1 115
+byte 1 37
+byte 1 105
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $1017
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 121
+byte 1 101
+byte 1 114
+byte 1 47
+byte 1 108
+byte 1 97
+byte 1 110
+byte 1 100
+byte 1 49
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $1011
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 121
+byte 1 101
+byte 1 114
+byte 1 47
+byte 1 37
+byte 1 115
+byte 1 47
+byte 1 106
+byte 1 117
+byte 1 109
+byte 1 112
+byte 1 49
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $1005
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 121
+byte 1 101
+byte 1 114
+byte 1 47
+byte 1 37
+byte 1 115
+byte 1 47
+byte 1 100
+byte 1 101
+byte 1 97
+byte 1 116
+byte 1 104
+byte 1 51
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $999
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 121
+byte 1 101
+byte 1 114
+byte 1 47
+byte 1 37
+byte 1 115
+byte 1 47
+byte 1 100
+byte 1 101
+byte 1 97
+byte 1 116
+byte 1 104
+byte 1 50
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $993
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 121
+byte 1 101
+byte 1 114
+byte 1 47
+byte 1 37
+byte 1 115
+byte 1 47
+byte 1 100
+byte 1 101
+byte 1 97
+byte 1 116
+byte 1 104
+byte 1 49
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $989
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 121
+byte 1 101
+byte 1 114
+byte 1 47
+byte 1 37
+byte 1 115
+byte 1 47
+byte 1 116
+byte 1 97
+byte 1 117
+byte 1 110
+byte 1 116
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $984
+byte 1 115
+byte 1 97
+byte 1 114
+byte 1 103
+byte 1 101
+byte 1 0
+align 1
+LABELV $833
+byte 1 85
+byte 1 110
+byte 1 107
+byte 1 110
+byte 1 111
+byte 1 119
+byte 1 110
+byte 1 32
+byte 1 97
+byte 1 110
+byte 1 105
+byte 1 109
+byte 1 58
+byte 1 32
+byte 1 37
+byte 1 105
+byte 1 10
+byte 1 0
+align 1
+LABELV $730
+byte 1 70
+byte 1 97
+byte 1 105
+byte 1 108
+byte 1 101
+byte 1 100
+byte 1 32
+byte 1 116
+byte 1 111
+byte 1 32
+byte 1 108
+byte 1 111
+byte 1 97
+byte 1 100
+byte 1 32
+byte 1 97
+byte 1 110
+byte 1 105
+byte 1 109
+byte 1 97
+byte 1 116
+byte 1 105
+byte 1 111
+byte 1 110
+byte 1 32
+byte 1 102
+byte 1 105
+byte 1 108
+byte 1 101
+byte 1 32
+byte 1 37
+byte 1 115
+byte 1 10
+byte 1 0
+align 1
+LABELV $727
+byte 1 109
+byte 1 111
+byte 1 100
+byte 1 101
+byte 1 108
+byte 1 115
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 121
+byte 1 101
+byte 1 114
+byte 1 115
+byte 1 47
+byte 1 37
+byte 1 115
+byte 1 47
+byte 1 97
+byte 1 110
+byte 1 105
+byte 1 109
+byte 1 97
+byte 1 116
+byte 1 105
+byte 1 111
+byte 1 110
+byte 1 46
+byte 1 99
+byte 1 102
+byte 1 103
+byte 1 0
+align 1
+LABELV $724
+byte 1 109
+byte 1 111
+byte 1 100
+byte 1 101
+byte 1 108
+byte 1 115
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 121
+byte 1 101
+byte 1 114
+byte 1 115
+byte 1 47
+byte 1 37
+byte 1 115
+byte 1 47
+byte 1 104
+byte 1 101
+byte 1 97
+byte 1 100
+byte 1 46
+byte 1 109
+byte 1 100
+byte 1 51
+byte 1 0
+align 1
+LABELV $721
+byte 1 109
+byte 1 111
+byte 1 100
+byte 1 101
+byte 1 108
+byte 1 115
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 121
+byte 1 101
+byte 1 114
+byte 1 115
+byte 1 47
+byte 1 37
+byte 1 115
+byte 1 47
+byte 1 117
+byte 1 112
+byte 1 112
+byte 1 101
+byte 1 114
+byte 1 46
+byte 1 109
+byte 1 100
+byte 1 51
+byte 1 0
+align 1
+LABELV $720
+byte 1 70
+byte 1 97
+byte 1 105
+byte 1 108
+byte 1 101
+byte 1 100
+byte 1 32
+byte 1 116
+byte 1 111
+byte 1 32
+byte 1 108
+byte 1 111
+byte 1 97
+byte 1 100
+byte 1 32
+byte 1 109
+byte 1 111
+byte 1 100
+byte 1 101
+byte 1 108
+byte 1 32
+byte 1 102
+byte 1 105
+byte 1 108
+byte 1 101
+byte 1 32
+byte 1 37
+byte 1 115
+byte 1 10
+byte 1 0
+align 1
+LABELV $717
+byte 1 109
+byte 1 111
+byte 1 100
+byte 1 101
+byte 1 108
+byte 1 115
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 121
+byte 1 101
+byte 1 114
+byte 1 115
+byte 1 47
+byte 1 37
+byte 1 115
+byte 1 47
+byte 1 108
+byte 1 111
+byte 1 119
+byte 1 101
+byte 1 114
+byte 1 46
+byte 1 109
+byte 1 100
+byte 1 51
+byte 1 0
+align 1
+LABELV $707
+byte 1 69
+byte 1 114
+byte 1 114
+byte 1 111
+byte 1 114
+byte 1 32
+byte 1 112
+byte 1 97
+byte 1 114
+byte 1 115
+byte 1 105
+byte 1 110
+byte 1 103
+byte 1 32
+byte 1 97
+byte 1 110
+byte 1 105
+byte 1 109
+byte 1 97
+byte 1 116
+byte 1 105
+byte 1 111
+byte 1 110
+byte 1 32
+byte 1 102
+byte 1 105
+byte 1 108
+byte 1 101
+byte 1 58
+byte 1 32
+byte 1 37
+byte 1 115
+byte 1 0
+align 1
+LABELV $686
+byte 1 117
+byte 1 110
+byte 1 107
+byte 1 110
+byte 1 111
+byte 1 119
+byte 1 110
+byte 1 32
+byte 1 116
+byte 1 111
+byte 1 107
+byte 1 101
+byte 1 110
+byte 1 32
+byte 1 39
+byte 1 37
+byte 1 115
+byte 1 39
+byte 1 32
+byte 1 105
+byte 1 115
+byte 1 32
+byte 1 37
+byte 1 115
+byte 1 10
+byte 1 0
+align 1
+LABELV $683
+byte 1 102
+byte 1 105
+byte 1 120
+byte 1 101
+byte 1 100
+byte 1 116
+byte 1 111
+byte 1 114
+byte 1 115
+byte 1 111
+byte 1 0
+align 1
+LABELV $680
+byte 1 102
+byte 1 105
+byte 1 120
+byte 1 101
+byte 1 100
+byte 1 108
+byte 1 101
+byte 1 103
+byte 1 115
+byte 1 0
+align 1
+LABELV $675
+byte 1 115
+byte 1 101
+byte 1 120
+byte 1 0
+align 1
+LABELV $666
+byte 1 104
+byte 1 101
+byte 1 97
+byte 1 100
+byte 1 111
+byte 1 102
+byte 1 102
+byte 1 115
+byte 1 101
+byte 1 116
+byte 1 0
+align 1
+LABELV $663
+byte 1 66
+byte 1 97
+byte 1 100
+byte 1 32
+byte 1 102
+byte 1 111
+byte 1 111
+byte 1 116
+byte 1 115
+byte 1 116
+byte 1 101
+byte 1 112
+byte 1 115
+byte 1 32
+byte 1 112
+byte 1 97
+byte 1 114
+byte 1 109
+byte 1 32
+byte 1 105
+byte 1 110
+byte 1 32
+byte 1 37
+byte 1 115
+byte 1 58
+byte 1 32
+byte 1 37
+byte 1 115
+byte 1 10
+byte 1 0
+align 1
+LABELV $648
+byte 1 110
+byte 1 111
+byte 1 114
+byte 1 109
+byte 1 97
+byte 1 108
+byte 1 0
+align 1
+LABELV $647
+byte 1 100
+byte 1 101
+byte 1 102
+byte 1 97
+byte 1 117
+byte 1 108
+byte 1 116
+byte 1 0
+align 1
+LABELV $642
+byte 1 102
+byte 1 111
+byte 1 111
+byte 1 116
+byte 1 115
+byte 1 116
+byte 1 101
+byte 1 112
+byte 1 115
+byte 1 0
+align 1
+LABELV $633
+byte 1 70
+byte 1 105
+byte 1 108
+byte 1 101
+byte 1 32
+byte 1 37
+byte 1 115
+byte 1 32
+byte 1 116
+byte 1 111
+byte 1 111
+byte 1 32
+byte 1 108
+byte 1 111
+byte 1 110
+byte 1 103
+byte 1 10
+byte 1 0
+align 1
+LABELV $622
+byte 1 109
+byte 1 111
+byte 1 100
+byte 1 101
+byte 1 108
+byte 1 115
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 121
+byte 1 101
+byte 1 114
+byte 1 115
+byte 1 47
+byte 1 37
+byte 1 115
+byte 1 47
+byte 1 117
+byte 1 112
+byte 1 112
+byte 1 101
+byte 1 114
+byte 1 95
+byte 1 37
+byte 1 115
+byte 1 0
+align 1
+LABELV $619
+byte 1 109
+byte 1 111
+byte 1 100
+byte 1 101
+byte 1 108
+byte 1 115
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 121
+byte 1 101
+byte 1 114
+byte 1 115
+byte 1 47
+byte 1 37
+byte 1 115
+byte 1 47
+byte 1 117
+byte 1 112
+byte 1 112
+byte 1 101
+byte 1 114
+byte 1 95
+byte 1 37
+byte 1 115
+byte 1 46
+byte 1 115
+byte 1 107
+byte 1 105
+byte 1 110
+byte 1 0
+align 1
+LABELV $613
+byte 1 109
+byte 1 111
+byte 1 100
+byte 1 101
+byte 1 108
+byte 1 115
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 121
+byte 1 101
+byte 1 114
+byte 1 115
+byte 1 47
+byte 1 37
+byte 1 115
+byte 1 47
+byte 1 108
+byte 1 111
+byte 1 119
+byte 1 101
+byte 1 114
+byte 1 95
+byte 1 37
+byte 1 115
+byte 1 0
+align 1
+LABELV $610
+byte 1 109
+byte 1 111
+byte 1 100
+byte 1 101
+byte 1 108
+byte 1 115
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 121
+byte 1 101
+byte 1 114
+byte 1 115
+byte 1 47
+byte 1 37
+byte 1 115
+byte 1 47
+byte 1 108
+byte 1 111
+byte 1 119
+byte 1 101
+byte 1 114
+byte 1 95
+byte 1 37
+byte 1 115
+byte 1 46
+byte 1 115
+byte 1 107
+byte 1 105
+byte 1 110
+byte 1 0
+align 1
+LABELV $604
+byte 1 109
+byte 1 111
+byte 1 100
+byte 1 101
+byte 1 108
+byte 1 115
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 121
+byte 1 101
+byte 1 114
+byte 1 115
+byte 1 47
+byte 1 37
+byte 1 115
+byte 1 47
+byte 1 104
+byte 1 101
+byte 1 97
+byte 1 100
+byte 1 95
+byte 1 37
+byte 1 115
+byte 1 0
+align 1
+LABELV $601
+byte 1 109
+byte 1 111
+byte 1 100
+byte 1 101
+byte 1 108
+byte 1 115
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 121
+byte 1 101
+byte 1 114
+byte 1 115
+byte 1 47
+byte 1 37
+byte 1 115
+byte 1 47
+byte 1 104
+byte 1 101
+byte 1 97
+byte 1 100
+byte 1 95
+byte 1 37
+byte 1 115
+byte 1 46
+byte 1 115
+byte 1 107
+byte 1 105
+byte 1 110
+byte 1 0
+align 1
+LABELV $593
+byte 1 115
+byte 1 112
+byte 1 114
+byte 1 105
+byte 1 116
+byte 1 101
+byte 1 115
+byte 1 47
+byte 1 98
+byte 1 97
+byte 1 108
+byte 1 108
+byte 1 111
+byte 1 111
+byte 1 110
+byte 1 51
+byte 1 0
+align 1
+LABELV $584
+byte 1 116
+byte 1 97
+byte 1 103
+byte 1 95
+byte 1 102
+byte 1 108
+byte 1 97
+byte 1 115
+byte 1 104
+byte 1 0
+align 1
+LABELV $577
+byte 1 116
+byte 1 97
+byte 1 103
+byte 1 95
+byte 1 98
+byte 1 97
+byte 1 114
+byte 1 114
+byte 1 101
+byte 1 108
+byte 1 0
+align 1
+LABELV $559
+byte 1 116
+byte 1 97
+byte 1 103
+byte 1 95
+byte 1 119
+byte 1 101
+byte 1 97
+byte 1 112
+byte 1 111
+byte 1 110
+byte 1 0
+align 1
+LABELV $553
+byte 1 116
+byte 1 97
+byte 1 103
+byte 1 95
+byte 1 104
+byte 1 101
+byte 1 97
+byte 1 100
+byte 1 0
+align 1
+LABELV $546
+byte 1 99
+byte 1 103
+byte 1 95
+byte 1 104
+byte 1 101
+byte 1 108
+byte 1 105
+byte 1 103
+byte 1 104
+byte 1 116
+byte 1 98
+byte 1 108
+byte 1 117
+byte 1 101
+byte 1 0
+align 1
+LABELV $540
+byte 1 99
+byte 1 103
+byte 1 95
+byte 1 104
+byte 1 101
+byte 1 108
+byte 1 105
+byte 1 103
+byte 1 104
+byte 1 116
+byte 1 103
+byte 1 114
+byte 1 101
+byte 1 101
+byte 1 110
+byte 1 0
+align 1
+LABELV $534
+byte 1 99
+byte 1 103
+byte 1 95
+byte 1 104
+byte 1 101
+byte 1 108
+byte 1 105
+byte 1 103
+byte 1 104
+byte 1 116
+byte 1 114
+byte 1 101
+byte 1 100
+byte 1 0
+align 1
+LABELV $522
+byte 1 116
+byte 1 97
+byte 1 103
+byte 1 95
+byte 1 116
+byte 1 111
+byte 1 114
+byte 1 115
+byte 1 111
+byte 1 0
+align 1
+LABELV $515
+byte 1 99
+byte 1 103
+byte 1 95
+byte 1 116
+byte 1 111
+byte 1 108
+byte 1 105
+byte 1 103
+byte 1 104
+byte 1 116
+byte 1 98
+byte 1 108
+byte 1 117
+byte 1 101
+byte 1 0
+align 1
+LABELV $509
+byte 1 99
+byte 1 103
+byte 1 95
+byte 1 116
+byte 1 111
+byte 1 108
+byte 1 105
+byte 1 103
+byte 1 104
+byte 1 116
+byte 1 103
+byte 1 114
+byte 1 101
+byte 1 101
+byte 1 110
+byte 1 0
+align 1
+LABELV $503
+byte 1 99
+byte 1 103
+byte 1 95
+byte 1 116
+byte 1 111
+byte 1 108
+byte 1 105
+byte 1 103
+byte 1 104
+byte 1 116
+byte 1 114
+byte 1 101
+byte 1 100
+byte 1 0
+align 1
+LABELV $479
+byte 1 99
+byte 1 103
+byte 1 95
+byte 1 112
+byte 1 108
+byte 1 105
+byte 1 103
+byte 1 104
+byte 1 116
+byte 1 98
+byte 1 108
+byte 1 117
+byte 1 101
+byte 1 0
+align 1
+LABELV $473
+byte 1 99
+byte 1 103
+byte 1 95
+byte 1 112
+byte 1 108
+byte 1 105
+byte 1 103
+byte 1 104
+byte 1 116
+byte 1 103
+byte 1 114
+byte 1 101
+byte 1 101
+byte 1 110
+byte 1 0
+align 1
+LABELV $467
+byte 1 99
+byte 1 103
+byte 1 95
+byte 1 112
+byte 1 108
+byte 1 105
+byte 1 103
+byte 1 104
+byte 1 116
+byte 1 114
+byte 1 101
+byte 1 100
+byte 1 0
+align 1
+LABELV $431
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 119
+byte 1 101
+byte 1 97
+byte 1 112
+byte 1 111
+byte 1 110
+byte 1 115
+byte 1 47
+byte 1 99
+byte 1 104
+byte 1 97
+byte 1 110
+byte 1 103
+byte 1 101
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $276
+byte 1 66
+byte 1 97
+byte 1 100
+byte 1 32
+byte 1 97
+byte 1 110
+byte 1 105
+byte 1 109
+byte 1 97
+byte 1 116
+byte 1 105
+byte 1 111
+byte 1 110
+byte 1 32
+byte 1 110
+byte 1 117
+byte 1 109
+byte 1 98
+byte 1 101
+byte 1 114
+byte 1 58
+byte 1 32
+byte 1 37
+byte 1 105
+byte 1 0
+align 1
+LABELV $204
+byte 1 95
+byte 1 102
+byte 1 108
+byte 1 97
+byte 1 115
+byte 1 104
+byte 1 46
+byte 1 109
+byte 1 100
+byte 1 51
+byte 1 0
+align 1
+LABELV $203
+byte 1 95
+byte 1 98
+byte 1 97
+byte 1 114
+byte 1 114
+byte 1 101
+byte 1 108
+byte 1 46
+byte 1 109
+byte 1 100
+byte 1 51
+byte 1 0
+align 1
+LABELV $122
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 119
+byte 1 101
+byte 1 97
+byte 1 112
+byte 1 111
+byte 1 110
+byte 1 115
+byte 1 47
+byte 1 108
+byte 1 105
+byte 1 103
+byte 1 104
+byte 1 116
+byte 1 110
+byte 1 105
+byte 1 110
+byte 1 103
+byte 1 47
+byte 1 108
+byte 1 103
+byte 1 95
+byte 1 104
+byte 1 117
+byte 1 109
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $119
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 119
+byte 1 101
+byte 1 97
+byte 1 112
+byte 1 111
+byte 1 110
+byte 1 115
+byte 1 47
+byte 1 109
+byte 1 101
+byte 1 108
+byte 1 101
+byte 1 101
+byte 1 47
+byte 1 102
+byte 1 115
+byte 1 116
+byte 1 114
+byte 1 117
+byte 1 110
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $117
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 119
+byte 1 101
+byte 1 97
+byte 1 112
+byte 1 111
+byte 1 110
+byte 1 115
+byte 1 47
+byte 1 98
+byte 1 102
+byte 1 103
+byte 1 47
+byte 1 98
+byte 1 102
+byte 1 103
+byte 1 95
+byte 1 102
+byte 1 105
+byte 1 114
+byte 1 101
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $115
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 119
+byte 1 101
+byte 1 97
+byte 1 112
+byte 1 111
+byte 1 110
+byte 1 115
+byte 1 47
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 115
+byte 1 109
+byte 1 97
+byte 1 47
+byte 1 104
+byte 1 121
+byte 1 112
+byte 1 114
+byte 1 98
+byte 1 102
+byte 1 49
+byte 1 97
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $113
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 119
+byte 1 101
+byte 1 97
+byte 1 112
+byte 1 111
+byte 1 110
+byte 1 115
+byte 1 47
+byte 1 114
+byte 1 97
+byte 1 105
+byte 1 108
+byte 1 103
+byte 1 117
+byte 1 110
+byte 1 47
+byte 1 114
+byte 1 97
+byte 1 105
+byte 1 108
+byte 1 103
+byte 1 102
+byte 1 49
+byte 1 97
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $111
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 119
+byte 1 101
+byte 1 97
+byte 1 112
+byte 1 111
+byte 1 110
+byte 1 115
+byte 1 47
+byte 1 108
+byte 1 105
+byte 1 103
+byte 1 104
+byte 1 116
+byte 1 110
+byte 1 105
+byte 1 110
+byte 1 103
+byte 1 47
+byte 1 108
+byte 1 103
+byte 1 95
+byte 1 102
+byte 1 105
+byte 1 114
+byte 1 101
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $109
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 119
+byte 1 101
+byte 1 97
+byte 1 112
+byte 1 111
+byte 1 110
+byte 1 115
+byte 1 47
+byte 1 114
+byte 1 111
+byte 1 99
+byte 1 107
+byte 1 101
+byte 1 116
+byte 1 47
+byte 1 114
+byte 1 111
+byte 1 99
+byte 1 107
+byte 1 108
+byte 1 102
+byte 1 49
+byte 1 97
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $107
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 119
+byte 1 101
+byte 1 97
+byte 1 112
+byte 1 111
+byte 1 110
+byte 1 115
+byte 1 47
+byte 1 103
+byte 1 114
+byte 1 101
+byte 1 110
+byte 1 97
+byte 1 100
+byte 1 101
+byte 1 47
+byte 1 103
+byte 1 114
+byte 1 101
+byte 1 110
+byte 1 108
+byte 1 102
+byte 1 49
+byte 1 97
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $105
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 119
+byte 1 101
+byte 1 97
+byte 1 112
+byte 1 111
+byte 1 110
+byte 1 115
+byte 1 47
+byte 1 115
+byte 1 104
+byte 1 111
+byte 1 116
+byte 1 103
+byte 1 117
+byte 1 110
+byte 1 47
+byte 1 115
+byte 1 115
+byte 1 104
+byte 1 111
+byte 1 116
+byte 1 102
+byte 1 49
+byte 1 98
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $103
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 119
+byte 1 101
+byte 1 97
+byte 1 112
+byte 1 111
+byte 1 110
+byte 1 115
+byte 1 47
+byte 1 109
+byte 1 97
+byte 1 99
+byte 1 104
+byte 1 105
+byte 1 110
+byte 1 101
+byte 1 103
+byte 1 117
+byte 1 110
+byte 1 47
+byte 1 109
+byte 1 97
+byte 1 99
+byte 1 104
+byte 1 103
+byte 1 102
+byte 1 52
+byte 1 98
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $100
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 119
+byte 1 101
+byte 1 97
+byte 1 112
+byte 1 111
+byte 1 110
+byte 1 115
+byte 1 47
+byte 1 109
+byte 1 97
+byte 1 99
+byte 1 104
+byte 1 105
+byte 1 110
+byte 1 101
+byte 1 103
+byte 1 117
+byte 1 110
+byte 1 47
+byte 1 109
+byte 1 97
+byte 1 99
+byte 1 104
+byte 1 103
+byte 1 102
+byte 1 51
+byte 1 98
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $97
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 119
+byte 1 101
+byte 1 97
+byte 1 112
+byte 1 111
+byte 1 110
+byte 1 115
+byte 1 47
+byte 1 109
+byte 1 97
+byte 1 99
+byte 1 104
+byte 1 105
+byte 1 110
+byte 1 101
+byte 1 103
+byte 1 117
+byte 1 110
+byte 1 47
+byte 1 109
+byte 1 97
+byte 1 99
+byte 1 104
+byte 1 103
+byte 1 102
+byte 1 50
+byte 1 98
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $94
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 119
+byte 1 101
+byte 1 97
+byte 1 112
+byte 1 111
+byte 1 110
+byte 1 115
+byte 1 47
+byte 1 109
+byte 1 97
+byte 1 99
+byte 1 104
+byte 1 105
+byte 1 110
+byte 1 101
+byte 1 103
+byte 1 117
+byte 1 110
+byte 1 47
+byte 1 109
+byte 1 97
+byte 1 99
+byte 1 104
+byte 1 103
+byte 1 102
+byte 1 49
+byte 1 98
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $92
+byte 1 115
+byte 1 111
+byte 1 117
+byte 1 110
+byte 1 100
+byte 1 47
+byte 1 119
+byte 1 101
+byte 1 97
+byte 1 112
+byte 1 111
+byte 1 110
+byte 1 115
+byte 1 47
+byte 1 109
+byte 1 101
+byte 1 108
+byte 1 101
+byte 1 101
+byte 1 47
+byte 1 102
+byte 1 115
+byte 1 116
+byte 1 97
+byte 1 116
+byte 1 99
+byte 1 107
+byte 1 46
+byte 1 119
+byte 1 97
+byte 1 118
+byte 1 0
+align 1
+LABELV $89
+byte 1 115
+byte 1 112
+byte 1 108
+byte 1 97
+byte 1 115
+byte 1 104
+byte 1 0
+align 1
+LABELV $88
+byte 1 99
+byte 1 108
+byte 1 97
+byte 1 110
+byte 1 107
+byte 1 0
+align 1
+LABELV $87
+byte 1 101
+byte 1 110
+byte 1 101
+byte 1 114
+byte 1 103
+byte 1 121
+byte 1 0
+align 1
+LABELV $86
+byte 1 109
+byte 1 101
+byte 1 99
+byte 1 104
+byte 1 0
+align 1
+LABELV $85
+byte 1 102
+byte 1 108
+byte 1 101
+byte 1 115
+byte 1 104
+byte 1 0
+align 1
+LABELV $84
+byte 1 98
+byte 1 111
+byte 1 111
+byte 1 116
+byte 1 0
+align 1
+LABELV $83
+byte 1 115
+byte 1 116
+byte 1 101
+byte 1 112
+byte 1 0

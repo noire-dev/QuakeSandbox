@@ -1,0 +1,21904 @@
+export CG_InitMarkPolys
+code
+proc CG_InitMarkPolys 12 12
+file "../../../code/cgame/cg_marks.c"
+line 48
+;1:/*
+;2:===========================================================================
+;3:Copyright (C) 1999-2005 Id Software, Inc.
+;4:
+;5:This file is part of Quake III Arena source code.
+;6:
+;7:Quake III Arena source code is free software; you can redistribute it
+;8:and/or modify it under the terms of the GNU General Public License as
+;9:published by the Free Software Foundation; either version 2 of the License,
+;10:or (at your option) any later version.
+;11:
+;12:Quake III Arena source code is distributed in the hope that it will be
+;13:useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+;14:MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;15:GNU General Public License for more details.
+;16:
+;17:You should have received a copy of the GNU General Public License
+;18:along with Quake III Arena source code; if not, write to the Free Software
+;19:Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+;20:===========================================================================
+;21:*/
+;22://
+;23:// cg_marks.c -- wall marks
+;24:
+;25:#include "cg_local.h"
+;26:
+;27:/*
+;28:===================================================================
+;29:
+;30:MARK POLYS
+;31:
+;32:===================================================================
+;33:*/
+;34:
+;35:
+;36:markPoly_t	cg_activeMarkPolys;			// double linked list
+;37:markPoly_t	*cg_freeMarkPolys;			// single linked list
+;38:markPoly_t	cg_markPolys[MAX_MARK_POLYS];
+;39:static		int	markTotal;
+;40:
+;41:/*
+;42:===================
+;43:CG_InitMarkPolys
+;44:
+;45:This is called at startup and for tournement restarts
+;46:===================
+;47:*/
+;48:void	CG_InitMarkPolys( void ) {
+line 51
+;49:	int		i;
+;50:
+;51:	memset( cg_markPolys, 0, sizeof(cg_markPolys) );
+ADDRGP4 cg_markPolys
+ARGP4
+CNSTI4 0
+ARGI4
+CNSTI4 12779520
+ARGI4
+ADDRGP4 memset
+CALLP4
+pop
+line 53
+;52:
+;53:	cg_activeMarkPolys.nextMark = &cg_activeMarkPolys;
+ADDRGP4 cg_activeMarkPolys+4
+ADDRGP4 cg_activeMarkPolys
+ASGNP4
+line 54
+;54:	cg_activeMarkPolys.prevMark = &cg_activeMarkPolys;
+ADDRLP4 4
+ADDRGP4 cg_activeMarkPolys
+ASGNP4
+ADDRLP4 4
+INDIRP4
+ADDRLP4 4
+INDIRP4
+ASGNP4
+line 55
+;55:	cg_freeMarkPolys = cg_markPolys;
+ADDRGP4 cg_freeMarkPolys
+ADDRGP4 cg_markPolys
+ASGNP4
+line 56
+;56:	for ( i = 0 ; i < MAX_MARK_POLYS - 1 ; i++ ) {
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+LABELV $83
+line 57
+;57:		cg_markPolys[i].nextMark = &cg_markPolys[i+1];
+ADDRLP4 8
+CNSTI4 3120
+ADDRLP4 0
+INDIRI4
+MULI4
+ASGNI4
+ADDRLP4 8
+INDIRI4
+ADDRGP4 cg_markPolys+4
+ADDP4
+ADDRLP4 8
+INDIRI4
+ADDRGP4 cg_markPolys+3120
+ADDP4
+ASGNP4
+line 58
+;58:	}
+LABELV $84
+line 56
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 4095
+LTI4 $83
+line 59
+;59:}
+LABELV $81
+endproc CG_InitMarkPolys 12 12
+export CG_FreeMarkPoly
+proc CG_FreeMarkPoly 12 4
+line 67
+;60:
+;61:
+;62:/*
+;63:==================
+;64:CG_FreeMarkPoly
+;65:==================
+;66:*/
+;67:void CG_FreeMarkPoly( markPoly_t *le ) {
+line 68
+;68:	if ( !le->prevMark ) {
+ADDRFP4 0
+INDIRP4
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $90
+line 69
+;69:		CG_Error( "CG_FreeLocalEntity: not active" );
+ADDRGP4 $92
+ARGP4
+ADDRGP4 CG_Error
+CALLV
+pop
+line 70
+;70:	}
+LABELV $90
+line 73
+;71:
+;72:	// remove from the doubly linked active list
+;73:	le->prevMark->nextMark = le->nextMark;
+ADDRLP4 0
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 4
+CNSTI4 4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ADDRLP4 4
+INDIRI4
+ADDP4
+ADDRLP4 0
+INDIRP4
+ADDRLP4 4
+INDIRI4
+ADDP4
+INDIRP4
+ASGNP4
+line 74
+;74:	le->nextMark->prevMark = le->prevMark;
+ADDRLP4 8
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 8
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRP4
+ADDRLP4 8
+INDIRP4
+INDIRP4
+ASGNP4
+line 77
+;75:
+;76:	// the free list is only singly linked
+;77:	le->nextMark = cg_freeMarkPolys;
+ADDRFP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg_freeMarkPolys
+INDIRP4
+ASGNP4
+line 78
+;78:	cg_freeMarkPolys = le;
+ADDRGP4 cg_freeMarkPolys
+ADDRFP4 0
+INDIRP4
+ASGNP4
+line 79
+;79:}
+LABELV $89
+endproc CG_FreeMarkPoly 12 4
+export CG_AllocMark
+proc CG_AllocMark 12 12
+line 88
+;80:
+;81:/*
+;82:===================
+;83:CG_AllocMark
+;84:
+;85:Will allways succeed, even if it requires freeing an old active mark
+;86:===================
+;87:*/
+;88:markPoly_t	*CG_AllocMark( void ) {
+line 92
+;89:	markPoly_t	*le;
+;90:	int time;
+;91:
+;92:	if ( !cg_freeMarkPolys ) {
+ADDRGP4 cg_freeMarkPolys
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $94
+line 95
+;93:		// no free entities, so free the one at the end of the chain
+;94:		// remove the oldest active entity
+;95:		time = cg_activeMarkPolys.prevMark->time;
+ADDRLP4 4
+ADDRGP4 cg_activeMarkPolys
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRI4
+ASGNI4
+ADDRGP4 $97
+JUMPV
+LABELV $96
+line 96
+;96:		while (cg_activeMarkPolys.prevMark && time == cg_activeMarkPolys.prevMark->time) {
+line 97
+;97:			CG_FreeMarkPoly( cg_activeMarkPolys.prevMark );
+ADDRGP4 cg_activeMarkPolys
+INDIRP4
+ARGP4
+ADDRGP4 CG_FreeMarkPoly
+CALLV
+pop
+line 98
+;98:		}
+LABELV $97
+line 96
+ADDRLP4 8
+ADDRGP4 cg_activeMarkPolys
+INDIRP4
+ASGNP4
+ADDRLP4 8
+INDIRP4
+CVPU4 4
+CNSTU4 0
+EQU4 $99
+ADDRLP4 4
+INDIRI4
+ADDRLP4 8
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRI4
+EQI4 $96
+LABELV $99
+line 99
+;99:	}
+LABELV $94
+line 101
+;100:
+;101:	le = cg_freeMarkPolys;
+ADDRLP4 0
+ADDRGP4 cg_freeMarkPolys
+INDIRP4
+ASGNP4
+line 102
+;102:	cg_freeMarkPolys = cg_freeMarkPolys->nextMark;
+ADDRLP4 8
+ADDRGP4 cg_freeMarkPolys
+ASGNP4
+ADDRLP4 8
+INDIRP4
+ADDRLP4 8
+INDIRP4
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRP4
+ASGNP4
+line 104
+;103:
+;104:	memset( le, 0, sizeof( *le ) );
+ADDRLP4 0
+INDIRP4
+ARGP4
+CNSTI4 0
+ARGI4
+CNSTI4 3120
+ARGI4
+ADDRGP4 memset
+CALLP4
+pop
+line 107
+;105:
+;106:	// link into the active list
+;107:	le->nextMark = cg_activeMarkPolys.nextMark;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg_activeMarkPolys+4
+INDIRP4
+ASGNP4
+line 108
+;108:	le->prevMark = &cg_activeMarkPolys;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 cg_activeMarkPolys
+ASGNP4
+line 109
+;109:	cg_activeMarkPolys.nextMark->prevMark = le;
+ADDRGP4 cg_activeMarkPolys+4
+INDIRP4
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 110
+;110:	cg_activeMarkPolys.nextMark = le;
+ADDRGP4 cg_activeMarkPolys+4
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 111
+;111:	return le;
+ADDRLP4 0
+INDIRP4
+RETP4
+LABELV $93
+endproc CG_AllocMark 12 12
+export CG_ImpactMark
+proc CG_ImpactMark 31964 28
+line 132
+;112:}
+;113:
+;114:
+;115:
+;116:/*
+;117:=================
+;118:CG_ImpactMark
+;119:
+;120:origin should be a point within a unit of the plane
+;121:dir should be the plane normal
+;122:
+;123:temporary marks will not be stored or randomly oriented, but immediately
+;124:passed to the renderer.
+;125:=================
+;126:*/
+;127:#define	MAX_MARK_FRAGMENTS	512
+;128:#define	MAX_MARK_POINTS		2048
+;129:
+;130:void CG_ImpactMark( qhandle_t markShader, const vec3_t origin, const vec3_t dir, 
+;131:				   float orientation, float red, float green, float blue, float alpha,
+;132:				   qboolean alphaFade, float radius, qboolean temporary ) {
+line 143
+;133:	vec3_t			axis[3];
+;134:	float			texCoordScale;
+;135:	vec3_t			originalPoints[4];
+;136:	byte			colors[4];
+;137:	int				i, j;
+;138:	int				numFragments;
+;139:	markFragment_t	markFragments[MAX_MARK_FRAGMENTS], *mf;
+;140:	vec3_t			markPoints[MAX_MARK_POINTS];
+;141:	vec3_t			projection;
+;142:
+;143:	if ( !cg_addMarks.integer ) {
+ADDRGP4 cg_addMarks+12
+INDIRI4
+CNSTI4 0
+NEI4 $104
+line 144
+;144:		return;
+ADDRGP4 $103
+JUMPV
+LABELV $104
+line 147
+;145:	}
+;146:
+;147:	if ( radius <= 0 ) {
+ADDRFP4 36
+INDIRF4
+CNSTF4 0
+GTF4 $107
+line 148
+;148:		CG_Error( "CG_ImpactMark called with <= 0 radius" );
+ADDRGP4 $109
+ARGP4
+ADDRGP4 CG_Error
+CALLV
+pop
+line 149
+;149:	}
+LABELV $107
+line 152
+;150:
+;151:	//paintball mode
+;152:	if ( cg_paintballMode.integer && (
+ADDRGP4 cg_paintballMode+12
+INDIRI4
+CNSTI4 0
+EQI4 $110
+ADDRLP4 28792
+ADDRFP4 0
+INDIRI4
+ASGNI4
+ADDRLP4 28792
+INDIRI4
+ADDRGP4 cgs+956380+1504
+INDIRI4
+EQI4 $123
+ADDRLP4 28792
+INDIRI4
+ADDRGP4 cgs+956380+1508
+INDIRI4
+EQI4 $123
+ADDRLP4 28792
+INDIRI4
+ADDRGP4 cgs+956380+1516
+INDIRI4
+EQI4 $123
+ADDRLP4 28792
+INDIRI4
+ADDRGP4 cgs+956380+1512
+INDIRI4
+NEI4 $110
+LABELV $123
+line 156
+;153:		markShader == cgs.media.bulletMarkShader ||				//MG, SG
+;154:		markShader == cgs.media.burnMarkShader ||				//RL, GL, BFG
+;155:		markShader == cgs.media.energyMarkShader ||				//PG, RG
+;156:		markShader == cgs.media.holeMarkShader)) {				//LG
+line 158
+;157:
+;158:		if ( markShader == cgs.media.bulletMarkShader )
+ADDRFP4 0
+INDIRI4
+ADDRGP4 cgs+956380+1504
+INDIRI4
+NEI4 $124
+line 159
+;159:			markShader = cgs.media.bulletMarkPaintShader;
+ADDRFP4 0
+ADDRGP4 cgs+956380+1520
+INDIRI4
+ASGNI4
+LABELV $124
+line 161
+;160:
+;161:		if ( markShader == cgs.media.burnMarkShader )
+ADDRFP4 0
+INDIRI4
+ADDRGP4 cgs+956380+1508
+INDIRI4
+NEI4 $130
+line 162
+;162:			markShader = cgs.media.burnMarkPaintShader;
+ADDRFP4 0
+ADDRGP4 cgs+956380+1524
+INDIRI4
+ASGNI4
+LABELV $130
+line 164
+;163:
+;164:		if ( markShader == cgs.media.energyMarkShader )
+ADDRFP4 0
+INDIRI4
+ADDRGP4 cgs+956380+1516
+INDIRI4
+NEI4 $136
+line 165
+;165:			markShader = cgs.media.energyMarkPaintShader;
+ADDRFP4 0
+ADDRGP4 cgs+956380+1532
+INDIRI4
+ASGNI4
+LABELV $136
+line 167
+;166:
+;167:		if ( markShader == cgs.media.holeMarkShader )
+ADDRFP4 0
+INDIRI4
+ADDRGP4 cgs+956380+1512
+INDIRI4
+NEI4 $142
+line 168
+;168:			markShader = cgs.media.holeMarkPaintShader;
+ADDRFP4 0
+ADDRGP4 cgs+956380+1528
+INDIRI4
+ASGNI4
+LABELV $142
+line 170
+;169:
+;170:		red = (rand() % 255) / 255.0;
+ADDRLP4 28796
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRFP4 16
+ADDRLP4 28796
+INDIRI4
+CNSTI4 255
+MODI4
+CVIF4 4
+CNSTF4 1132396544
+DIVF4
+ASGNF4
+line 171
+;171:		green = (rand() % 255) / 255.0;
+ADDRLP4 28800
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRFP4 20
+ADDRLP4 28800
+INDIRI4
+CNSTI4 255
+MODI4
+CVIF4 4
+CNSTF4 1132396544
+DIVF4
+ASGNF4
+line 172
+;172:		blue = (rand() % 255) / 255.0;
+ADDRLP4 28804
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRFP4 24
+ADDRLP4 28804
+INDIRI4
+CNSTI4 255
+MODI4
+CVIF4 4
+CNSTF4 1132396544
+DIVF4
+ASGNF4
+line 173
+;173:	}
+LABELV $110
+line 180
+;174:
+;175:	//if ( markTotal >= MAX_MARK_POLYS ) {
+;176:	//	return;
+;177:	//}
+;178:
+;179:	// create the texture axis
+;180:	VectorNormalize2( dir, axis[0] );
+ADDRFP4 8
+INDIRP4
+ARGP4
+ADDRLP4 0
+ARGP4
+ADDRGP4 VectorNormalize2
+CALLF4
+pop
+line 181
+;181:	PerpendicularVector( axis[1], axis[0] );
+ADDRLP4 0+12
+ARGP4
+ADDRLP4 0
+ARGP4
+ADDRGP4 PerpendicularVector
+CALLV
+pop
+line 182
+;182:	if (cg_leiEnhancement.integer) // LEILEI HACK HACK HACK - don't spin atlas variated particles (for consistent lighting on the texture)
+ADDRGP4 cg_leiEnhancement+12
+INDIRI4
+CNSTI4 0
+EQI4 $149
+line 183
+;183:	orientation = 90; 
+ADDRFP4 12
+CNSTF4 1119092736
+ASGNF4
+LABELV $149
+line 185
+;184:	
+;185:	RotatePointAroundVector( axis[2], axis[0], axis[1], orientation );
+ADDRLP4 0+24
+ARGP4
+ADDRLP4 0
+ARGP4
+ADDRLP4 0+12
+ARGP4
+ADDRFP4 12
+INDIRF4
+ARGF4
+ADDRGP4 RotatePointAroundVector
+CALLV
+pop
+line 186
+;186:	CrossProduct( axis[0], axis[2], axis[1] );
+ADDRLP4 0
+ARGP4
+ADDRLP4 0+24
+ARGP4
+ADDRLP4 0+12
+ARGP4
+ADDRGP4 CrossProduct
+CALLV
+pop
+line 188
+;187:
+;188:	texCoordScale = 0.5 * 1.0 / radius;
+ADDRLP4 48
+CNSTF4 1056964608
+ADDRFP4 36
+INDIRF4
+DIVF4
+ASGNF4
+line 191
+;189:
+;190:	// create the full polygon
+;191:	for ( i = 0 ; i < 3 ; i++ ) {
+ADDRLP4 44
+CNSTI4 0
+ASGNI4
+LABELV $156
+line 192
+;192:		originalPoints[0][i] = origin[i] - radius * axis[1][i] - radius * axis[2][i];
+ADDRLP4 28796
+ADDRLP4 44
+INDIRI4
+CNSTI4 2
+LSHI4
+ASGNI4
+ADDRLP4 28800
+ADDRFP4 36
+INDIRF4
+ASGNF4
+ADDRLP4 28796
+INDIRI4
+ADDRLP4 24632
+ADDP4
+ADDRLP4 28796
+INDIRI4
+ADDRFP4 4
+INDIRP4
+ADDP4
+INDIRF4
+ADDRLP4 28800
+INDIRF4
+ADDRLP4 28796
+INDIRI4
+ADDRLP4 0+12
+ADDP4
+INDIRF4
+MULF4
+SUBF4
+ADDRLP4 28800
+INDIRF4
+ADDRLP4 28796
+INDIRI4
+ADDRLP4 0+24
+ADDP4
+INDIRF4
+MULF4
+SUBF4
+ASGNF4
+line 193
+;193:		originalPoints[1][i] = origin[i] + radius * axis[1][i] - radius * axis[2][i];
+ADDRLP4 28804
+ADDRLP4 44
+INDIRI4
+CNSTI4 2
+LSHI4
+ASGNI4
+ADDRLP4 28808
+ADDRFP4 36
+INDIRF4
+ASGNF4
+ADDRLP4 28804
+INDIRI4
+ADDRLP4 24632+12
+ADDP4
+ADDRLP4 28804
+INDIRI4
+ADDRFP4 4
+INDIRP4
+ADDP4
+INDIRF4
+ADDRLP4 28808
+INDIRF4
+ADDRLP4 28804
+INDIRI4
+ADDRLP4 0+12
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ADDRLP4 28808
+INDIRF4
+ADDRLP4 28804
+INDIRI4
+ADDRLP4 0+24
+ADDP4
+INDIRF4
+MULF4
+SUBF4
+ASGNF4
+line 194
+;194:		originalPoints[2][i] = origin[i] + radius * axis[1][i] + radius * axis[2][i];
+ADDRLP4 28812
+ADDRLP4 44
+INDIRI4
+CNSTI4 2
+LSHI4
+ASGNI4
+ADDRLP4 28816
+ADDRFP4 36
+INDIRF4
+ASGNF4
+ADDRLP4 28812
+INDIRI4
+ADDRLP4 24632+24
+ADDP4
+ADDRLP4 28812
+INDIRI4
+ADDRFP4 4
+INDIRP4
+ADDP4
+INDIRF4
+ADDRLP4 28816
+INDIRF4
+ADDRLP4 28812
+INDIRI4
+ADDRLP4 0+12
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ADDRLP4 28816
+INDIRF4
+ADDRLP4 28812
+INDIRI4
+ADDRLP4 0+24
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 195
+;195:		originalPoints[3][i] = origin[i] - radius * axis[1][i] + radius * axis[2][i];
+ADDRLP4 28820
+ADDRLP4 44
+INDIRI4
+CNSTI4 2
+LSHI4
+ASGNI4
+ADDRLP4 28824
+ADDRFP4 36
+INDIRF4
+ASGNF4
+ADDRLP4 28820
+INDIRI4
+ADDRLP4 24632+36
+ADDP4
+ADDRLP4 28820
+INDIRI4
+ADDRFP4 4
+INDIRP4
+ADDP4
+INDIRF4
+ADDRLP4 28824
+INDIRF4
+ADDRLP4 28820
+INDIRI4
+ADDRLP4 0+12
+ADDP4
+INDIRF4
+MULF4
+SUBF4
+ADDRLP4 28824
+INDIRF4
+ADDRLP4 28820
+INDIRI4
+ADDRLP4 0+24
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 196
+;196:	}
+LABELV $157
+line 191
+ADDRLP4 44
+ADDRLP4 44
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 44
+INDIRI4
+CNSTI4 3
+LTI4 $156
+line 199
+;197:
+;198:	// get the fragments
+;199:	VectorScale( dir, -20, projection );
+ADDRLP4 28796
+CNSTF4 3248488448
+ASGNF4
+ADDRLP4 28800
+ADDRFP4 8
+INDIRP4
+ASGNP4
+ADDRLP4 24684
+ADDRLP4 28796
+INDIRF4
+ADDRLP4 28800
+INDIRP4
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 24684+4
+ADDRLP4 28796
+INDIRF4
+ADDRLP4 28800
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 24684+8
+CNSTF4 3248488448
+ADDRFP4 8
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+line 200
+;200:	numFragments = trap_CM_MarkFragments( 4, (void *)originalPoints,
+CNSTI4 4
+ARGI4
+ADDRLP4 24632
+ARGP4
+ADDRLP4 24684
+ARGP4
+CNSTI4 2048
+ARGI4
+ADDRLP4 56
+ARGP4
+CNSTI4 512
+ARGI4
+ADDRLP4 24696
+ARGP4
+ADDRLP4 28804
+ADDRGP4 trap_CM_MarkFragments
+CALLI4
+ASGNI4
+ADDRLP4 24680
+ADDRLP4 28804
+INDIRI4
+ASGNI4
+line 204
+;201:					projection, MAX_MARK_POINTS, markPoints[0],
+;202:					MAX_MARK_FRAGMENTS, markFragments );
+;203:
+;204:	colors[0] = red * 255;
+ADDRLP4 28812
+CNSTF4 1132396544
+ADDRFP4 16
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 28816
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 28812
+INDIRF4
+ADDRLP4 28816
+INDIRF4
+LTF4 $174
+ADDRLP4 28808
+ADDRLP4 28812
+INDIRF4
+ADDRLP4 28816
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $175
+JUMPV
+LABELV $174
+ADDRLP4 28808
+ADDRLP4 28812
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $175
+ADDRLP4 52
+ADDRLP4 28808
+INDIRU4
+CVUU1 4
+ASGNU1
+line 205
+;205:	colors[1] = green * 255;
+ADDRLP4 28824
+CNSTF4 1132396544
+ADDRFP4 20
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 28828
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 28824
+INDIRF4
+ADDRLP4 28828
+INDIRF4
+LTF4 $178
+ADDRLP4 28820
+ADDRLP4 28824
+INDIRF4
+ADDRLP4 28828
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $179
+JUMPV
+LABELV $178
+ADDRLP4 28820
+ADDRLP4 28824
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $179
+ADDRLP4 52+1
+ADDRLP4 28820
+INDIRU4
+CVUU1 4
+ASGNU1
+line 206
+;206:	colors[2] = blue * 255;
+ADDRLP4 28836
+CNSTF4 1132396544
+ADDRFP4 24
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 28840
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 28836
+INDIRF4
+ADDRLP4 28840
+INDIRF4
+LTF4 $182
+ADDRLP4 28832
+ADDRLP4 28836
+INDIRF4
+ADDRLP4 28840
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $183
+JUMPV
+LABELV $182
+ADDRLP4 28832
+ADDRLP4 28836
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $183
+ADDRLP4 52+2
+ADDRLP4 28832
+INDIRU4
+CVUU1 4
+ASGNU1
+line 207
+;207:	colors[3] = alpha * 255;
+ADDRLP4 28848
+CNSTF4 1132396544
+ADDRFP4 28
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 28852
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 28848
+INDIRF4
+ADDRLP4 28852
+INDIRF4
+LTF4 $186
+ADDRLP4 28844
+ADDRLP4 28848
+INDIRF4
+ADDRLP4 28852
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $187
+JUMPV
+LABELV $186
+ADDRLP4 28844
+ADDRLP4 28848
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $187
+ADDRLP4 52+3
+ADDRLP4 28844
+INDIRU4
+CVUU1 4
+ASGNU1
+line 209
+;208:
+;209:	for ( i = 0, mf = markFragments ; i < numFragments ; i++, mf++ ) {
+ADDRLP4 44
+CNSTI4 0
+ASGNI4
+ADDRLP4 40
+ADDRLP4 24696
+ASGNP4
+ADDRGP4 $191
+JUMPV
+LABELV $188
+line 216
+;210:		polyVert_t	*v;
+;211:		polyVert_t	verts[MAX_VERTS_ON_POLY];
+;212:		markPoly_t	*mark;
+;213:
+;214:		// we have an upper limit on the complexity of polygons
+;215:		// that we store persistantly
+;216:		if ( mf->numPoints > MAX_VERTS_ON_POLY ) {
+ADDRLP4 40
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+CNSTI4 128
+LEI4 $192
+line 217
+;217:			mf->numPoints = MAX_VERTS_ON_POLY;
+ADDRLP4 40
+INDIRP4
+CNSTI4 4
+ADDP4
+CNSTI4 128
+ASGNI4
+line 218
+;218:		}
+LABELV $192
+line 219
+;219:		for ( j = 0, v = verts ; j < mf->numPoints ; j++, v++ ) {
+ADDRLP4 36
+CNSTI4 0
+ASGNI4
+ADDRLP4 28856
+ADDRLP4 28864
+ASGNP4
+ADDRGP4 $197
+JUMPV
+LABELV $194
+line 222
+;220:			vec3_t		delta;
+;221:
+;222:			VectorCopy( markPoints[mf->firstPoint + j], v->xyz );
+ADDRLP4 28856
+INDIRP4
+CNSTI4 12
+ADDRLP4 40
+INDIRP4
+INDIRI4
+ADDRLP4 36
+INDIRI4
+ADDI4
+MULI4
+ADDRLP4 56
+ADDP4
+INDIRB
+ASGNB 12
+line 224
+;223:
+;224:			VectorSubtract( v->xyz, origin, delta );
+ADDRLP4 31952
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 31936
+ADDRLP4 28856
+INDIRP4
+INDIRF4
+ADDRLP4 31952
+INDIRP4
+INDIRF4
+SUBF4
+ASGNF4
+ADDRLP4 31956
+CNSTI4 4
+ASGNI4
+ADDRLP4 31936+4
+ADDRLP4 28856
+INDIRP4
+ADDRLP4 31956
+INDIRI4
+ADDP4
+INDIRF4
+ADDRLP4 31952
+INDIRP4
+ADDRLP4 31956
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+ADDRLP4 31960
+CNSTI4 8
+ASGNI4
+ADDRLP4 31936+8
+ADDRLP4 28856
+INDIRP4
+ADDRLP4 31960
+INDIRI4
+ADDP4
+INDIRF4
+ADDRFP4 4
+INDIRP4
+ADDRLP4 31960
+INDIRI4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+line 225
+;225:			v->st[0] = 0.5 + DotProduct( delta, axis[1] ) * texCoordScale;
+ADDRLP4 28856
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRLP4 31936
+INDIRF4
+ADDRLP4 0+12
+INDIRF4
+MULF4
+ADDRLP4 31936+4
+INDIRF4
+ADDRLP4 0+12+4
+INDIRF4
+MULF4
+ADDF4
+ADDRLP4 31936+8
+INDIRF4
+ADDRLP4 0+12+8
+INDIRF4
+MULF4
+ADDF4
+ADDRLP4 48
+INDIRF4
+MULF4
+CNSTF4 1056964608
+ADDF4
+ASGNF4
+line 226
+;226:			v->st[1] = 0.5 + DotProduct( delta, axis[2] ) * texCoordScale;
+ADDRLP4 28856
+INDIRP4
+CNSTI4 16
+ADDP4
+ADDRLP4 31936
+INDIRF4
+ADDRLP4 0+24
+INDIRF4
+MULF4
+ADDRLP4 31936+4
+INDIRF4
+ADDRLP4 0+24+4
+INDIRF4
+MULF4
+ADDF4
+ADDRLP4 31936+8
+INDIRF4
+ADDRLP4 0+24+8
+INDIRF4
+MULF4
+ADDF4
+ADDRLP4 48
+INDIRF4
+MULF4
+CNSTF4 1056964608
+ADDF4
+ASGNF4
+line 227
+;227:			*(int *)v->modulate = *(int *)colors;
+ADDRLP4 28856
+INDIRP4
+CNSTI4 20
+ADDP4
+ADDRLP4 52
+INDIRI4
+ASGNI4
+line 228
+;228:		}
+LABELV $195
+line 219
+ADDRLP4 36
+ADDRLP4 36
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 28856
+ADDRLP4 28856
+INDIRP4
+CNSTI4 24
+ADDP4
+ASGNP4
+LABELV $197
+ADDRLP4 36
+INDIRI4
+ADDRLP4 40
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+LTI4 $194
+line 231
+;229:
+;230:		// if it is a temporary (shadow) mark, add it immediately and forget about it
+;231:		if ( temporary ) {
+ADDRFP4 40
+INDIRI4
+CNSTI4 0
+EQI4 $214
+line 232
+;232:			trap_R_AddPolyToScene( markShader, mf->numPoints, verts );
+ADDRFP4 0
+INDIRI4
+ARGI4
+ADDRLP4 40
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 28864
+ARGP4
+ADDRGP4 trap_R_AddPolyToScene
+CALLV
+pop
+line 233
+;233:			continue;
+ADDRGP4 $189
+JUMPV
+LABELV $214
+line 237
+;234:		}
+;235:
+;236:		// otherwise save it persistantly
+;237:		mark = CG_AllocMark();
+ADDRLP4 31936
+ADDRGP4 CG_AllocMark
+CALLP4
+ASGNP4
+ADDRLP4 28860
+ADDRLP4 31936
+INDIRP4
+ASGNP4
+line 238
+;238:		mark->time = cg.time;
+ADDRLP4 28860
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ASGNI4
+line 239
+;239:		mark->alphaFade = alphaFade;
+ADDRLP4 28860
+INDIRP4
+CNSTI4 16
+ADDP4
+ADDRFP4 32
+INDIRI4
+ASGNI4
+line 240
+;240:		mark->markShader = markShader;
+ADDRLP4 28860
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 0
+INDIRI4
+ASGNI4
+line 241
+;241:		mark->poly.numVerts = mf->numPoints;
+ADDRLP4 28860
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 40
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+ASGNI4
+line 242
+;242:		mark->color[0] = red;
+ADDRLP4 28860
+INDIRP4
+CNSTI4 20
+ADDP4
+ADDRFP4 16
+INDIRF4
+ASGNF4
+line 243
+;243:		mark->color[1] = green;
+ADDRLP4 28860
+INDIRP4
+CNSTI4 24
+ADDP4
+ADDRFP4 20
+INDIRF4
+ASGNF4
+line 244
+;244:		mark->color[2] = blue;
+ADDRLP4 28860
+INDIRP4
+CNSTI4 28
+ADDP4
+ADDRFP4 24
+INDIRF4
+ASGNF4
+line 245
+;245:		mark->color[3] = alpha;
+ADDRLP4 28860
+INDIRP4
+CNSTI4 32
+ADDP4
+ADDRFP4 28
+INDIRF4
+ASGNF4
+line 246
+;246:		memcpy( mark->verts, verts, mf->numPoints * sizeof( verts[0] ) );
+ADDRLP4 28860
+INDIRP4
+CNSTI4 48
+ADDP4
+ARGP4
+ADDRLP4 28864
+ARGP4
+CNSTU4 24
+ADDRLP4 40
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRI4
+CVIU4 4
+MULU4
+CVUI4 4
+ARGI4
+ADDRGP4 memcpy
+CALLP4
+pop
+line 247
+;247:		markTotal++;
+ADDRLP4 31940
+ADDRGP4 markTotal
+ASGNP4
+ADDRLP4 31940
+INDIRP4
+ADDRLP4 31940
+INDIRP4
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+line 248
+;248:	}
+LABELV $189
+line 209
+ADDRLP4 44
+ADDRLP4 44
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 40
+ADDRLP4 40
+INDIRP4
+CNSTI4 8
+ADDP4
+ASGNP4
+LABELV $191
+ADDRLP4 44
+INDIRI4
+ADDRLP4 24680
+INDIRI4
+LTI4 $188
+line 249
+;249:}
+LABELV $103
+endproc CG_ImpactMark 31964 28
+export CG_AddMarks
+proc CG_AddMarks 1104 12
+line 260
+;250:
+;251:
+;252:/*
+;253:===============
+;254:CG_AddMarks
+;255:===============
+;256:*/
+;257:#define	MARK_TOTAL_TIME		20000
+;258:#define	MARK_FADE_TIME		1000
+;259:
+;260:void CG_AddMarks( void ) {
+line 272
+;261:	int			j;
+;262:	markPoly_t	*mp, *next;
+;263:	int			t;
+;264:	int			fade;
+;265:	char var[MAX_TOKEN_CHARS];
+;266:
+;267:	/*trap_Cvar_VariableStringBuffer( "r_ambientSun", var, sizeof( var ) );
+;268:	if ( atof(var) < 0.12 ) {
+;269:		return;
+;270:	}*/
+;271:
+;272:	if ( !cg_addMarks.integer ) {
+ADDRGP4 cg_addMarks+12
+INDIRI4
+CNSTI4 0
+NEI4 $218
+line 273
+;273:		return;
+ADDRGP4 $217
+JUMPV
+LABELV $218
+line 276
+;274:	}
+;275:
+;276:	mp = cg_activeMarkPolys.nextMark;
+ADDRLP4 0
+ADDRGP4 cg_activeMarkPolys+4
+INDIRP4
+ASGNP4
+line 277
+;277:	for ( ; mp != &cg_activeMarkPolys ; mp = next ) {
+ADDRGP4 $225
+JUMPV
+LABELV $222
+line 280
+;278:		// grab next now, so if the local entity is freed we
+;279:		// still have it
+;280:		next = mp->nextMark;
+ADDRLP4 16
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRP4
+ASGNP4
+line 283
+;281:
+;282:		// see if it is time to completely remove it
+;283:		if ( cg.time > mp->time + MARK_TOTAL_TIME ) {
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRI4
+CNSTI4 20000
+ADDI4
+LEI4 $226
+line 284
+;284:			CG_FreeMarkPoly( mp );
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRGP4 CG_FreeMarkPoly
+CALLV
+pop
+line 285
+;285:			continue;
+ADDRGP4 $223
+JUMPV
+LABELV $226
+line 289
+;286:		}
+;287:
+;288:		// fade out the energy bursts
+;289:		if ( mp->markShader == cgs.media.energyMarkShader ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+INDIRI4
+ADDRGP4 cgs+956380+1516
+INDIRI4
+NEI4 $229
+line 291
+;290:
+;291:			fade = 450 - 450 * ( (cg.time - mp->time ) / 3000.0 );
+ADDRLP4 1044
+CNSTF4 1138819072
+ASGNF4
+ADDRLP4 8
+ADDRLP4 1044
+INDIRF4
+ADDRLP4 1044
+INDIRF4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRI4
+SUBI4
+CVIF4 4
+CNSTF4 1161527296
+DIVF4
+MULF4
+SUBF4
+CVFI4 4
+ASGNI4
+line 292
+;292:			if ( fade < 255 ) {
+ADDRLP4 8
+INDIRI4
+CNSTI4 255
+GEI4 $234
+line 293
+;293:				if ( fade < 0 ) {
+ADDRLP4 8
+INDIRI4
+CNSTI4 0
+GEI4 $236
+line 294
+;294:					fade = 0;
+ADDRLP4 8
+CNSTI4 0
+ASGNI4
+line 295
+;295:				}
+LABELV $236
+line 296
+;296:				if ( mp->verts[0].modulate[0] != 0 ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+INDIRU1
+CVUI4 1
+CNSTI4 0
+EQI4 $238
+line 297
+;297:					for ( j = 0 ; j < mp->poly.numVerts ; j++ ) {
+ADDRLP4 4
+CNSTI4 0
+ASGNI4
+ADDRGP4 $243
+JUMPV
+LABELV $240
+line 298
+;298:						mp->verts[j].modulate[0] = mp->color[0] * fade;
+ADDRLP4 1056
+CNSTI4 20
+ASGNI4
+ADDRLP4 1060
+ADDRLP4 0
+INDIRP4
+ADDRLP4 1056
+INDIRI4
+ADDP4
+INDIRF4
+ADDRLP4 8
+INDIRI4
+CVIF4 4
+MULF4
+ASGNF4
+ADDRLP4 1064
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 1060
+INDIRF4
+ADDRLP4 1064
+INDIRF4
+LTF4 $245
+ADDRLP4 1048
+ADDRLP4 1060
+INDIRF4
+ADDRLP4 1064
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $246
+JUMPV
+LABELV $245
+ADDRLP4 1048
+ADDRLP4 1060
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $246
+CNSTI4 24
+ADDRLP4 4
+INDIRI4
+MULI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+ADDP4
+ADDRLP4 1056
+INDIRI4
+ADDP4
+ADDRLP4 1048
+INDIRU4
+CVUU1 4
+ASGNU1
+line 299
+;299:						mp->verts[j].modulate[1] = mp->color[1] * fade;
+ADDRLP4 1076
+CNSTI4 24
+ASGNI4
+ADDRLP4 1080
+ADDRLP4 0
+INDIRP4
+ADDRLP4 1076
+INDIRI4
+ADDP4
+INDIRF4
+ADDRLP4 8
+INDIRI4
+CVIF4 4
+MULF4
+ASGNF4
+ADDRLP4 1084
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 1080
+INDIRF4
+ADDRLP4 1084
+INDIRF4
+LTF4 $248
+ADDRLP4 1068
+ADDRLP4 1080
+INDIRF4
+ADDRLP4 1084
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $249
+JUMPV
+LABELV $248
+ADDRLP4 1068
+ADDRLP4 1080
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $249
+ADDRLP4 1076
+INDIRI4
+ADDRLP4 4
+INDIRI4
+MULI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+ADDP4
+CNSTI4 21
+ADDP4
+ADDRLP4 1068
+INDIRU4
+CVUU1 4
+ASGNU1
+line 300
+;300:						mp->verts[j].modulate[2] = mp->color[2] * fade;
+ADDRLP4 1096
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+INDIRF4
+ADDRLP4 8
+INDIRI4
+CVIF4 4
+MULF4
+ASGNF4
+ADDRLP4 1100
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 1096
+INDIRF4
+ADDRLP4 1100
+INDIRF4
+LTF4 $251
+ADDRLP4 1088
+ADDRLP4 1096
+INDIRF4
+ADDRLP4 1100
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $252
+JUMPV
+LABELV $251
+ADDRLP4 1088
+ADDRLP4 1096
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $252
+CNSTI4 24
+ADDRLP4 4
+INDIRI4
+MULI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+ADDP4
+CNSTI4 22
+ADDP4
+ADDRLP4 1088
+INDIRU4
+CVUU1 4
+ASGNU1
+line 301
+;301:					}
+LABELV $241
+line 297
+ADDRLP4 4
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+LABELV $243
+ADDRLP4 4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+INDIRI4
+LTI4 $240
+line 302
+;302:				}
+LABELV $238
+line 303
+;303:			}
+LABELV $234
+line 304
+;304:		}
+LABELV $229
+line 307
+;305:
+;306:		// fade all marks out with time
+;307:		t = mp->time + MARK_TOTAL_TIME - cg.time;
+ADDRLP4 12
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRI4
+CNSTI4 20000
+ADDI4
+ADDRGP4 cg+1868892
+INDIRI4
+SUBI4
+ASGNI4
+line 308
+;308:		if ( t < MARK_FADE_TIME ) {
+ADDRLP4 12
+INDIRI4
+CNSTI4 1000
+GEI4 $254
+line 309
+;309:			fade = 255 * t / MARK_FADE_TIME;
+ADDRLP4 8
+CNSTI4 255
+ADDRLP4 12
+INDIRI4
+MULI4
+CNSTI4 1000
+DIVI4
+ASGNI4
+line 310
+;310:			if ( mp->alphaFade ) {
+ADDRLP4 0
+INDIRP4
+CNSTI4 16
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $256
+line 311
+;311:				for ( j = 0 ; j < mp->poly.numVerts ; j++ ) {
+ADDRLP4 4
+CNSTI4 0
+ASGNI4
+ADDRGP4 $261
+JUMPV
+LABELV $258
+line 312
+;312:					mp->verts[j].modulate[3] = fade;
+CNSTI4 24
+ADDRLP4 4
+INDIRI4
+MULI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+ADDP4
+CNSTI4 23
+ADDP4
+ADDRLP4 8
+INDIRI4
+CVIU4 4
+CVUU1 4
+ASGNU1
+line 313
+;313:				}
+LABELV $259
+line 311
+ADDRLP4 4
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+LABELV $261
+ADDRLP4 4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+INDIRI4
+LTI4 $258
+line 314
+;314:			} else {
+ADDRGP4 $257
+JUMPV
+LABELV $256
+line 315
+;315:				for ( j = 0 ; j < mp->poly.numVerts ; j++ ) {
+ADDRLP4 4
+CNSTI4 0
+ASGNI4
+ADDRGP4 $265
+JUMPV
+LABELV $262
+line 316
+;316:					mp->verts[j].modulate[0] = mp->color[0] * fade;
+ADDRLP4 1052
+CNSTI4 20
+ASGNI4
+ADDRLP4 1056
+ADDRLP4 0
+INDIRP4
+ADDRLP4 1052
+INDIRI4
+ADDP4
+INDIRF4
+ADDRLP4 8
+INDIRI4
+CVIF4 4
+MULF4
+ASGNF4
+ADDRLP4 1060
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 1056
+INDIRF4
+ADDRLP4 1060
+INDIRF4
+LTF4 $267
+ADDRLP4 1044
+ADDRLP4 1056
+INDIRF4
+ADDRLP4 1060
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $268
+JUMPV
+LABELV $267
+ADDRLP4 1044
+ADDRLP4 1056
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $268
+CNSTI4 24
+ADDRLP4 4
+INDIRI4
+MULI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+ADDP4
+ADDRLP4 1052
+INDIRI4
+ADDP4
+ADDRLP4 1044
+INDIRU4
+CVUU1 4
+ASGNU1
+line 317
+;317:					mp->verts[j].modulate[1] = mp->color[1] * fade;
+ADDRLP4 1072
+CNSTI4 24
+ASGNI4
+ADDRLP4 1076
+ADDRLP4 0
+INDIRP4
+ADDRLP4 1072
+INDIRI4
+ADDP4
+INDIRF4
+ADDRLP4 8
+INDIRI4
+CVIF4 4
+MULF4
+ASGNF4
+ADDRLP4 1080
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 1076
+INDIRF4
+ADDRLP4 1080
+INDIRF4
+LTF4 $270
+ADDRLP4 1064
+ADDRLP4 1076
+INDIRF4
+ADDRLP4 1080
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $271
+JUMPV
+LABELV $270
+ADDRLP4 1064
+ADDRLP4 1076
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $271
+ADDRLP4 1072
+INDIRI4
+ADDRLP4 4
+INDIRI4
+MULI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+ADDP4
+CNSTI4 21
+ADDP4
+ADDRLP4 1064
+INDIRU4
+CVUU1 4
+ASGNU1
+line 318
+;318:					mp->verts[j].modulate[2] = mp->color[2] * fade;
+ADDRLP4 1092
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+INDIRF4
+ADDRLP4 8
+INDIRI4
+CVIF4 4
+MULF4
+ASGNF4
+ADDRLP4 1096
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 1092
+INDIRF4
+ADDRLP4 1096
+INDIRF4
+LTF4 $273
+ADDRLP4 1084
+ADDRLP4 1092
+INDIRF4
+ADDRLP4 1096
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $274
+JUMPV
+LABELV $273
+ADDRLP4 1084
+ADDRLP4 1092
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $274
+CNSTI4 24
+ADDRLP4 4
+INDIRI4
+MULI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+ADDP4
+CNSTI4 22
+ADDP4
+ADDRLP4 1084
+INDIRU4
+CVUU1 4
+ASGNU1
+line 319
+;319:				}
+LABELV $263
+line 315
+ADDRLP4 4
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+LABELV $265
+ADDRLP4 4
+INDIRI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+INDIRI4
+LTI4 $262
+line 320
+;320:			}
+LABELV $257
+line 321
+;321:		}
+LABELV $254
+line 324
+;322:
+;323:
+;324:		trap_R_AddPolyToScene( mp->markShader, mp->poly.numVerts, mp->verts );
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+INDIRI4
+ARGI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+ARGP4
+ADDRGP4 trap_R_AddPolyToScene
+CALLV
+pop
+line 325
+;325:	}
+LABELV $223
+line 277
+ADDRLP4 0
+ADDRLP4 16
+INDIRP4
+ASGNP4
+LABELV $225
+ADDRLP4 0
+INDIRP4
+CVPU4 4
+ADDRGP4 cg_activeMarkPolys
+CVPU4 4
+NEU4 $222
+line 326
+;326:}
+LABELV $217
+endproc CG_AddMarks 1104 12
+data
+align 4
+LABELV shaderAnimNames
+address $276
+byte 4 0
+skip 120
+align 4
+LABELV shaderAnimCounts
+byte 4 23
+skip 124
+align 4
+LABELV shaderAnimSTRatio
+byte 4 1065353216
+skip 124
+export cl_numparticles
+align 4
+LABELV cl_numparticles
+byte 4 4096
+export initparticles
+align 4
+LABELV initparticles
+byte 4 0
+export CG_ClearParticles
+code
+proc CG_ClearParticles 28 12
+line 429
+;327:
+;328:// cg_particles.c  
+;329:
+;330:#define BLOODRED	2
+;331:#define EMISIVEFADE	3
+;332:#define GREY75		4
+;333:
+;334:typedef struct particle_s
+;335:{
+;336:	struct particle_s	*next;
+;337:
+;338:	float		time;
+;339:	float		endtime;
+;340:
+;341:	vec3_t		org;
+;342:	vec3_t		vel;
+;343:	vec3_t		accel;
+;344:	int			color;
+;345:	float		colorvel;
+;346:	float		alpha;
+;347:	float		alphavel;
+;348:	int			type;
+;349:	qhandle_t	pshader;
+;350:	
+;351:	float		height;
+;352:	float		width;
+;353:				
+;354:	float		endheight;
+;355:	float		endwidth;
+;356:	
+;357:	float		start;
+;358:	float		end;
+;359:
+;360:	float		startfade;
+;361:	qboolean	rotate;
+;362:	int			snum;
+;363:	
+;364:	qboolean	link;
+;365:
+;366:	// Ridah
+;367:	int			shaderAnim;
+;368:	int			roll;
+;369:
+;370:	int			accumroll;
+;371:
+;372:} cparticle_t;
+;373:
+;374:typedef enum
+;375:{
+;376:	P_NONE,
+;377:	P_WEATHER,
+;378:	P_FLAT,
+;379:	P_SMOKE,
+;380:	P_ROTATE,
+;381:	P_WEATHER_TURBULENT,
+;382:	P_ANIM,	// Ridah
+;383:	P_BAT,
+;384:	P_BLEED,
+;385:	P_FLAT_SCALEUP,
+;386:	P_FLAT_SCALEUP_FADE,
+;387:	P_WEATHER_FLURRY,
+;388:	P_SMOKE_IMPACT,
+;389:	P_BUBBLE,
+;390:	P_BUBBLE_TURBULENT,
+;391:	P_SPRITE
+;392:} particle_type_t;
+;393:
+;394:#define	MAX_SHADER_ANIMS		32
+;395:#define	MAX_SHADER_ANIM_FRAMES	64
+;396:
+;397:static char *shaderAnimNames[MAX_SHADER_ANIMS] = {
+;398:	"explode1",
+;399:	NULL
+;400:};
+;401:static qhandle_t shaderAnims[MAX_SHADER_ANIMS][MAX_SHADER_ANIM_FRAMES];
+;402:static int	shaderAnimCounts[MAX_SHADER_ANIMS] = {
+;403:	23
+;404:};
+;405:static float	shaderAnimSTRatio[MAX_SHADER_ANIMS] = {
+;406:	1.0f
+;407:};
+;408:static int	numShaderAnims;
+;409:// done.
+;410:#define		PARTICLE_GRAVITY	40
+;411:#define		MAX_PARTICLES	4096
+;412:
+;413:cparticle_t	*active_particles, *free_particles;
+;414:cparticle_t	particles[MAX_PARTICLES];
+;415:int		cl_numparticles = MAX_PARTICLES;
+;416:
+;417:qboolean		initparticles = qfalse;
+;418:vec3_t			pvforward, pvright, pvup;
+;419:vec3_t			rforward, rright, rup;
+;420:
+;421:float			oldtime;
+;422:
+;423:/*
+;424:===============
+;425:CL_ClearParticles
+;426:===============
+;427:*/
+;428:void CG_ClearParticles (void)
+;429:{
+line 432
+;430:	int		i;
+;431:
+;432:	memset( particles, 0, sizeof(particles) );
+ADDRGP4 particles
+ARGP4
+CNSTI4 0
+ARGI4
+CNSTI4 507904
+ARGI4
+ADDRGP4 memset
+CALLP4
+pop
+line 434
+;433:
+;434:	free_particles = &particles[0];
+ADDRGP4 free_particles
+ADDRGP4 particles
+ASGNP4
+line 435
+;435:	active_particles = NULL;
+ADDRGP4 active_particles
+CNSTP4 0
+ASGNP4
+line 437
+;436:
+;437:	for (i=0 ;i<cl_numparticles ; i++)
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+ADDRGP4 $281
+JUMPV
+LABELV $278
+line 438
+;438:	{
+line 439
+;439:		particles[i].next = &particles[i+1];
+ADDRLP4 4
+CNSTI4 124
+ADDRLP4 0
+INDIRI4
+MULI4
+ASGNI4
+ADDRLP4 4
+INDIRI4
+ADDRGP4 particles
+ADDP4
+ADDRLP4 4
+INDIRI4
+ADDRGP4 particles+124
+ADDP4
+ASGNP4
+line 440
+;440:		particles[i].type = 0;
+CNSTI4 124
+ADDRLP4 0
+INDIRI4
+MULI4
+ADDRGP4 particles+64
+ADDP4
+CNSTI4 0
+ASGNI4
+line 441
+;441:	}
+LABELV $279
+line 437
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+LABELV $281
+ADDRLP4 0
+INDIRI4
+ADDRGP4 cl_numparticles
+INDIRI4
+LTI4 $278
+line 442
+;442:	particles[cl_numparticles-1].next = NULL;
+CNSTI4 124
+ADDRGP4 cl_numparticles
+INDIRI4
+MULI4
+ADDRGP4 particles-124
+ADDP4
+CNSTP4 0
+ASGNP4
+line 444
+;443:
+;444:	oldtime = cg.time;
+ADDRGP4 oldtime
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 447
+;445:
+;446:	// Ridah, init the shaderAnims
+;447:	for (i=0; shaderAnimNames[i]; i++) {
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+ADDRGP4 $289
+JUMPV
+LABELV $286
+line 450
+;448:		int j;
+;449:
+;450:		for (j=0; j<shaderAnimCounts[i]; j++) {
+ADDRLP4 4
+CNSTI4 0
+ASGNI4
+ADDRGP4 $293
+JUMPV
+LABELV $290
+line 451
+;451:			shaderAnims[i][j] = trap_R_RegisterShader( va("%s%i", shaderAnimNames[i], j+1) );
+ADDRGP4 $294
+ARGP4
+ADDRLP4 12
+CNSTI4 2
+ASGNI4
+ADDRLP4 0
+INDIRI4
+ADDRLP4 12
+INDIRI4
+LSHI4
+ADDRGP4 shaderAnimNames
+ADDP4
+INDIRP4
+ARGP4
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+ADDI4
+ARGI4
+ADDRLP4 20
+ADDRGP4 va
+CALLP4
+ASGNP4
+ADDRLP4 20
+INDIRP4
+ARGP4
+ADDRLP4 24
+ADDRGP4 trap_R_RegisterShader
+CALLI4
+ASGNI4
+ADDRLP4 4
+INDIRI4
+ADDRLP4 12
+INDIRI4
+LSHI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 8
+LSHI4
+ADDRGP4 shaderAnims
+ADDP4
+ADDP4
+ADDRLP4 24
+INDIRI4
+ASGNI4
+line 452
+;452:		}
+LABELV $291
+line 450
+ADDRLP4 4
+ADDRLP4 4
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+LABELV $293
+ADDRLP4 4
+INDIRI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 shaderAnimCounts
+ADDP4
+INDIRI4
+LTI4 $290
+line 453
+;453:	}
+LABELV $287
+line 447
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+LABELV $289
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 shaderAnimNames
+ADDP4
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $286
+line 454
+;454:	numShaderAnims = i;
+ADDRGP4 numShaderAnims
+ADDRLP4 0
+INDIRI4
+ASGNI4
+line 457
+;455:	// done.
+;456:
+;457:	initparticles = qtrue;
+ADDRGP4 initparticles
+CNSTI4 1
+ASGNI4
+line 458
+;458:}
+LABELV $277
+endproc CG_ClearParticles 28 12
+export CG_AddParticleToScene
+proc CG_AddParticleToScene 472 16
+line 467
+;459:
+;460:
+;461:/*
+;462:=====================
+;463:CG_AddParticleToScene
+;464:=====================
+;465:*/
+;466:void CG_AddParticleToScene (cparticle_t *p, vec3_t org, float alpha)
+;467:{
+line 480
+;468:
+;469:	vec3_t		point;
+;470:	polyVert_t	verts[4];
+;471:	float		width;
+;472:	float		height;
+;473:	float		time, time2;
+;474:	float		ratio;
+;475:	float		invratio;
+;476:	vec3_t		color;
+;477:	polyVert_t	TRIverts[3];
+;478:	vec3_t		rright2, rup2;
+;479:
+;480:	if (p->type == P_WEATHER || p->type == P_WEATHER_TURBULENT || p->type == P_WEATHER_FLURRY
+ADDRLP4 240
+ADDRFP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 240
+INDIRI4
+CNSTI4 1
+EQI4 $301
+ADDRLP4 240
+INDIRI4
+CNSTI4 5
+EQI4 $301
+ADDRLP4 240
+INDIRI4
+CNSTI4 11
+EQI4 $301
+ADDRLP4 240
+INDIRI4
+CNSTI4 13
+EQI4 $301
+ADDRLP4 240
+INDIRI4
+CNSTI4 14
+NEI4 $296
+LABELV $301
+line 482
+;481:		|| p->type == P_BUBBLE || p->type == P_BUBBLE_TURBULENT)
+;482:	{// create a front facing polygon
+line 484
+;483:			
+;484:		if (p->type != P_WEATHER_FLURRY)
+ADDRFP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+CNSTI4 11
+EQI4 $302
+line 485
+;485:		{
+line 486
+;486:			if (p->type == P_BUBBLE || p->type == P_BUBBLE_TURBULENT)
+ADDRLP4 244
+ADDRFP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 244
+INDIRI4
+CNSTI4 13
+EQI4 $306
+ADDRLP4 244
+INDIRI4
+CNSTI4 14
+NEI4 $304
+LABELV $306
+line 487
+;487:			{
+line 488
+;488:				if (org[2] > p->end)			
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 92
+ADDP4
+INDIRF4
+LEF4 $305
+line 489
+;489:				{	
+line 490
+;490:					p->time = cg.time;	
+ADDRFP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 491
+;491:					VectorCopy (org, p->org); // Ridah, fixes rare snow flakes that flicker on the ground
+ADDRFP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 493
+;492:									
+;493:					p->org[2] = ( p->start + crandom () * 4 );
+ADDRLP4 248
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 252
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 252
+INDIRP4
+CNSTI4 20
+ADDP4
+ADDRLP4 252
+INDIRP4
+CNSTI4 88
+ADDP4
+INDIRF4
+CNSTF4 1082130432
+CNSTF4 1073741824
+ADDRLP4 248
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 496
+;494:					
+;495:					
+;496:					if (p->type == P_BUBBLE_TURBULENT)
+ADDRFP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+CNSTI4 14
+NEI4 $305
+line 497
+;497:					{
+line 498
+;498:						p->vel[0] = crandom() * 4;
+ADDRLP4 256
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+CNSTF4 1082130432
+CNSTF4 1073741824
+ADDRLP4 256
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 499
+;499:						p->vel[1] = crandom() * 4;
+ADDRLP4 260
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+CNSTF4 1082130432
+CNSTF4 1073741824
+ADDRLP4 260
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 500
+;500:					}
+line 502
+;501:				
+;502:				}
+line 503
+;503:			}
+ADDRGP4 $305
+JUMPV
+LABELV $304
+line 505
+;504:			else
+;505:			{
+line 506
+;506:				if (org[2] < p->end)			
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 92
+ADDP4
+INDIRF4
+GEF4 $312
+line 507
+;507:				{	
+line 508
+;508:					p->time = cg.time;	
+ADDRFP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 509
+;509:					VectorCopy (org, p->org); // Ridah, fixes rare snow flakes that flicker on the ground
+ADDRFP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+ADDRGP4 $316
+JUMPV
+LABELV $315
+line 512
+;510:									
+;511:					while (p->org[2] < p->end) 
+;512:					{
+line 513
+;513:						p->org[2] += (p->start - p->end); 
+ADDRLP4 248
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 252
+ADDRLP4 248
+INDIRP4
+CNSTI4 20
+ADDP4
+ASGNP4
+ADDRLP4 252
+INDIRP4
+ADDRLP4 252
+INDIRP4
+INDIRF4
+ADDRLP4 248
+INDIRP4
+CNSTI4 88
+ADDP4
+INDIRF4
+ADDRLP4 248
+INDIRP4
+CNSTI4 92
+ADDP4
+INDIRF4
+SUBF4
+ADDF4
+ASGNF4
+line 514
+;514:					}
+LABELV $316
+line 511
+ADDRLP4 248
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 248
+INDIRP4
+CNSTI4 20
+ADDP4
+INDIRF4
+ADDRLP4 248
+INDIRP4
+CNSTI4 92
+ADDP4
+INDIRF4
+LTF4 $315
+line 517
+;515:					
+;516:					
+;517:					if (p->type == P_WEATHER_TURBULENT)
+ADDRFP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+CNSTI4 5
+NEI4 $318
+line 518
+;518:					{
+line 519
+;519:						p->vel[0] = crandom() * 16;
+ADDRLP4 252
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+CNSTF4 1098907648
+CNSTF4 1073741824
+ADDRLP4 252
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 520
+;520:						p->vel[1] = crandom() * 16;
+ADDRLP4 256
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRFP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+CNSTF4 1098907648
+CNSTF4 1073741824
+ADDRLP4 256
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 521
+;521:					}
+LABELV $318
+line 523
+;522:				
+;523:				}
+LABELV $312
+line 524
+;524:			}
+LABELV $305
+line 528
+;525:			
+;526:
+;527:			// Rafael snow pvs check
+;528:			if (!p->link)
+ADDRFP4 0
+INDIRP4
+CNSTI4 108
+ADDP4
+INDIRI4
+CNSTI4 0
+NEI4 $320
+line 529
+;529:				return;
+ADDRGP4 $295
+JUMPV
+LABELV $320
+line 531
+;530:
+;531:			p->alpha = 1;
+ADDRFP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 532
+;532:		}
+LABELV $302
+line 535
+;533:		
+;534:		// Ridah, had to do this or MAX_POLYS is being exceeded in village1.bsp
+;535:		if (Distance( cg.snap->ps.origin, org ) > 1024) {
+ADDRGP4 cg+36
+INDIRP4
+CNSTI4 64
+ADDP4
+ARGP4
+ADDRFP4 4
+INDIRP4
+ARGP4
+ADDRLP4 244
+ADDRGP4 Distance
+CALLF4
+ASGNF4
+ADDRLP4 244
+INDIRF4
+CNSTF4 1149239296
+LEF4 $322
+line 536
+;536:			return;
+ADDRGP4 $295
+JUMPV
+LABELV $322
+line 540
+;537:		}
+;538:		// done.
+;539:	
+;540:		if (p->type == P_BUBBLE || p->type == P_BUBBLE_TURBULENT)
+ADDRLP4 248
+ADDRFP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 248
+INDIRI4
+CNSTI4 13
+EQI4 $327
+ADDRLP4 248
+INDIRI4
+CNSTI4 14
+NEI4 $325
+LABELV $327
+line 541
+;541:		{
+line 542
+;542:			VectorMA (org, -p->height, pvup, point);	
+ADDRLP4 252
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 256
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 252
+INDIRP4
+INDIRF4
+ADDRGP4 pvup
+INDIRF4
+ADDRLP4 256
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 252
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRGP4 pvup+4
+INDIRF4
+ADDRLP4 256
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRGP4 pvup+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 543
+;543:			VectorMA (point, -p->width, pvright, point);	
+ADDRLP4 260
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvright
+INDIRF4
+ADDRLP4 260
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvright+4
+INDIRF4
+ADDRLP4 260
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvright+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 544
+;544:			VectorCopy (point, verts[0].xyz);	
+ADDRLP4 12
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 545
+;545:			verts[0].st[0] = 0;	
+ADDRLP4 12+12
+CNSTF4 0
+ASGNF4
+line 546
+;546:			verts[0].st[1] = 0;	
+ADDRLP4 12+12+4
+CNSTF4 0
+ASGNF4
+line 547
+;547:			verts[0].modulate[0] = 255;	
+ADDRLP4 12+20
+CNSTU1 255
+ASGNU1
+line 548
+;548:			verts[0].modulate[1] = 255;	
+ADDRLP4 12+20+1
+CNSTU1 255
+ASGNU1
+line 549
+;549:			verts[0].modulate[2] = 255;	
+ADDRLP4 12+20+2
+CNSTU1 255
+ASGNU1
+line 550
+;550:			verts[0].modulate[3] = 255 * p->alpha;	
+ADDRLP4 268
+CNSTF4 1132396544
+ADDRFP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 272
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 268
+INDIRF4
+ADDRLP4 272
+INDIRF4
+LTF4 $349
+ADDRLP4 264
+ADDRLP4 268
+INDIRF4
+ADDRLP4 272
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $350
+JUMPV
+LABELV $349
+ADDRLP4 264
+ADDRLP4 268
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $350
+ADDRLP4 12+20+3
+ADDRLP4 264
+INDIRU4
+CVUU1 4
+ASGNU1
+line 552
+;551:
+;552:			VectorMA (org, -p->height, pvup, point);	
+ADDRLP4 276
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 280
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 276
+INDIRP4
+INDIRF4
+ADDRGP4 pvup
+INDIRF4
+ADDRLP4 280
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 276
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRGP4 pvup+4
+INDIRF4
+ADDRLP4 280
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRGP4 pvup+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 553
+;553:			VectorMA (point, p->width, pvright, point);	
+ADDRLP4 284
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvright
+INDIRF4
+ADDRLP4 284
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvright+4
+INDIRF4
+ADDRLP4 284
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvright+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 554
+;554:			VectorCopy (point, verts[1].xyz);	
+ADDRLP4 12+24
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 555
+;555:			verts[1].st[0] = 0;	
+ADDRLP4 12+24+12
+CNSTF4 0
+ASGNF4
+line 556
+;556:			verts[1].st[1] = 1;	
+ADDRLP4 12+24+12+4
+CNSTF4 1065353216
+ASGNF4
+line 557
+;557:			verts[1].modulate[0] = 255;	
+ADDRLP4 12+24+20
+CNSTU1 255
+ASGNU1
+line 558
+;558:			verts[1].modulate[1] = 255;	
+ADDRLP4 12+24+20+1
+CNSTU1 255
+ASGNU1
+line 559
+;559:			verts[1].modulate[2] = 255;	
+ADDRLP4 12+24+20+2
+CNSTU1 255
+ASGNU1
+line 560
+;560:			verts[1].modulate[3] = 255 * p->alpha;	
+ADDRLP4 292
+CNSTF4 1132396544
+ADDRFP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 296
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 292
+INDIRF4
+ADDRLP4 296
+INDIRF4
+LTF4 $379
+ADDRLP4 288
+ADDRLP4 292
+INDIRF4
+ADDRLP4 296
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $380
+JUMPV
+LABELV $379
+ADDRLP4 288
+ADDRLP4 292
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $380
+ADDRLP4 12+24+20+3
+ADDRLP4 288
+INDIRU4
+CVUU1 4
+ASGNU1
+line 562
+;561:
+;562:			VectorMA (org, p->height, pvup, point);	
+ADDRLP4 300
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 304
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 300
+INDIRP4
+INDIRF4
+ADDRGP4 pvup
+INDIRF4
+ADDRLP4 304
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 300
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRGP4 pvup+4
+INDIRF4
+ADDRLP4 304
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRGP4 pvup+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 563
+;563:			VectorMA (point, p->width, pvright, point);	
+ADDRLP4 308
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvright
+INDIRF4
+ADDRLP4 308
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvright+4
+INDIRF4
+ADDRLP4 308
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvright+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 564
+;564:			VectorCopy (point, verts[2].xyz);	
+ADDRLP4 12+48
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 565
+;565:			verts[2].st[0] = 1;	
+ADDRLP4 12+48+12
+CNSTF4 1065353216
+ASGNF4
+line 566
+;566:			verts[2].st[1] = 1;	
+ADDRLP4 12+48+12+4
+CNSTF4 1065353216
+ASGNF4
+line 567
+;567:			verts[2].modulate[0] = 255;	
+ADDRLP4 12+48+20
+CNSTU1 255
+ASGNU1
+line 568
+;568:			verts[2].modulate[1] = 255;	
+ADDRLP4 12+48+20+1
+CNSTU1 255
+ASGNU1
+line 569
+;569:			verts[2].modulate[2] = 255;	
+ADDRLP4 12+48+20+2
+CNSTU1 255
+ASGNU1
+line 570
+;570:			verts[2].modulate[3] = 255 * p->alpha;	
+ADDRLP4 316
+CNSTF4 1132396544
+ADDRFP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 320
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 316
+INDIRF4
+ADDRLP4 320
+INDIRF4
+LTF4 $409
+ADDRLP4 312
+ADDRLP4 316
+INDIRF4
+ADDRLP4 320
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $410
+JUMPV
+LABELV $409
+ADDRLP4 312
+ADDRLP4 316
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $410
+ADDRLP4 12+48+20+3
+ADDRLP4 312
+INDIRU4
+CVUU1 4
+ASGNU1
+line 572
+;571:
+;572:			VectorMA (org, p->height, pvup, point);	
+ADDRLP4 324
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 328
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 324
+INDIRP4
+INDIRF4
+ADDRGP4 pvup
+INDIRF4
+ADDRLP4 328
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 324
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRGP4 pvup+4
+INDIRF4
+ADDRLP4 328
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRGP4 pvup+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 573
+;573:			VectorMA (point, -p->width, pvright, point);	
+ADDRLP4 332
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvright
+INDIRF4
+ADDRLP4 332
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvright+4
+INDIRF4
+ADDRLP4 332
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvright+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 574
+;574:			VectorCopy (point, verts[3].xyz);	
+ADDRLP4 12+72
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 575
+;575:			verts[3].st[0] = 1;	
+ADDRLP4 12+72+12
+CNSTF4 1065353216
+ASGNF4
+line 576
+;576:			verts[3].st[1] = 0;	
+ADDRLP4 12+72+12+4
+CNSTF4 0
+ASGNF4
+line 577
+;577:			verts[3].modulate[0] = 255;	
+ADDRLP4 12+72+20
+CNSTU1 255
+ASGNU1
+line 578
+;578:			verts[3].modulate[1] = 255;	
+ADDRLP4 12+72+20+1
+CNSTU1 255
+ASGNU1
+line 579
+;579:			verts[3].modulate[2] = 255;	
+ADDRLP4 12+72+20+2
+CNSTU1 255
+ASGNU1
+line 580
+;580:			verts[3].modulate[3] = 255 * p->alpha;	
+ADDRLP4 340
+CNSTF4 1132396544
+ADDRFP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 344
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 340
+INDIRF4
+ADDRLP4 344
+INDIRF4
+LTF4 $439
+ADDRLP4 336
+ADDRLP4 340
+INDIRF4
+ADDRLP4 344
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $440
+JUMPV
+LABELV $439
+ADDRLP4 336
+ADDRLP4 340
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $440
+ADDRLP4 12+72+20+3
+ADDRLP4 336
+INDIRU4
+CVUU1 4
+ASGNU1
+line 581
+;581:		}
+ADDRGP4 $297
+JUMPV
+LABELV $325
+line 583
+;582:		else
+;583:		{
+line 584
+;584:			VectorMA (org, -p->height, pvup, point);	
+ADDRLP4 252
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 256
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 252
+INDIRP4
+INDIRF4
+ADDRGP4 pvup
+INDIRF4
+ADDRLP4 256
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 252
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRGP4 pvup+4
+INDIRF4
+ADDRLP4 256
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRGP4 pvup+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 585
+;585:			VectorMA (point, -p->width, pvright, point);	
+ADDRLP4 260
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvright
+INDIRF4
+ADDRLP4 260
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvright+4
+INDIRF4
+ADDRLP4 260
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvright+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 586
+;586:			VectorCopy( point, TRIverts[0].xyz );
+ADDRLP4 108
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 587
+;587:			TRIverts[0].st[0] = 1;
+ADDRLP4 108+12
+CNSTF4 1065353216
+ASGNF4
+line 588
+;588:			TRIverts[0].st[1] = 0;
+ADDRLP4 108+12+4
+CNSTF4 0
+ASGNF4
+line 589
+;589:			TRIverts[0].modulate[0] = 255;
+ADDRLP4 108+20
+CNSTU1 255
+ASGNU1
+line 590
+;590:			TRIverts[0].modulate[1] = 255;
+ADDRLP4 108+20+1
+CNSTU1 255
+ASGNU1
+line 591
+;591:			TRIverts[0].modulate[2] = 255;
+ADDRLP4 108+20+2
+CNSTU1 255
+ASGNU1
+line 592
+;592:			TRIverts[0].modulate[3] = 255 * p->alpha;	
+ADDRLP4 268
+CNSTF4 1132396544
+ADDRFP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 272
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 268
+INDIRF4
+ADDRLP4 272
+INDIRF4
+LTF4 $462
+ADDRLP4 264
+ADDRLP4 268
+INDIRF4
+ADDRLP4 272
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $463
+JUMPV
+LABELV $462
+ADDRLP4 264
+ADDRLP4 268
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $463
+ADDRLP4 108+20+3
+ADDRLP4 264
+INDIRU4
+CVUU1 4
+ASGNU1
+line 594
+;593:
+;594:			VectorMA (org, p->height, pvup, point);	
+ADDRLP4 276
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 280
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 276
+INDIRP4
+INDIRF4
+ADDRGP4 pvup
+INDIRF4
+ADDRLP4 280
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 276
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRGP4 pvup+4
+INDIRF4
+ADDRLP4 280
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRGP4 pvup+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 595
+;595:			VectorMA (point, -p->width, pvright, point);	
+ADDRLP4 284
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvright
+INDIRF4
+ADDRLP4 284
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvright+4
+INDIRF4
+ADDRLP4 284
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvright+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 596
+;596:			VectorCopy (point, TRIverts[1].xyz);	
+ADDRLP4 108+24
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 597
+;597:			TRIverts[1].st[0] = 0;
+ADDRLP4 108+24+12
+CNSTF4 0
+ASGNF4
+line 598
+;598:			TRIverts[1].st[1] = 0;
+ADDRLP4 108+24+12+4
+CNSTF4 0
+ASGNF4
+line 599
+;599:			TRIverts[1].modulate[0] = 255;
+ADDRLP4 108+24+20
+CNSTU1 255
+ASGNU1
+line 600
+;600:			TRIverts[1].modulate[1] = 255;
+ADDRLP4 108+24+20+1
+CNSTU1 255
+ASGNU1
+line 601
+;601:			TRIverts[1].modulate[2] = 255;
+ADDRLP4 108+24+20+2
+CNSTU1 255
+ASGNU1
+line 602
+;602:			TRIverts[1].modulate[3] = 255 * p->alpha;	
+ADDRLP4 292
+CNSTF4 1132396544
+ADDRFP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 296
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 292
+INDIRF4
+ADDRLP4 296
+INDIRF4
+LTF4 $492
+ADDRLP4 288
+ADDRLP4 292
+INDIRF4
+ADDRLP4 296
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $493
+JUMPV
+LABELV $492
+ADDRLP4 288
+ADDRLP4 292
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $493
+ADDRLP4 108+24+20+3
+ADDRLP4 288
+INDIRU4
+CVUU1 4
+ASGNU1
+line 604
+;603:
+;604:			VectorMA (org, p->height, pvup, point);	
+ADDRLP4 300
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 304
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 300
+INDIRP4
+INDIRF4
+ADDRGP4 pvup
+INDIRF4
+ADDRLP4 304
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 300
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRGP4 pvup+4
+INDIRF4
+ADDRLP4 304
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRGP4 pvup+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 605
+;605:			VectorMA (point, p->width, pvright, point);	
+ADDRLP4 308
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvright
+INDIRF4
+ADDRLP4 308
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvright+4
+INDIRF4
+ADDRLP4 308
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvright+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 606
+;606:			VectorCopy (point, TRIverts[2].xyz);	
+ADDRLP4 108+48
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 607
+;607:			TRIverts[2].st[0] = 0;
+ADDRLP4 108+48+12
+CNSTF4 0
+ASGNF4
+line 608
+;608:			TRIverts[2].st[1] = 1;
+ADDRLP4 108+48+12+4
+CNSTF4 1065353216
+ASGNF4
+line 609
+;609:			TRIverts[2].modulate[0] = 255;
+ADDRLP4 108+48+20
+CNSTU1 255
+ASGNU1
+line 610
+;610:			TRIverts[2].modulate[1] = 255;
+ADDRLP4 108+48+20+1
+CNSTU1 255
+ASGNU1
+line 611
+;611:			TRIverts[2].modulate[2] = 255;
+ADDRLP4 108+48+20+2
+CNSTU1 255
+ASGNU1
+line 612
+;612:			TRIverts[2].modulate[3] = 255 * p->alpha;	
+ADDRLP4 316
+CNSTF4 1132396544
+ADDRFP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 320
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 316
+INDIRF4
+ADDRLP4 320
+INDIRF4
+LTF4 $522
+ADDRLP4 312
+ADDRLP4 316
+INDIRF4
+ADDRLP4 320
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $523
+JUMPV
+LABELV $522
+ADDRLP4 312
+ADDRLP4 316
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $523
+ADDRLP4 108+48+20+3
+ADDRLP4 312
+INDIRU4
+CVUU1 4
+ASGNU1
+line 613
+;613:		}
+line 615
+;614:	
+;615:	}
+ADDRGP4 $297
+JUMPV
+LABELV $296
+line 616
+;616:	else if (p->type == P_SPRITE)
+ADDRFP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+CNSTI4 15
+NEI4 $524
+line 617
+;617:	{
+line 621
+;618:		vec3_t	rr, ru;
+;619:		vec3_t	rotate_ang;
+;620:
+;621:		VectorSet (color, 1.0, 1.0, 0.5);
+ADDRLP4 280
+CNSTF4 1065353216
+ASGNF4
+ADDRLP4 184
+ADDRLP4 280
+INDIRF4
+ASGNF4
+ADDRLP4 184+4
+ADDRLP4 280
+INDIRF4
+ASGNF4
+ADDRLP4 184+8
+CNSTF4 1056964608
+ASGNF4
+line 622
+;622:		time = cg.time - p->time;
+ADDRLP4 232
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ADDRFP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+line 623
+;623:		time2 = p->endtime - p->time;
+ADDRLP4 284
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 236
+ADDRLP4 284
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRLP4 284
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+line 624
+;624:		ratio = time / time2;
+ADDRLP4 200
+ADDRLP4 232
+INDIRF4
+ADDRLP4 236
+INDIRF4
+DIVF4
+ASGNF4
+line 626
+;625:
+;626:		width = p->width + ( ratio * ( p->endwidth - p->width) );
+ADDRLP4 288
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 292
+ADDRLP4 288
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+ASGNF4
+ADDRLP4 196
+ADDRLP4 292
+INDIRF4
+ADDRLP4 200
+INDIRF4
+ADDRLP4 288
+INDIRP4
+CNSTI4 84
+ADDP4
+INDIRF4
+ADDRLP4 292
+INDIRF4
+SUBF4
+MULF4
+ADDF4
+ASGNF4
+line 627
+;627:		height = p->height + ( ratio * ( p->endheight - p->height) );
+ADDRLP4 296
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 300
+ADDRLP4 296
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+ASGNF4
+ADDRLP4 180
+ADDRLP4 300
+INDIRF4
+ADDRLP4 200
+INDIRF4
+ADDRLP4 296
+INDIRP4
+CNSTI4 80
+ADDP4
+INDIRF4
+ADDRLP4 300
+INDIRF4
+SUBF4
+MULF4
+ADDF4
+ASGNF4
+line 629
+;628:
+;629:		if (p->roll) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $529
+line 630
+;630:			vectoangles( cg.refdef.viewaxis[0], rotate_ang );
+ADDRGP4 cg+1870616+36
+ARGP4
+ADDRLP4 268
+ARGP4
+ADDRGP4 vectoangles
+CALLV
+pop
+line 631
+;631:			rotate_ang[ROLL] += p->roll;
+ADDRLP4 268+8
+ADDRLP4 268+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+INDIRI4
+CVIF4 4
+ADDF4
+ASGNF4
+line 632
+;632:			AngleVectors ( rotate_ang, NULL, rr, ru);
+ADDRLP4 268
+ARGP4
+CNSTP4 0
+ARGP4
+ADDRLP4 256
+ARGP4
+ADDRLP4 244
+ARGP4
+ADDRGP4 AngleVectors
+CALLV
+pop
+line 633
+;633:		}
+LABELV $529
+line 635
+;634:
+;635:		if (p->roll) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $534
+line 636
+;636:			VectorMA (org, -height, ru, point);	
+ADDRLP4 304
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 308
+ADDRLP4 180
+INDIRF4
+NEGF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 304
+INDIRP4
+INDIRF4
+ADDRLP4 244
+INDIRF4
+ADDRLP4 308
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 304
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRLP4 244+4
+INDIRF4
+ADDRLP4 308
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRLP4 244+8
+INDIRF4
+ADDRLP4 180
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 637
+;637:			VectorMA (point, -width, rr, point);	
+ADDRLP4 312
+ADDRLP4 196
+INDIRF4
+NEGF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRLP4 256
+INDIRF4
+ADDRLP4 312
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 256+4
+INDIRF4
+ADDRLP4 312
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRLP4 256+8
+INDIRF4
+ADDRLP4 196
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 638
+;638:		} else {
+ADDRGP4 $535
+JUMPV
+LABELV $534
+line 639
+;639:			VectorMA (org, -height, pvup, point);	
+ADDRLP4 304
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 308
+ADDRLP4 180
+INDIRF4
+NEGF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 304
+INDIRP4
+INDIRF4
+ADDRGP4 pvup
+INDIRF4
+ADDRLP4 308
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 304
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRGP4 pvup+4
+INDIRF4
+ADDRLP4 308
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRGP4 pvup+8
+INDIRF4
+ADDRLP4 180
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 640
+;640:			VectorMA (point, -width, pvright, point);	
+ADDRLP4 312
+ADDRLP4 196
+INDIRF4
+NEGF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvright
+INDIRF4
+ADDRLP4 312
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvright+4
+INDIRF4
+ADDRLP4 312
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvright+8
+INDIRF4
+ADDRLP4 196
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 641
+;641:		}
+LABELV $535
+line 642
+;642:		VectorCopy (point, verts[0].xyz);	
+ADDRLP4 12
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 643
+;643:		verts[0].st[0] = 0;	
+ADDRLP4 12+12
+CNSTF4 0
+ASGNF4
+line 644
+;644:		verts[0].st[1] = 0;	
+ADDRLP4 12+12+4
+CNSTF4 0
+ASGNF4
+line 645
+;645:		verts[0].modulate[0] = 255;	
+ADDRLP4 12+20
+CNSTU1 255
+ASGNU1
+line 646
+;646:		verts[0].modulate[1] = 255;	
+ADDRLP4 12+20+1
+CNSTU1 255
+ASGNU1
+line 647
+;647:		verts[0].modulate[2] = 255;	
+ADDRLP4 12+20+2
+CNSTU1 255
+ASGNU1
+line 648
+;648:		verts[0].modulate[3] = 255;
+ADDRLP4 12+20+3
+CNSTU1 255
+ASGNU1
+line 650
+;649:
+;650:		if (p->roll) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $566
+line 651
+;651:			VectorMA (point, 2*height, ru, point);	
+ADDRLP4 304
+CNSTF4 1073741824
+ADDRLP4 180
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRLP4 244
+INDIRF4
+ADDRLP4 304
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 244+4
+INDIRF4
+ADDRLP4 304
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRLP4 244+8
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 180
+INDIRF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 652
+;652:		} else {
+ADDRGP4 $567
+JUMPV
+LABELV $566
+line 653
+;653:			VectorMA (point, 2*height, pvup, point);	
+ADDRLP4 304
+CNSTF4 1073741824
+ADDRLP4 180
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvup
+INDIRF4
+ADDRLP4 304
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvup+4
+INDIRF4
+ADDRLP4 304
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvup+8
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 180
+INDIRF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 654
+;654:		}
+LABELV $567
+line 655
+;655:		VectorCopy (point, verts[1].xyz);	
+ADDRLP4 12+24
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 656
+;656:		verts[1].st[0] = 0;	
+ADDRLP4 12+24+12
+CNSTF4 0
+ASGNF4
+line 657
+;657:		verts[1].st[1] = 1;	
+ADDRLP4 12+24+12+4
+CNSTF4 1065353216
+ASGNF4
+line 658
+;658:		verts[1].modulate[0] = 255;	
+ADDRLP4 12+24+20
+CNSTU1 255
+ASGNU1
+line 659
+;659:		verts[1].modulate[1] = 255;	
+ADDRLP4 12+24+20+1
+CNSTU1 255
+ASGNU1
+line 660
+;660:		verts[1].modulate[2] = 255;	
+ADDRLP4 12+24+20+2
+CNSTU1 255
+ASGNU1
+line 661
+;661:		verts[1].modulate[3] = 255;	
+ADDRLP4 12+24+20+3
+CNSTU1 255
+ASGNU1
+line 663
+;662:
+;663:		if (p->roll) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $597
+line 664
+;664:			VectorMA (point, 2*width, rr, point);	
+ADDRLP4 304
+CNSTF4 1073741824
+ADDRLP4 196
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRLP4 256
+INDIRF4
+ADDRLP4 304
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 256+4
+INDIRF4
+ADDRLP4 304
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRLP4 256+8
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 196
+INDIRF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 665
+;665:		} else {
+ADDRGP4 $598
+JUMPV
+LABELV $597
+line 666
+;666:			VectorMA (point, 2*width, pvright, point);	
+ADDRLP4 304
+CNSTF4 1073741824
+ADDRLP4 196
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvright
+INDIRF4
+ADDRLP4 304
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvright+4
+INDIRF4
+ADDRLP4 304
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvright+8
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 196
+INDIRF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 667
+;667:		}
+LABELV $598
+line 668
+;668:		VectorCopy (point, verts[2].xyz);	
+ADDRLP4 12+48
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 669
+;669:		verts[2].st[0] = 1;	
+ADDRLP4 12+48+12
+CNSTF4 1065353216
+ASGNF4
+line 670
+;670:		verts[2].st[1] = 1;	
+ADDRLP4 12+48+12+4
+CNSTF4 1065353216
+ASGNF4
+line 671
+;671:		verts[2].modulate[0] = 255;	
+ADDRLP4 12+48+20
+CNSTU1 255
+ASGNU1
+line 672
+;672:		verts[2].modulate[1] = 255;	
+ADDRLP4 12+48+20+1
+CNSTU1 255
+ASGNU1
+line 673
+;673:		verts[2].modulate[2] = 255;	
+ADDRLP4 12+48+20+2
+CNSTU1 255
+ASGNU1
+line 674
+;674:		verts[2].modulate[3] = 255;	
+ADDRLP4 12+48+20+3
+CNSTU1 255
+ASGNU1
+line 676
+;675:
+;676:		if (p->roll) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $628
+line 677
+;677:			VectorMA (point, -2*height, ru, point);	
+ADDRLP4 304
+CNSTF4 3221225472
+ADDRLP4 180
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRLP4 244
+INDIRF4
+ADDRLP4 304
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 244+4
+INDIRF4
+ADDRLP4 304
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRLP4 244+8
+INDIRF4
+CNSTF4 3221225472
+ADDRLP4 180
+INDIRF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 678
+;678:		} else {
+ADDRGP4 $629
+JUMPV
+LABELV $628
+line 679
+;679:			VectorMA (point, -2*height, pvup, point);	
+ADDRLP4 304
+CNSTF4 3221225472
+ADDRLP4 180
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvup
+INDIRF4
+ADDRLP4 304
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvup+4
+INDIRF4
+ADDRLP4 304
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvup+8
+INDIRF4
+CNSTF4 3221225472
+ADDRLP4 180
+INDIRF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 680
+;680:		}
+LABELV $629
+line 681
+;681:		VectorCopy (point, verts[3].xyz);	
+ADDRLP4 12+72
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 682
+;682:		verts[3].st[0] = 1;	
+ADDRLP4 12+72+12
+CNSTF4 1065353216
+ASGNF4
+line 683
+;683:		verts[3].st[1] = 0;	
+ADDRLP4 12+72+12+4
+CNSTF4 0
+ASGNF4
+line 684
+;684:		verts[3].modulate[0] = 255;	
+ADDRLP4 12+72+20
+CNSTU1 255
+ASGNU1
+line 685
+;685:		verts[3].modulate[1] = 255;	
+ADDRLP4 12+72+20+1
+CNSTU1 255
+ASGNU1
+line 686
+;686:		verts[3].modulate[2] = 255;	
+ADDRLP4 12+72+20+2
+CNSTU1 255
+ASGNU1
+line 687
+;687:		verts[3].modulate[3] = 255;	
+ADDRLP4 12+72+20+3
+CNSTU1 255
+ASGNU1
+line 688
+;688:	}
+ADDRGP4 $525
+JUMPV
+LABELV $524
+line 689
+;689:	else if (p->type == P_SMOKE || p->type == P_SMOKE_IMPACT)
+ADDRLP4 244
+ADDRFP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 244
+INDIRI4
+CNSTI4 3
+EQI4 $661
+ADDRLP4 244
+INDIRI4
+CNSTI4 12
+NEI4 $659
+LABELV $661
+line 690
+;690:	{// create a front rotating facing polygon
+line 692
+;691:
+;692:		if ( p->type == P_SMOKE_IMPACT && Distance( cg.snap->ps.origin, org ) > 1024) {
+ADDRLP4 248
+CNSTI4 64
+ASGNI4
+ADDRFP4 0
+INDIRP4
+ADDRLP4 248
+INDIRI4
+ADDP4
+INDIRI4
+CNSTI4 12
+NEI4 $662
+ADDRGP4 cg+36
+INDIRP4
+ADDRLP4 248
+INDIRI4
+ADDP4
+ARGP4
+ADDRFP4 4
+INDIRP4
+ARGP4
+ADDRLP4 252
+ADDRGP4 Distance
+CALLF4
+ASGNF4
+ADDRLP4 252
+INDIRF4
+CNSTF4 1149239296
+LEF4 $662
+line 693
+;693:			return;
+ADDRGP4 $295
+JUMPV
+LABELV $662
+line 696
+;694:		}
+;695:
+;696:		if (p->color == BLOODRED)
+ADDRFP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+INDIRI4
+CNSTI4 2
+NEI4 $665
+line 697
+;697:			VectorSet (color, 0.22f, 0.0f, 0.0f);
+ADDRLP4 184
+CNSTF4 1046562734
+ASGNF4
+ADDRLP4 184+4
+CNSTF4 0
+ASGNF4
+ADDRLP4 184+8
+CNSTF4 0
+ASGNF4
+ADDRGP4 $666
+JUMPV
+LABELV $665
+line 698
+;698:		else if (p->color == GREY75)
+ADDRFP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+INDIRI4
+CNSTI4 4
+NEI4 $669
+line 699
+;699:		{
+line 703
+;700:			float	len;
+;701:			float	greyit;
+;702:			float	val;
+;703:			len = Distance (cg.snap->ps.origin, org);
+ADDRGP4 cg+36
+INDIRP4
+CNSTI4 64
+ADDP4
+ARGP4
+ADDRFP4 4
+INDIRP4
+ARGP4
+ADDRLP4 268
+ADDRGP4 Distance
+CALLF4
+ASGNF4
+ADDRLP4 260
+ADDRLP4 268
+INDIRF4
+ASGNF4
+line 704
+;704:			if (!len)
+ADDRLP4 260
+INDIRF4
+CNSTF4 0
+NEF4 $672
+line 705
+;705:				len = 1;
+ADDRLP4 260
+CNSTF4 1065353216
+ASGNF4
+LABELV $672
+line 707
+;706:
+;707:			val = 4096/len;
+ADDRLP4 264
+CNSTF4 1166016512
+ADDRLP4 260
+INDIRF4
+DIVF4
+ASGNF4
+line 708
+;708:			greyit = 0.25 * val;
+ADDRLP4 256
+CNSTF4 1048576000
+ADDRLP4 264
+INDIRF4
+MULF4
+ASGNF4
+line 709
+;709:			if (greyit > 0.5)
+ADDRLP4 256
+INDIRF4
+CNSTF4 1056964608
+LEF4 $674
+line 710
+;710:				greyit = 0.5;
+ADDRLP4 256
+CNSTF4 1056964608
+ASGNF4
+LABELV $674
+line 712
+;711:
+;712:			VectorSet (color, greyit, greyit, greyit);
+ADDRLP4 272
+ADDRLP4 256
+INDIRF4
+ASGNF4
+ADDRLP4 184
+ADDRLP4 272
+INDIRF4
+ASGNF4
+ADDRLP4 184+4
+ADDRLP4 272
+INDIRF4
+ASGNF4
+ADDRLP4 184+8
+ADDRLP4 256
+INDIRF4
+ASGNF4
+line 713
+;713:		}
+ADDRGP4 $670
+JUMPV
+LABELV $669
+line 715
+;714:		else
+;715:			VectorSet (color, 1.0, 1.0, 1.0);
+ADDRLP4 256
+CNSTF4 1065353216
+ASGNF4
+ADDRLP4 184
+ADDRLP4 256
+INDIRF4
+ASGNF4
+ADDRLP4 184+4
+ADDRLP4 256
+INDIRF4
+ASGNF4
+ADDRLP4 184+8
+CNSTF4 1065353216
+ASGNF4
+LABELV $670
+LABELV $666
+line 717
+;716:
+;717:		time = cg.time - p->time;
+ADDRLP4 232
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ADDRFP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+line 718
+;718:		time2 = p->endtime - p->time;
+ADDRLP4 260
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 236
+ADDRLP4 260
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRLP4 260
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+line 719
+;719:		ratio = time / time2;
+ADDRLP4 200
+ADDRLP4 232
+INDIRF4
+ADDRLP4 236
+INDIRF4
+DIVF4
+ASGNF4
+line 721
+;720:		
+;721:		if (cg.time > p->startfade)
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ADDRFP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+INDIRF4
+LEF4 $681
+line 722
+;722:		{
+line 723
+;723:			invratio = 1 - ( (cg.time - p->startfade) / (p->endtime - p->startfade) );
+ADDRLP4 264
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 268
+ADDRLP4 264
+INDIRP4
+CNSTI4 96
+ADDP4
+INDIRF4
+ASGNF4
+ADDRLP4 204
+CNSTF4 1065353216
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ADDRLP4 268
+INDIRF4
+SUBF4
+ADDRLP4 264
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRLP4 268
+INDIRF4
+SUBF4
+DIVF4
+SUBF4
+ASGNF4
+line 725
+;724:
+;725:			if (p->color == EMISIVEFADE)
+ADDRFP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+INDIRI4
+CNSTI4 3
+NEI4 $685
+line 726
+;726:			{
+line 728
+;727:				float fval;
+;728:				fval = (invratio * invratio);
+ADDRLP4 276
+ADDRLP4 204
+INDIRF4
+ASGNF4
+ADDRLP4 272
+ADDRLP4 276
+INDIRF4
+ADDRLP4 276
+INDIRF4
+MULF4
+ASGNF4
+line 729
+;729:				if (fval < 0)
+ADDRLP4 272
+INDIRF4
+CNSTF4 0
+GEF4 $687
+line 730
+;730:					fval = 0;
+ADDRLP4 272
+CNSTF4 0
+ASGNF4
+LABELV $687
+line 731
+;731:				VectorSet (color, fval , fval , fval );
+ADDRLP4 280
+ADDRLP4 272
+INDIRF4
+ASGNF4
+ADDRLP4 184
+ADDRLP4 280
+INDIRF4
+ASGNF4
+ADDRLP4 184+4
+ADDRLP4 280
+INDIRF4
+ASGNF4
+ADDRLP4 184+8
+ADDRLP4 272
+INDIRF4
+ASGNF4
+line 732
+;732:			}
+LABELV $685
+line 733
+;733:			invratio *= p->alpha;
+ADDRLP4 204
+ADDRLP4 204
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+line 734
+;734:		}
+ADDRGP4 $682
+JUMPV
+LABELV $681
+line 736
+;735:		else 
+;736:			invratio = 1 * p->alpha;
+ADDRLP4 204
+CNSTF4 1065353216
+ADDRFP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+LABELV $682
+line 738
+;737:
+;738:		if (invratio > 1)
+ADDRLP4 204
+INDIRF4
+CNSTF4 1065353216
+LEF4 $691
+line 739
+;739:			invratio = 1;
+ADDRLP4 204
+CNSTF4 1065353216
+ASGNF4
+LABELV $691
+line 741
+;740:	
+;741:		width = p->width + ( ratio * ( p->endwidth - p->width) );
+ADDRLP4 264
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 268
+ADDRLP4 264
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+ASGNF4
+ADDRLP4 196
+ADDRLP4 268
+INDIRF4
+ADDRLP4 200
+INDIRF4
+ADDRLP4 264
+INDIRP4
+CNSTI4 84
+ADDP4
+INDIRF4
+ADDRLP4 268
+INDIRF4
+SUBF4
+MULF4
+ADDF4
+ASGNF4
+line 742
+;742:		height = p->height + ( ratio * ( p->endheight - p->height) );
+ADDRLP4 272
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 276
+ADDRLP4 272
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+ASGNF4
+ADDRLP4 180
+ADDRLP4 276
+INDIRF4
+ADDRLP4 200
+INDIRF4
+ADDRLP4 272
+INDIRP4
+CNSTI4 80
+ADDP4
+INDIRF4
+ADDRLP4 276
+INDIRF4
+SUBF4
+MULF4
+ADDF4
+ASGNF4
+line 744
+;743:
+;744:		if (p->type != P_SMOKE_IMPACT)
+ADDRFP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+CNSTI4 12
+EQI4 $693
+line 745
+;745:		{
+line 748
+;746:			vec3_t temp;
+;747:
+;748:			vectoangles (rforward, temp);
+ADDRGP4 rforward
+ARGP4
+ADDRLP4 280
+ARGP4
+ADDRGP4 vectoangles
+CALLV
+pop
+line 749
+;749:			p->accumroll += p->roll;
+ADDRLP4 292
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 296
+ADDRLP4 292
+INDIRP4
+CNSTI4 120
+ADDP4
+ASGNP4
+ADDRLP4 296
+INDIRP4
+ADDRLP4 296
+INDIRP4
+INDIRI4
+ADDRLP4 292
+INDIRP4
+CNSTI4 116
+ADDP4
+INDIRI4
+ADDI4
+ASGNI4
+line 750
+;750:			temp[ROLL] += p->accumroll * 0.1;
+ADDRLP4 280+8
+ADDRLP4 280+8
+INDIRF4
+CNSTF4 1036831949
+ADDRFP4 0
+INDIRP4
+CNSTI4 120
+ADDP4
+INDIRI4
+CVIF4 4
+MULF4
+ADDF4
+ASGNF4
+line 751
+;751:			AngleVectors ( temp, NULL, rright2, rup2);
+ADDRLP4 280
+ARGP4
+CNSTP4 0
+ARGP4
+ADDRLP4 208
+ARGP4
+ADDRLP4 220
+ARGP4
+ADDRGP4 AngleVectors
+CALLV
+pop
+line 752
+;752:		}
+ADDRGP4 $694
+JUMPV
+LABELV $693
+line 754
+;753:		else
+;754:		{
+line 755
+;755:			VectorCopy (rright, rright2);
+ADDRLP4 208
+ADDRGP4 rright
+INDIRB
+ASGNB 12
+line 756
+;756:			VectorCopy (rup, rup2);
+ADDRLP4 220
+ADDRGP4 rup
+INDIRB
+ASGNB 12
+line 757
+;757:		}
+LABELV $694
+line 759
+;758:		
+;759:		if (p->rotate)
+ADDRFP4 0
+INDIRP4
+CNSTI4 100
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $696
+line 760
+;760:		{
+line 761
+;761:			VectorMA (org, -height, rup2, point);	
+ADDRLP4 280
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 284
+ADDRLP4 180
+INDIRF4
+NEGF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 280
+INDIRP4
+INDIRF4
+ADDRLP4 220
+INDIRF4
+ADDRLP4 284
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 280
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRLP4 220+4
+INDIRF4
+ADDRLP4 284
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRLP4 220+8
+INDIRF4
+ADDRLP4 180
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 762
+;762:			VectorMA (point, -width, rright2, point);	
+ADDRLP4 288
+ADDRLP4 196
+INDIRF4
+NEGF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRLP4 208
+INDIRF4
+ADDRLP4 288
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 208+4
+INDIRF4
+ADDRLP4 288
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRLP4 208+8
+INDIRF4
+ADDRLP4 196
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 763
+;763:		}
+ADDRGP4 $697
+JUMPV
+LABELV $696
+line 765
+;764:		else
+;765:		{
+line 766
+;766:			VectorMA (org, -p->height, pvup, point);	
+ADDRLP4 280
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 284
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 280
+INDIRP4
+INDIRF4
+ADDRGP4 pvup
+INDIRF4
+ADDRLP4 284
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 280
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRGP4 pvup+4
+INDIRF4
+ADDRLP4 284
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRGP4 pvup+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 767
+;767:			VectorMA (point, -p->width, pvright, point);	
+ADDRLP4 288
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvright
+INDIRF4
+ADDRLP4 288
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvright+4
+INDIRF4
+ADDRLP4 288
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvright+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 768
+;768:		}
+LABELV $697
+line 769
+;769:		VectorCopy (point, verts[0].xyz);	
+ADDRLP4 12
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 770
+;770:		verts[0].st[0] = 0;	
+ADDRLP4 12+12
+CNSTF4 0
+ASGNF4
+line 771
+;771:		verts[0].st[1] = 0;	
+ADDRLP4 12+12+4
+CNSTF4 0
+ASGNF4
+line 772
+;772:		verts[0].modulate[0] = 255 * color[0];	
+ADDRLP4 284
+CNSTF4 1132396544
+ADDRLP4 184
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 288
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 284
+INDIRF4
+ADDRLP4 288
+INDIRF4
+LTF4 $723
+ADDRLP4 280
+ADDRLP4 284
+INDIRF4
+ADDRLP4 288
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $724
+JUMPV
+LABELV $723
+ADDRLP4 280
+ADDRLP4 284
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $724
+ADDRLP4 12+20
+ADDRLP4 280
+INDIRU4
+CVUU1 4
+ASGNU1
+line 773
+;773:		verts[0].modulate[1] = 255 * color[1];	
+ADDRLP4 296
+CNSTF4 1132396544
+ADDRLP4 184+4
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 300
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 296
+INDIRF4
+ADDRLP4 300
+INDIRF4
+LTF4 $729
+ADDRLP4 292
+ADDRLP4 296
+INDIRF4
+ADDRLP4 300
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $730
+JUMPV
+LABELV $729
+ADDRLP4 292
+ADDRLP4 296
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $730
+ADDRLP4 12+20+1
+ADDRLP4 292
+INDIRU4
+CVUU1 4
+ASGNU1
+line 774
+;774:		verts[0].modulate[2] = 255 * color[2];	
+ADDRLP4 308
+CNSTF4 1132396544
+ADDRLP4 184+8
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 312
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 308
+INDIRF4
+ADDRLP4 312
+INDIRF4
+LTF4 $735
+ADDRLP4 304
+ADDRLP4 308
+INDIRF4
+ADDRLP4 312
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $736
+JUMPV
+LABELV $735
+ADDRLP4 304
+ADDRLP4 308
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $736
+ADDRLP4 12+20+2
+ADDRLP4 304
+INDIRU4
+CVUU1 4
+ASGNU1
+line 775
+;775:		verts[0].modulate[3] = 255 * invratio;	
+ADDRLP4 320
+CNSTF4 1132396544
+ADDRLP4 204
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 324
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 320
+INDIRF4
+ADDRLP4 324
+INDIRF4
+LTF4 $740
+ADDRLP4 316
+ADDRLP4 320
+INDIRF4
+ADDRLP4 324
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $741
+JUMPV
+LABELV $740
+ADDRLP4 316
+ADDRLP4 320
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $741
+ADDRLP4 12+20+3
+ADDRLP4 316
+INDIRU4
+CVUU1 4
+ASGNU1
+line 777
+;776:
+;777:		if (p->rotate)
+ADDRFP4 0
+INDIRP4
+CNSTI4 100
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $742
+line 778
+;778:		{
+line 779
+;779:			VectorMA (org, -height, rup2, point);	
+ADDRLP4 328
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 332
+ADDRLP4 180
+INDIRF4
+NEGF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 328
+INDIRP4
+INDIRF4
+ADDRLP4 220
+INDIRF4
+ADDRLP4 332
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 328
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRLP4 220+4
+INDIRF4
+ADDRLP4 332
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRLP4 220+8
+INDIRF4
+ADDRLP4 180
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 780
+;780:			VectorMA (point, width, rright2, point);	
+ADDRLP4 336
+ADDRLP4 196
+INDIRF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRLP4 208
+INDIRF4
+ADDRLP4 336
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 208+4
+INDIRF4
+ADDRLP4 336
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRLP4 208+8
+INDIRF4
+ADDRLP4 196
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 781
+;781:		}
+ADDRGP4 $743
+JUMPV
+LABELV $742
+line 783
+;782:		else
+;783:		{
+line 784
+;784:			VectorMA (org, -p->height, pvup, point);	
+ADDRLP4 328
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 332
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 328
+INDIRP4
+INDIRF4
+ADDRGP4 pvup
+INDIRF4
+ADDRLP4 332
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 328
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRGP4 pvup+4
+INDIRF4
+ADDRLP4 332
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRGP4 pvup+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 785
+;785:			VectorMA (point, p->width, pvright, point);	
+ADDRLP4 336
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvright
+INDIRF4
+ADDRLP4 336
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvright+4
+INDIRF4
+ADDRLP4 336
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvright+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 786
+;786:		}
+LABELV $743
+line 787
+;787:		VectorCopy (point, verts[1].xyz);	
+ADDRLP4 12+24
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 788
+;788:		verts[1].st[0] = 0;	
+ADDRLP4 12+24+12
+CNSTF4 0
+ASGNF4
+line 789
+;789:		verts[1].st[1] = 1;	
+ADDRLP4 12+24+12+4
+CNSTF4 1065353216
+ASGNF4
+line 790
+;790:		verts[1].modulate[0] = 255 * color[0];	
+ADDRLP4 332
+CNSTF4 1132396544
+ADDRLP4 184
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 336
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 332
+INDIRF4
+ADDRLP4 336
+INDIRF4
+LTF4 $773
+ADDRLP4 328
+ADDRLP4 332
+INDIRF4
+ADDRLP4 336
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $774
+JUMPV
+LABELV $773
+ADDRLP4 328
+ADDRLP4 332
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $774
+ADDRLP4 12+24+20
+ADDRLP4 328
+INDIRU4
+CVUU1 4
+ASGNU1
+line 791
+;791:		verts[1].modulate[1] = 255 * color[1];	
+ADDRLP4 344
+CNSTF4 1132396544
+ADDRLP4 184+4
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 348
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 344
+INDIRF4
+ADDRLP4 348
+INDIRF4
+LTF4 $780
+ADDRLP4 340
+ADDRLP4 344
+INDIRF4
+ADDRLP4 348
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $781
+JUMPV
+LABELV $780
+ADDRLP4 340
+ADDRLP4 344
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $781
+ADDRLP4 12+24+20+1
+ADDRLP4 340
+INDIRU4
+CVUU1 4
+ASGNU1
+line 792
+;792:		verts[1].modulate[2] = 255 * color[2];	
+ADDRLP4 356
+CNSTF4 1132396544
+ADDRLP4 184+8
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 360
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 356
+INDIRF4
+ADDRLP4 360
+INDIRF4
+LTF4 $787
+ADDRLP4 352
+ADDRLP4 356
+INDIRF4
+ADDRLP4 360
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $788
+JUMPV
+LABELV $787
+ADDRLP4 352
+ADDRLP4 356
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $788
+ADDRLP4 12+24+20+2
+ADDRLP4 352
+INDIRU4
+CVUU1 4
+ASGNU1
+line 793
+;793:		verts[1].modulate[3] = 255 * invratio;	
+ADDRLP4 368
+CNSTF4 1132396544
+ADDRLP4 204
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 372
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 368
+INDIRF4
+ADDRLP4 372
+INDIRF4
+LTF4 $793
+ADDRLP4 364
+ADDRLP4 368
+INDIRF4
+ADDRLP4 372
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $794
+JUMPV
+LABELV $793
+ADDRLP4 364
+ADDRLP4 368
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $794
+ADDRLP4 12+24+20+3
+ADDRLP4 364
+INDIRU4
+CVUU1 4
+ASGNU1
+line 795
+;794:
+;795:		if (p->rotate)
+ADDRFP4 0
+INDIRP4
+CNSTI4 100
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $795
+line 796
+;796:		{
+line 797
+;797:			VectorMA (org, height, rup2, point);	
+ADDRLP4 376
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 376
+INDIRP4
+INDIRF4
+ADDRLP4 220
+INDIRF4
+ADDRLP4 180
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 376
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRLP4 220+4
+INDIRF4
+ADDRLP4 180
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRLP4 220+8
+INDIRF4
+ADDRLP4 180
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 798
+;798:			VectorMA (point, width, rright2, point);	
+ADDRLP4 384
+ADDRLP4 196
+INDIRF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRLP4 208
+INDIRF4
+ADDRLP4 384
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 208+4
+INDIRF4
+ADDRLP4 384
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRLP4 208+8
+INDIRF4
+ADDRLP4 196
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 799
+;799:		}
+ADDRGP4 $796
+JUMPV
+LABELV $795
+line 801
+;800:		else
+;801:		{
+line 802
+;802:			VectorMA (org, p->height, pvup, point);	
+ADDRLP4 376
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 380
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 376
+INDIRP4
+INDIRF4
+ADDRGP4 pvup
+INDIRF4
+ADDRLP4 380
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 376
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRGP4 pvup+4
+INDIRF4
+ADDRLP4 380
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRGP4 pvup+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 803
+;803:			VectorMA (point, p->width, pvright, point);	
+ADDRLP4 384
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvright
+INDIRF4
+ADDRLP4 384
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvright+4
+INDIRF4
+ADDRLP4 384
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvright+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 804
+;804:		}
+LABELV $796
+line 805
+;805:		VectorCopy (point, verts[2].xyz);	
+ADDRLP4 12+48
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 806
+;806:		verts[2].st[0] = 1;	
+ADDRLP4 12+48+12
+CNSTF4 1065353216
+ASGNF4
+line 807
+;807:		verts[2].st[1] = 1;	
+ADDRLP4 12+48+12+4
+CNSTF4 1065353216
+ASGNF4
+line 808
+;808:		verts[2].modulate[0] = 255 * color[0];	
+ADDRLP4 380
+CNSTF4 1132396544
+ADDRLP4 184
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 384
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 380
+INDIRF4
+ADDRLP4 384
+INDIRF4
+LTF4 $826
+ADDRLP4 376
+ADDRLP4 380
+INDIRF4
+ADDRLP4 384
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $827
+JUMPV
+LABELV $826
+ADDRLP4 376
+ADDRLP4 380
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $827
+ADDRLP4 12+48+20
+ADDRLP4 376
+INDIRU4
+CVUU1 4
+ASGNU1
+line 809
+;809:		verts[2].modulate[1] = 255 * color[1];	
+ADDRLP4 392
+CNSTF4 1132396544
+ADDRLP4 184+4
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 396
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 392
+INDIRF4
+ADDRLP4 396
+INDIRF4
+LTF4 $833
+ADDRLP4 388
+ADDRLP4 392
+INDIRF4
+ADDRLP4 396
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $834
+JUMPV
+LABELV $833
+ADDRLP4 388
+ADDRLP4 392
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $834
+ADDRLP4 12+48+20+1
+ADDRLP4 388
+INDIRU4
+CVUU1 4
+ASGNU1
+line 810
+;810:		verts[2].modulate[2] = 255 * color[2];	
+ADDRLP4 404
+CNSTF4 1132396544
+ADDRLP4 184+8
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 408
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 404
+INDIRF4
+ADDRLP4 408
+INDIRF4
+LTF4 $840
+ADDRLP4 400
+ADDRLP4 404
+INDIRF4
+ADDRLP4 408
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $841
+JUMPV
+LABELV $840
+ADDRLP4 400
+ADDRLP4 404
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $841
+ADDRLP4 12+48+20+2
+ADDRLP4 400
+INDIRU4
+CVUU1 4
+ASGNU1
+line 811
+;811:		verts[2].modulate[3] = 255 * invratio;	
+ADDRLP4 416
+CNSTF4 1132396544
+ADDRLP4 204
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 420
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 416
+INDIRF4
+ADDRLP4 420
+INDIRF4
+LTF4 $846
+ADDRLP4 412
+ADDRLP4 416
+INDIRF4
+ADDRLP4 420
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $847
+JUMPV
+LABELV $846
+ADDRLP4 412
+ADDRLP4 416
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $847
+ADDRLP4 12+48+20+3
+ADDRLP4 412
+INDIRU4
+CVUU1 4
+ASGNU1
+line 813
+;812:
+;813:		if (p->rotate)
+ADDRFP4 0
+INDIRP4
+CNSTI4 100
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $848
+line 814
+;814:		{
+line 815
+;815:			VectorMA (org, height, rup2, point);	
+ADDRLP4 424
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 424
+INDIRP4
+INDIRF4
+ADDRLP4 220
+INDIRF4
+ADDRLP4 180
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 424
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRLP4 220+4
+INDIRF4
+ADDRLP4 180
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRLP4 220+8
+INDIRF4
+ADDRLP4 180
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 816
+;816:			VectorMA (point, -width, rright2, point);	
+ADDRLP4 432
+ADDRLP4 196
+INDIRF4
+NEGF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRLP4 208
+INDIRF4
+ADDRLP4 432
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 208+4
+INDIRF4
+ADDRLP4 432
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRLP4 208+8
+INDIRF4
+ADDRLP4 196
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 817
+;817:		}
+ADDRGP4 $849
+JUMPV
+LABELV $848
+line 819
+;818:		else
+;819:		{
+line 820
+;820:			VectorMA (org, p->height, pvup, point);	
+ADDRLP4 424
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 428
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 424
+INDIRP4
+INDIRF4
+ADDRGP4 pvup
+INDIRF4
+ADDRLP4 428
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 424
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRGP4 pvup+4
+INDIRF4
+ADDRLP4 428
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRGP4 pvup+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 821
+;821:			VectorMA (point, -p->width, pvright, point);	
+ADDRLP4 432
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvright
+INDIRF4
+ADDRLP4 432
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvright+4
+INDIRF4
+ADDRLP4 432
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvright+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 822
+;822:		}
+LABELV $849
+line 823
+;823:		VectorCopy (point, verts[3].xyz);	
+ADDRLP4 12+72
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 824
+;824:		verts[3].st[0] = 1;	
+ADDRLP4 12+72+12
+CNSTF4 1065353216
+ASGNF4
+line 825
+;825:		verts[3].st[1] = 0;	
+ADDRLP4 12+72+12+4
+CNSTF4 0
+ASGNF4
+line 826
+;826:		verts[3].modulate[0] = 255 * color[0];	
+ADDRLP4 428
+CNSTF4 1132396544
+ADDRLP4 184
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 432
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 428
+INDIRF4
+ADDRLP4 432
+INDIRF4
+LTF4 $879
+ADDRLP4 424
+ADDRLP4 428
+INDIRF4
+ADDRLP4 432
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $880
+JUMPV
+LABELV $879
+ADDRLP4 424
+ADDRLP4 428
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $880
+ADDRLP4 12+72+20
+ADDRLP4 424
+INDIRU4
+CVUU1 4
+ASGNU1
+line 827
+;827:		verts[3].modulate[1] = 255 * color[1];	
+ADDRLP4 440
+CNSTF4 1132396544
+ADDRLP4 184+4
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 444
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 440
+INDIRF4
+ADDRLP4 444
+INDIRF4
+LTF4 $886
+ADDRLP4 436
+ADDRLP4 440
+INDIRF4
+ADDRLP4 444
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $887
+JUMPV
+LABELV $886
+ADDRLP4 436
+ADDRLP4 440
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $887
+ADDRLP4 12+72+20+1
+ADDRLP4 436
+INDIRU4
+CVUU1 4
+ASGNU1
+line 828
+;828:		verts[3].modulate[2] = 255 * color[2];	
+ADDRLP4 452
+CNSTF4 1132396544
+ADDRLP4 184+8
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 456
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 452
+INDIRF4
+ADDRLP4 456
+INDIRF4
+LTF4 $893
+ADDRLP4 448
+ADDRLP4 452
+INDIRF4
+ADDRLP4 456
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $894
+JUMPV
+LABELV $893
+ADDRLP4 448
+ADDRLP4 452
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $894
+ADDRLP4 12+72+20+2
+ADDRLP4 448
+INDIRU4
+CVUU1 4
+ASGNU1
+line 829
+;829:		verts[3].modulate[3] = 255  * invratio;	
+ADDRLP4 464
+CNSTF4 1132396544
+ADDRLP4 204
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 468
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 464
+INDIRF4
+ADDRLP4 468
+INDIRF4
+LTF4 $899
+ADDRLP4 460
+ADDRLP4 464
+INDIRF4
+ADDRLP4 468
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $900
+JUMPV
+LABELV $899
+ADDRLP4 460
+ADDRLP4 464
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $900
+ADDRLP4 12+72+20+3
+ADDRLP4 460
+INDIRU4
+CVUU1 4
+ASGNU1
+line 831
+;830:		
+;831:	}
+ADDRGP4 $660
+JUMPV
+LABELV $659
+line 832
+;832:	else if (p->type == P_BLEED)
+ADDRFP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+CNSTI4 8
+NEI4 $901
+line 833
+;833:	{
+line 838
+;834:		vec3_t	rr, ru;
+;835:		vec3_t	rotate_ang;
+;836:		float	alpha;
+;837:
+;838:		alpha = p->alpha;
+ADDRLP4 272
+ADDRFP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+INDIRF4
+ASGNF4
+line 840
+;839:
+;840:		if (p->roll) 
+ADDRFP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $903
+line 841
+;841:		{
+line 842
+;842:			vectoangles( cg.refdef.viewaxis[0], rotate_ang );
+ADDRGP4 cg+1870616+36
+ARGP4
+ADDRLP4 276
+ARGP4
+ADDRGP4 vectoangles
+CALLV
+pop
+line 843
+;843:			rotate_ang[ROLL] += p->roll;
+ADDRLP4 276+8
+ADDRLP4 276+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+INDIRI4
+CVIF4 4
+ADDF4
+ASGNF4
+line 844
+;844:			AngleVectors ( rotate_ang, NULL, rr, ru);
+ADDRLP4 276
+ARGP4
+CNSTP4 0
+ARGP4
+ADDRLP4 248
+ARGP4
+ADDRLP4 260
+ARGP4
+ADDRGP4 AngleVectors
+CALLV
+pop
+line 845
+;845:		}
+ADDRGP4 $904
+JUMPV
+LABELV $903
+line 847
+;846:		else
+;847:		{
+line 848
+;848:			VectorCopy (pvup, ru);
+ADDRLP4 260
+ADDRGP4 pvup
+INDIRB
+ASGNB 12
+line 849
+;849:			VectorCopy (pvright, rr);
+ADDRLP4 248
+ADDRGP4 pvright
+INDIRB
+ASGNB 12
+line 850
+;850:		}
+LABELV $904
+line 852
+;851:
+;852:		VectorMA (org, -p->height, ru, point);	
+ADDRLP4 288
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 292
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 288
+INDIRP4
+INDIRF4
+ADDRLP4 260
+INDIRF4
+ADDRLP4 292
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 288
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRLP4 260+4
+INDIRF4
+ADDRLP4 292
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRLP4 260+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 853
+;853:		VectorMA (point, -p->width, rr, point);	
+ADDRLP4 296
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRLP4 248
+INDIRF4
+ADDRLP4 296
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 248+4
+INDIRF4
+ADDRLP4 296
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRLP4 248+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 854
+;854:		VectorCopy (point, verts[0].xyz);	
+ADDRLP4 12
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 855
+;855:		verts[0].st[0] = 0;	
+ADDRLP4 12+12
+CNSTF4 0
+ASGNF4
+line 856
+;856:		verts[0].st[1] = 0;	
+ADDRLP4 12+12+4
+CNSTF4 0
+ASGNF4
+line 857
+;857:		verts[0].modulate[0] = 111;	
+ADDRLP4 12+20
+CNSTU1 111
+ASGNU1
+line 858
+;858:		verts[0].modulate[1] = 19;	
+ADDRLP4 12+20+1
+CNSTU1 19
+ASGNU1
+line 859
+;859:		verts[0].modulate[2] = 9;	
+ADDRLP4 12+20+2
+CNSTU1 9
+ASGNU1
+line 860
+;860:		verts[0].modulate[3] = 255 * alpha;	
+ADDRLP4 304
+CNSTF4 1132396544
+ADDRLP4 272
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 308
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 304
+INDIRF4
+ADDRLP4 308
+INDIRF4
+LTF4 $929
+ADDRLP4 300
+ADDRLP4 304
+INDIRF4
+ADDRLP4 308
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $930
+JUMPV
+LABELV $929
+ADDRLP4 300
+ADDRLP4 304
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $930
+ADDRLP4 12+20+3
+ADDRLP4 300
+INDIRU4
+CVUU1 4
+ASGNU1
+line 862
+;861:
+;862:		VectorMA (org, -p->height, ru, point);	
+ADDRLP4 312
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 316
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 312
+INDIRP4
+INDIRF4
+ADDRLP4 260
+INDIRF4
+ADDRLP4 316
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 312
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRLP4 260+4
+INDIRF4
+ADDRLP4 316
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRLP4 260+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 863
+;863:		VectorMA (point, p->width, rr, point);	
+ADDRLP4 320
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRLP4 248
+INDIRF4
+ADDRLP4 320
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 248+4
+INDIRF4
+ADDRLP4 320
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRLP4 248+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 864
+;864:		VectorCopy (point, verts[1].xyz);	
+ADDRLP4 12+24
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 865
+;865:		verts[1].st[0] = 0;	
+ADDRLP4 12+24+12
+CNSTF4 0
+ASGNF4
+line 866
+;866:		verts[1].st[1] = 1;	
+ADDRLP4 12+24+12+4
+CNSTF4 1065353216
+ASGNF4
+line 867
+;867:		verts[1].modulate[0] = 111;	
+ADDRLP4 12+24+20
+CNSTU1 111
+ASGNU1
+line 868
+;868:		verts[1].modulate[1] = 19;	
+ADDRLP4 12+24+20+1
+CNSTU1 19
+ASGNU1
+line 869
+;869:		verts[1].modulate[2] = 9;	
+ADDRLP4 12+24+20+2
+CNSTU1 9
+ASGNU1
+line 870
+;870:		verts[1].modulate[3] = 255 * alpha;	
+ADDRLP4 328
+CNSTF4 1132396544
+ADDRLP4 272
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 332
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 328
+INDIRF4
+ADDRLP4 332
+INDIRF4
+LTF4 $959
+ADDRLP4 324
+ADDRLP4 328
+INDIRF4
+ADDRLP4 332
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $960
+JUMPV
+LABELV $959
+ADDRLP4 324
+ADDRLP4 328
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $960
+ADDRLP4 12+24+20+3
+ADDRLP4 324
+INDIRU4
+CVUU1 4
+ASGNU1
+line 872
+;871:
+;872:		VectorMA (org, p->height, ru, point);	
+ADDRLP4 336
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 340
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 336
+INDIRP4
+INDIRF4
+ADDRLP4 260
+INDIRF4
+ADDRLP4 340
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 336
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRLP4 260+4
+INDIRF4
+ADDRLP4 340
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRLP4 260+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 873
+;873:		VectorMA (point, p->width, rr, point);	
+ADDRLP4 344
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRLP4 248
+INDIRF4
+ADDRLP4 344
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 248+4
+INDIRF4
+ADDRLP4 344
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRLP4 248+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 874
+;874:		VectorCopy (point, verts[2].xyz);	
+ADDRLP4 12+48
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 875
+;875:		verts[2].st[0] = 1;	
+ADDRLP4 12+48+12
+CNSTF4 1065353216
+ASGNF4
+line 876
+;876:		verts[2].st[1] = 1;	
+ADDRLP4 12+48+12+4
+CNSTF4 1065353216
+ASGNF4
+line 877
+;877:		verts[2].modulate[0] = 111;	
+ADDRLP4 12+48+20
+CNSTU1 111
+ASGNU1
+line 878
+;878:		verts[2].modulate[1] = 19;	
+ADDRLP4 12+48+20+1
+CNSTU1 19
+ASGNU1
+line 879
+;879:		verts[2].modulate[2] = 9;	
+ADDRLP4 12+48+20+2
+CNSTU1 9
+ASGNU1
+line 880
+;880:		verts[2].modulate[3] = 255 * alpha;	
+ADDRLP4 352
+CNSTF4 1132396544
+ADDRLP4 272
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 356
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 352
+INDIRF4
+ADDRLP4 356
+INDIRF4
+LTF4 $989
+ADDRLP4 348
+ADDRLP4 352
+INDIRF4
+ADDRLP4 356
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $990
+JUMPV
+LABELV $989
+ADDRLP4 348
+ADDRLP4 352
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $990
+ADDRLP4 12+48+20+3
+ADDRLP4 348
+INDIRU4
+CVUU1 4
+ASGNU1
+line 882
+;881:
+;882:		VectorMA (org, p->height, ru, point);	
+ADDRLP4 360
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 364
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 360
+INDIRP4
+INDIRF4
+ADDRLP4 260
+INDIRF4
+ADDRLP4 364
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 360
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRLP4 260+4
+INDIRF4
+ADDRLP4 364
+INDIRP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRLP4 260+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 883
+;883:		VectorMA (point, -p->width, rr, point);	
+ADDRLP4 368
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRLP4 248
+INDIRF4
+ADDRLP4 368
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 248+4
+INDIRF4
+ADDRLP4 368
+INDIRP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRLP4 248+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 884
+;884:		VectorCopy (point, verts[3].xyz);	
+ADDRLP4 12+72
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 885
+;885:		verts[3].st[0] = 1;	
+ADDRLP4 12+72+12
+CNSTF4 1065353216
+ASGNF4
+line 886
+;886:		verts[3].st[1] = 0;	
+ADDRLP4 12+72+12+4
+CNSTF4 0
+ASGNF4
+line 887
+;887:		verts[3].modulate[0] = 111;	
+ADDRLP4 12+72+20
+CNSTU1 111
+ASGNU1
+line 888
+;888:		verts[3].modulate[1] = 19;	
+ADDRLP4 12+72+20+1
+CNSTU1 19
+ASGNU1
+line 889
+;889:		verts[3].modulate[2] = 9;	
+ADDRLP4 12+72+20+2
+CNSTU1 9
+ASGNU1
+line 890
+;890:		verts[3].modulate[3] = 255 * alpha;	
+ADDRLP4 376
+CNSTF4 1132396544
+ADDRLP4 272
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 380
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 376
+INDIRF4
+ADDRLP4 380
+INDIRF4
+LTF4 $1019
+ADDRLP4 372
+ADDRLP4 376
+INDIRF4
+ADDRLP4 380
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $1020
+JUMPV
+LABELV $1019
+ADDRLP4 372
+ADDRLP4 376
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $1020
+ADDRLP4 12+72+20+3
+ADDRLP4 372
+INDIRU4
+CVUU1 4
+ASGNU1
+line 892
+;891:
+;892:	}
+ADDRGP4 $902
+JUMPV
+LABELV $901
+line 893
+;893:	else if (p->type == P_FLAT_SCALEUP)
+ADDRFP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+CNSTI4 9
+NEI4 $1021
+line 894
+;894:	{
+line 898
+;895:		float width, height;
+;896:		float sinR, cosR;
+;897:
+;898:		if (p->color == BLOODRED)
+ADDRFP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+INDIRI4
+CNSTI4 2
+NEI4 $1023
+line 899
+;899:			VectorSet (color, 1, 1, 1);
+ADDRLP4 264
+CNSTF4 1065353216
+ASGNF4
+ADDRLP4 184
+ADDRLP4 264
+INDIRF4
+ASGNF4
+ADDRLP4 184+4
+ADDRLP4 264
+INDIRF4
+ASGNF4
+ADDRLP4 184+8
+CNSTF4 1065353216
+ASGNF4
+ADDRGP4 $1024
+JUMPV
+LABELV $1023
+line 901
+;900:		else
+;901:			VectorSet (color, 0.5, 0.5, 0.5);
+ADDRLP4 268
+CNSTF4 1056964608
+ASGNF4
+ADDRLP4 184
+ADDRLP4 268
+INDIRF4
+ASGNF4
+ADDRLP4 184+4
+ADDRLP4 268
+INDIRF4
+ASGNF4
+ADDRLP4 184+8
+CNSTF4 1056964608
+ASGNF4
+LABELV $1024
+line 903
+;902:		
+;903:		time = cg.time - p->time;
+ADDRLP4 232
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ADDRFP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+line 904
+;904:		time2 = p->endtime - p->time;
+ADDRLP4 272
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 236
+ADDRLP4 272
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRLP4 272
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+line 905
+;905:		ratio = time / time2;
+ADDRLP4 200
+ADDRLP4 232
+INDIRF4
+ADDRLP4 236
+INDIRF4
+DIVF4
+ASGNF4
+line 907
+;906:
+;907:		width = p->width + ( ratio * ( p->endwidth - p->width) );
+ADDRLP4 276
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 280
+ADDRLP4 276
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+ASGNF4
+ADDRLP4 256
+ADDRLP4 280
+INDIRF4
+ADDRLP4 200
+INDIRF4
+ADDRLP4 276
+INDIRP4
+CNSTI4 84
+ADDP4
+INDIRF4
+ADDRLP4 280
+INDIRF4
+SUBF4
+MULF4
+ADDF4
+ASGNF4
+line 908
+;908:		height = p->height + ( ratio * ( p->endheight - p->height) );
+ADDRLP4 284
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 288
+ADDRLP4 284
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+ASGNF4
+ADDRLP4 260
+ADDRLP4 288
+INDIRF4
+ADDRLP4 200
+INDIRF4
+ADDRLP4 284
+INDIRP4
+CNSTI4 80
+ADDP4
+INDIRF4
+ADDRLP4 288
+INDIRF4
+SUBF4
+MULF4
+ADDF4
+ASGNF4
+line 910
+;909:
+;910:		if (width > p->endwidth)
+ADDRLP4 256
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+INDIRF4
+LEF4 $1030
+line 911
+;911:			width = p->endwidth;
+ADDRLP4 256
+ADDRFP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+INDIRF4
+ASGNF4
+LABELV $1030
+line 913
+;912:
+;913:		if (height > p->endheight)
+ADDRLP4 260
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+INDIRF4
+LEF4 $1032
+line 914
+;914:			height = p->endheight;
+ADDRLP4 260
+ADDRFP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+INDIRF4
+ASGNF4
+LABELV $1032
+line 916
+;915:
+;916:		sinR = height * sin(DEG2RAD(p->roll)) * sqrt(2);
+CNSTF4 1078530011
+ADDRFP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+INDIRI4
+CVIF4 4
+MULF4
+CNSTF4 1127481344
+DIVF4
+ARGF4
+ADDRLP4 292
+ADDRGP4 sin
+CALLF4
+ASGNF4
+CNSTF4 1073741824
+ARGF4
+ADDRLP4 296
+ADDRGP4 sqrt
+CALLF4
+ASGNF4
+ADDRLP4 248
+ADDRLP4 260
+INDIRF4
+ADDRLP4 292
+INDIRF4
+MULF4
+ADDRLP4 296
+INDIRF4
+MULF4
+ASGNF4
+line 917
+;917:		cosR = width * cos(DEG2RAD(p->roll)) * sqrt(2);
+CNSTF4 1078530011
+ADDRFP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+INDIRI4
+CVIF4 4
+MULF4
+CNSTF4 1127481344
+DIVF4
+ARGF4
+ADDRLP4 300
+ADDRGP4 cos
+CALLF4
+ASGNF4
+CNSTF4 1073741824
+ARGF4
+ADDRLP4 304
+ADDRGP4 sqrt
+CALLF4
+ASGNF4
+ADDRLP4 252
+ADDRLP4 256
+INDIRF4
+ADDRLP4 300
+INDIRF4
+MULF4
+ADDRLP4 304
+INDIRF4
+MULF4
+ASGNF4
+line 919
+;918:
+;919:		VectorCopy (org, verts[0].xyz);	
+ADDRLP4 12
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 920
+;920:		verts[0].xyz[0] -= sinR;
+ADDRLP4 12
+ADDRLP4 12
+INDIRF4
+ADDRLP4 248
+INDIRF4
+SUBF4
+ASGNF4
+line 921
+;921:		verts[0].xyz[1] -= cosR;
+ADDRLP4 12+4
+ADDRLP4 12+4
+INDIRF4
+ADDRLP4 252
+INDIRF4
+SUBF4
+ASGNF4
+line 922
+;922:		verts[0].st[0] = 0;	
+ADDRLP4 12+12
+CNSTF4 0
+ASGNF4
+line 923
+;923:		verts[0].st[1] = 0;	
+ADDRLP4 12+12+4
+CNSTF4 0
+ASGNF4
+line 924
+;924:		verts[0].modulate[0] = 255 * color[0];	
+ADDRLP4 312
+CNSTF4 1132396544
+ADDRLP4 184
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 316
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 312
+INDIRF4
+ADDRLP4 316
+INDIRF4
+LTF4 $1040
+ADDRLP4 308
+ADDRLP4 312
+INDIRF4
+ADDRLP4 316
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $1041
+JUMPV
+LABELV $1040
+ADDRLP4 308
+ADDRLP4 312
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $1041
+ADDRLP4 12+20
+ADDRLP4 308
+INDIRU4
+CVUU1 4
+ASGNU1
+line 925
+;925:		verts[0].modulate[1] = 255 * color[1];	
+ADDRLP4 324
+CNSTF4 1132396544
+ADDRLP4 184+4
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 328
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 324
+INDIRF4
+ADDRLP4 328
+INDIRF4
+LTF4 $1046
+ADDRLP4 320
+ADDRLP4 324
+INDIRF4
+ADDRLP4 328
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $1047
+JUMPV
+LABELV $1046
+ADDRLP4 320
+ADDRLP4 324
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $1047
+ADDRLP4 12+20+1
+ADDRLP4 320
+INDIRU4
+CVUU1 4
+ASGNU1
+line 926
+;926:		verts[0].modulate[2] = 255 * color[2];	
+ADDRLP4 336
+CNSTF4 1132396544
+ADDRLP4 184+8
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 340
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 336
+INDIRF4
+ADDRLP4 340
+INDIRF4
+LTF4 $1052
+ADDRLP4 332
+ADDRLP4 336
+INDIRF4
+ADDRLP4 340
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $1053
+JUMPV
+LABELV $1052
+ADDRLP4 332
+ADDRLP4 336
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $1053
+ADDRLP4 12+20+2
+ADDRLP4 332
+INDIRU4
+CVUU1 4
+ASGNU1
+line 927
+;927:		verts[0].modulate[3] = 255;	
+ADDRLP4 12+20+3
+CNSTU1 255
+ASGNU1
+line 929
+;928:
+;929:		VectorCopy (org, verts[1].xyz);	
+ADDRLP4 12+24
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 930
+;930:		verts[1].xyz[0] -= cosR;	
+ADDRLP4 12+24
+ADDRLP4 12+24
+INDIRF4
+ADDRLP4 252
+INDIRF4
+SUBF4
+ASGNF4
+line 931
+;931:		verts[1].xyz[1] += sinR;	
+ADDRLP4 12+24+4
+ADDRLP4 12+24+4
+INDIRF4
+ADDRLP4 248
+INDIRF4
+ADDF4
+ASGNF4
+line 932
+;932:		verts[1].st[0] = 0;	
+ADDRLP4 12+24+12
+CNSTF4 0
+ASGNF4
+line 933
+;933:		verts[1].st[1] = 1;	
+ADDRLP4 12+24+12+4
+CNSTF4 1065353216
+ASGNF4
+line 934
+;934:		verts[1].modulate[0] = 255 * color[0];	
+ADDRLP4 348
+CNSTF4 1132396544
+ADDRLP4 184
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 352
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 348
+INDIRF4
+ADDRLP4 352
+INDIRF4
+LTF4 $1068
+ADDRLP4 344
+ADDRLP4 348
+INDIRF4
+ADDRLP4 352
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $1069
+JUMPV
+LABELV $1068
+ADDRLP4 344
+ADDRLP4 348
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $1069
+ADDRLP4 12+24+20
+ADDRLP4 344
+INDIRU4
+CVUU1 4
+ASGNU1
+line 935
+;935:		verts[1].modulate[1] = 255 * color[1];	
+ADDRLP4 360
+CNSTF4 1132396544
+ADDRLP4 184+4
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 364
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 360
+INDIRF4
+ADDRLP4 364
+INDIRF4
+LTF4 $1075
+ADDRLP4 356
+ADDRLP4 360
+INDIRF4
+ADDRLP4 364
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $1076
+JUMPV
+LABELV $1075
+ADDRLP4 356
+ADDRLP4 360
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $1076
+ADDRLP4 12+24+20+1
+ADDRLP4 356
+INDIRU4
+CVUU1 4
+ASGNU1
+line 936
+;936:		verts[1].modulate[2] = 255 * color[2];	
+ADDRLP4 372
+CNSTF4 1132396544
+ADDRLP4 184+8
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 376
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 372
+INDIRF4
+ADDRLP4 376
+INDIRF4
+LTF4 $1082
+ADDRLP4 368
+ADDRLP4 372
+INDIRF4
+ADDRLP4 376
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $1083
+JUMPV
+LABELV $1082
+ADDRLP4 368
+ADDRLP4 372
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $1083
+ADDRLP4 12+24+20+2
+ADDRLP4 368
+INDIRU4
+CVUU1 4
+ASGNU1
+line 937
+;937:		verts[1].modulate[3] = 255;	
+ADDRLP4 12+24+20+3
+CNSTU1 255
+ASGNU1
+line 939
+;938:
+;939:		VectorCopy (org, verts[2].xyz);	
+ADDRLP4 12+48
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 940
+;940:		verts[2].xyz[0] += sinR;	
+ADDRLP4 12+48
+ADDRLP4 12+48
+INDIRF4
+ADDRLP4 248
+INDIRF4
+ADDF4
+ASGNF4
+line 941
+;941:		verts[2].xyz[1] += cosR;	
+ADDRLP4 12+48+4
+ADDRLP4 12+48+4
+INDIRF4
+ADDRLP4 252
+INDIRF4
+ADDF4
+ASGNF4
+line 942
+;942:		verts[2].st[0] = 1;	
+ADDRLP4 12+48+12
+CNSTF4 1065353216
+ASGNF4
+line 943
+;943:		verts[2].st[1] = 1;	
+ADDRLP4 12+48+12+4
+CNSTF4 1065353216
+ASGNF4
+line 944
+;944:		verts[2].modulate[0] = 255 * color[0];	
+ADDRLP4 384
+CNSTF4 1132396544
+ADDRLP4 184
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 388
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 384
+INDIRF4
+ADDRLP4 388
+INDIRF4
+LTF4 $1099
+ADDRLP4 380
+ADDRLP4 384
+INDIRF4
+ADDRLP4 388
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $1100
+JUMPV
+LABELV $1099
+ADDRLP4 380
+ADDRLP4 384
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $1100
+ADDRLP4 12+48+20
+ADDRLP4 380
+INDIRU4
+CVUU1 4
+ASGNU1
+line 945
+;945:		verts[2].modulate[1] = 255 * color[1];	
+ADDRLP4 396
+CNSTF4 1132396544
+ADDRLP4 184+4
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 400
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 396
+INDIRF4
+ADDRLP4 400
+INDIRF4
+LTF4 $1106
+ADDRLP4 392
+ADDRLP4 396
+INDIRF4
+ADDRLP4 400
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $1107
+JUMPV
+LABELV $1106
+ADDRLP4 392
+ADDRLP4 396
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $1107
+ADDRLP4 12+48+20+1
+ADDRLP4 392
+INDIRU4
+CVUU1 4
+ASGNU1
+line 946
+;946:		verts[2].modulate[2] = 255 * color[2];	
+ADDRLP4 408
+CNSTF4 1132396544
+ADDRLP4 184+8
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 412
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 408
+INDIRF4
+ADDRLP4 412
+INDIRF4
+LTF4 $1113
+ADDRLP4 404
+ADDRLP4 408
+INDIRF4
+ADDRLP4 412
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $1114
+JUMPV
+LABELV $1113
+ADDRLP4 404
+ADDRLP4 408
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $1114
+ADDRLP4 12+48+20+2
+ADDRLP4 404
+INDIRU4
+CVUU1 4
+ASGNU1
+line 947
+;947:		verts[2].modulate[3] = 255;	
+ADDRLP4 12+48+20+3
+CNSTU1 255
+ASGNU1
+line 949
+;948:
+;949:		VectorCopy (org, verts[3].xyz);	
+ADDRLP4 12+72
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 950
+;950:		verts[3].xyz[0] += cosR;	
+ADDRLP4 12+72
+ADDRLP4 12+72
+INDIRF4
+ADDRLP4 252
+INDIRF4
+ADDF4
+ASGNF4
+line 951
+;951:		verts[3].xyz[1] -= sinR;	
+ADDRLP4 12+72+4
+ADDRLP4 12+72+4
+INDIRF4
+ADDRLP4 248
+INDIRF4
+SUBF4
+ASGNF4
+line 952
+;952:		verts[3].st[0] = 1;	
+ADDRLP4 12+72+12
+CNSTF4 1065353216
+ASGNF4
+line 953
+;953:		verts[3].st[1] = 0;	
+ADDRLP4 12+72+12+4
+CNSTF4 0
+ASGNF4
+line 954
+;954:		verts[3].modulate[0] = 255 * color[0];	
+ADDRLP4 420
+CNSTF4 1132396544
+ADDRLP4 184
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 424
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 420
+INDIRF4
+ADDRLP4 424
+INDIRF4
+LTF4 $1130
+ADDRLP4 416
+ADDRLP4 420
+INDIRF4
+ADDRLP4 424
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $1131
+JUMPV
+LABELV $1130
+ADDRLP4 416
+ADDRLP4 420
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $1131
+ADDRLP4 12+72+20
+ADDRLP4 416
+INDIRU4
+CVUU1 4
+ASGNU1
+line 955
+;955:		verts[3].modulate[1] = 255 * color[1];	
+ADDRLP4 432
+CNSTF4 1132396544
+ADDRLP4 184+4
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 436
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 432
+INDIRF4
+ADDRLP4 436
+INDIRF4
+LTF4 $1137
+ADDRLP4 428
+ADDRLP4 432
+INDIRF4
+ADDRLP4 436
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $1138
+JUMPV
+LABELV $1137
+ADDRLP4 428
+ADDRLP4 432
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $1138
+ADDRLP4 12+72+20+1
+ADDRLP4 428
+INDIRU4
+CVUU1 4
+ASGNU1
+line 956
+;956:		verts[3].modulate[2] = 255 * color[2];	
+ADDRLP4 444
+CNSTF4 1132396544
+ADDRLP4 184+8
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 448
+CNSTF4 1325400064
+ASGNF4
+ADDRLP4 444
+INDIRF4
+ADDRLP4 448
+INDIRF4
+LTF4 $1144
+ADDRLP4 440
+ADDRLP4 444
+INDIRF4
+ADDRLP4 448
+INDIRF4
+SUBF4
+CVFI4 4
+CVIU4 4
+CNSTU4 2147483648
+ADDU4
+ASGNU4
+ADDRGP4 $1145
+JUMPV
+LABELV $1144
+ADDRLP4 440
+ADDRLP4 444
+INDIRF4
+CVFI4 4
+CVIU4 4
+ASGNU4
+LABELV $1145
+ADDRLP4 12+72+20+2
+ADDRLP4 440
+INDIRU4
+CVUU1 4
+ASGNU1
+line 957
+;957:		verts[3].modulate[3] = 255;		
+ADDRLP4 12+72+20+3
+CNSTU1 255
+ASGNU1
+line 958
+;958:	}
+ADDRGP4 $1022
+JUMPV
+LABELV $1021
+line 959
+;959:	else if (p->type == P_FLAT)
+ADDRFP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+CNSTI4 2
+NEI4 $1149
+line 960
+;960:	{
+line 962
+;961:
+;962:		VectorCopy (org, verts[0].xyz);	
+ADDRLP4 12
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 963
+;963:		verts[0].xyz[0] -= p->height;	
+ADDRLP4 12
+ADDRLP4 12
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+line 964
+;964:		verts[0].xyz[1] -= p->width;	
+ADDRLP4 12+4
+ADDRLP4 12+4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+line 965
+;965:		verts[0].st[0] = 0;	
+ADDRLP4 12+12
+CNSTF4 0
+ASGNF4
+line 966
+;966:		verts[0].st[1] = 0;	
+ADDRLP4 12+12+4
+CNSTF4 0
+ASGNF4
+line 967
+;967:		verts[0].modulate[0] = 255;	
+ADDRLP4 12+20
+CNSTU1 255
+ASGNU1
+line 968
+;968:		verts[0].modulate[1] = 255;	
+ADDRLP4 12+20+1
+CNSTU1 255
+ASGNU1
+line 969
+;969:		verts[0].modulate[2] = 255;	
+ADDRLP4 12+20+2
+CNSTU1 255
+ASGNU1
+line 970
+;970:		verts[0].modulate[3] = 255;	
+ADDRLP4 12+20+3
+CNSTU1 255
+ASGNU1
+line 972
+;971:
+;972:		VectorCopy (org, verts[1].xyz);	
+ADDRLP4 12+24
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 973
+;973:		verts[1].xyz[0] -= p->height;	
+ADDRLP4 12+24
+ADDRLP4 12+24
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+line 974
+;974:		verts[1].xyz[1] += p->width;	
+ADDRLP4 12+24+4
+ADDRLP4 12+24+4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+ADDF4
+ASGNF4
+line 975
+;975:		verts[1].st[0] = 0;	
+ADDRLP4 12+24+12
+CNSTF4 0
+ASGNF4
+line 976
+;976:		verts[1].st[1] = 1;	
+ADDRLP4 12+24+12+4
+CNSTF4 1065353216
+ASGNF4
+line 977
+;977:		verts[1].modulate[0] = 255;	
+ADDRLP4 12+24+20
+CNSTU1 255
+ASGNU1
+line 978
+;978:		verts[1].modulate[1] = 255;	
+ADDRLP4 12+24+20+1
+CNSTU1 255
+ASGNU1
+line 979
+;979:		verts[1].modulate[2] = 255;	
+ADDRLP4 12+24+20+2
+CNSTU1 255
+ASGNU1
+line 980
+;980:		verts[1].modulate[3] = 255;	
+ADDRLP4 12+24+20+3
+CNSTU1 255
+ASGNU1
+line 982
+;981:
+;982:		VectorCopy (org, verts[2].xyz);	
+ADDRLP4 12+48
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 983
+;983:		verts[2].xyz[0] += p->height;	
+ADDRLP4 12+48
+ADDRLP4 12+48
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+ADDF4
+ASGNF4
+line 984
+;984:		verts[2].xyz[1] += p->width;	
+ADDRLP4 12+48+4
+ADDRLP4 12+48+4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+ADDF4
+ASGNF4
+line 985
+;985:		verts[2].st[0] = 1;	
+ADDRLP4 12+48+12
+CNSTF4 1065353216
+ASGNF4
+line 986
+;986:		verts[2].st[1] = 1;	
+ADDRLP4 12+48+12+4
+CNSTF4 1065353216
+ASGNF4
+line 987
+;987:		verts[2].modulate[0] = 255;	
+ADDRLP4 12+48+20
+CNSTU1 255
+ASGNU1
+line 988
+;988:		verts[2].modulate[1] = 255;	
+ADDRLP4 12+48+20+1
+CNSTU1 255
+ASGNU1
+line 989
+;989:		verts[2].modulate[2] = 255;	
+ADDRLP4 12+48+20+2
+CNSTU1 255
+ASGNU1
+line 990
+;990:		verts[2].modulate[3] = 255;	
+ADDRLP4 12+48+20+3
+CNSTU1 255
+ASGNU1
+line 992
+;991:
+;992:		VectorCopy (org, verts[3].xyz);	
+ADDRLP4 12+72
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 993
+;993:		verts[3].xyz[0] += p->height;	
+ADDRLP4 12+72
+ADDRLP4 12+72
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+ADDF4
+ASGNF4
+line 994
+;994:		verts[3].xyz[1] -= p->width;	
+ADDRLP4 12+72+4
+ADDRLP4 12+72+4
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+line 995
+;995:		verts[3].st[0] = 1;	
+ADDRLP4 12+72+12
+CNSTF4 1065353216
+ASGNF4
+line 996
+;996:		verts[3].st[1] = 0;	
+ADDRLP4 12+72+12+4
+CNSTF4 0
+ASGNF4
+line 997
+;997:		verts[3].modulate[0] = 255;	
+ADDRLP4 12+72+20
+CNSTU1 255
+ASGNU1
+line 998
+;998:		verts[3].modulate[1] = 255;	
+ADDRLP4 12+72+20+1
+CNSTU1 255
+ASGNU1
+line 999
+;999:		verts[3].modulate[2] = 255;	
+ADDRLP4 12+72+20+2
+CNSTU1 255
+ASGNU1
+line 1000
+;1000:		verts[3].modulate[3] = 255;	
+ADDRLP4 12+72+20+3
+CNSTU1 255
+ASGNU1
+line 1002
+;1001:
+;1002:	}
+ADDRGP4 $1150
+JUMPV
+LABELV $1149
+line 1004
+;1003:	// Ridah
+;1004:	else if (p->type == P_ANIM) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+CNSTI4 6
+NEI4 $1222
+line 1009
+;1005:		vec3_t	rr, ru;
+;1006:		vec3_t	rotate_ang;
+;1007:		int i, j;
+;1008:
+;1009:		time = cg.time - p->time;
+ADDRLP4 232
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ADDRFP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+line 1010
+;1010:		time2 = p->endtime - p->time;
+ADDRLP4 292
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 236
+ADDRLP4 292
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRLP4 292
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+SUBF4
+ASGNF4
+line 1011
+;1011:		ratio = time / time2;
+ADDRLP4 200
+ADDRLP4 232
+INDIRF4
+ADDRLP4 236
+INDIRF4
+DIVF4
+ASGNF4
+line 1012
+;1012:		if (ratio >= 1.0f) {
+ADDRLP4 200
+INDIRF4
+CNSTF4 1065353216
+LTF4 $1225
+line 1013
+;1013:			ratio = 0.9999f;
+ADDRLP4 200
+CNSTF4 1065351538
+ASGNF4
+line 1014
+;1014:		}
+LABELV $1225
+line 1016
+;1015:
+;1016:		width = p->width + ( ratio * ( p->endwidth - p->width) );
+ADDRLP4 296
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 300
+ADDRLP4 296
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+ASGNF4
+ADDRLP4 196
+ADDRLP4 300
+INDIRF4
+ADDRLP4 200
+INDIRF4
+ADDRLP4 296
+INDIRP4
+CNSTI4 84
+ADDP4
+INDIRF4
+ADDRLP4 300
+INDIRF4
+SUBF4
+MULF4
+ADDF4
+ASGNF4
+line 1017
+;1017:		height = p->height + ( ratio * ( p->endheight - p->height) );
+ADDRLP4 304
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 308
+ADDRLP4 304
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+ASGNF4
+ADDRLP4 180
+ADDRLP4 308
+INDIRF4
+ADDRLP4 200
+INDIRF4
+ADDRLP4 304
+INDIRP4
+CNSTI4 80
+ADDP4
+INDIRF4
+ADDRLP4 308
+INDIRF4
+SUBF4
+MULF4
+ADDF4
+ASGNF4
+line 1020
+;1018:
+;1019:		// if we are "inside" this sprite, don't draw
+;1020:		if (Distance( cg.snap->ps.origin, org ) < width/1.5) {
+ADDRGP4 cg+36
+INDIRP4
+CNSTI4 64
+ADDP4
+ARGP4
+ADDRFP4 4
+INDIRP4
+ARGP4
+ADDRLP4 312
+ADDRGP4 Distance
+CALLF4
+ASGNF4
+ADDRLP4 312
+INDIRF4
+ADDRLP4 196
+INDIRF4
+CNSTF4 1069547520
+DIVF4
+GEF4 $1227
+line 1021
+;1021:			return;
+ADDRGP4 $295
+JUMPV
+LABELV $1227
+line 1024
+;1022:		}
+;1023:
+;1024:		i = p->shaderAnim;
+ADDRLP4 272
+ADDRFP4 0
+INDIRP4
+CNSTI4 112
+ADDP4
+INDIRI4
+ASGNI4
+line 1025
+;1025:		j = (int)floor(ratio * shaderAnimCounts[p->shaderAnim]);
+ADDRLP4 200
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 112
+ADDP4
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 shaderAnimCounts
+ADDP4
+INDIRI4
+CVIF4 4
+MULF4
+ARGF4
+ADDRLP4 316
+ADDRGP4 floor
+CALLF4
+ASGNF4
+ADDRLP4 276
+ADDRLP4 316
+INDIRF4
+CVFI4 4
+ASGNI4
+line 1026
+;1026:		p->pshader = shaderAnims[i][j];
+ADDRFP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRLP4 276
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRLP4 272
+INDIRI4
+CNSTI4 8
+LSHI4
+ADDRGP4 shaderAnims
+ADDP4
+ADDP4
+INDIRI4
+ASGNI4
+line 1028
+;1027:
+;1028:		if (p->roll) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $1230
+line 1029
+;1029:			vectoangles( cg.refdef.viewaxis[0], rotate_ang );
+ADDRGP4 cg+1870616+36
+ARGP4
+ADDRLP4 280
+ARGP4
+ADDRGP4 vectoangles
+CALLV
+pop
+line 1030
+;1030:			rotate_ang[ROLL] += p->roll;
+ADDRLP4 280+8
+ADDRLP4 280+8
+INDIRF4
+ADDRFP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+INDIRI4
+CVIF4 4
+ADDF4
+ASGNF4
+line 1031
+;1031:			AngleVectors ( rotate_ang, NULL, rr, ru);
+ADDRLP4 280
+ARGP4
+CNSTP4 0
+ARGP4
+ADDRLP4 260
+ARGP4
+ADDRLP4 248
+ARGP4
+ADDRGP4 AngleVectors
+CALLV
+pop
+line 1032
+;1032:		}
+LABELV $1230
+line 1034
+;1033:
+;1034:		if (p->roll) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $1235
+line 1035
+;1035:			VectorMA (org, -height, ru, point);	
+ADDRLP4 320
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 324
+ADDRLP4 180
+INDIRF4
+NEGF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 320
+INDIRP4
+INDIRF4
+ADDRLP4 248
+INDIRF4
+ADDRLP4 324
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 320
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRLP4 248+4
+INDIRF4
+ADDRLP4 324
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRLP4 248+8
+INDIRF4
+ADDRLP4 180
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 1036
+;1036:			VectorMA (point, -width, rr, point);	
+ADDRLP4 328
+ADDRLP4 196
+INDIRF4
+NEGF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRLP4 260
+INDIRF4
+ADDRLP4 328
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 260+4
+INDIRF4
+ADDRLP4 328
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRLP4 260+8
+INDIRF4
+ADDRLP4 196
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 1037
+;1037:		} else {
+ADDRGP4 $1236
+JUMPV
+LABELV $1235
+line 1038
+;1038:			VectorMA (org, -height, pvup, point);	
+ADDRLP4 320
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 324
+ADDRLP4 180
+INDIRF4
+NEGF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 320
+INDIRP4
+INDIRF4
+ADDRGP4 pvup
+INDIRF4
+ADDRLP4 324
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 320
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRGP4 pvup+4
+INDIRF4
+ADDRLP4 324
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRGP4 pvup+8
+INDIRF4
+ADDRLP4 180
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 1039
+;1039:			VectorMA (point, -width, pvright, point);	
+ADDRLP4 328
+ADDRLP4 196
+INDIRF4
+NEGF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvright
+INDIRF4
+ADDRLP4 328
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvright+4
+INDIRF4
+ADDRLP4 328
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvright+8
+INDIRF4
+ADDRLP4 196
+INDIRF4
+NEGF4
+MULF4
+ADDF4
+ASGNF4
+line 1040
+;1040:		}
+LABELV $1236
+line 1041
+;1041:		VectorCopy (point, verts[0].xyz);	
+ADDRLP4 12
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 1042
+;1042:		verts[0].st[0] = 0;	
+ADDRLP4 12+12
+CNSTF4 0
+ASGNF4
+line 1043
+;1043:		verts[0].st[1] = 0;	
+ADDRLP4 12+12+4
+CNSTF4 0
+ASGNF4
+line 1044
+;1044:		verts[0].modulate[0] = 255;	
+ADDRLP4 12+20
+CNSTU1 255
+ASGNU1
+line 1045
+;1045:		verts[0].modulate[1] = 255;	
+ADDRLP4 12+20+1
+CNSTU1 255
+ASGNU1
+line 1046
+;1046:		verts[0].modulate[2] = 255;	
+ADDRLP4 12+20+2
+CNSTU1 255
+ASGNU1
+line 1047
+;1047:		verts[0].modulate[3] = 255;
+ADDRLP4 12+20+3
+CNSTU1 255
+ASGNU1
+line 1049
+;1048:
+;1049:		if (p->roll) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $1267
+line 1050
+;1050:			VectorMA (point, 2*height, ru, point);	
+ADDRLP4 320
+CNSTF4 1073741824
+ADDRLP4 180
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRLP4 248
+INDIRF4
+ADDRLP4 320
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 248+4
+INDIRF4
+ADDRLP4 320
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRLP4 248+8
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 180
+INDIRF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 1051
+;1051:		} else {
+ADDRGP4 $1268
+JUMPV
+LABELV $1267
+line 1052
+;1052:			VectorMA (point, 2*height, pvup, point);	
+ADDRLP4 320
+CNSTF4 1073741824
+ADDRLP4 180
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvup
+INDIRF4
+ADDRLP4 320
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvup+4
+INDIRF4
+ADDRLP4 320
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvup+8
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 180
+INDIRF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 1053
+;1053:		}
+LABELV $1268
+line 1054
+;1054:		VectorCopy (point, verts[1].xyz);	
+ADDRLP4 12+24
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 1055
+;1055:		verts[1].st[0] = 0;	
+ADDRLP4 12+24+12
+CNSTF4 0
+ASGNF4
+line 1056
+;1056:		verts[1].st[1] = 1;	
+ADDRLP4 12+24+12+4
+CNSTF4 1065353216
+ASGNF4
+line 1057
+;1057:		verts[1].modulate[0] = 255;	
+ADDRLP4 12+24+20
+CNSTU1 255
+ASGNU1
+line 1058
+;1058:		verts[1].modulate[1] = 255;	
+ADDRLP4 12+24+20+1
+CNSTU1 255
+ASGNU1
+line 1059
+;1059:		verts[1].modulate[2] = 255;	
+ADDRLP4 12+24+20+2
+CNSTU1 255
+ASGNU1
+line 1060
+;1060:		verts[1].modulate[3] = 255;	
+ADDRLP4 12+24+20+3
+CNSTU1 255
+ASGNU1
+line 1062
+;1061:
+;1062:		if (p->roll) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $1298
+line 1063
+;1063:			VectorMA (point, 2*width, rr, point);	
+ADDRLP4 320
+CNSTF4 1073741824
+ADDRLP4 196
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRLP4 260
+INDIRF4
+ADDRLP4 320
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 260+4
+INDIRF4
+ADDRLP4 320
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRLP4 260+8
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 196
+INDIRF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 1064
+;1064:		} else {
+ADDRGP4 $1299
+JUMPV
+LABELV $1298
+line 1065
+;1065:			VectorMA (point, 2*width, pvright, point);	
+ADDRLP4 320
+CNSTF4 1073741824
+ADDRLP4 196
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvright
+INDIRF4
+ADDRLP4 320
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvright+4
+INDIRF4
+ADDRLP4 320
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvright+8
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 196
+INDIRF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 1066
+;1066:		}
+LABELV $1299
+line 1067
+;1067:		VectorCopy (point, verts[2].xyz);	
+ADDRLP4 12+48
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 1068
+;1068:		verts[2].st[0] = 1;	
+ADDRLP4 12+48+12
+CNSTF4 1065353216
+ASGNF4
+line 1069
+;1069:		verts[2].st[1] = 1;	
+ADDRLP4 12+48+12+4
+CNSTF4 1065353216
+ASGNF4
+line 1070
+;1070:		verts[2].modulate[0] = 255;	
+ADDRLP4 12+48+20
+CNSTU1 255
+ASGNU1
+line 1071
+;1071:		verts[2].modulate[1] = 255;	
+ADDRLP4 12+48+20+1
+CNSTU1 255
+ASGNU1
+line 1072
+;1072:		verts[2].modulate[2] = 255;	
+ADDRLP4 12+48+20+2
+CNSTU1 255
+ASGNU1
+line 1073
+;1073:		verts[2].modulate[3] = 255;	
+ADDRLP4 12+48+20+3
+CNSTU1 255
+ASGNU1
+line 1075
+;1074:
+;1075:		if (p->roll) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+INDIRI4
+CNSTI4 0
+EQI4 $1329
+line 1076
+;1076:			VectorMA (point, -2*height, ru, point);	
+ADDRLP4 320
+CNSTF4 3221225472
+ADDRLP4 180
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRLP4 248
+INDIRF4
+ADDRLP4 320
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 248+4
+INDIRF4
+ADDRLP4 320
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRLP4 248+8
+INDIRF4
+CNSTF4 3221225472
+ADDRLP4 180
+INDIRF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 1077
+;1077:		} else {
+ADDRGP4 $1330
+JUMPV
+LABELV $1329
+line 1078
+;1078:			VectorMA (point, -2*height, pvup, point);	
+ADDRLP4 320
+CNSTF4 3221225472
+ADDRLP4 180
+INDIRF4
+MULF4
+ASGNF4
+ADDRLP4 0
+ADDRLP4 0
+INDIRF4
+ADDRGP4 pvup
+INDIRF4
+ADDRLP4 320
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 0+4
+INDIRF4
+ADDRGP4 pvup+4
+INDIRF4
+ADDRLP4 320
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 0+8
+INDIRF4
+ADDRGP4 pvup+8
+INDIRF4
+CNSTF4 3221225472
+ADDRLP4 180
+INDIRF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 1079
+;1079:		}
+LABELV $1330
+line 1080
+;1080:		VectorCopy (point, verts[3].xyz);	
+ADDRLP4 12+72
+ADDRLP4 0
+INDIRB
+ASGNB 12
+line 1081
+;1081:		verts[3].st[0] = 1;	
+ADDRLP4 12+72+12
+CNSTF4 1065353216
+ASGNF4
+line 1082
+;1082:		verts[3].st[1] = 0;	
+ADDRLP4 12+72+12+4
+CNSTF4 0
+ASGNF4
+line 1083
+;1083:		verts[3].modulate[0] = 255;	
+ADDRLP4 12+72+20
+CNSTU1 255
+ASGNU1
+line 1084
+;1084:		verts[3].modulate[1] = 255;	
+ADDRLP4 12+72+20+1
+CNSTU1 255
+ASGNU1
+line 1085
+;1085:		verts[3].modulate[2] = 255;	
+ADDRLP4 12+72+20+2
+CNSTU1 255
+ASGNU1
+line 1086
+;1086:		verts[3].modulate[3] = 255;	
+ADDRLP4 12+72+20+3
+CNSTU1 255
+ASGNU1
+line 1087
+;1087:	}
+LABELV $1222
+LABELV $1150
+LABELV $1022
+LABELV $902
+LABELV $660
+LABELV $525
+LABELV $297
+line 1090
+;1088:	// done.
+;1089:	
+;1090:	if (!p->pshader) {
+ADDRFP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+INDIRI4
+CNSTI4 0
+NEI4 $1360
+line 1093
+;1091:// (SA) temp commented out for DM
+;1092://		CG_Printf ("CG_AddParticleToScene type %d p->pshader == ZERO\n", p->type);
+;1093:		return;
+ADDRGP4 $295
+JUMPV
+LABELV $1360
+line 1096
+;1094:	}
+;1095:
+;1096:	if (p->type == P_WEATHER || p->type == P_WEATHER_TURBULENT || p->type == P_WEATHER_FLURRY)
+ADDRLP4 248
+ADDRFP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 248
+INDIRI4
+CNSTI4 1
+EQI4 $1365
+ADDRLP4 248
+INDIRI4
+CNSTI4 5
+EQI4 $1365
+ADDRLP4 248
+INDIRI4
+CNSTI4 11
+NEI4 $1362
+LABELV $1365
+line 1097
+;1097:		trap_R_AddPolyToScene( p->pshader, 3, TRIverts );
+ADDRFP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+INDIRI4
+ARGI4
+CNSTI4 3
+ARGI4
+ADDRLP4 108
+ARGP4
+ADDRGP4 trap_R_AddPolyToScene
+CALLV
+pop
+ADDRGP4 $1363
+JUMPV
+LABELV $1362
+line 1099
+;1098:	else
+;1099:		trap_R_AddPolyToScene( p->pshader, 4, verts );
+ADDRFP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+INDIRI4
+ARGI4
+CNSTI4 4
+ARGI4
+ADDRLP4 12
+ARGP4
+ADDRGP4 trap_R_AddPolyToScene
+CALLV
+pop
+LABELV $1363
+line 1101
+;1100:
+;1101:}
+LABELV $295
+endproc CG_AddParticleToScene 472 16
+data
+align 4
+LABELV roll
+byte 4 0
+export CG_AddParticles
+code
+proc CG_AddParticles 96 16
+line 1112
+;1102:
+;1103:// Ridah, made this static so it doesn't interfere with other files
+;1104:static float roll = 0.0;
+;1105:
+;1106:/*
+;1107:===============
+;1108:CG_AddParticles
+;1109:===============
+;1110:*/
+;1111:void CG_AddParticles (void)
+;1112:{
+line 1122
+;1113:	cparticle_t		*p, *next;
+;1114:	float			alpha;
+;1115:	float			time, time2;
+;1116:	vec3_t			org;
+;1117:	int				color;
+;1118:	cparticle_t		*active, *tail;
+;1119:	int				type;
+;1120:	vec3_t			rotate_ang;
+;1121:
+;1122:	if (!initparticles)
+ADDRGP4 initparticles
+INDIRI4
+CNSTI4 0
+NEI4 $1367
+line 1123
+;1123:		CG_ClearParticles ();
+ADDRGP4 CG_ClearParticles
+CALLV
+pop
+LABELV $1367
+line 1125
+;1124:
+;1125:	VectorCopy( cg.refdef.viewaxis[0], pvforward );
+ADDRGP4 pvforward
+ADDRGP4 cg+1870616+36
+INDIRB
+ASGNB 12
+line 1126
+;1126:	VectorCopy( cg.refdef.viewaxis[1], pvright );
+ADDRGP4 pvright
+ADDRGP4 cg+1870616+36+12
+INDIRB
+ASGNB 12
+line 1127
+;1127:	VectorCopy( cg.refdef.viewaxis[2], pvup );
+ADDRGP4 pvup
+ADDRGP4 cg+1870616+36+24
+INDIRB
+ASGNB 12
+line 1129
+;1128:
+;1129:	vectoangles( cg.refdef.viewaxis[0], rotate_ang );
+ADDRGP4 cg+1870616+36
+ARGP4
+ADDRLP4 48
+ARGP4
+ADDRGP4 vectoangles
+CALLV
+pop
+line 1130
+;1130:	roll += ((cg.time - oldtime) * 0.1) ;
+ADDRLP4 60
+ADDRGP4 roll
+ASGNP4
+ADDRLP4 60
+INDIRP4
+ADDRLP4 60
+INDIRP4
+INDIRF4
+CNSTF4 1036831949
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ADDRGP4 oldtime
+INDIRF4
+SUBF4
+MULF4
+ADDF4
+ASGNF4
+line 1131
+;1131:	rotate_ang[ROLL] += (roll*0.9);
+ADDRLP4 48+8
+ADDRLP4 48+8
+INDIRF4
+CNSTF4 1063675494
+ADDRGP4 roll
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 1132
+;1132:	AngleVectors ( rotate_ang, rforward, rright, rup);
+ADDRLP4 48
+ARGP4
+ADDRGP4 rforward
+ARGP4
+ADDRGP4 rright
+ARGP4
+ADDRGP4 rup
+ARGP4
+ADDRGP4 AngleVectors
+CALLV
+pop
+line 1134
+;1133:	
+;1134:	oldtime = cg.time;
+ADDRGP4 oldtime
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 1136
+;1135:
+;1136:	active = NULL;
+ADDRLP4 44
+CNSTP4 0
+ASGNP4
+line 1137
+;1137:	tail = NULL;
+ADDRLP4 28
+CNSTP4 0
+ASGNP4
+line 1139
+;1138:
+;1139:	for (p=active_particles ; p ; p=next)
+ADDRLP4 0
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+ADDRGP4 $1385
+JUMPV
+LABELV $1382
+line 1140
+;1140:	{
+line 1142
+;1141:
+;1142:		next = p->next;
+ADDRLP4 32
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 1144
+;1143:
+;1144:		time = (cg.time - p->time)*0.001;
+ADDRLP4 4
+CNSTF4 981668463
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+SUBF4
+MULF4
+ASGNF4
+line 1146
+;1145:
+;1146:		alpha = p->alpha + time*p->alphavel;
+ADDRLP4 8
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+INDIRF4
+ADDRLP4 4
+INDIRF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 1147
+;1147:		if (alpha <= 0)
+ADDRLP4 8
+INDIRF4
+CNSTF4 0
+GTF4 $1387
+line 1148
+;1148:		{	// faded out
+line 1149
+;1149:			p->next = free_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 1150
+;1150:			free_particles = p;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 1151
+;1151:			p->type = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1152
+;1152:			p->color = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1153
+;1153:			p->alpha = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1154
+;1154:			continue;
+ADDRGP4 $1383
+JUMPV
+LABELV $1387
+line 1157
+;1155:		}
+;1156:
+;1157:		if (p->type == P_SMOKE || p->type == P_ANIM || p->type == P_BLEED || p->type == P_SMOKE_IMPACT)
+ADDRLP4 68
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 68
+INDIRI4
+CNSTI4 3
+EQI4 $1393
+ADDRLP4 68
+INDIRI4
+CNSTI4 6
+EQI4 $1393
+ADDRLP4 68
+INDIRI4
+CNSTI4 8
+EQI4 $1393
+ADDRLP4 68
+INDIRI4
+CNSTI4 12
+NEI4 $1389
+LABELV $1393
+line 1158
+;1158:		{
+line 1159
+;1159:			if (cg.time > p->endtime)
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+LEF4 $1394
+line 1160
+;1160:			{
+line 1161
+;1161:				p->next = free_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 1162
+;1162:				free_particles = p;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 1163
+;1163:				p->type = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1164
+;1164:				p->color = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1165
+;1165:				p->alpha = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1167
+;1166:			
+;1167:				continue;
+ADDRGP4 $1383
+JUMPV
+LABELV $1394
+line 1170
+;1168:			}
+;1169:
+;1170:		}
+LABELV $1389
+line 1172
+;1171:
+;1172:		if (p->type == P_WEATHER_FLURRY)
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+CNSTI4 11
+NEI4 $1397
+line 1173
+;1173:		{
+line 1174
+;1174:			if (cg.time > p->endtime)
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+LEF4 $1399
+line 1175
+;1175:			{
+line 1176
+;1176:				p->next = free_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 1177
+;1177:				free_particles = p;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 1178
+;1178:				p->type = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1179
+;1179:				p->color = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1180
+;1180:				p->alpha = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1182
+;1181:			
+;1182:				continue;
+ADDRGP4 $1383
+JUMPV
+LABELV $1399
+line 1184
+;1183:			}
+;1184:		}
+LABELV $1397
+line 1187
+;1185:
+;1186:
+;1187:		if (p->type == P_FLAT_SCALEUP_FADE)
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+CNSTI4 10
+NEI4 $1402
+line 1188
+;1188:		{
+line 1189
+;1189:			if (cg.time > p->endtime)
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+LEF4 $1404
+line 1190
+;1190:			{
+line 1191
+;1191:				p->next = free_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 1192
+;1192:				free_particles = p;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 1193
+;1193:				p->type = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1194
+;1194:				p->color = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1195
+;1195:				p->alpha = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1196
+;1196:				continue;
+ADDRGP4 $1383
+JUMPV
+LABELV $1404
+line 1199
+;1197:			}
+;1198:
+;1199:		}
+LABELV $1402
+line 1201
+;1200:
+;1201:		if ((p->type == P_BAT || p->type == P_SPRITE) && p->endtime < 0) {
+ADDRLP4 72
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 72
+INDIRI4
+CNSTI4 7
+EQI4 $1409
+ADDRLP4 72
+INDIRI4
+CNSTI4 15
+NEI4 $1407
+LABELV $1409
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+CNSTF4 0
+GEF4 $1407
+line 1203
+;1202:			// temporary sprite
+;1203:			CG_AddParticleToScene (p, p->org, alpha);
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ARGP4
+ADDRLP4 8
+INDIRF4
+ARGF4
+ADDRGP4 CG_AddParticleToScene
+CALLV
+pop
+line 1204
+;1204:			p->next = free_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 1205
+;1205:			free_particles = p;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 1206
+;1206:			p->type = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1207
+;1207:			p->color = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1208
+;1208:			p->alpha = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1209
+;1209:			continue;
+ADDRGP4 $1383
+JUMPV
+LABELV $1407
+line 1212
+;1210:		}
+;1211:
+;1212:		p->next = NULL;
+ADDRLP4 0
+INDIRP4
+CNSTP4 0
+ASGNP4
+line 1213
+;1213:		if (!tail)
+ADDRLP4 28
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1410
+line 1214
+;1214:			active = tail = p;
+ADDRLP4 28
+ADDRLP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 44
+ADDRLP4 0
+INDIRP4
+ASGNP4
+ADDRGP4 $1411
+JUMPV
+LABELV $1410
+line 1216
+;1215:		else
+;1216:		{
+line 1217
+;1217:			tail->next = p;
+ADDRLP4 28
+INDIRP4
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 1218
+;1218:			tail = p;
+ADDRLP4 28
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 1219
+;1219:		}
+LABELV $1411
+line 1221
+;1220:
+;1221:		if (alpha > 1.0)
+ADDRLP4 8
+INDIRF4
+CNSTF4 1065353216
+LEF4 $1412
+line 1222
+;1222:			alpha = 1;
+ADDRLP4 8
+CNSTF4 1065353216
+ASGNF4
+LABELV $1412
+line 1224
+;1223:
+;1224:		color = p->color;
+ADDRLP4 36
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+INDIRI4
+ASGNI4
+line 1226
+;1225:
+;1226:		time2 = time*time;
+ADDRLP4 12
+ADDRLP4 4
+INDIRF4
+ADDRLP4 4
+INDIRF4
+MULF4
+ASGNF4
+line 1228
+;1227:
+;1228:		org[0] = p->org[0] + p->vel[0]*time + p->accel[0]*time2;
+ADDRLP4 16
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+INDIRF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+INDIRF4
+ADDRLP4 4
+INDIRF4
+MULF4
+ADDF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+INDIRF4
+ADDRLP4 12
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 1229
+;1229:		org[1] = p->org[1] + p->vel[1]*time + p->accel[1]*time2;
+ADDRLP4 16+4
+ADDRLP4 0
+INDIRP4
+CNSTI4 16
+ADDP4
+INDIRF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+INDIRF4
+ADDRLP4 4
+INDIRF4
+MULF4
+ADDF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+INDIRF4
+ADDRLP4 12
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 1230
+;1230:		org[2] = p->org[2] + p->vel[2]*time + p->accel[2]*time2;
+ADDRLP4 16+8
+ADDRLP4 0
+INDIRP4
+CNSTI4 20
+ADDP4
+INDIRF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+INDIRF4
+ADDRLP4 4
+INDIRF4
+MULF4
+ADDF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+INDIRF4
+ADDRLP4 12
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 1232
+;1231:
+;1232:		type = p->type;
+ADDRLP4 40
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+ASGNI4
+line 1234
+;1233:
+;1234:		CG_AddParticleToScene (p, org, alpha);
+ADDRLP4 0
+INDIRP4
+ARGP4
+ADDRLP4 16
+ARGP4
+ADDRLP4 8
+INDIRF4
+ARGF4
+ADDRGP4 CG_AddParticleToScene
+CALLV
+pop
+line 1235
+;1235:	}
+LABELV $1383
+line 1139
+ADDRLP4 0
+ADDRLP4 32
+INDIRP4
+ASGNP4
+LABELV $1385
+ADDRLP4 0
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1382
+line 1237
+;1236:
+;1237:	active_particles = active;
+ADDRGP4 active_particles
+ADDRLP4 44
+INDIRP4
+ASGNP4
+line 1238
+;1238:}
+LABELV $1366
+endproc CG_AddParticles 96 16
+export CG_ParticleSnowFlurry
+proc CG_ParticleSnowFlurry 68 4
+line 1246
+;1239:
+;1240:/*
+;1241:======================
+;1242:CG_AddParticles
+;1243:======================
+;1244:*/
+;1245:void CG_ParticleSnowFlurry (qhandle_t pshader, centity_t *cent)
+;1246:{
+line 1248
+;1247:	cparticle_t	*p;
+;1248:	qboolean turb = qtrue;
+ADDRLP4 4
+CNSTI4 1
+ASGNI4
+line 1250
+;1249:
+;1250:	if (!pshader)
+ADDRFP4 0
+INDIRI4
+CNSTI4 0
+NEI4 $1417
+line 1251
+;1251:		CG_Printf ("CG_ParticleSnowFlurry pshader == ZERO!\n");
+ADDRGP4 $1419
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+LABELV $1417
+line 1253
+;1252:
+;1253:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1420
+line 1254
+;1254:		return;
+ADDRGP4 $1416
+JUMPV
+LABELV $1420
+line 1255
+;1255:	p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 1256
+;1256:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 1257
+;1257:	p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 1258
+;1258:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 1259
+;1259:	p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 1260
+;1260:	p->color = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1261
+;1261:	p->alpha = 0.90f;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1063675494
+ASGNF4
+line 1262
+;1262:	p->alphavel = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1264
+;1263:
+;1264:	p->start = cent->currentState.origin2[0];
+ADDRLP4 0
+INDIRP4
+CNSTI4 88
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 104
+ADDP4
+INDIRF4
+ASGNF4
+line 1265
+;1265:	p->end = cent->currentState.origin2[1];
+ADDRLP4 0
+INDIRP4
+CNSTI4 92
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 108
+ADDP4
+INDIRF4
+ASGNF4
+line 1267
+;1266:	
+;1267:	p->endtime = cg.time + cent->currentState.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 4
+INDIRP4
+CNSTI4 84
+ADDP4
+INDIRI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 1268
+;1268:	p->startfade = cg.time + cent->currentState.time2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 4
+INDIRP4
+CNSTI4 88
+ADDP4
+INDIRI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 1270
+;1269:	
+;1270:	p->pshader = pshader;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRFP4 0
+INDIRI4
+ASGNI4
+line 1272
+;1271:	
+;1272:	if (rand()%100 > 90)
+ADDRLP4 8
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 8
+INDIRI4
+CNSTI4 100
+MODI4
+CNSTI4 90
+LEI4 $1425
+line 1273
+;1273:	{
+line 1274
+;1274:		p->height = 32;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+CNSTF4 1107296256
+ASGNF4
+line 1275
+;1275:		p->width = 32;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+CNSTF4 1107296256
+ASGNF4
+line 1276
+;1276:		p->alpha = 0.10f;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1036831949
+ASGNF4
+line 1277
+;1277:	}
+ADDRGP4 $1426
+JUMPV
+LABELV $1425
+line 1279
+;1278:	else
+;1279:	{
+line 1280
+;1280:		p->height = 1;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 1281
+;1281:		p->width = 1;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 1282
+;1282:	}
+LABELV $1426
+line 1284
+;1283:
+;1284:	p->vel[2] = -20;
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+CNSTF4 3248488448
+ASGNF4
+line 1286
+;1285:
+;1286:	p->type = P_WEATHER_FLURRY;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 11
+ASGNI4
+line 1288
+;1287:	
+;1288:	if (turb)
+ADDRLP4 4
+INDIRI4
+CNSTI4 0
+EQI4 $1427
+line 1289
+;1289:		p->vel[2] = -10;
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+CNSTF4 3240099840
+ASGNF4
+LABELV $1427
+line 1291
+;1290:	
+;1291:	VectorCopy(cent->currentState.origin, p->org);
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 92
+ADDP4
+INDIRB
+ASGNB 12
+line 1293
+;1292:
+;1293:	p->org[0] = p->org[0];
+ADDRLP4 12
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ASGNP4
+ADDRLP4 12
+INDIRP4
+ADDRLP4 12
+INDIRP4
+INDIRF4
+ASGNF4
+line 1294
+;1294:	p->org[1] = p->org[1];
+ADDRLP4 16
+ADDRLP4 0
+INDIRP4
+CNSTI4 16
+ADDP4
+ASGNP4
+ADDRLP4 16
+INDIRP4
+ADDRLP4 16
+INDIRP4
+INDIRF4
+ASGNF4
+line 1295
+;1295:	p->org[2] = p->org[2];
+ADDRLP4 20
+ADDRLP4 0
+INDIRP4
+CNSTI4 20
+ADDP4
+ASGNP4
+ADDRLP4 20
+INDIRP4
+ADDRLP4 20
+INDIRP4
+INDIRF4
+ASGNF4
+line 1297
+;1296:
+;1297:	p->vel[0] = p->vel[1] = 0;
+ADDRLP4 28
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ADDRLP4 28
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+ADDRLP4 28
+INDIRF4
+ASGNF4
+line 1299
+;1298:	
+;1299:	p->accel[0] = p->accel[1] = p->accel[2] = 0;
+ADDRLP4 36
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 36
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 36
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 36
+INDIRF4
+ASGNF4
+line 1301
+;1300:
+;1301:	p->vel[0] += cent->currentState.angles[0] * 32 + (crandom() * 16);
+ADDRLP4 40
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 44
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+ASGNP4
+ADDRLP4 44
+INDIRP4
+ADDRLP4 44
+INDIRP4
+INDIRF4
+CNSTF4 1107296256
+ADDRFP4 4
+INDIRP4
+CNSTI4 128
+ADDP4
+INDIRF4
+MULF4
+CNSTF4 1098907648
+CNSTF4 1073741824
+ADDRLP4 40
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ADDF4
+ASGNF4
+line 1302
+;1302:	p->vel[1] += cent->currentState.angles[1] * 32 + (crandom() * 16);
+ADDRLP4 48
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 52
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ASGNP4
+ADDRLP4 52
+INDIRP4
+ADDRLP4 52
+INDIRP4
+INDIRF4
+CNSTF4 1107296256
+ADDRFP4 4
+INDIRP4
+CNSTI4 132
+ADDP4
+INDIRF4
+MULF4
+CNSTF4 1098907648
+CNSTF4 1073741824
+ADDRLP4 48
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ADDF4
+ASGNF4
+line 1303
+;1303:	p->vel[2] += cent->currentState.angles[2];
+ADDRLP4 56
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+ASGNP4
+ADDRLP4 56
+INDIRP4
+ADDRLP4 56
+INDIRP4
+INDIRF4
+ADDRFP4 4
+INDIRP4
+CNSTI4 136
+ADDP4
+INDIRF4
+ADDF4
+ASGNF4
+line 1305
+;1304:
+;1305:	if (turb)
+ADDRLP4 4
+INDIRI4
+CNSTI4 0
+EQI4 $1429
+line 1306
+;1306:	{
+line 1307
+;1307:		p->accel[0] = crandom () * 16;
+ADDRLP4 60
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+CNSTF4 1098907648
+CNSTF4 1073741824
+ADDRLP4 60
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 1308
+;1308:		p->accel[1] = crandom () * 16;
+ADDRLP4 64
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+CNSTF4 1098907648
+CNSTF4 1073741824
+ADDRLP4 64
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 1309
+;1309:	}
+LABELV $1429
+line 1311
+;1310:
+;1311:}
+LABELV $1416
+endproc CG_ParticleSnowFlurry 68 4
+export CG_ParticleSnow
+proc CG_ParticleSnow 56 4
+line 1314
+;1312:
+;1313:void CG_ParticleSnow (qhandle_t pshader, vec3_t origin, vec3_t origin2, int turb, float range, int snum)
+;1314:{
+line 1317
+;1315:	cparticle_t	*p;
+;1316:
+;1317:	if (!pshader)
+ADDRFP4 0
+INDIRI4
+CNSTI4 0
+NEI4 $1432
+line 1318
+;1318:		CG_Printf ("CG_ParticleSnow pshader == ZERO!\n");
+ADDRGP4 $1434
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+LABELV $1432
+line 1320
+;1319:
+;1320:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1435
+line 1321
+;1321:		return;
+ADDRGP4 $1431
+JUMPV
+LABELV $1435
+line 1322
+;1322:	p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 1323
+;1323:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 1324
+;1324:	p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 1325
+;1325:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 1326
+;1326:	p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 1327
+;1327:	p->color = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1328
+;1328:	p->alpha = 0.40f;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1053609165
+ASGNF4
+line 1329
+;1329:	p->alphavel = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1330
+;1330:	p->start = origin[2];
+ADDRLP4 0
+INDIRP4
+CNSTI4 88
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ASGNF4
+line 1331
+;1331:	p->end = origin2[2];
+ADDRLP4 0
+INDIRP4
+CNSTI4 92
+ADDP4
+ADDRFP4 8
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ASGNF4
+line 1332
+;1332:	p->pshader = pshader;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRFP4 0
+INDIRI4
+ASGNI4
+line 1333
+;1333:	p->height = 1;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 1334
+;1334:	p->width = 1;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 1336
+;1335:	
+;1336:	p->vel[2] = -50;
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+CNSTF4 3259498496
+ASGNF4
+line 1338
+;1337:
+;1338:	if (turb)
+ADDRFP4 12
+INDIRI4
+CNSTI4 0
+EQI4 $1438
+line 1339
+;1339:	{
+line 1340
+;1340:		p->type = P_WEATHER_TURBULENT;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 5
+ASGNI4
+line 1341
+;1341:		p->vel[2] = -50 * 1.3;
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+CNSTF4 3263299584
+ASGNF4
+line 1342
+;1342:	}
+ADDRGP4 $1439
+JUMPV
+LABELV $1438
+line 1344
+;1343:	else
+;1344:	{
+line 1345
+;1345:		p->type = P_WEATHER;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 1
+ASGNI4
+line 1346
+;1346:	}
+LABELV $1439
+line 1348
+;1347:	
+;1348:	VectorCopy(origin, p->org);
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 1350
+;1349:
+;1350:	p->org[0] = p->org[0] + ( crandom() * range);
+ADDRLP4 4
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 8
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ASGNP4
+ADDRLP4 8
+INDIRP4
+ADDRLP4 8
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 4
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 16
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 1351
+;1351:	p->org[1] = p->org[1] + ( crandom() * range);
+ADDRLP4 12
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 16
+ADDRLP4 0
+INDIRP4
+CNSTI4 16
+ADDP4
+ASGNP4
+ADDRLP4 16
+INDIRP4
+ADDRLP4 16
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 12
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 16
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 1352
+;1352:	p->org[2] = p->org[2] + ( crandom() * (p->start - p->end)); 
+ADDRLP4 20
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 24
+ADDRLP4 0
+INDIRP4
+CNSTI4 20
+ADDP4
+ASGNP4
+ADDRLP4 24
+INDIRP4
+ADDRLP4 24
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 20
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 88
+ADDP4
+INDIRF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 92
+ADDP4
+INDIRF4
+SUBF4
+MULF4
+ADDF4
+ASGNF4
+line 1354
+;1353:
+;1354:	p->vel[0] = p->vel[1] = 0;
+ADDRLP4 36
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ADDRLP4 36
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+ADDRLP4 36
+INDIRF4
+ASGNF4
+line 1356
+;1355:	
+;1356:	p->accel[0] = p->accel[1] = p->accel[2] = 0;
+ADDRLP4 44
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 44
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 44
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 44
+INDIRF4
+ASGNF4
+line 1358
+;1357:
+;1358:	if (turb)
+ADDRFP4 12
+INDIRI4
+CNSTI4 0
+EQI4 $1440
+line 1359
+;1359:	{
+line 1360
+;1360:		p->vel[0] = crandom() * 16;
+ADDRLP4 48
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+CNSTF4 1098907648
+CNSTF4 1073741824
+ADDRLP4 48
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 1361
+;1361:		p->vel[1] = crandom() * 16;
+ADDRLP4 52
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+CNSTF4 1098907648
+CNSTF4 1073741824
+ADDRLP4 52
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 1362
+;1362:	}
+LABELV $1440
+line 1365
+;1363:
+;1364:	// Rafael snow pvs check
+;1365:	p->snum = snum;
+ADDRLP4 0
+INDIRP4
+CNSTI4 104
+ADDP4
+ADDRFP4 20
+INDIRI4
+ASGNI4
+line 1366
+;1366:	p->link = qtrue;
+ADDRLP4 0
+INDIRP4
+CNSTI4 108
+ADDP4
+CNSTI4 1
+ASGNI4
+line 1368
+;1367:
+;1368:}
+LABELV $1431
+endproc CG_ParticleSnow 56 4
+export CG_ParticleBubble
+proc CG_ParticleBubble 68 4
+line 1371
+;1369:
+;1370:void CG_ParticleBubble (qhandle_t pshader, vec3_t origin, vec3_t origin2, int turb, float range, int snum)
+;1371:{
+line 1375
+;1372:	cparticle_t	*p;
+;1373:	float		randsize;
+;1374:
+;1375:	if (!pshader)
+ADDRFP4 0
+INDIRI4
+CNSTI4 0
+NEI4 $1443
+line 1376
+;1376:		CG_Printf ("CG_ParticleSnow pshader == ZERO!\n");
+ADDRGP4 $1434
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+LABELV $1443
+line 1378
+;1377:
+;1378:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1445
+line 1379
+;1379:		return;
+ADDRGP4 $1442
+JUMPV
+LABELV $1445
+line 1380
+;1380:	p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 1381
+;1381:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 1382
+;1382:	p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 1383
+;1383:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 1384
+;1384:	p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 1385
+;1385:	p->color = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1386
+;1386:	p->alpha = 0.40f;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1053609165
+ASGNF4
+line 1387
+;1387:	p->alphavel = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1388
+;1388:	p->start = origin[2];
+ADDRLP4 0
+INDIRP4
+CNSTI4 88
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ASGNF4
+line 1389
+;1389:	p->end = origin2[2];
+ADDRLP4 0
+INDIRP4
+CNSTI4 92
+ADDP4
+ADDRFP4 8
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ASGNF4
+line 1390
+;1390:	p->pshader = pshader;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRFP4 0
+INDIRI4
+ASGNI4
+line 1392
+;1391:	
+;1392:	randsize = 1 + (crandom() * 0.5);
+ADDRLP4 8
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 4
+CNSTF4 1056964608
+CNSTF4 1073741824
+ADDRLP4 8
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+CNSTF4 1065353216
+ADDF4
+ASGNF4
+line 1394
+;1393:	
+;1394:	p->height = randsize;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ADDRLP4 4
+INDIRF4
+ASGNF4
+line 1395
+;1395:	p->width = randsize;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ADDRLP4 4
+INDIRF4
+ASGNF4
+line 1397
+;1396:	
+;1397:	p->vel[2] = 50 + ( crandom() * 10 );
+ADDRLP4 12
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+CNSTF4 1092616192
+CNSTF4 1073741824
+ADDRLP4 12
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+CNSTF4 1112014848
+ADDF4
+ASGNF4
+line 1399
+;1398:
+;1399:	if (turb)
+ADDRFP4 12
+INDIRI4
+CNSTI4 0
+EQI4 $1448
+line 1400
+;1400:	{
+line 1401
+;1401:		p->type = P_BUBBLE_TURBULENT;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 14
+ASGNI4
+line 1402
+;1402:		p->vel[2] = 50 * 1.3;
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+CNSTF4 1115815936
+ASGNF4
+line 1403
+;1403:	}
+ADDRGP4 $1449
+JUMPV
+LABELV $1448
+line 1405
+;1404:	else
+;1405:	{
+line 1406
+;1406:		p->type = P_BUBBLE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 13
+ASGNI4
+line 1407
+;1407:	}
+LABELV $1449
+line 1409
+;1408:	
+;1409:	VectorCopy(origin, p->org);
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 1411
+;1410:
+;1411:	p->org[0] = p->org[0] + ( crandom() * range);
+ADDRLP4 16
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 20
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ASGNP4
+ADDRLP4 20
+INDIRP4
+ADDRLP4 20
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 16
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 16
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 1412
+;1412:	p->org[1] = p->org[1] + ( crandom() * range);
+ADDRLP4 24
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 28
+ADDRLP4 0
+INDIRP4
+CNSTI4 16
+ADDP4
+ASGNP4
+ADDRLP4 28
+INDIRP4
+ADDRLP4 28
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 24
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 16
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 1413
+;1413:	p->org[2] = p->org[2] + ( crandom() * (p->start - p->end)); 
+ADDRLP4 32
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 36
+ADDRLP4 0
+INDIRP4
+CNSTI4 20
+ADDP4
+ASGNP4
+ADDRLP4 36
+INDIRP4
+ADDRLP4 36
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 32
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 88
+ADDP4
+INDIRF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 92
+ADDP4
+INDIRF4
+SUBF4
+MULF4
+ADDF4
+ASGNF4
+line 1415
+;1414:
+;1415:	p->vel[0] = p->vel[1] = 0;
+ADDRLP4 48
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ADDRLP4 48
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+ADDRLP4 48
+INDIRF4
+ASGNF4
+line 1417
+;1416:	
+;1417:	p->accel[0] = p->accel[1] = p->accel[2] = 0;
+ADDRLP4 56
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 56
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 56
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 56
+INDIRF4
+ASGNF4
+line 1419
+;1418:
+;1419:	if (turb)
+ADDRFP4 12
+INDIRI4
+CNSTI4 0
+EQI4 $1450
+line 1420
+;1420:	{
+line 1421
+;1421:		p->vel[0] = crandom() * 4;
+ADDRLP4 60
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+CNSTF4 1082130432
+CNSTF4 1073741824
+ADDRLP4 60
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 1422
+;1422:		p->vel[1] = crandom() * 4;
+ADDRLP4 64
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+CNSTF4 1082130432
+CNSTF4 1073741824
+ADDRLP4 64
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 1423
+;1423:	}
+LABELV $1450
+line 1426
+;1424:
+;1425:	// Rafael snow pvs check
+;1426:	p->snum = snum;
+ADDRLP4 0
+INDIRP4
+CNSTI4 104
+ADDP4
+ADDRFP4 20
+INDIRI4
+ASGNI4
+line 1427
+;1427:	p->link = qtrue;
+ADDRLP4 0
+INDIRP4
+CNSTI4 108
+ADDP4
+CNSTI4 1
+ASGNI4
+line 1429
+;1428:
+;1429:}
+LABELV $1442
+endproc CG_ParticleBubble 68 4
+export CG_ParticleSmoke
+proc CG_ParticleSmoke 28 4
+line 1432
+;1430:
+;1431:void CG_ParticleSmoke (qhandle_t pshader, centity_t *cent)
+;1432:{
+line 1438
+;1433:
+;1434:	// using cent->density = enttime
+;1435:	//		 cent->frame = startfade
+;1436:	cparticle_t	*p;
+;1437:
+;1438:	if (!pshader)
+ADDRFP4 0
+INDIRI4
+CNSTI4 0
+NEI4 $1453
+line 1439
+;1439:		CG_Printf ("CG_ParticleSmoke == ZERO!\n");
+ADDRGP4 $1455
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+LABELV $1453
+line 1441
+;1440:
+;1441:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1456
+line 1442
+;1442:		return;
+ADDRGP4 $1452
+JUMPV
+LABELV $1456
+line 1443
+;1443:	p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 1444
+;1444:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 1445
+;1445:	p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 1446
+;1446:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 1447
+;1447:	p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 1449
+;1448:	
+;1449:	p->endtime = cg.time + cent->currentState.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 4
+INDIRP4
+CNSTI4 84
+ADDP4
+INDIRI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 1450
+;1450:	p->startfade = cg.time + cent->currentState.time2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 4
+INDIRP4
+CNSTI4 88
+ADDP4
+INDIRI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 1452
+;1451:	
+;1452:	p->color = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1453
+;1453:	p->alpha = 1.0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 1454
+;1454:	p->alphavel = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1455
+;1455:	p->start = cent->currentState.origin[2];
+ADDRLP4 0
+INDIRP4
+CNSTI4 88
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 100
+ADDP4
+INDIRF4
+ASGNF4
+line 1456
+;1456:	p->end = cent->currentState.origin2[2];
+ADDRLP4 0
+INDIRP4
+CNSTI4 92
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 112
+ADDP4
+INDIRF4
+ASGNF4
+line 1457
+;1457:	p->pshader = pshader;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRFP4 0
+INDIRI4
+ASGNI4
+line 1458
+;1458:	p->rotate = qfalse;
+ADDRLP4 0
+INDIRP4
+CNSTI4 100
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1459
+;1459:	p->height = 8;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+CNSTF4 1090519040
+ASGNF4
+line 1460
+;1460:	p->width = 8;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+CNSTF4 1090519040
+ASGNF4
+line 1461
+;1461:	p->endheight = 32;
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+CNSTF4 1107296256
+ASGNF4
+line 1462
+;1462:	p->endwidth = 32;
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+CNSTF4 1107296256
+ASGNF4
+line 1463
+;1463:	p->type = P_SMOKE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 3
+ASGNI4
+line 1465
+;1464:	
+;1465:	VectorCopy(cent->currentState.origin, p->org);
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 92
+ADDP4
+INDIRB
+ASGNB 12
+line 1467
+;1466:
+;1467:	p->vel[0] = p->vel[1] = 0;
+ADDRLP4 8
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ADDRLP4 8
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+ADDRLP4 8
+INDIRF4
+ASGNF4
+line 1468
+;1468:	p->accel[0] = p->accel[1] = p->accel[2] = 0;
+ADDRLP4 16
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 16
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 16
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 16
+INDIRF4
+ASGNF4
+line 1470
+;1469:
+;1470:	p->vel[2] = 5;
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+CNSTF4 1084227584
+ASGNF4
+line 1472
+;1471:
+;1472:	if (cent->currentState.frame == 1)// reverse gravity	
+ADDRFP4 4
+INDIRP4
+CNSTI4 184
+ADDP4
+INDIRI4
+CNSTI4 1
+NEI4 $1461
+line 1473
+;1473:		p->vel[2] *= -1;
+ADDRLP4 20
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+ASGNP4
+ADDRLP4 20
+INDIRP4
+CNSTF4 3212836864
+ADDRLP4 20
+INDIRP4
+INDIRF4
+MULF4
+ASGNF4
+LABELV $1461
+line 1475
+;1474:
+;1475:	p->roll = 8 + (crandom() * 4);
+ADDRLP4 24
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+CNSTF4 1082130432
+CNSTF4 1073741824
+ADDRLP4 24
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+CNSTF4 1090519040
+ADDF4
+CVFI4 4
+ASGNI4
+line 1476
+;1476:}
+LABELV $1452
+endproc CG_ParticleSmoke 28 4
+export CG_ParticleBulletDebris
+proc CG_ParticleBulletDebris 16 0
+line 1480
+;1477:
+;1478:
+;1479:void CG_ParticleBulletDebris (vec3_t org, vec3_t vel, int duration)
+;1480:{
+line 1484
+;1481:
+;1482:	cparticle_t	*p;
+;1483:
+;1484:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1464
+line 1485
+;1485:		return;
+ADDRGP4 $1463
+JUMPV
+LABELV $1464
+line 1486
+;1486:	p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 1487
+;1487:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 1488
+;1488:	p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 1489
+;1489:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 1490
+;1490:	p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 1492
+;1491:	
+;1492:	p->endtime = cg.time + duration;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 8
+INDIRI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 1493
+;1493:	p->startfade = cg.time + duration/2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 8
+INDIRI4
+CNSTI4 2
+DIVI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 1495
+;1494:	
+;1495:	p->color = EMISIVEFADE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 3
+ASGNI4
+line 1496
+;1496:	p->alpha = 1.0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 1497
+;1497:	p->alphavel = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1499
+;1498:
+;1499:	p->height = 0.5;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+CNSTF4 1056964608
+ASGNF4
+line 1500
+;1500:	p->width = 0.5;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+CNSTF4 1056964608
+ASGNF4
+line 1501
+;1501:	p->endheight = 0.5;
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+CNSTF4 1056964608
+ASGNF4
+line 1502
+;1502:	p->endwidth = 0.5;
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+CNSTF4 1056964608
+ASGNF4
+line 1504
+;1503:
+;1504:	p->pshader = cgs.media.tracerShader;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRGP4 cgs+956380+464
+INDIRI4
+ASGNI4
+line 1506
+;1505:
+;1506:	p->type = P_SMOKE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 3
+ASGNI4
+line 1508
+;1507:	
+;1508:	VectorCopy(org, p->org);
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 0
+INDIRP4
+INDIRB
+ASGNB 12
+line 1510
+;1509:
+;1510:	p->vel[0] = vel[0];
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+ADDRFP4 4
+INDIRP4
+INDIRF4
+ASGNF4
+line 1511
+;1511:	p->vel[1] = vel[1];
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ASGNF4
+line 1512
+;1512:	p->vel[2] = vel[2];
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ASGNF4
+line 1513
+;1513:	p->accel[0] = p->accel[1] = p->accel[2] = 0;
+ADDRLP4 8
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 8
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 8
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 8
+INDIRF4
+ASGNF4
+line 1515
+;1514:
+;1515:	p->accel[2] = -60;
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+CNSTF4 3262119936
+ASGNF4
+line 1516
+;1516:	p->vel[2] += -20;
+ADDRLP4 12
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+ASGNP4
+ADDRLP4 12
+INDIRP4
+ADDRLP4 12
+INDIRP4
+INDIRF4
+CNSTF4 3248488448
+ADDF4
+ASGNF4
+line 1518
+;1517:	
+;1518:}
+LABELV $1463
+endproc CG_ParticleBulletDebris 16 0
+export CG_ParticleExplosion
+proc CG_ParticleExplosion 16 8
+line 1527
+;1519:
+;1520:/*
+;1521:======================
+;1522:CG_ParticleExplosion
+;1523:======================
+;1524:*/
+;1525:
+;1526:void CG_ParticleExplosion (char *animStr, vec3_t origin, vec3_t vel, int duration, int sizeStart, int sizeEnd)
+;1527:{
+line 1531
+;1528:	cparticle_t	*p;
+;1529:	int anim;
+;1530:
+;1531:	if (animStr < (char *)10)
+ADDRFP4 0
+INDIRP4
+CVPU4 4
+CNSTU4 10
+GEU4 $1472
+line 1532
+;1532:		CG_Error( "CG_ParticleExplosion: animStr is probably an index rather than a string" );
+ADDRGP4 $1474
+ARGP4
+ADDRGP4 CG_Error
+CALLV
+pop
+LABELV $1472
+line 1535
+;1533:
+;1534:	// find the animation string
+;1535:	for (anim=0; shaderAnimNames[anim]; anim++) {
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+ADDRGP4 $1478
+JUMPV
+LABELV $1475
+line 1536
+;1536:		if (!Q_stricmp( animStr, shaderAnimNames[anim] ))
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 shaderAnimNames
+ADDP4
+INDIRP4
+ARGP4
+ADDRLP4 8
+ADDRGP4 Q_stricmp
+CALLI4
+ASGNI4
+ADDRLP4 8
+INDIRI4
+CNSTI4 0
+NEI4 $1479
+line 1537
+;1537:			break;
+ADDRGP4 $1477
+JUMPV
+LABELV $1479
+line 1538
+;1538:	}
+LABELV $1476
+line 1535
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+LABELV $1478
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 shaderAnimNames
+ADDP4
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1475
+LABELV $1477
+line 1539
+;1539:	if (!shaderAnimNames[anim]) {
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 shaderAnimNames
+ADDP4
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1481
+line 1540
+;1540:		CG_Error("CG_ParticleExplosion: unknown animation string: %s\n", animStr);
+ADDRGP4 $1483
+ARGP4
+ADDRFP4 0
+INDIRP4
+ARGP4
+ADDRGP4 CG_Error
+CALLV
+pop
+line 1541
+;1541:		return;
+ADDRGP4 $1471
+JUMPV
+LABELV $1481
+line 1544
+;1542:	}
+;1543:
+;1544:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1484
+line 1545
+;1545:		return;
+ADDRGP4 $1471
+JUMPV
+LABELV $1484
+line 1546
+;1546:	p = free_particles;
+ADDRLP4 4
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 1547
+;1547:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 4
+INDIRP4
+INDIRP4
+ASGNP4
+line 1548
+;1548:	p->next = active_particles;
+ADDRLP4 4
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 1549
+;1549:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 4
+INDIRP4
+ASGNP4
+line 1550
+;1550:	p->time = cg.time;
+ADDRLP4 4
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 1551
+;1551:	p->alpha = 0.5;
+ADDRLP4 4
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1056964608
+ASGNF4
+line 1552
+;1552:	p->alphavel = 0;
+ADDRLP4 4
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1554
+;1553:
+;1554:	if (duration < 0) {
+ADDRFP4 12
+INDIRI4
+CNSTI4 0
+GEI4 $1487
+line 1555
+;1555:		duration *= -1;
+ADDRFP4 12
+CNSTI4 -1
+ADDRFP4 12
+INDIRI4
+MULI4
+ASGNI4
+line 1556
+;1556:		p->roll = 0;
+ADDRLP4 4
+INDIRP4
+CNSTI4 116
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1557
+;1557:	} else {
+ADDRGP4 $1488
+JUMPV
+LABELV $1487
+line 1558
+;1558:		p->roll = crandom()*179;
+ADDRLP4 8
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 4
+INDIRP4
+CNSTI4 116
+ADDP4
+CNSTF4 1127415808
+CNSTF4 1073741824
+ADDRLP4 8
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+CVFI4 4
+ASGNI4
+line 1559
+;1559:	}
+LABELV $1488
+line 1561
+;1560:
+;1561:	p->shaderAnim = anim;
+ADDRLP4 4
+INDIRP4
+CNSTI4 112
+ADDP4
+ADDRLP4 0
+INDIRI4
+ASGNI4
+line 1563
+;1562:
+;1563:	p->width = sizeStart;
+ADDRLP4 4
+INDIRP4
+CNSTI4 76
+ADDP4
+ADDRFP4 16
+INDIRI4
+CVIF4 4
+ASGNF4
+line 1564
+;1564:	p->height = sizeStart*shaderAnimSTRatio[anim];	// for sprites that are stretch in either direction
+ADDRLP4 4
+INDIRP4
+CNSTI4 72
+ADDP4
+ADDRFP4 16
+INDIRI4
+CVIF4 4
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 shaderAnimSTRatio
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+line 1566
+;1565:
+;1566:	p->endheight = sizeEnd;
+ADDRLP4 4
+INDIRP4
+CNSTI4 80
+ADDP4
+ADDRFP4 20
+INDIRI4
+CVIF4 4
+ASGNF4
+line 1567
+;1567:	p->endwidth = sizeEnd*shaderAnimSTRatio[anim];
+ADDRLP4 4
+INDIRP4
+CNSTI4 84
+ADDP4
+ADDRFP4 20
+INDIRI4
+CVIF4 4
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRGP4 shaderAnimSTRatio
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+line 1569
+;1568:
+;1569:	p->endtime = cg.time + duration;
+ADDRLP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 12
+INDIRI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 1571
+;1570:
+;1571:	p->type = P_ANIM;
+ADDRLP4 4
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 6
+ASGNI4
+line 1573
+;1572:
+;1573:	VectorCopy( origin, p->org );
+ADDRLP4 4
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 1574
+;1574:	VectorCopy( vel, p->vel );
+ADDRLP4 4
+INDIRP4
+CNSTI4 24
+ADDP4
+ADDRFP4 8
+INDIRP4
+INDIRB
+ASGNB 12
+line 1575
+;1575:	VectorClear( p->accel );
+ADDRLP4 12
+CNSTF4 0
+ASGNF4
+ADDRLP4 4
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 12
+INDIRF4
+ASGNF4
+ADDRLP4 4
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 12
+INDIRF4
+ASGNF4
+ADDRLP4 4
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 12
+INDIRF4
+ASGNF4
+line 1577
+;1576:
+;1577:}
+LABELV $1471
+endproc CG_ParticleExplosion 16 8
+export CG_AddParticleShrapnel
+proc CG_AddParticleShrapnel 0 0
+line 1581
+;1578:
+;1579:// Rafael Shrapnel
+;1580:void CG_AddParticleShrapnel (localEntity_t *le)
+;1581:{
+line 1582
+;1582:	return;
+LABELV $1490
+endproc CG_AddParticleShrapnel 0 0
+export CG_NewParticleArea
+proc CG_NewParticleArea 92 24
+line 1587
+;1583:}
+;1584:// done.
+;1585:
+;1586:int CG_NewParticleArea (int num)
+;1587:{
+line 1594
+;1588:	// const char *str;
+;1589:	char *str;
+;1590:	char *token;
+;1591:	int type;
+;1592:	vec3_t origin, origin2;
+;1593:	int		i;
+;1594:	float range = 0;
+ADDRLP4 40
+CNSTF4 0
+ASGNF4
+line 1599
+;1595:	int turb;
+;1596:	int	numparticles;
+;1597:	int	snum;
+;1598:	
+;1599:	str = (char *) CG_ConfigString (num);
+ADDRFP4 0
+INDIRI4
+ARGI4
+ADDRLP4 56
+ADDRGP4 CG_ConfigString
+CALLP4
+ASGNP4
+ADDRLP4 8
+ADDRLP4 56
+INDIRP4
+ASGNP4
+line 1600
+;1600:	if (!str[0])
+ADDRLP4 8
+INDIRP4
+INDIRI1
+CVII4 1
+CNSTI4 0
+NEI4 $1492
+line 1601
+;1601:		return (0);
+CNSTI4 0
+RETI4
+ADDRGP4 $1491
+JUMPV
+LABELV $1492
+line 1604
+;1602:	
+;1603:	// returns type 128 64 or 32
+;1604:	token = COM_Parse (&str);
+ADDRLP4 8
+ARGP4
+ADDRLP4 60
+ADDRGP4 COM_Parse
+CALLP4
+ASGNP4
+ADDRLP4 4
+ADDRLP4 60
+INDIRP4
+ASGNP4
+line 1605
+;1605:	type = atoi (token);
+ADDRLP4 4
+INDIRP4
+ARGP4
+ADDRLP4 64
+ADDRGP4 atoi
+CALLI4
+ASGNI4
+ADDRLP4 36
+ADDRLP4 64
+INDIRI4
+ASGNI4
+line 1607
+;1606:	
+;1607:	if (type == 1)
+ADDRLP4 36
+INDIRI4
+CNSTI4 1
+NEI4 $1494
+line 1608
+;1608:		range = 128;
+ADDRLP4 40
+CNSTF4 1124073472
+ASGNF4
+ADDRGP4 $1495
+JUMPV
+LABELV $1494
+line 1609
+;1609:	else if (type == 2)
+ADDRLP4 36
+INDIRI4
+CNSTI4 2
+NEI4 $1496
+line 1610
+;1610:		range = 64;
+ADDRLP4 40
+CNSTF4 1115684864
+ASGNF4
+ADDRGP4 $1497
+JUMPV
+LABELV $1496
+line 1611
+;1611:	else if (type == 3)
+ADDRLP4 36
+INDIRI4
+CNSTI4 3
+NEI4 $1498
+line 1612
+;1612:		range = 32;
+ADDRLP4 40
+CNSTF4 1107296256
+ASGNF4
+ADDRGP4 $1499
+JUMPV
+LABELV $1498
+line 1613
+;1613:	else if (type == 0)
+ADDRLP4 36
+INDIRI4
+CNSTI4 0
+NEI4 $1500
+line 1614
+;1614:		range = 256;
+ADDRLP4 40
+CNSTF4 1132462080
+ASGNF4
+ADDRGP4 $1501
+JUMPV
+LABELV $1500
+line 1615
+;1615:	else if (type == 4)
+ADDRLP4 36
+INDIRI4
+CNSTI4 4
+NEI4 $1502
+line 1616
+;1616:		range = 8;
+ADDRLP4 40
+CNSTF4 1090519040
+ASGNF4
+ADDRGP4 $1503
+JUMPV
+LABELV $1502
+line 1617
+;1617:	else if (type == 5)
+ADDRLP4 36
+INDIRI4
+CNSTI4 5
+NEI4 $1504
+line 1618
+;1618:		range = 16;
+ADDRLP4 40
+CNSTF4 1098907648
+ASGNF4
+ADDRGP4 $1505
+JUMPV
+LABELV $1504
+line 1619
+;1619:	else if (type == 6)
+ADDRLP4 36
+INDIRI4
+CNSTI4 6
+NEI4 $1506
+line 1620
+;1620:		range = 32;
+ADDRLP4 40
+CNSTF4 1107296256
+ASGNF4
+ADDRGP4 $1507
+JUMPV
+LABELV $1506
+line 1621
+;1621:	else if (type == 7)
+ADDRLP4 36
+INDIRI4
+CNSTI4 7
+NEI4 $1508
+line 1622
+;1622:		range = 64;
+ADDRLP4 40
+CNSTF4 1115684864
+ASGNF4
+LABELV $1508
+LABELV $1507
+LABELV $1505
+LABELV $1503
+LABELV $1501
+LABELV $1499
+LABELV $1497
+LABELV $1495
+line 1625
+;1623:
+;1624:
+;1625:	for (i=0; i<3; i++)
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+LABELV $1510
+line 1626
+;1626:	{
+line 1627
+;1627:		token = COM_Parse (&str);
+ADDRLP4 8
+ARGP4
+ADDRLP4 68
+ADDRGP4 COM_Parse
+CALLP4
+ASGNP4
+ADDRLP4 4
+ADDRLP4 68
+INDIRP4
+ASGNP4
+line 1628
+;1628:		origin[i] = atof (token);
+ADDRLP4 4
+INDIRP4
+ARGP4
+ADDRLP4 72
+ADDRGP4 atof
+CALLF4
+ASGNF4
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRLP4 12
+ADDP4
+ADDRLP4 72
+INDIRF4
+ASGNF4
+line 1629
+;1629:	}
+LABELV $1511
+line 1625
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 3
+LTI4 $1510
+line 1631
+;1630:
+;1631:	for (i=0; i<3; i++)
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+LABELV $1514
+line 1632
+;1632:	{
+line 1633
+;1633:		token = COM_Parse (&str);
+ADDRLP4 8
+ARGP4
+ADDRLP4 68
+ADDRGP4 COM_Parse
+CALLP4
+ASGNP4
+ADDRLP4 4
+ADDRLP4 68
+INDIRP4
+ASGNP4
+line 1634
+;1634:		origin2[i] = atof (token);
+ADDRLP4 4
+INDIRP4
+ARGP4
+ADDRLP4 72
+ADDRGP4 atof
+CALLF4
+ASGNF4
+ADDRLP4 0
+INDIRI4
+CNSTI4 2
+LSHI4
+ADDRLP4 24
+ADDP4
+ADDRLP4 72
+INDIRF4
+ASGNF4
+line 1635
+;1635:	}
+LABELV $1515
+line 1631
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+ADDRLP4 0
+INDIRI4
+CNSTI4 3
+LTI4 $1514
+line 1637
+;1636:		
+;1637:	token = COM_Parse (&str);
+ADDRLP4 8
+ARGP4
+ADDRLP4 68
+ADDRGP4 COM_Parse
+CALLP4
+ASGNP4
+ADDRLP4 4
+ADDRLP4 68
+INDIRP4
+ASGNP4
+line 1638
+;1638:	numparticles = atoi (token);
+ADDRLP4 4
+INDIRP4
+ARGP4
+ADDRLP4 72
+ADDRGP4 atoi
+CALLI4
+ASGNI4
+ADDRLP4 48
+ADDRLP4 72
+INDIRI4
+ASGNI4
+line 1640
+;1639:	
+;1640:	token = COM_Parse (&str);
+ADDRLP4 8
+ARGP4
+ADDRLP4 76
+ADDRGP4 COM_Parse
+CALLP4
+ASGNP4
+ADDRLP4 4
+ADDRLP4 76
+INDIRP4
+ASGNP4
+line 1641
+;1641:	turb = atoi (token);
+ADDRLP4 4
+INDIRP4
+ARGP4
+ADDRLP4 80
+ADDRGP4 atoi
+CALLI4
+ASGNI4
+ADDRLP4 44
+ADDRLP4 80
+INDIRI4
+ASGNI4
+line 1643
+;1642:
+;1643:	token = COM_Parse (&str);
+ADDRLP4 8
+ARGP4
+ADDRLP4 84
+ADDRGP4 COM_Parse
+CALLP4
+ASGNP4
+ADDRLP4 4
+ADDRLP4 84
+INDIRP4
+ASGNP4
+line 1644
+;1644:	snum = atoi (token);
+ADDRLP4 4
+INDIRP4
+ARGP4
+ADDRLP4 88
+ADDRGP4 atoi
+CALLI4
+ASGNI4
+ADDRLP4 52
+ADDRLP4 88
+INDIRI4
+ASGNI4
+line 1646
+;1645:	
+;1646:	for (i=0; i<numparticles; i++)
+ADDRLP4 0
+CNSTI4 0
+ASGNI4
+ADDRGP4 $1521
+JUMPV
+LABELV $1518
+line 1647
+;1647:	{
+line 1648
+;1648:		if (type >= 4)
+ADDRLP4 36
+INDIRI4
+CNSTI4 4
+LTI4 $1522
+line 1649
+;1649:			CG_ParticleBubble (cgs.media.waterBubbleShader, origin, origin2, turb, range, snum);
+ADDRGP4 cgs+956380+1296
+INDIRI4
+ARGI4
+ADDRLP4 12
+ARGP4
+ADDRLP4 24
+ARGP4
+ADDRLP4 44
+INDIRI4
+ARGI4
+ADDRLP4 40
+INDIRF4
+ARGF4
+ADDRLP4 52
+INDIRI4
+ARGI4
+ADDRGP4 CG_ParticleBubble
+CALLV
+pop
+ADDRGP4 $1523
+JUMPV
+LABELV $1522
+line 1651
+;1650:		else
+;1651:			CG_ParticleSnow (cgs.media.waterBubbleShader, origin, origin2, turb, range, snum);
+ADDRGP4 cgs+956380+1296
+INDIRI4
+ARGI4
+ADDRLP4 12
+ARGP4
+ADDRLP4 24
+ARGP4
+ADDRLP4 44
+INDIRI4
+ARGI4
+ADDRLP4 40
+INDIRF4
+ARGF4
+ADDRLP4 52
+INDIRI4
+ARGI4
+ADDRGP4 CG_ParticleSnow
+CALLV
+pop
+LABELV $1523
+line 1652
+;1652:	}
+LABELV $1519
+line 1646
+ADDRLP4 0
+ADDRLP4 0
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+LABELV $1521
+ADDRLP4 0
+INDIRI4
+ADDRLP4 48
+INDIRI4
+LTI4 $1518
+line 1654
+;1653:
+;1654:	return (1);
+CNSTI4 1
+RETI4
+LABELV $1491
+endproc CG_NewParticleArea 92 24
+export CG_SnowLink
+proc CG_SnowLink 16 0
+line 1658
+;1655:}
+;1656:
+;1657:void	CG_SnowLink (centity_t *cent, qboolean particleOn)
+;1658:{
+line 1662
+;1659:	cparticle_t		*p, *next;
+;1660:	int id;
+;1661:
+;1662:	id = cent->currentState.frame;
+ADDRLP4 8
+ADDRFP4 0
+INDIRP4
+CNSTI4 184
+ADDP4
+INDIRI4
+ASGNI4
+line 1664
+;1663:
+;1664:	for (p=active_particles ; p ; p=next)
+ADDRLP4 0
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+ADDRGP4 $1532
+JUMPV
+LABELV $1529
+line 1665
+;1665:	{
+line 1666
+;1666:		next = p->next;
+ADDRLP4 4
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 1668
+;1667:		
+;1668:		if (p->type == P_WEATHER || p->type == P_WEATHER_TURBULENT)
+ADDRLP4 12
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+ASGNI4
+ADDRLP4 12
+INDIRI4
+CNSTI4 1
+EQI4 $1535
+ADDRLP4 12
+INDIRI4
+CNSTI4 5
+NEI4 $1533
+LABELV $1535
+line 1669
+;1669:		{
+line 1670
+;1670:			if (p->snum == id)
+ADDRLP4 0
+INDIRP4
+CNSTI4 104
+ADDP4
+INDIRI4
+ADDRLP4 8
+INDIRI4
+NEI4 $1536
+line 1671
+;1671:			{
+line 1672
+;1672:				if (particleOn)
+ADDRFP4 4
+INDIRI4
+CNSTI4 0
+EQI4 $1538
+line 1673
+;1673:					p->link = qtrue;
+ADDRLP4 0
+INDIRP4
+CNSTI4 108
+ADDP4
+CNSTI4 1
+ASGNI4
+ADDRGP4 $1539
+JUMPV
+LABELV $1538
+line 1675
+;1674:				else
+;1675:					p->link = qfalse;
+ADDRLP4 0
+INDIRP4
+CNSTI4 108
+ADDP4
+CNSTI4 0
+ASGNI4
+LABELV $1539
+line 1676
+;1676:			}
+LABELV $1536
+line 1677
+;1677:		}
+LABELV $1533
+line 1679
+;1678:
+;1679:	}
+LABELV $1530
+line 1664
+ADDRLP4 0
+ADDRLP4 4
+INDIRP4
+ASGNP4
+LABELV $1532
+ADDRLP4 0
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1529
+line 1680
+;1680:}
+LABELV $1528
+endproc CG_SnowLink 16 0
+export CG_ParticleImpactSmokePuff
+proc CG_ParticleImpactSmokePuff 24 4
+line 1683
+;1681:
+;1682:void CG_ParticleImpactSmokePuff (qhandle_t pshader, vec3_t origin)
+;1683:{
+line 1686
+;1684:	cparticle_t	*p;
+;1685:
+;1686:	if (!pshader)
+ADDRFP4 0
+INDIRI4
+CNSTI4 0
+NEI4 $1541
+line 1687
+;1687:		CG_Printf ("CG_ParticleImpactSmokePuff pshader == ZERO!\n");
+ADDRGP4 $1543
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+LABELV $1541
+line 1689
+;1688:
+;1689:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1544
+line 1690
+;1690:		return;
+ADDRGP4 $1540
+JUMPV
+LABELV $1544
+line 1691
+;1691:	p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 1692
+;1692:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 1693
+;1693:	p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 1694
+;1694:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 1695
+;1695:	p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 1696
+;1696:	p->alpha = 0.25;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1048576000
+ASGNF4
+line 1697
+;1697:	p->alphavel = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1698
+;1698:	p->roll = crandom()*179;
+ADDRLP4 4
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+CNSTF4 1127415808
+CNSTF4 1073741824
+ADDRLP4 4
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+CVFI4 4
+ASGNI4
+line 1700
+;1699:
+;1700:	p->pshader = pshader;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRFP4 0
+INDIRI4
+ASGNI4
+line 1702
+;1701:
+;1702:	p->endtime = cg.time + 1000;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CNSTI4 1000
+ADDI4
+CVIF4 4
+ASGNF4
+line 1703
+;1703:	p->startfade = cg.time + 100;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CNSTI4 100
+ADDI4
+CVIF4 4
+ASGNF4
+line 1705
+;1704:
+;1705:	p->width = rand()%4 + 8;
+ADDRLP4 8
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ADDRLP4 8
+INDIRI4
+CNSTI4 4
+MODI4
+CNSTI4 8
+ADDI4
+CVIF4 4
+ASGNF4
+line 1706
+;1706:	p->height = rand()%4 + 8;
+ADDRLP4 12
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ADDRLP4 12
+INDIRI4
+CNSTI4 4
+MODI4
+CNSTI4 8
+ADDI4
+CVIF4 4
+ASGNF4
+line 1708
+;1707:
+;1708:	p->endheight = p->height *2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+CNSTF4 1073741824
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+line 1709
+;1709:	p->endwidth = p->width * 2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+CNSTF4 1073741824
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+line 1711
+;1710:
+;1711:	p->endtime = cg.time + 500;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CNSTI4 500
+ADDI4
+CVIF4 4
+ASGNF4
+line 1713
+;1712:
+;1713:	p->type = P_SMOKE_IMPACT;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 12
+ASGNI4
+line 1715
+;1714:
+;1715:	VectorCopy( origin, p->org );
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 1716
+;1716:	VectorSet(p->vel, 0, 0, 20);
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+CNSTF4 1101004800
+ASGNF4
+line 1717
+;1717:	VectorSet(p->accel, 0, 0, 20);
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+CNSTF4 1101004800
+ASGNF4
+line 1719
+;1718:
+;1719:	p->rotate = qtrue;
+ADDRLP4 0
+INDIRP4
+CNSTI4 100
+ADDP4
+CNSTI4 1
+ASGNI4
+line 1720
+;1720:}
+LABELV $1540
+endproc CG_ParticleImpactSmokePuff 24 4
+export CG_Particle_Bleed
+proc CG_Particle_Bleed 24 4
+line 1723
+;1721:
+;1722:void CG_Particle_Bleed (qhandle_t pshader, vec3_t start, vec3_t dir, int fleshEntityNum, int duration)
+;1723:{
+line 1726
+;1724:	cparticle_t	*p;
+;1725:
+;1726:	if (!pshader)
+ADDRFP4 0
+INDIRI4
+CNSTI4 0
+NEI4 $1551
+line 1727
+;1727:		CG_Printf ("CG_Particle_Bleed pshader == ZERO!\n");
+ADDRGP4 $1553
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+LABELV $1551
+line 1729
+;1728:
+;1729:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1554
+line 1730
+;1730:		return;
+ADDRGP4 $1550
+JUMPV
+LABELV $1554
+line 1731
+;1731:	p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 1732
+;1732:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 1733
+;1733:	p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 1734
+;1734:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 1735
+;1735:	p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 1736
+;1736:	p->alpha = 1.0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 1737
+;1737:	p->alphavel = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1738
+;1738:	p->roll = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1740
+;1739:
+;1740:	p->pshader = pshader;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRFP4 0
+INDIRI4
+ASGNI4
+line 1742
+;1741:
+;1742:	p->endtime = cg.time + duration;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 16
+INDIRI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 1744
+;1743:	
+;1744:	if (fleshEntityNum)
+ADDRFP4 12
+INDIRI4
+CNSTI4 0
+EQI4 $1558
+line 1745
+;1745:		p->startfade = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+ADDRGP4 $1559
+JUMPV
+LABELV $1558
+line 1747
+;1746:	else
+;1747:		p->startfade = cg.time + 100;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CNSTI4 100
+ADDI4
+CVIF4 4
+ASGNF4
+LABELV $1559
+line 1749
+;1748:
+;1749:	p->width = 4;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+CNSTF4 1082130432
+ASGNF4
+line 1750
+;1750:	p->height = 4;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+CNSTF4 1082130432
+ASGNF4
+line 1752
+;1751:
+;1752:	p->endheight = 4+rand()%3;
+ADDRLP4 4
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+ADDRLP4 4
+INDIRI4
+CNSTI4 3
+MODI4
+CNSTI4 4
+ADDI4
+CVIF4 4
+ASGNF4
+line 1753
+;1753:	p->endwidth = p->endheight;
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+INDIRF4
+ASGNF4
+line 1755
+;1754:
+;1755:	p->type = P_SMOKE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 3
+ASGNI4
+line 1757
+;1756:
+;1757:	VectorCopy( start, p->org );
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 1758
+;1758:	p->vel[0] = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1759
+;1759:	p->vel[1] = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1760
+;1760:	p->vel[2] = -20;
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+CNSTF4 3248488448
+ASGNF4
+line 1761
+;1761:	VectorClear( p->accel );
+ADDRLP4 16
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 16
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 16
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 16
+INDIRF4
+ASGNF4
+line 1763
+;1762:
+;1763:	p->rotate = qfalse;
+ADDRLP4 0
+INDIRP4
+CNSTI4 100
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1765
+;1764:
+;1765:	p->roll = rand()%179;
+ADDRLP4 20
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+ADDRLP4 20
+INDIRI4
+CNSTI4 179
+MODI4
+ASGNI4
+line 1767
+;1766:	
+;1767:	p->color = BLOODRED;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 2
+ASGNI4
+line 1768
+;1768:	p->alpha = 0.75;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1061158912
+ASGNF4
+line 1770
+;1769:
+;1770:}
+LABELV $1550
+endproc CG_Particle_Bleed 24 4
+export CG_Particle_OilParticle
+proc CG_Particle_OilParticle 36 4
+line 1773
+;1771:
+;1772:void CG_Particle_OilParticle (qhandle_t pshader, centity_t *cent)
+;1773:{
+line 1780
+;1774:	cparticle_t	*p;
+;1775:
+;1776:	int			time;
+;1777:	int			time2;
+;1778:	float		ratio;
+;1779:
+;1780:	float	duration = 1500;
+ADDRLP4 16
+CNSTF4 1153138688
+ASGNF4
+line 1782
+;1781:
+;1782:	time = cg.time;
+ADDRLP4 8
+ADDRGP4 cg+1868892
+INDIRI4
+ASGNI4
+line 1783
+;1783:	time2 = cg.time + cent->currentState.time;
+ADDRLP4 12
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 4
+INDIRP4
+CNSTI4 84
+ADDP4
+INDIRI4
+ADDI4
+ASGNI4
+line 1785
+;1784:
+;1785:	ratio =(float)1 - ((float)time / (float)time2);
+ADDRLP4 4
+CNSTF4 1065353216
+ADDRLP4 8
+INDIRI4
+CVIF4 4
+ADDRLP4 12
+INDIRI4
+CVIF4 4
+DIVF4
+SUBF4
+ASGNF4
+line 1787
+;1786:
+;1787:	if (!pshader)
+ADDRFP4 0
+INDIRI4
+CNSTI4 0
+NEI4 $1565
+line 1788
+;1788:		CG_Printf ("CG_Particle_OilParticle == ZERO!\n");
+ADDRGP4 $1567
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+LABELV $1565
+line 1790
+;1789:
+;1790:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1568
+line 1791
+;1791:		return;
+ADDRGP4 $1562
+JUMPV
+LABELV $1568
+line 1792
+;1792:	p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 1793
+;1793:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 1794
+;1794:	p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 1795
+;1795:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 1796
+;1796:	p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 1797
+;1797:	p->alpha = 1.0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 1798
+;1798:	p->alphavel = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1799
+;1799:	p->roll = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1801
+;1800:
+;1801:	p->pshader = pshader;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRFP4 0
+INDIRI4
+ASGNI4
+line 1803
+;1802:
+;1803:	p->endtime = cg.time + duration;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ADDRLP4 16
+INDIRF4
+ADDF4
+ASGNF4
+line 1805
+;1804:	
+;1805:	p->startfade = p->endtime;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ASGNF4
+line 1807
+;1806:
+;1807:	p->width = 1;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 1808
+;1808:	p->height = 3;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+CNSTF4 1077936128
+ASGNF4
+line 1810
+;1809:
+;1810:	p->endheight = 3;
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+CNSTF4 1077936128
+ASGNF4
+line 1811
+;1811:	p->endwidth = 1;
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 1813
+;1812:
+;1813:	p->type = P_SMOKE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 3
+ASGNI4
+line 1815
+;1814:
+;1815:	VectorCopy(cent->currentState.origin, p->org );	
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 92
+ADDP4
+INDIRB
+ASGNB 12
+line 1817
+;1816:	
+;1817:	p->vel[0] = (cent->currentState.origin2[0] * (16 * ratio));
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 104
+ADDP4
+INDIRF4
+CNSTF4 1098907648
+ADDRLP4 4
+INDIRF4
+MULF4
+MULF4
+ASGNF4
+line 1818
+;1818:	p->vel[1] = (cent->currentState.origin2[1] * (16 * ratio));
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 108
+ADDP4
+INDIRF4
+CNSTF4 1098907648
+ADDRLP4 4
+INDIRF4
+MULF4
+MULF4
+ASGNF4
+line 1819
+;1819:	p->vel[2] = (cent->currentState.origin2[2]);
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 112
+ADDP4
+INDIRF4
+ASGNF4
+line 1821
+;1820:
+;1821:	p->snum = 1.0f;
+ADDRLP4 0
+INDIRP4
+CNSTI4 104
+ADDP4
+CNSTI4 1
+ASGNI4
+line 1823
+;1822:
+;1823:	VectorClear( p->accel );
+ADDRLP4 28
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 28
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 28
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 28
+INDIRF4
+ASGNF4
+line 1825
+;1824:
+;1825:	p->accel[2] = -20;
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+CNSTF4 3248488448
+ASGNF4
+line 1827
+;1826:
+;1827:	p->rotate = qfalse;
+ADDRLP4 0
+INDIRP4
+CNSTI4 100
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1829
+;1828:
+;1829:	p->roll = rand()%179;
+ADDRLP4 32
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+ADDRLP4 32
+INDIRI4
+CNSTI4 179
+MODI4
+ASGNI4
+line 1831
+;1830:	
+;1831:	p->alpha = 0.75;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1061158912
+ASGNF4
+line 1833
+;1832:
+;1833:}
+LABELV $1562
+endproc CG_Particle_OilParticle 36 4
+export CG_Particle_OilSlick
+proc CG_Particle_OilSlick 36 4
+line 1837
+;1834:
+;1835:
+;1836:void CG_Particle_OilSlick (qhandle_t pshader, centity_t *cent)
+;1837:{
+line 1840
+;1838:	cparticle_t	*p;
+;1839:	
+;1840:  	if (!pshader)
+ADDRFP4 0
+INDIRI4
+CNSTI4 0
+NEI4 $1573
+line 1841
+;1841:		CG_Printf ("CG_Particle_OilSlick == ZERO!\n");
+ADDRGP4 $1575
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+LABELV $1573
+line 1843
+;1842:
+;1843:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1576
+line 1844
+;1844:		return;
+ADDRGP4 $1572
+JUMPV
+LABELV $1576
+line 1845
+;1845:	p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 1846
+;1846:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 1847
+;1847:	p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 1848
+;1848:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 1849
+;1849:	p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 1851
+;1850:	
+;1851:	if (cent->currentState.angles2[2])
+ADDRFP4 4
+INDIRP4
+CNSTI4 148
+ADDP4
+INDIRF4
+CNSTF4 0
+EQF4 $1579
+line 1852
+;1852:		p->endtime = cg.time + cent->currentState.angles2[2];
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ADDRFP4 4
+INDIRP4
+CNSTI4 148
+ADDP4
+INDIRF4
+ADDF4
+ASGNF4
+ADDRGP4 $1580
+JUMPV
+LABELV $1579
+line 1854
+;1853:	else
+;1854:		p->endtime = cg.time + 60000;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CNSTI4 60000
+ADDI4
+CVIF4 4
+ASGNF4
+LABELV $1580
+line 1856
+;1855:
+;1856:	p->startfade = p->endtime;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ASGNF4
+line 1858
+;1857:
+;1858:	p->alpha = 1.0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 1859
+;1859:	p->alphavel = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1860
+;1860:	p->roll = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1862
+;1861:
+;1862:	p->pshader = pshader;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRFP4 0
+INDIRI4
+ASGNI4
+line 1864
+;1863:
+;1864:	if (cent->currentState.angles2[0] || cent->currentState.angles2[1])
+ADDRLP4 8
+ADDRFP4 4
+INDIRP4
+ASGNP4
+ADDRLP4 12
+CNSTF4 0
+ASGNF4
+ADDRLP4 8
+INDIRP4
+CNSTI4 140
+ADDP4
+INDIRF4
+ADDRLP4 12
+INDIRF4
+NEF4 $1585
+ADDRLP4 8
+INDIRP4
+CNSTI4 144
+ADDP4
+INDIRF4
+ADDRLP4 12
+INDIRF4
+EQF4 $1583
+LABELV $1585
+line 1865
+;1865:	{
+line 1866
+;1866:		p->width = cent->currentState.angles2[0];
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 140
+ADDP4
+INDIRF4
+ASGNF4
+line 1867
+;1867:		p->height = cent->currentState.angles2[0];
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 140
+ADDP4
+INDIRF4
+ASGNF4
+line 1869
+;1868:
+;1869:		p->endheight = cent->currentState.angles2[1];
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 144
+ADDP4
+INDIRF4
+ASGNF4
+line 1870
+;1870:		p->endwidth = cent->currentState.angles2[1];
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 144
+ADDP4
+INDIRF4
+ASGNF4
+line 1871
+;1871:	}
+ADDRGP4 $1584
+JUMPV
+LABELV $1583
+line 1873
+;1872:	else
+;1873:	{
+line 1874
+;1874:		p->width = 8;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+CNSTF4 1090519040
+ASGNF4
+line 1875
+;1875:		p->height = 8;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+CNSTF4 1090519040
+ASGNF4
+line 1877
+;1876:
+;1877:		p->endheight = 16;
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+CNSTF4 1098907648
+ASGNF4
+line 1878
+;1878:		p->endwidth = 16;
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+CNSTF4 1098907648
+ASGNF4
+line 1879
+;1879:	}
+LABELV $1584
+line 1881
+;1880:
+;1881:	p->type = P_FLAT_SCALEUP;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 9
+ASGNI4
+line 1883
+;1882:
+;1883:	p->snum = 1.0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 104
+ADDP4
+CNSTI4 1
+ASGNI4
+line 1885
+;1884:
+;1885:	VectorCopy(cent->currentState.origin, p->org );
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 92
+ADDP4
+INDIRB
+ASGNB 12
+line 1887
+;1886:	
+;1887:	p->org[2]+= 0.55 + (crandom() * 0.5);
+ADDRLP4 16
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 20
+ADDRLP4 0
+INDIRP4
+CNSTI4 20
+ADDP4
+ASGNP4
+ADDRLP4 20
+INDIRP4
+ADDRLP4 20
+INDIRP4
+INDIRF4
+CNSTF4 1056964608
+CNSTF4 1073741824
+ADDRLP4 16
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+CNSTF4 1057803469
+ADDF4
+ADDF4
+ASGNF4
+line 1889
+;1888:
+;1889:	p->vel[0] = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1890
+;1890:	p->vel[1] = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1891
+;1891:	p->vel[2] = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+CNSTF4 0
+ASGNF4
+line 1892
+;1892:	VectorClear( p->accel );
+ADDRLP4 28
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 28
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 28
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 28
+INDIRF4
+ASGNF4
+line 1894
+;1893:
+;1894:	p->rotate = qfalse;
+ADDRLP4 0
+INDIRP4
+CNSTI4 100
+ADDP4
+CNSTI4 0
+ASGNI4
+line 1896
+;1895:
+;1896:	p->roll = rand()%179;
+ADDRLP4 32
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+ADDRLP4 32
+INDIRI4
+CNSTI4 179
+MODI4
+ASGNI4
+line 1898
+;1897:	
+;1898:	p->alpha = 0.75;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1061158912
+ASGNF4
+line 1900
+;1899:
+;1900:}
+LABELV $1572
+endproc CG_Particle_OilSlick 36 4
+export CG_OilSlickRemove
+proc CG_OilSlickRemove 16 4
+line 1903
+;1901:
+;1902:void CG_OilSlickRemove (centity_t *cent)
+;1903:{
+line 1907
+;1904:	cparticle_t		*p, *next;
+;1905:	int				id;
+;1906:
+;1907:	id = 1.0f;
+ADDRLP4 8
+CNSTI4 1
+ASGNI4
+line 1909
+;1908:
+;1909:	if (!id)
+ADDRLP4 8
+INDIRI4
+CNSTI4 0
+NEI4 $1587
+line 1910
+;1910:		CG_Printf ("CG_OilSlickRevove NULL id\n");
+ADDRGP4 $1589
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+LABELV $1587
+line 1912
+;1911:
+;1912:	for (p=active_particles ; p ; p=next)
+ADDRLP4 0
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+ADDRGP4 $1593
+JUMPV
+LABELV $1590
+line 1913
+;1913:	{
+line 1914
+;1914:		next = p->next;
+ADDRLP4 4
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 1916
+;1915:		
+;1916:		if (p->type == P_FLAT_SCALEUP)
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+INDIRI4
+CNSTI4 9
+NEI4 $1594
+line 1917
+;1917:		{
+line 1918
+;1918:			if (p->snum == id)
+ADDRLP4 0
+INDIRP4
+CNSTI4 104
+ADDP4
+INDIRI4
+ADDRLP4 8
+INDIRI4
+NEI4 $1596
+line 1919
+;1919:			{
+line 1920
+;1920:				p->endtime = cg.time + 100;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CNSTI4 100
+ADDI4
+CVIF4 4
+ASGNF4
+line 1921
+;1921:				p->startfade = p->endtime;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ASGNF4
+line 1922
+;1922:				p->type = P_FLAT_SCALEUP_FADE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 10
+ASGNI4
+line 1924
+;1923:
+;1924:			}
+LABELV $1596
+line 1925
+;1925:		}
+LABELV $1594
+line 1927
+;1926:
+;1927:	}
+LABELV $1591
+line 1912
+ADDRLP4 0
+ADDRLP4 4
+INDIRP4
+ASGNP4
+LABELV $1593
+ADDRLP4 0
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1590
+line 1928
+;1928:}
+LABELV $1586
+endproc CG_OilSlickRemove 16 4
+export ValidBloodPool
+proc ValidBloodPool 196 28
+line 1931
+;1929:
+;1930:qboolean ValidBloodPool (vec3_t start)
+;1931:{
+line 1942
+;1932:#define EXTRUDE_DIST	0.5
+;1933:
+;1934:	vec3_t	angles;
+;1935:	vec3_t	right, up;
+;1936:	vec3_t	this_pos, x_pos, center_pos, end_pos;
+;1937:	float	x, y;
+;1938:	float	fwidth, fheight;
+;1939:	trace_t	trace;
+;1940:	vec3_t	normal;
+;1941:
+;1942:	fwidth = 16;
+ADDRLP4 152
+CNSTF4 1098907648
+ASGNF4
+line 1943
+;1943:	fheight = 16;
+ADDRLP4 120
+CNSTF4 1098907648
+ASGNF4
+line 1945
+;1944:
+;1945:	VectorSet (normal, 0, 0, 1);
+ADDRLP4 168
+CNSTF4 0
+ASGNF4
+ADDRLP4 96
+ADDRLP4 168
+INDIRF4
+ASGNF4
+ADDRLP4 96+4
+ADDRLP4 168
+INDIRF4
+ASGNF4
+ADDRLP4 96+8
+CNSTF4 1065353216
+ASGNF4
+line 1947
+;1946:
+;1947:	vectoangles (normal, angles);
+ADDRLP4 96
+ARGP4
+ADDRLP4 156
+ARGP4
+ADDRGP4 vectoangles
+CALLV
+pop
+line 1948
+;1948:	AngleVectors (angles, NULL, right, up);
+ADDRLP4 156
+ARGP4
+CNSTP4 0
+ARGP4
+ADDRLP4 140
+ARGP4
+ADDRLP4 108
+ARGP4
+ADDRGP4 AngleVectors
+CALLV
+pop
+line 1950
+;1949:
+;1950:	VectorMA (start, EXTRUDE_DIST, normal, center_pos);
+ADDRLP4 172
+ADDRFP4 0
+INDIRP4
+ASGNP4
+ADDRLP4 176
+CNSTF4 1056964608
+ASGNF4
+ADDRLP4 128
+ADDRLP4 172
+INDIRP4
+INDIRF4
+ADDRLP4 176
+INDIRF4
+ADDRLP4 96
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 128+4
+ADDRLP4 172
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRLP4 176
+INDIRF4
+ADDRLP4 96+4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 128+8
+ADDRFP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+CNSTF4 1056964608
+ADDRLP4 96+8
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 1952
+;1951:
+;1952:	for (x= -fwidth/2; x<fwidth; x+= fwidth)
+ADDRLP4 124
+ADDRLP4 152
+INDIRF4
+NEGF4
+CNSTF4 1073741824
+DIVF4
+ASGNF4
+ADDRGP4 $1609
+JUMPV
+LABELV $1606
+line 1953
+;1953:	{
+line 1954
+;1954:		VectorMA (center_pos, x, right, x_pos);
+ADDRLP4 84
+ADDRLP4 128
+INDIRF4
+ADDRLP4 140
+INDIRF4
+ADDRLP4 124
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 84+4
+ADDRLP4 128+4
+INDIRF4
+ADDRLP4 140+4
+INDIRF4
+ADDRLP4 124
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 84+8
+ADDRLP4 128+8
+INDIRF4
+ADDRLP4 140+8
+INDIRF4
+ADDRLP4 124
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 1956
+;1955:
+;1956:		for (y= -fheight/2; y<fheight; y+= fheight)
+ADDRLP4 12
+ADDRLP4 120
+INDIRF4
+NEGF4
+CNSTF4 1073741824
+DIVF4
+ASGNF4
+ADDRGP4 $1619
+JUMPV
+LABELV $1616
+line 1957
+;1957:		{
+line 1958
+;1958:			VectorMA (x_pos, y, up, this_pos);
+ADDRLP4 0
+ADDRLP4 84
+INDIRF4
+ADDRLP4 108
+INDIRF4
+ADDRLP4 12
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+4
+ADDRLP4 84+4
+INDIRF4
+ADDRLP4 108+4
+INDIRF4
+ADDRLP4 12
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 0+8
+ADDRLP4 84+8
+INDIRF4
+ADDRLP4 108+8
+INDIRF4
+ADDRLP4 12
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 1959
+;1959:			VectorMA (this_pos, -EXTRUDE_DIST*2, normal, end_pos);
+ADDRLP4 188
+CNSTF4 3212836864
+ASGNF4
+ADDRLP4 16
+ADDRLP4 0
+INDIRF4
+ADDRLP4 188
+INDIRF4
+ADDRLP4 96
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 16+4
+ADDRLP4 0+4
+INDIRF4
+ADDRLP4 188
+INDIRF4
+ADDRLP4 96+4
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 16+8
+ADDRLP4 0+8
+INDIRF4
+CNSTF4 3212836864
+ADDRLP4 96+8
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 1961
+;1960:			
+;1961:			CG_Trace (&trace, this_pos, NULL, NULL, end_pos, -1, CONTENTS_SOLID);
+ADDRLP4 28
+ARGP4
+ADDRLP4 0
+ARGP4
+ADDRLP4 192
+CNSTP4 0
+ASGNP4
+ADDRLP4 192
+INDIRP4
+ARGP4
+ADDRLP4 192
+INDIRP4
+ARGP4
+ADDRLP4 16
+ARGP4
+CNSTI4 -1
+ARGI4
+CNSTI4 1
+ARGI4
+ADDRGP4 CG_Trace
+CALLV
+pop
+line 1964
+;1962:
+;1963:			
+;1964:			if (trace.entityNum < (MAX_ENTITIES - 1)) // may only land on world
+ADDRLP4 28+52
+INDIRI4
+CNSTI4 4094
+GEI4 $1632
+line 1965
+;1965:				return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $1599
+JUMPV
+LABELV $1632
+line 1967
+;1966:
+;1967:			if (!(!trace.startsolid && trace.fraction < 1))
+ADDRLP4 28+4
+INDIRI4
+CNSTI4 0
+NEI4 $1639
+ADDRLP4 28+8
+INDIRF4
+CNSTF4 1065353216
+LTF4 $1635
+LABELV $1639
+line 1968
+;1968:				return qfalse;
+CNSTI4 0
+RETI4
+ADDRGP4 $1599
+JUMPV
+LABELV $1635
+line 1970
+;1969:		
+;1970:		}
+LABELV $1617
+line 1956
+ADDRLP4 12
+ADDRLP4 12
+INDIRF4
+ADDRLP4 120
+INDIRF4
+ADDF4
+ASGNF4
+LABELV $1619
+ADDRLP4 12
+INDIRF4
+ADDRLP4 120
+INDIRF4
+LTF4 $1616
+line 1971
+;1971:	}
+LABELV $1607
+line 1952
+ADDRLP4 124
+ADDRLP4 124
+INDIRF4
+ADDRLP4 152
+INDIRF4
+ADDF4
+ASGNF4
+LABELV $1609
+ADDRLP4 124
+INDIRF4
+ADDRLP4 152
+INDIRF4
+LTF4 $1606
+line 1973
+;1972:
+;1973:	return qtrue;
+CNSTI4 1
+RETI4
+LABELV $1599
+endproc ValidBloodPool 196 28
+export CG_BloodPool
+proc CG_BloodPool 48 4
+line 1977
+;1974:}
+;1975:
+;1976:void CG_BloodPool (localEntity_t *le, qhandle_t pshader, trace_t *tr)
+;1977:{	
+line 1983
+;1978:	cparticle_t	*p;
+;1979:	qboolean	legit;
+;1980:	vec3_t		start;
+;1981:	float		rndSize;
+;1982:	
+;1983:	if (!pshader)
+ADDRFP4 4
+INDIRI4
+CNSTI4 0
+NEI4 $1641
+line 1984
+;1984:		CG_Printf ("CG_BloodPool pshader == ZERO!\n");
+ADDRGP4 $1643
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+LABELV $1641
+line 1986
+;1985:
+;1986:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1644
+line 1987
+;1987:		return;
+ADDRGP4 $1640
+JUMPV
+LABELV $1644
+line 1989
+;1988:	
+;1989:	VectorCopy (tr->endpos, start);
+ADDRLP4 8
+ADDRFP4 8
+INDIRP4
+CNSTI4 12
+ADDP4
+INDIRB
+ASGNB 12
+line 1990
+;1990:	legit = ValidBloodPool (start);
+ADDRLP4 8
+ARGP4
+ADDRLP4 24
+ADDRGP4 ValidBloodPool
+CALLI4
+ASGNI4
+ADDRLP4 20
+ADDRLP4 24
+INDIRI4
+ASGNI4
+line 1992
+;1991:
+;1992:	if (!legit) 
+ADDRLP4 20
+INDIRI4
+CNSTI4 0
+NEI4 $1646
+line 1993
+;1993:		return;
+ADDRGP4 $1640
+JUMPV
+LABELV $1646
+line 1995
+;1994:
+;1995:	p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 1996
+;1996:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 1997
+;1997:	p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 1998
+;1998:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 1999
+;1999:	p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 2001
+;2000:	
+;2001:	p->endtime = cg.time + 3000000;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CNSTI4 3000000
+ADDI4
+CVIF4 4
+ASGNF4
+line 2002
+;2002:	p->startfade = p->endtime;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ASGNF4
+line 2004
+;2003:
+;2004:	p->alpha = 1.0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 2005
+;2005:	p->alphavel = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 0
+ASGNF4
+line 2006
+;2006:	p->roll = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2008
+;2007:
+;2008:	p->pshader = pshader;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRFP4 4
+INDIRI4
+ASGNI4
+line 2010
+;2009:
+;2010:	rndSize = 0.4 + random()*0.6;
+ADDRLP4 32
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 4
+CNSTF4 1058642330
+ADDRLP4 32
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+MULF4
+CNSTF4 1053609165
+ADDF4
+ASGNF4
+line 2012
+;2011:
+;2012:	p->width = 8*rndSize;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+CNSTF4 1090519040
+ADDRLP4 4
+INDIRF4
+MULF4
+ASGNF4
+line 2013
+;2013:	p->height = 8*rndSize;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+CNSTF4 1090519040
+ADDRLP4 4
+INDIRF4
+MULF4
+ASGNF4
+line 2015
+;2014:
+;2015:	p->endheight = 16*rndSize;
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+CNSTF4 1098907648
+ADDRLP4 4
+INDIRF4
+MULF4
+ASGNF4
+line 2016
+;2016:	p->endwidth = 16*rndSize;
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+CNSTF4 1098907648
+ADDRLP4 4
+INDIRF4
+MULF4
+ASGNF4
+line 2018
+;2017:	
+;2018:	p->type = P_FLAT_SCALEUP;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 9
+ASGNI4
+line 2020
+;2019:
+;2020:	VectorCopy(start, p->org );
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRLP4 8
+INDIRB
+ASGNB 12
+line 2022
+;2021:	
+;2022:	p->vel[0] = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+CNSTF4 0
+ASGNF4
+line 2023
+;2023:	p->vel[1] = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+CNSTF4 0
+ASGNF4
+line 2024
+;2024:	p->vel[2] = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+CNSTF4 0
+ASGNF4
+line 2025
+;2025:	VectorClear( p->accel );
+ADDRLP4 40
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 40
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 40
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 40
+INDIRF4
+ASGNF4
+line 2027
+;2026:
+;2027:	p->rotate = qfalse;
+ADDRLP4 0
+INDIRP4
+CNSTI4 100
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2029
+;2028:
+;2029:	p->roll = rand()%179;
+ADDRLP4 44
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+ADDRLP4 44
+INDIRI4
+CNSTI4 179
+MODI4
+ASGNI4
+line 2031
+;2030:	
+;2031:	p->alpha = 0.75;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1061158912
+ASGNF4
+line 2033
+;2032:	
+;2033:	p->color = BLOODRED;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 2
+ASGNI4
+line 2034
+;2034:}
+LABELV $1640
+endproc CG_BloodPool 48 4
+export CG_ParticleBloodCloud
+proc CG_ParticleBloodCloud 84 16
+line 2040
+;2035:
+;2036:#define NORMALSIZE	16
+;2037:#define LARGESIZE	32
+;2038:
+;2039:void CG_ParticleBloodCloud (centity_t *cent, vec3_t origin, vec3_t dir)
+;2040:{
+line 2049
+;2041:	float	length;
+;2042:	float	dist;
+;2043:	float	crittersize;
+;2044:	vec3_t	angles, forward;
+;2045:	vec3_t	point;
+;2046:	cparticle_t	*p;
+;2047:	int		i;
+;2048:	
+;2049:	dist = 0;
+ADDRLP4 36
+CNSTF4 0
+ASGNF4
+line 2051
+;2050:
+;2051:	length = VectorLength (dir);
+ADDRFP4 8
+INDIRP4
+ARGP4
+ADDRLP4 56
+ADDRGP4 VectorLength
+CALLF4
+ASGNF4
+ADDRLP4 40
+ADDRLP4 56
+INDIRF4
+ASGNF4
+line 2052
+;2052:	vectoangles (dir, angles);
+ADDRFP4 8
+INDIRP4
+ARGP4
+ADDRLP4 44
+ARGP4
+ADDRGP4 vectoangles
+CALLV
+pop
+line 2053
+;2053:	AngleVectors (angles, forward, NULL, NULL);
+ADDRLP4 44
+ARGP4
+ADDRLP4 20
+ARGP4
+ADDRLP4 60
+CNSTP4 0
+ASGNP4
+ADDRLP4 60
+INDIRP4
+ARGP4
+ADDRLP4 60
+INDIRP4
+ARGP4
+ADDRGP4 AngleVectors
+CALLV
+pop
+line 2055
+;2054:
+;2055:	crittersize = LARGESIZE;
+ADDRLP4 16
+CNSTF4 1107296256
+ASGNF4
+line 2057
+;2056:
+;2057:	if (length)
+ADDRLP4 40
+INDIRF4
+CNSTF4 0
+EQF4 $1651
+line 2058
+;2058:		dist = length / crittersize;
+ADDRLP4 36
+ADDRLP4 40
+INDIRF4
+ADDRLP4 16
+INDIRF4
+DIVF4
+ASGNF4
+LABELV $1651
+line 2060
+;2059:
+;2060:	if (dist < 1)
+ADDRLP4 36
+INDIRF4
+CNSTF4 1065353216
+GEF4 $1653
+line 2061
+;2061:		dist = 1;
+ADDRLP4 36
+CNSTF4 1065353216
+ASGNF4
+LABELV $1653
+line 2063
+;2062:
+;2063:	VectorCopy (origin, point);
+ADDRLP4 4
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 2065
+;2064:
+;2065:	for (i=0; i<dist; i++)
+ADDRLP4 32
+CNSTI4 0
+ASGNI4
+ADDRGP4 $1658
+JUMPV
+LABELV $1655
+line 2066
+;2066:	{
+line 2067
+;2067:		VectorMA (point, crittersize, forward, point);	
+ADDRLP4 4
+ADDRLP4 4
+INDIRF4
+ADDRLP4 20
+INDIRF4
+ADDRLP4 16
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 4+4
+ADDRLP4 4+4
+INDIRF4
+ADDRLP4 20+4
+INDIRF4
+ADDRLP4 16
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 4+8
+ADDRLP4 4+8
+INDIRF4
+ADDRLP4 20+8
+INDIRF4
+ADDRLP4 16
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2069
+;2068:		
+;2069:		if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1665
+line 2070
+;2070:			return;
+ADDRGP4 $1650
+JUMPV
+LABELV $1665
+line 2072
+;2071:
+;2072:		p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 2073
+;2073:		free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 2074
+;2074:		p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 2075
+;2075:		active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 2077
+;2076:
+;2077:		p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 2078
+;2078:		p->alpha = 1.0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 2079
+;2079:		p->alphavel = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 0
+ASGNF4
+line 2080
+;2080:		p->roll = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2082
+;2081:
+;2082:		p->pshader = cgs.media.smokePuffShader;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRGP4 cgs+956380+1272
+INDIRI4
+ASGNI4
+line 2084
+;2083:
+;2084:		p->endtime = cg.time + 350 + (crandom() * 100);
+ADDRLP4 68
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CNSTI4 350
+ADDI4
+CVIF4 4
+CNSTF4 1120403456
+CNSTF4 1073741824
+ADDRLP4 68
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 2086
+;2085:		
+;2086:		p->startfade = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 2088
+;2087:		
+;2088:		p->width = LARGESIZE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+CNSTF4 1107296256
+ASGNF4
+line 2089
+;2089:		p->height = LARGESIZE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+CNSTF4 1107296256
+ASGNF4
+line 2090
+;2090:		p->endheight = LARGESIZE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+CNSTF4 1107296256
+ASGNF4
+line 2091
+;2091:		p->endwidth = LARGESIZE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+CNSTF4 1107296256
+ASGNF4
+line 2093
+;2092:
+;2093:		p->type = P_SMOKE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 3
+ASGNI4
+line 2095
+;2094:
+;2095:		VectorCopy( origin, p->org );
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 2097
+;2096:		
+;2097:		p->vel[0] = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+CNSTF4 0
+ASGNF4
+line 2098
+;2098:		p->vel[1] = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+CNSTF4 0
+ASGNF4
+line 2099
+;2099:		p->vel[2] = -1;
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+CNSTF4 3212836864
+ASGNF4
+line 2101
+;2100:		
+;2101:		VectorClear( p->accel );
+ADDRLP4 76
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 76
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 76
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 76
+INDIRF4
+ASGNF4
+line 2103
+;2102:
+;2103:		p->rotate = qfalse;
+ADDRLP4 0
+INDIRP4
+CNSTI4 100
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2105
+;2104:
+;2105:		p->roll = rand()%179;
+ADDRLP4 80
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+ADDRLP4 80
+INDIRI4
+CNSTI4 179
+MODI4
+ASGNI4
+line 2107
+;2106:		
+;2107:		p->color = BLOODRED;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 2
+ASGNI4
+line 2109
+;2108:		
+;2109:		p->alpha = 0.75;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1061158912
+ASGNF4
+line 2111
+;2110:		
+;2111:	}
+LABELV $1656
+line 2065
+ADDRLP4 32
+ADDRLP4 32
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+LABELV $1658
+ADDRLP4 32
+INDIRI4
+CVIF4 4
+ADDRLP4 36
+INDIRF4
+LTF4 $1655
+line 2114
+;2112:
+;2113:	
+;2114:}
+LABELV $1650
+endproc CG_ParticleBloodCloud 84 16
+export CG_ParticleSparks
+proc CG_ParticleSparks 60 0
+line 2117
+;2115:
+;2116:void CG_ParticleSparks (vec3_t org, vec3_t vel, int duration, float x, float y, float speed)
+;2117:{
+line 2120
+;2118:	cparticle_t	*p;
+;2119:
+;2120:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1673
+line 2121
+;2121:		return;
+ADDRGP4 $1672
+JUMPV
+LABELV $1673
+line 2122
+;2122:	p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 2123
+;2123:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 2124
+;2124:	p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 2125
+;2125:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 2126
+;2126:	p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 2128
+;2127:	
+;2128:	p->endtime = cg.time + duration;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 8
+INDIRI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 2129
+;2129:	p->startfade = cg.time + duration/2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 8
+INDIRI4
+CNSTI4 2
+DIVI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 2131
+;2130:	
+;2131:	p->color = EMISIVEFADE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 3
+ASGNI4
+line 2132
+;2132:	p->alpha = 0.4f;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1053609165
+ASGNF4
+line 2133
+;2133:	p->alphavel = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 0
+ASGNF4
+line 2135
+;2134:
+;2135:	p->height = 0.5;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+CNSTF4 1056964608
+ASGNF4
+line 2136
+;2136:	p->width = 0.5;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+CNSTF4 1056964608
+ASGNF4
+line 2137
+;2137:	p->endheight = 0.5;
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+CNSTF4 1056964608
+ASGNF4
+line 2138
+;2138:	p->endwidth = 0.5;
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+CNSTF4 1056964608
+ASGNF4
+line 2140
+;2139:
+;2140:	p->pshader = cgs.media.tracerShader;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRGP4 cgs+956380+464
+INDIRI4
+ASGNI4
+line 2142
+;2141:
+;2142:	p->type = P_SMOKE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 3
+ASGNI4
+line 2144
+;2143:	
+;2144:	VectorCopy(org, p->org);
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 0
+INDIRP4
+INDIRB
+ASGNB 12
+line 2146
+;2145:
+;2146:	p->org[0] += (crandom() * x);
+ADDRLP4 4
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 8
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ASGNP4
+ADDRLP4 8
+INDIRP4
+ADDRLP4 8
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 4
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 12
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2147
+;2147:	p->org[1] += (crandom() * y);
+ADDRLP4 12
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 16
+ADDRLP4 0
+INDIRP4
+CNSTI4 16
+ADDP4
+ASGNP4
+ADDRLP4 16
+INDIRP4
+ADDRLP4 16
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 12
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 16
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2149
+;2148:
+;2149:	p->vel[0] = vel[0];
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+ADDRFP4 4
+INDIRP4
+INDIRF4
+ASGNF4
+line 2150
+;2150:	p->vel[1] = vel[1];
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ASGNF4
+line 2151
+;2151:	p->vel[2] = vel[2];
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ASGNF4
+line 2153
+;2152:
+;2153:	p->accel[0] = p->accel[1] = p->accel[2] = 0;
+ADDRLP4 24
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+line 2155
+;2154:
+;2155:	p->vel[0] += (crandom() * 4);
+ADDRLP4 28
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 32
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+ASGNP4
+ADDRLP4 32
+INDIRP4
+ADDRLP4 32
+INDIRP4
+INDIRF4
+CNSTF4 1082130432
+CNSTF4 1073741824
+ADDRLP4 28
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 2156
+;2156:	p->vel[1] += (crandom() * 4);
+ADDRLP4 36
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 40
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ASGNP4
+ADDRLP4 40
+INDIRP4
+ADDRLP4 40
+INDIRP4
+INDIRF4
+CNSTF4 1082130432
+CNSTF4 1073741824
+ADDRLP4 36
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 2157
+;2157:	p->vel[2] += (20 + (crandom() * 10)) * speed;	
+ADDRLP4 44
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 48
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+ASGNP4
+ADDRLP4 48
+INDIRP4
+ADDRLP4 48
+INDIRP4
+INDIRF4
+CNSTF4 1092616192
+CNSTF4 1073741824
+ADDRLP4 44
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+CNSTF4 1101004800
+ADDF4
+ADDRFP4 20
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2159
+;2158:
+;2159:	p->accel[0] = crandom () * 4;
+ADDRLP4 52
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+CNSTF4 1082130432
+CNSTF4 1073741824
+ADDRLP4 52
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 2160
+;2160:	p->accel[1] = crandom () * 4;
+ADDRLP4 56
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+CNSTF4 1082130432
+CNSTF4 1073741824
+ADDRLP4 56
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 2162
+;2161:	
+;2162:}
+LABELV $1672
+endproc CG_ParticleSparks 60 0
+export CG_ParticleDust
+proc CG_ParticleDust 120 16
+line 2165
+;2163:
+;2164:void CG_ParticleDust (centity_t *cent, vec3_t origin, vec3_t dir)
+;2165:{
+line 2174
+;2166:	float	length;
+;2167:	float	dist;
+;2168:	float	crittersize;
+;2169:	vec3_t	angles, forward;
+;2170:	vec3_t	point;
+;2171:	cparticle_t	*p;
+;2172:	int		i;
+;2173:	
+;2174:	dist = 0;
+ADDRLP4 40
+CNSTF4 0
+ASGNF4
+line 2176
+;2175:
+;2176:	VectorNegate (dir, dir);
+ADDRLP4 56
+ADDRFP4 8
+INDIRP4
+ASGNP4
+ADDRLP4 56
+INDIRP4
+ADDRLP4 56
+INDIRP4
+INDIRF4
+NEGF4
+ASGNF4
+ADDRLP4 60
+ADDRFP4 8
+INDIRP4
+CNSTI4 4
+ADDP4
+ASGNP4
+ADDRLP4 60
+INDIRP4
+ADDRLP4 60
+INDIRP4
+INDIRF4
+NEGF4
+ASGNF4
+ADDRLP4 64
+ADDRFP4 8
+INDIRP4
+CNSTI4 8
+ADDP4
+ASGNP4
+ADDRLP4 64
+INDIRP4
+ADDRLP4 64
+INDIRP4
+INDIRF4
+NEGF4
+ASGNF4
+line 2177
+;2177:	length = VectorLength (dir);
+ADDRFP4 8
+INDIRP4
+ARGP4
+ADDRLP4 68
+ADDRGP4 VectorLength
+CALLF4
+ASGNF4
+ADDRLP4 32
+ADDRLP4 68
+INDIRF4
+ASGNF4
+line 2178
+;2178:	vectoangles (dir, angles);
+ADDRFP4 8
+INDIRP4
+ARGP4
+ADDRLP4 44
+ARGP4
+ADDRGP4 vectoangles
+CALLV
+pop
+line 2179
+;2179:	AngleVectors (angles, forward, NULL, NULL);
+ADDRLP4 44
+ARGP4
+ADDRLP4 20
+ARGP4
+ADDRLP4 72
+CNSTP4 0
+ASGNP4
+ADDRLP4 72
+INDIRP4
+ARGP4
+ADDRLP4 72
+INDIRP4
+ARGP4
+ADDRGP4 AngleVectors
+CALLV
+pop
+line 2181
+;2180:
+;2181:	crittersize = LARGESIZE;
+ADDRLP4 16
+CNSTF4 1107296256
+ASGNF4
+line 2183
+;2182:
+;2183:	if (length)
+ADDRLP4 32
+INDIRF4
+CNSTF4 0
+EQF4 $1681
+line 2184
+;2184:		dist = length / crittersize;
+ADDRLP4 40
+ADDRLP4 32
+INDIRF4
+ADDRLP4 16
+INDIRF4
+DIVF4
+ASGNF4
+LABELV $1681
+line 2186
+;2185:
+;2186:	if (dist < 1)
+ADDRLP4 40
+INDIRF4
+CNSTF4 1065353216
+GEF4 $1683
+line 2187
+;2187:		dist = 1;
+ADDRLP4 40
+CNSTF4 1065353216
+ASGNF4
+LABELV $1683
+line 2189
+;2188:
+;2189:	VectorCopy (origin, point);
+ADDRLP4 4
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 2191
+;2190:
+;2191:	for (i=0; i<dist; i++)
+ADDRLP4 36
+CNSTI4 0
+ASGNI4
+ADDRGP4 $1688
+JUMPV
+LABELV $1685
+line 2192
+;2192:	{
+line 2193
+;2193:		VectorMA (point, crittersize, forward, point);	
+ADDRLP4 4
+ADDRLP4 4
+INDIRF4
+ADDRLP4 20
+INDIRF4
+ADDRLP4 16
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 4+4
+ADDRLP4 4+4
+INDIRF4
+ADDRLP4 20+4
+INDIRF4
+ADDRLP4 16
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+ADDRLP4 4+8
+ADDRLP4 4+8
+INDIRF4
+ADDRLP4 20+8
+INDIRF4
+ADDRLP4 16
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2195
+;2194:				
+;2195:		if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1695
+line 2196
+;2196:			return;
+ADDRGP4 $1680
+JUMPV
+LABELV $1695
+line 2198
+;2197:
+;2198:		p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 2199
+;2199:		free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 2200
+;2200:		p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 2201
+;2201:		active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 2203
+;2202:
+;2203:		p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 2204
+;2204:		p->alpha = 5.0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1084227584
+ASGNF4
+line 2205
+;2205:		p->alphavel = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 0
+ASGNF4
+line 2206
+;2206:		p->roll = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2208
+;2207:
+;2208:		p->pshader = cgs.media.smokePuffShader;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRGP4 cgs+956380+1272
+INDIRI4
+ASGNI4
+line 2211
+;2209:
+;2210:		// RF, stay around for long enough to expand and dissipate naturally
+;2211:		if (length)
+ADDRLP4 32
+INDIRF4
+CNSTF4 0
+EQF4 $1700
+line 2212
+;2212:			p->endtime = cg.time + 4500 + (crandom() * 3500);
+ADDRLP4 80
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CNSTI4 4500
+ADDI4
+CVIF4 4
+CNSTF4 1163575296
+CNSTF4 1073741824
+ADDRLP4 80
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+ADDRGP4 $1701
+JUMPV
+LABELV $1700
+line 2214
+;2213:		else
+;2214:			p->endtime = cg.time + 750 + (crandom() * 500);
+ADDRLP4 84
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CNSTI4 750
+ADDI4
+CVIF4 4
+CNSTF4 1140457472
+CNSTF4 1073741824
+ADDRLP4 84
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+LABELV $1701
+line 2216
+;2215:		
+;2216:		p->startfade = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 2218
+;2217:		
+;2218:		p->width = LARGESIZE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+CNSTF4 1107296256
+ASGNF4
+line 2219
+;2219:		p->height = LARGESIZE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+CNSTF4 1107296256
+ASGNF4
+line 2222
+;2220:
+;2221:		// RF, expand while falling
+;2222:		p->endheight = LARGESIZE*3.0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+CNSTF4 1119879168
+ASGNF4
+line 2223
+;2223:		p->endwidth = LARGESIZE*3.0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+CNSTF4 1119879168
+ASGNF4
+line 2225
+;2224:
+;2225:		if (!length)
+ADDRLP4 32
+INDIRF4
+CNSTF4 0
+NEF4 $1705
+line 2226
+;2226:		{
+line 2227
+;2227:			p->width *= 0.2f;
+ADDRLP4 88
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ASGNP4
+ADDRLP4 88
+INDIRP4
+CNSTF4 1045220557
+ADDRLP4 88
+INDIRP4
+INDIRF4
+MULF4
+ASGNF4
+line 2228
+;2228:			p->height *= 0.2f;
+ADDRLP4 92
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ASGNP4
+ADDRLP4 92
+INDIRP4
+CNSTF4 1045220557
+ADDRLP4 92
+INDIRP4
+INDIRF4
+MULF4
+ASGNF4
+line 2230
+;2229:
+;2230:			p->endheight = NORMALSIZE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+CNSTF4 1098907648
+ASGNF4
+line 2231
+;2231:			p->endwidth = NORMALSIZE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+CNSTF4 1098907648
+ASGNF4
+line 2232
+;2232:		}
+LABELV $1705
+line 2234
+;2233:
+;2234:		p->type = P_SMOKE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 3
+ASGNI4
+line 2236
+;2235:
+;2236:		VectorCopy( point, p->org );
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRLP4 4
+INDIRB
+ASGNB 12
+line 2238
+;2237:		
+;2238:		p->vel[0] = crandom()*6;
+ADDRLP4 88
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+CNSTF4 1086324736
+CNSTF4 1073741824
+ADDRLP4 88
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 2239
+;2239:		p->vel[1] = crandom()*6;
+ADDRLP4 92
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+CNSTF4 1086324736
+CNSTF4 1073741824
+ADDRLP4 92
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 2240
+;2240:		p->vel[2] = random()*20;
+ADDRLP4 96
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+CNSTF4 1101004800
+ADDRLP4 96
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+MULF4
+ASGNF4
+line 2243
+;2241:
+;2242:		// RF, add some gravity/randomness
+;2243:		p->accel[0] = crandom()*3;
+ADDRLP4 100
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+CNSTF4 1077936128
+CNSTF4 1073741824
+ADDRLP4 100
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 2244
+;2244:		p->accel[1] = crandom()*3;
+ADDRLP4 104
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+CNSTF4 1077936128
+CNSTF4 1073741824
+ADDRLP4 104
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 2245
+;2245:		p->accel[2] = -PARTICLE_GRAVITY*0.4;
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+CNSTF4 3246391296
+ASGNF4
+line 2247
+;2246:
+;2247:		VectorClear( p->accel );
+ADDRLP4 112
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 112
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 112
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 112
+INDIRF4
+ASGNF4
+line 2249
+;2248:
+;2249:		p->rotate = qfalse;
+ADDRLP4 0
+INDIRP4
+CNSTI4 100
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2251
+;2250:
+;2251:		p->roll = rand()%179;
+ADDRLP4 116
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+ADDRLP4 116
+INDIRI4
+CNSTI4 179
+MODI4
+ASGNI4
+line 2253
+;2252:		
+;2253:		p->alpha = 0.75;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1061158912
+ASGNF4
+line 2255
+;2254:		
+;2255:	}
+LABELV $1686
+line 2191
+ADDRLP4 36
+ADDRLP4 36
+INDIRI4
+CNSTI4 1
+ADDI4
+ASGNI4
+LABELV $1688
+ADDRLP4 36
+INDIRI4
+CVIF4 4
+ADDRLP4 40
+INDIRF4
+LTF4 $1685
+line 2258
+;2256:
+;2257:	
+;2258:}
+LABELV $1680
+endproc CG_ParticleDust 120 16
+export CG_ParticleMisc
+proc CG_ParticleMisc 8 4
+line 2261
+;2259:
+;2260:void CG_ParticleMisc (qhandle_t pshader, vec3_t origin, int size, int duration, float alpha)
+;2261:{
+line 2264
+;2262:	cparticle_t	*p;
+;2263:
+;2264:	if (!pshader)
+ADDRFP4 0
+INDIRI4
+CNSTI4 0
+NEI4 $1708
+line 2265
+;2265:		CG_Printf ("CG_ParticleImpactSmokePuff pshader == ZERO!\n");
+ADDRGP4 $1543
+ARGP4
+ADDRGP4 CG_Printf
+CALLV
+pop
+LABELV $1708
+line 2267
+;2266:
+;2267:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1710
+line 2268
+;2268:		return;
+ADDRGP4 $1707
+JUMPV
+LABELV $1710
+line 2270
+;2269:
+;2270:	p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 2271
+;2271:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 2272
+;2272:	p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 2273
+;2273:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 2274
+;2274:	p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 2275
+;2275:	p->alpha = 1.0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 2276
+;2276:	p->alphavel = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 0
+ASGNF4
+line 2277
+;2277:	p->roll = rand()%179;
+ADDRLP4 4
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+ADDRLP4 4
+INDIRI4
+CNSTI4 179
+MODI4
+ASGNI4
+line 2279
+;2278:
+;2279:	p->pshader = pshader;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRFP4 0
+INDIRI4
+ASGNI4
+line 2281
+;2280:
+;2281:	if (duration > 0)
+ADDRFP4 12
+INDIRI4
+CNSTI4 0
+LEI4 $1713
+line 2282
+;2282:		p->endtime = cg.time + duration;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 12
+INDIRI4
+ADDI4
+CVIF4 4
+ASGNF4
+ADDRGP4 $1714
+JUMPV
+LABELV $1713
+line 2284
+;2283:	else
+;2284:		p->endtime = duration;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRFP4 12
+INDIRI4
+CVIF4 4
+ASGNF4
+LABELV $1714
+line 2286
+;2285:
+;2286:	p->startfade = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 2288
+;2287:
+;2288:	p->width = size;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ADDRFP4 8
+INDIRI4
+CVIF4 4
+ASGNF4
+line 2289
+;2289:	p->height = size;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ADDRFP4 8
+INDIRI4
+CVIF4 4
+ASGNF4
+line 2291
+;2290:
+;2291:	p->endheight = size;
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+ADDRFP4 8
+INDIRI4
+CVIF4 4
+ASGNF4
+line 2292
+;2292:	p->endwidth = size;
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+ADDRFP4 8
+INDIRI4
+CVIF4 4
+ASGNF4
+line 2294
+;2293:
+;2294:	p->type = P_SPRITE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 15
+ASGNI4
+line 2296
+;2295:
+;2296:	VectorCopy( origin, p->org );
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 4
+INDIRP4
+INDIRB
+ASGNB 12
+line 2298
+;2297:
+;2298:	p->rotate = qfalse;
+ADDRLP4 0
+INDIRP4
+CNSTI4 100
+ADDP4
+CNSTI4 0
+ASGNI4
+line 2299
+;2299:}
+LABELV $1707
+endproc CG_ParticleMisc 8 4
+export CG_LeiSparks
+proc CG_LeiSparks 84 0
+line 2312
+;2300:
+;2301:
+;2302:
+;2303:
+;2304:
+;2305:// LEILEI ENHANCEMENT PARTICLE EFFECTS
+;2306:
+;2307:
+;2308:// sparks!
+;2309:// for small arms
+;2310:
+;2311:void CG_LeiSparks (vec3_t org, vec3_t vel, int duration, float x, float y, float speed)
+;2312:{
+line 2315
+;2313:	cparticle_t	*p;
+;2314:
+;2315:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1718
+line 2316
+;2316:		return;
+ADDRGP4 $1717
+JUMPV
+LABELV $1718
+line 2317
+;2317:	p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 2318
+;2318:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 2319
+;2319:	p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 2320
+;2320:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 2321
+;2321:	p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 2323
+;2322:	
+;2323:	p->endtime = cg.time + duration;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 8
+INDIRI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 2324
+;2324:	p->startfade = cg.time + duration/2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 8
+INDIRI4
+CNSTI4 2
+DIVI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 2326
+;2325:	
+;2326:	p->color = EMISIVEFADE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 3
+ASGNI4
+line 2327
+;2327:	p->alpha = 0.8f;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1061997773
+ASGNF4
+line 2328
+;2328:	p->alphavel = 0.8f;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 1061997773
+ASGNF4
+line 2330
+;2329:
+;2330:	p->height = 4;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+CNSTF4 1082130432
+ASGNF4
+line 2331
+;2331:	p->width = 4;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+CNSTF4 1082130432
+ASGNF4
+line 2332
+;2332:	p->endheight = 4;
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+CNSTF4 1082130432
+ASGNF4
+line 2333
+;2333:	p->endwidth = 4;
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+CNSTF4 1082130432
+ASGNF4
+line 2335
+;2334:
+;2335:	p->pshader = cgs.media.lspkShader1;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRGP4 cgs+956380+1332
+INDIRI4
+ASGNI4
+line 2337
+;2336:
+;2337:	p->type = P_SMOKE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 3
+ASGNI4
+line 2339
+;2338:	
+;2339:	VectorCopy(org, p->org);
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 0
+INDIRP4
+INDIRB
+ASGNB 12
+line 2341
+;2340:
+;2341:	p->org[0] += (crandom() * x);
+ADDRLP4 4
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 8
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ASGNP4
+ADDRLP4 8
+INDIRP4
+ADDRLP4 8
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 4
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 12
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2342
+;2342:	p->org[1] += (crandom() * y);
+ADDRLP4 12
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 16
+ADDRLP4 0
+INDIRP4
+CNSTI4 16
+ADDP4
+ASGNP4
+ADDRLP4 16
+INDIRP4
+ADDRLP4 16
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 12
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 16
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2344
+;2343:
+;2344:	p->vel[0] = vel[0] * 75;
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+CNSTF4 1117126656
+ADDRFP4 4
+INDIRP4
+INDIRF4
+MULF4
+ASGNF4
+line 2345
+;2345:	p->vel[1] = vel[1] * 75;
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+CNSTF4 1117126656
+ADDRFP4 4
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+line 2346
+;2346:	p->vel[2] = vel[2] * 75;
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+CNSTF4 1117126656
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+line 2349
+;2347:
+;2348:
+;2349:	p->accel[0] = p->accel[1] = p->accel[2] = 0;
+ADDRLP4 24
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+line 2351
+;2350:
+;2351:	p->vel[0] += (crandom() * speed);
+ADDRLP4 28
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 32
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+ASGNP4
+ADDRLP4 32
+INDIRP4
+ADDRLP4 32
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 28
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 20
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2352
+;2352:	p->vel[1] += (crandom() * speed);
+ADDRLP4 36
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 40
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ASGNP4
+ADDRLP4 40
+INDIRP4
+ADDRLP4 40
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 36
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 20
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2353
+;2353:	p->vel[2] += speed + (crandom() * speed);	
+ADDRLP4 44
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 48
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+ASGNP4
+ADDRLP4 48
+INDIRP4
+ADDRLP4 48
+INDIRP4
+INDIRF4
+ADDRFP4 20
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 44
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 20
+INDIRF4
+MULF4
+ADDF4
+ADDF4
+ASGNF4
+line 2355
+;2354:
+;2355:	p->vel[0] += (crandom() * 24);
+ADDRLP4 52
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 56
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+ASGNP4
+ADDRLP4 56
+INDIRP4
+ADDRLP4 56
+INDIRP4
+INDIRF4
+CNSTF4 1103101952
+CNSTF4 1073741824
+ADDRLP4 52
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 2356
+;2356:	p->vel[1] += (crandom() * 24);
+ADDRLP4 60
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 64
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ASGNP4
+ADDRLP4 64
+INDIRP4
+ADDRLP4 64
+INDIRP4
+INDIRF4
+CNSTF4 1103101952
+CNSTF4 1073741824
+ADDRLP4 60
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 2357
+;2357:	p->vel[2] += (20 + (crandom() * 180));	
+ADDRLP4 68
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 72
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+ASGNP4
+ADDRLP4 72
+INDIRP4
+ADDRLP4 72
+INDIRP4
+INDIRF4
+CNSTF4 1127481344
+CNSTF4 1073741824
+ADDRLP4 68
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+CNSTF4 1101004800
+ADDF4
+ADDF4
+ASGNF4
+line 2359
+;2358:
+;2359:		p->accel[0] = crandom()*6;
+ADDRLP4 76
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+CNSTF4 1086324736
+CNSTF4 1073741824
+ADDRLP4 76
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 2360
+;2360:		p->accel[1] = crandom()*6;
+ADDRLP4 80
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+CNSTF4 1086324736
+CNSTF4 1073741824
+ADDRLP4 80
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 2361
+;2361:		p->accel[2] = -PARTICLE_GRAVITY*7.2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+CNSTF4 3280994304
+ASGNF4
+line 2363
+;2362:	
+;2363:}
+LABELV $1717
+endproc CG_LeiSparks 84 0
+export CG_LeiPuff
+proc CG_LeiPuff 56 0
+line 2368
+;2364:
+;2365:// a different sort of puff
+;2366:
+;2367:void CG_LeiPuff (vec3_t org, vec3_t vel, int duration, float x, float y, float speed, float size)
+;2368:{
+line 2371
+;2369:	cparticle_t	*p;
+;2370:
+;2371:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1726
+line 2372
+;2372:		return;
+ADDRGP4 $1725
+JUMPV
+LABELV $1726
+line 2373
+;2373:	p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 2374
+;2374:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 2375
+;2375:	p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 2376
+;2376:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 2377
+;2377:	p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 2379
+;2378:	
+;2379:	p->endtime = cg.time + duration;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 8
+INDIRI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 2380
+;2380:	p->startfade = cg.time + duration/2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 8
+INDIRI4
+CNSTI4 2
+DIVI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 2382
+;2381:	
+;2382:	p->color = EMISIVEFADE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 3
+ASGNI4
+line 2383
+;2383:	p->alpha = 0.8f;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1061997773
+ASGNF4
+line 2384
+;2384:	p->alphavel = 0.8f;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 1061997773
+ASGNF4
+line 2386
+;2385:
+;2386:	p->height = size;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ADDRFP4 24
+INDIRF4
+ASGNF4
+line 2387
+;2387:	p->width = size;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ADDRFP4 24
+INDIRF4
+ASGNF4
+line 2388
+;2388:	p->endheight = size * 1.8;
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+CNSTF4 1072064102
+ADDRFP4 24
+INDIRF4
+MULF4
+ASGNF4
+line 2389
+;2389:	p->endwidth = size * 1.8;
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+CNSTF4 1072064102
+ADDRFP4 24
+INDIRF4
+MULF4
+ASGNF4
+line 2391
+;2390:
+;2391:	p->pshader = cgs.media.lspkShader1;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRGP4 cgs+956380+1332
+INDIRI4
+ASGNI4
+line 2393
+;2392:
+;2393:	p->type = P_SMOKE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 3
+ASGNI4
+line 2395
+;2394:	
+;2395:	VectorCopy(org, p->org);
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 0
+INDIRP4
+INDIRB
+ASGNB 12
+line 2397
+;2396:
+;2397:	p->org[0] += (crandom() * x);
+ADDRLP4 4
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 8
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ASGNP4
+ADDRLP4 8
+INDIRP4
+ADDRLP4 8
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 4
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 12
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2398
+;2398:	p->org[1] += (crandom() * y);
+ADDRLP4 12
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 16
+ADDRLP4 0
+INDIRP4
+CNSTI4 16
+ADDP4
+ASGNP4
+ADDRLP4 16
+INDIRP4
+ADDRLP4 16
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 12
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 16
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2400
+;2399:
+;2400:	p->vel[0] = vel[0] * speed;
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+ADDRFP4 4
+INDIRP4
+INDIRF4
+ADDRFP4 20
+INDIRF4
+MULF4
+ASGNF4
+line 2401
+;2401:	p->vel[1] = vel[1] * speed;
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRFP4 20
+INDIRF4
+MULF4
+ASGNF4
+line 2402
+;2402:	p->vel[2] = vel[2] * speed;
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRFP4 20
+INDIRF4
+MULF4
+ASGNF4
+line 2404
+;2403:
+;2404:	p->accel[0] = p->accel[1] = p->accel[2] = 0;
+ADDRLP4 24
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+line 2406
+;2405:
+;2406:	p->vel[0] += (crandom() * 44);
+ADDRLP4 28
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 32
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+ASGNP4
+ADDRLP4 32
+INDIRP4
+ADDRLP4 32
+INDIRP4
+INDIRF4
+CNSTF4 1110441984
+CNSTF4 1073741824
+ADDRLP4 28
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 2407
+;2407:	p->vel[1] += (crandom() * 44);
+ADDRLP4 36
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 40
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ASGNP4
+ADDRLP4 40
+INDIRP4
+ADDRLP4 40
+INDIRP4
+INDIRF4
+CNSTF4 1110441984
+CNSTF4 1073741824
+ADDRLP4 36
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 2408
+;2408:	p->vel[2] += (crandom() * 44);	
+ADDRLP4 44
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 48
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+ASGNP4
+ADDRLP4 48
+INDIRP4
+ADDRLP4 48
+INDIRP4
+INDIRF4
+CNSTF4 1110441984
+CNSTF4 1073741824
+ADDRLP4 44
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 2409
+;2409:	p->roll = (crandom() * 256 - 128);	
+ADDRLP4 52
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+CNSTF4 1132462080
+CNSTF4 1073741824
+ADDRLP4 52
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+CNSTF4 1124073472
+SUBF4
+CVFI4 4
+ASGNI4
+line 2416
+;2410:
+;2411:
+;2412:	//	p->vel[0] += (crandom() * 24);
+;2413:	//p->vel[1] += (crandom() * 24);
+;2414:	//p->vel[2] += (20 + (crandom() * 180)) * speed;	
+;2415:
+;2416:		p->accel[0] = -2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+CNSTF4 3221225472
+ASGNF4
+line 2417
+;2417:		p->accel[1] = -2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+CNSTF4 3221225472
+ASGNF4
+line 2418
+;2418:		p->accel[2] = -2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+CNSTF4 3221225472
+ASGNF4
+line 2420
+;2419:	
+;2420:}
+LABELV $1725
+endproc CG_LeiPuff 56 0
+export CG_LeiBlast
+proc CG_LeiBlast 56 0
+line 2425
+;2421:
+;2422:// a violent blast puff
+;2423:
+;2424:void CG_LeiBlast (vec3_t org, vec3_t vel, int duration, float x, float y, float speed, float size)
+;2425:{
+line 2428
+;2426:	cparticle_t	*p;
+;2427:
+;2428:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1734
+line 2429
+;2429:		return;
+ADDRGP4 $1733
+JUMPV
+LABELV $1734
+line 2430
+;2430:	p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 2431
+;2431:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 2432
+;2432:	p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 2433
+;2433:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 2434
+;2434:	p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 2436
+;2435:	
+;2436:	p->endtime = cg.time + duration;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 8
+INDIRI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 2437
+;2437:	p->startfade = cg.time + duration/2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 8
+INDIRI4
+CNSTI4 2
+DIVI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 2439
+;2438:	
+;2439:	p->color = EMISIVEFADE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 3
+ASGNI4
+line 2440
+;2440:	p->alpha = 1.0f;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1065353216
+ASGNF4
+line 2441
+;2441:	p->alphavel = 0.72f;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 1060655596
+ASGNF4
+line 2443
+;2442:
+;2443:	p->height = size;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+ADDRFP4 24
+INDIRF4
+ASGNF4
+line 2444
+;2444:	p->width = size;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+ADDRFP4 24
+INDIRF4
+ASGNF4
+line 2445
+;2445:	p->endheight = size * 6;
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+CNSTF4 1086324736
+ADDRFP4 24
+INDIRF4
+MULF4
+ASGNF4
+line 2446
+;2446:	p->endwidth = size * 6;
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+CNSTF4 1086324736
+ADDRFP4 24
+INDIRF4
+MULF4
+ASGNF4
+line 2448
+;2447:
+;2448:	p->pshader = cgs.media.lbumShader1;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRGP4 cgs+956380+1320
+INDIRI4
+ASGNI4
+line 2450
+;2449:
+;2450:	p->type = P_SMOKE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 3
+ASGNI4
+line 2452
+;2451:	
+;2452:	VectorCopy(org, p->org);
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 0
+INDIRP4
+INDIRB
+ASGNB 12
+line 2454
+;2453:
+;2454:	p->org[0] += (crandom() * x);
+ADDRLP4 4
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 8
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ASGNP4
+ADDRLP4 8
+INDIRP4
+ADDRLP4 8
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 4
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 12
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2455
+;2455:	p->org[1] += (crandom() * y);
+ADDRLP4 12
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 16
+ADDRLP4 0
+INDIRP4
+CNSTI4 16
+ADDP4
+ASGNP4
+ADDRLP4 16
+INDIRP4
+ADDRLP4 16
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 12
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 16
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2457
+;2456:
+;2457:	p->vel[0] = vel[0] * speed;
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+ADDRFP4 4
+INDIRP4
+INDIRF4
+ADDRFP4 20
+INDIRF4
+MULF4
+ASGNF4
+line 2458
+;2458:	p->vel[1] = vel[1] * speed;
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+ADDRFP4 20
+INDIRF4
+MULF4
+ASGNF4
+line 2459
+;2459:	p->vel[2] = vel[2] * speed;
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+ADDRFP4 20
+INDIRF4
+MULF4
+ASGNF4
+line 2461
+;2460:
+;2461:	p->accel[0] = p->accel[1] = p->accel[2] = 0;
+ADDRLP4 24
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+line 2463
+;2462:
+;2463:	p->vel[0] += (crandom() * 84);
+ADDRLP4 28
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 32
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+ASGNP4
+ADDRLP4 32
+INDIRP4
+ADDRLP4 32
+INDIRP4
+INDIRF4
+CNSTF4 1118306304
+CNSTF4 1073741824
+ADDRLP4 28
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 2464
+;2464:	p->vel[1] += (crandom() * 84);
+ADDRLP4 36
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 40
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ASGNP4
+ADDRLP4 40
+INDIRP4
+ADDRLP4 40
+INDIRP4
+INDIRF4
+CNSTF4 1118306304
+CNSTF4 1073741824
+ADDRLP4 36
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 2465
+;2465:	p->vel[2] += (crandom() * 84);	
+ADDRLP4 44
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 48
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+ASGNP4
+ADDRLP4 48
+INDIRP4
+ADDRLP4 48
+INDIRP4
+INDIRF4
+CNSTF4 1118306304
+CNSTF4 1073741824
+ADDRLP4 44
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 2466
+;2466:	p->roll = (crandom() * 256 - 128);	
+ADDRLP4 52
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 116
+ADDP4
+CNSTF4 1132462080
+CNSTF4 1073741824
+ADDRLP4 52
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+CNSTF4 1124073472
+SUBF4
+CVFI4 4
+ASGNI4
+line 2473
+;2467:
+;2468:
+;2469:	//	p->vel[0] += (crandom() * 24);
+;2470:	//p->vel[1] += (crandom() * 24);
+;2471:	//p->vel[2] += (20 + (crandom() * 180)) * speed;	
+;2472:
+;2473:		p->accel[0] = -2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+CNSTF4 3221225472
+ASGNF4
+line 2474
+;2474:		p->accel[1] = -2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+CNSTF4 3221225472
+ASGNF4
+line 2475
+;2475:		p->accel[2] = -2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+CNSTF4 3221225472
+ASGNF4
+line 2477
+;2476:	
+;2477:}
+LABELV $1733
+endproc CG_LeiBlast 56 0
+export CG_LeiSparks2
+proc CG_LeiSparks2 52 0
+line 2482
+;2478:
+;2479:// for explosions
+;2480:
+;2481:void CG_LeiSparks2 (vec3_t org, vec3_t vel, int duration, float x, float y, float speed)
+;2482:{
+line 2485
+;2483:	cparticle_t	*p;
+;2484:
+;2485:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1742
+line 2486
+;2486:		return;
+ADDRGP4 $1741
+JUMPV
+LABELV $1742
+line 2487
+;2487:	p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 2488
+;2488:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 2489
+;2489:	p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 2490
+;2490:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 2491
+;2491:	p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 2493
+;2492:	
+;2493:	p->endtime = cg.time + duration;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 8
+INDIRI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 2494
+;2494:	p->startfade = cg.time + duration/2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 8
+INDIRI4
+CNSTI4 2
+DIVI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 2496
+;2495:	
+;2496:	p->color = EMISIVEFADE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 3
+ASGNI4
+line 2497
+;2497:	p->alpha = 0.8f;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1061997773
+ASGNF4
+line 2498
+;2498:	p->alphavel = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 0
+ASGNF4
+line 2500
+;2499:
+;2500:	p->height = 9;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+CNSTF4 1091567616
+ASGNF4
+line 2501
+;2501:	p->width = 9;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+CNSTF4 1091567616
+ASGNF4
+line 2502
+;2502:	p->endheight = 32;
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+CNSTF4 1107296256
+ASGNF4
+line 2503
+;2503:	p->endwidth = 32;
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+CNSTF4 1107296256
+ASGNF4
+line 2505
+;2504:
+;2505:	p->pshader = cgs.media.lspkShader1;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRGP4 cgs+956380+1332
+INDIRI4
+ASGNI4
+line 2507
+;2506:
+;2507:	p->type = P_SMOKE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 3
+ASGNI4
+line 2509
+;2508:	
+;2509:	VectorCopy(org, p->org);
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 0
+INDIRP4
+INDIRB
+ASGNB 12
+line 2511
+;2510:
+;2511:	p->org[0] += (crandom() * x);
+ADDRLP4 4
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 8
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ASGNP4
+ADDRLP4 8
+INDIRP4
+ADDRLP4 8
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 4
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 12
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2512
+;2512:	p->org[1] += (crandom() * y);
+ADDRLP4 12
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 16
+ADDRLP4 0
+INDIRP4
+CNSTI4 16
+ADDP4
+ASGNP4
+ADDRLP4 16
+INDIRP4
+ADDRLP4 16
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 12
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 16
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2514
+;2513:
+;2514:	p->vel[0] = vel[0] * 15;
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+CNSTF4 1097859072
+ADDRFP4 4
+INDIRP4
+INDIRF4
+MULF4
+ASGNF4
+line 2515
+;2515:	p->vel[1] = vel[1] * 15;
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+CNSTF4 1097859072
+ADDRFP4 4
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+line 2516
+;2516:	p->vel[2] = vel[2] * 15;
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+CNSTF4 1097859072
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+line 2518
+;2517:
+;2518:	p->accel[0] = p->accel[1] = p->accel[2] = 0;
+ADDRLP4 24
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+line 2520
+;2519:
+;2520:	p->vel[0] += (crandom() * 524);
+ADDRLP4 28
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 32
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+ASGNP4
+ADDRLP4 32
+INDIRP4
+ADDRLP4 32
+INDIRP4
+INDIRF4
+CNSTF4 1141047296
+CNSTF4 1073741824
+ADDRLP4 28
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 2521
+;2521:	p->vel[1] += (crandom() * 524);
+ADDRLP4 36
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 40
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ASGNP4
+ADDRLP4 40
+INDIRP4
+ADDRLP4 40
+INDIRP4
+INDIRF4
+CNSTF4 1141047296
+CNSTF4 1073741824
+ADDRLP4 36
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 2522
+;2522:	p->vel[2] += (120 + (crandom() * 780)) * speed;	
+ADDRLP4 44
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 48
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+ASGNP4
+ADDRLP4 48
+INDIRP4
+ADDRLP4 48
+INDIRP4
+INDIRF4
+CNSTF4 1145241600
+CNSTF4 1073741824
+ADDRLP4 44
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+CNSTF4 1123024896
+ADDF4
+ADDRFP4 20
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2535
+;2523:
+;2524:	//	p->accel[0] = crandom()*76;
+;2525:	//	p->accel[1] = crandom()*76;
+;2526:	//	p->accel[2] = crandom()*76;
+;2527:	
+;2528:
+;2529://	VectorCopy( origin, p->org );
+;2530://	VectorCopy( vel, p->vel );
+;2531://	VectorClear( p->accel );
+;2532:
+;2533:
+;2534:	
+;2535:}
+LABELV $1741
+endproc CG_LeiSparks2 52 0
+export CG_LeiSplash2
+proc CG_LeiSplash2 60 0
+line 2539
+;2536:
+;2537:// not so friendly water splash
+;2538:void CG_LeiSplash2 (vec3_t org, vec3_t vel, int duration, float x, float y, float speed)
+;2539:{
+line 2542
+;2540:	cparticle_t	*p;
+;2541:
+;2542:	if (!free_particles)
+ADDRGP4 free_particles
+INDIRP4
+CVPU4 4
+CNSTU4 0
+NEU4 $1750
+line 2543
+;2543:		return;
+ADDRGP4 $1749
+JUMPV
+LABELV $1750
+line 2544
+;2544:	p = free_particles;
+ADDRLP4 0
+ADDRGP4 free_particles
+INDIRP4
+ASGNP4
+line 2545
+;2545:	free_particles = p->next;
+ADDRGP4 free_particles
+ADDRLP4 0
+INDIRP4
+INDIRP4
+ASGNP4
+line 2546
+;2546:	p->next = active_particles;
+ADDRLP4 0
+INDIRP4
+ADDRGP4 active_particles
+INDIRP4
+ASGNP4
+line 2547
+;2547:	active_particles = p;
+ADDRGP4 active_particles
+ADDRLP4 0
+INDIRP4
+ASGNP4
+line 2548
+;2548:	p->time = cg.time;
+ADDRLP4 0
+INDIRP4
+CNSTI4 4
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+CVIF4 4
+ASGNF4
+line 2550
+;2549:	
+;2550:	p->endtime = cg.time + duration;
+ADDRLP4 0
+INDIRP4
+CNSTI4 8
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 8
+INDIRI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 2551
+;2551:	p->startfade = cg.time + duration/2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 96
+ADDP4
+ADDRGP4 cg+1868892
+INDIRI4
+ADDRFP4 8
+INDIRI4
+CNSTI4 2
+DIVI4
+ADDI4
+CVIF4 4
+ASGNF4
+line 2553
+;2552:	
+;2553:	p->color = EMISIVEFADE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 48
+ADDP4
+CNSTI4 3
+ASGNI4
+line 2554
+;2554:	p->alpha = 0.9f;
+ADDRLP4 0
+INDIRP4
+CNSTI4 56
+ADDP4
+CNSTF4 1063675494
+ASGNF4
+line 2555
+;2555:	p->alphavel = 0;
+ADDRLP4 0
+INDIRP4
+CNSTI4 60
+ADDP4
+CNSTF4 0
+ASGNF4
+line 2557
+;2556:
+;2557:	p->height = 4;
+ADDRLP4 0
+INDIRP4
+CNSTI4 72
+ADDP4
+CNSTF4 1082130432
+ASGNF4
+line 2558
+;2558:	p->width = 4;
+ADDRLP4 0
+INDIRP4
+CNSTI4 76
+ADDP4
+CNSTF4 1082130432
+ASGNF4
+line 2559
+;2559:	p->endheight = 2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 80
+ADDP4
+CNSTF4 1073741824
+ASGNF4
+line 2560
+;2560:	p->endwidth = 2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 84
+ADDP4
+CNSTF4 1073741824
+ASGNF4
+line 2562
+;2561:
+;2562:	p->pshader = cgs.media.lsplShader;
+ADDRLP4 0
+INDIRP4
+CNSTI4 68
+ADDP4
+ADDRGP4 cgs+956380+1328
+INDIRI4
+ASGNI4
+line 2564
+;2563:
+;2564:	p->type = P_SMOKE;
+ADDRLP4 0
+INDIRP4
+CNSTI4 64
+ADDP4
+CNSTI4 3
+ASGNI4
+line 2566
+;2565:	
+;2566:	VectorCopy(org, p->org);
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ADDRFP4 0
+INDIRP4
+INDIRB
+ASGNB 12
+line 2568
+;2567:
+;2568:	p->org[0] += (crandom() * x);
+ADDRLP4 4
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 8
+ADDRLP4 0
+INDIRP4
+CNSTI4 12
+ADDP4
+ASGNP4
+ADDRLP4 8
+INDIRP4
+ADDRLP4 8
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 4
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 12
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2569
+;2569:	p->org[1] += (crandom() * y);
+ADDRLP4 12
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 16
+ADDRLP4 0
+INDIRP4
+CNSTI4 16
+ADDP4
+ASGNP4
+ADDRLP4 16
+INDIRP4
+ADDRLP4 16
+INDIRP4
+INDIRF4
+CNSTF4 1073741824
+ADDRLP4 12
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+ADDRFP4 16
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2571
+;2570:
+;2571:	p->vel[0] = vel[0] * 44;
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+CNSTF4 1110441984
+ADDRFP4 4
+INDIRP4
+INDIRF4
+MULF4
+ASGNF4
+line 2572
+;2572:	p->vel[1] = vel[1] * 44;
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+CNSTF4 1110441984
+ADDRFP4 4
+INDIRP4
+CNSTI4 4
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+line 2573
+;2573:	p->vel[2] = vel[2] * 872;
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+CNSTF4 1146748928
+ADDRFP4 4
+INDIRP4
+CNSTI4 8
+ADDP4
+INDIRF4
+MULF4
+ASGNF4
+line 2575
+;2574:
+;2575:	p->accel[0] = p->accel[1] = p->accel[2] = 0;
+ADDRLP4 24
+CNSTF4 0
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+ADDRLP4 24
+INDIRF4
+ASGNF4
+line 2577
+;2576:
+;2577:	p->vel[0] += (crandom() * 4);
+ADDRLP4 28
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 32
+ADDRLP4 0
+INDIRP4
+CNSTI4 24
+ADDP4
+ASGNP4
+ADDRLP4 32
+INDIRP4
+ADDRLP4 32
+INDIRP4
+INDIRF4
+CNSTF4 1082130432
+CNSTF4 1073741824
+ADDRLP4 28
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 2578
+;2578:	p->vel[1] += (crandom() * 4);
+ADDRLP4 36
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 40
+ADDRLP4 0
+INDIRP4
+CNSTI4 28
+ADDP4
+ASGNP4
+ADDRLP4 40
+INDIRP4
+ADDRLP4 40
+INDIRP4
+INDIRF4
+CNSTF4 1082130432
+CNSTF4 1073741824
+ADDRLP4 36
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ADDF4
+ASGNF4
+line 2579
+;2579:	p->vel[2] += (20 + (crandom() * 10)) * speed;	
+ADDRLP4 44
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 48
+ADDRLP4 0
+INDIRP4
+CNSTI4 32
+ADDP4
+ASGNP4
+ADDRLP4 48
+INDIRP4
+ADDRLP4 48
+INDIRP4
+INDIRF4
+CNSTF4 1092616192
+CNSTF4 1073741824
+ADDRLP4 44
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+CNSTF4 1101004800
+ADDF4
+ADDRFP4 20
+INDIRF4
+MULF4
+ADDF4
+ASGNF4
+line 2581
+;2580:
+;2581:		p->accel[0] = crandom()*3;
+ADDRLP4 52
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 36
+ADDP4
+CNSTF4 1077936128
+CNSTF4 1073741824
+ADDRLP4 52
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 2582
+;2582:		p->accel[1] = crandom()*3;
+ADDRLP4 56
+ADDRGP4 rand
+CALLI4
+ASGNI4
+ADDRLP4 0
+INDIRP4
+CNSTI4 40
+ADDP4
+CNSTF4 1077936128
+CNSTF4 1073741824
+ADDRLP4 56
+INDIRI4
+CNSTI4 32767
+BANDI4
+CVIF4 4
+CNSTF4 1191181824
+DIVF4
+CNSTF4 1056964608
+SUBF4
+MULF4
+MULF4
+ASGNF4
+line 2583
+;2583:		p->accel[2] = -PARTICLE_GRAVITY*4.2;
+ADDRLP4 0
+INDIRP4
+CNSTI4 44
+ADDP4
+CNSTF4 3274178560
+ASGNF4
+line 2585
+;2584:	
+;2585:}
+LABELV $1749
+endproc CG_LeiSplash2 60 0
+bss
+export oldtime
+align 4
+LABELV oldtime
+skip 4
+export rup
+align 4
+LABELV rup
+skip 12
+export rright
+align 4
+LABELV rright
+skip 12
+export rforward
+align 4
+LABELV rforward
+skip 12
+export pvup
+align 4
+LABELV pvup
+skip 12
+export pvright
+align 4
+LABELV pvright
+skip 12
+export pvforward
+align 4
+LABELV pvforward
+skip 12
+export particles
+align 4
+LABELV particles
+skip 507904
+export free_particles
+align 4
+LABELV free_particles
+skip 4
+export active_particles
+align 4
+LABELV active_particles
+skip 4
+align 4
+LABELV numShaderAnims
+skip 4
+align 4
+LABELV shaderAnims
+skip 8192
+align 4
+LABELV markTotal
+skip 4
+export cg_freeMarkPolys
+align 4
+LABELV cg_freeMarkPolys
+skip 4
+export cg_activeMarkPolys
+align 4
+LABELV cg_activeMarkPolys
+skip 3120
+import wideAdjustX
+import CG_LaunchFragment
+import trap_GetEntityToken
+import trap_getCameraInfo
+import trap_startCamera
+import trap_loadCamera
+import trap_SnapVector
+import trap_CIN_SetExtents
+import trap_CIN_DrawCinematic
+import trap_CIN_RunCinematic
+import trap_CIN_StopCinematic
+import trap_CIN_PlayCinematic
+import trap_Key_GetKey
+import trap_Key_SetCatcher
+import trap_Key_GetCatcher
+import trap_Key_IsDown
+import trap_R_RegisterFont
+import trap_MemoryRemaining
+import testPrintFloat
+import testPrintInt
+import trap_SetUserCmdValue
+import trap_GetUserCmd
+import trap_GetCurrentCmdNumber
+import trap_GetServerCommand
+import trap_GetSnapshot
+import trap_GetCurrentSnapshotNumber
+import trap_GetGameState
+import trap_GetGlconfig
+import trap_R_RemapShader
+import trap_R_LerpTag
+import trap_R_ModelBounds
+import trap_R_DrawStretchPic
+import trap_R_SetColor
+import trap_R_RenderScene
+import trap_R_LightForPoint
+import trap_R_AddLightToScene
+import trap_R_AddPolysToScene
+import trap_R_AddPolyToScene
+import trap_R_AddRefEntityToScene
+import trap_R_ClearScene
+import trap_R_RegisterShaderNoMip
+import trap_R_RegisterShader
+import trap_R_RegisterSkin
+import trap_R_RegisterModel_MiTech
+import trap_R_RegisterModel
+import trap_R_LoadWorldMap
+import trap_S_StopBackgroundTrack
+import trap_S_StartBackgroundTrack
+import trap_S_RegisterSound_MiTech
+import trap_S_RegisterSound
+import trap_S_Respatialize
+import trap_S_UpdateEntityPosition
+import trap_S_AddRealLoopingSound
+import trap_S_AddLoopingSound
+import trap_S_ClearLoopingSounds
+import trap_S_StartLocalSound
+import trap_S_StopLoopingSound
+import trap_S_StartSound
+import trap_CM_MarkFragments
+import trap_CM_TransformedBoxTrace
+import trap_CM_BoxTrace
+import trap_CM_TransformedPointContents
+import trap_CM_PointContents
+import trap_CM_TempBoxModel
+import trap_CM_InlineModel
+import trap_CM_NumInlineModels
+import trap_CM_LoadMap
+import trap_UpdateScreen
+import trap_SendClientCommand
+import trap_AddCommand
+import trap_SendConsoleCommand
+import trap_System
+import trap_FS_Seek
+import trap_FS_FCloseFile
+import trap_FS_Write
+import trap_FS_Read
+import trap_FS_FOpenFile
+import trap_Args
+import trap_Argv
+import trap_Argc
+import trap_Cvar_VariableStringBuffer
+import trap_Cvar_Set
+import trap_Cvar_Update
+import trap_Cvar_Register
+import trap_Milliseconds
+import trap_Error
+import trap_Print
+import CG_Atmospheric_SetParticles
+import CG_AddAtmosphericEffects
+import teamcolormodels
+import CG_CheckChangedPredictableEvents
+import CG_TransitionPlayerState
+import CG_Respawn
+import CG_PlayBufferedVoiceChats
+import CG_VoiceChatLocal
+import CG_ShaderStateChanged
+import CG_LoadVoiceChats
+import CG_SetConfigValues
+import CG_ParseServerinfo
+import CG_ExecuteNewServerCommands
+import CG_InitConsoleCommands
+import CG_ConsoleCommand
+import CG_DrawOldTourneyScoreboard
+import CG_DrawOldScoreboard
+import CG_DrawInformationRus
+import CG_DrawInformation
+import CG_LoadingClient
+import CG_LoadingItem
+import CG_LoadingString
+import CG_TransitionEntity
+import CG_ProcessSnapshots
+import CG_SpurtBlood
+import CG_MakeExplosion
+import CG_Bleed
+import CG_BigExplode
+import CG_GibPlayer
+import CG_ScorePlum
+import CG_LightningBoltBeam
+import CG_InvulnerabilityJuiced
+import CG_InvulnerabilityImpact
+import CG_ObeliskPain
+import CG_ObeliskExplode
+import CG_KamikazeEffect
+import CG_SpawnEffect
+import CG_BubbleTrail
+import CG_SmokePuff
+import CG_AddLocalEntities
+import CG_AllocLocalEntity
+import CG_InitLocalEntities
+import CG_OutOfAmmoChange
+import CG_DrawWeaponBarNew2
+import CG_DrawWeaponBarNew
+import CG_DrawWeaponBar0
+import CG_DrawWeaponSelect
+import CG_AddRealWeapon
+import CG_AddPlayerWeapon
+import CG_AddViewWeapon
+import CG_GrappleTrail
+import CG_GravitygunTrail
+import CG_PhysgunTrail
+import CG_RailTrail
+import CG_Bullet
+import CG_ShotgunFire
+import CG_MissileHitPlayer
+import CG_MissileHitWall
+import CG_FireWeapon
+import CG_RegisterItemVisuals
+import CG_RegisterWeapon
+import CG_Weapon_f
+import CG_PrevWeapon_f
+import CG_NextWeapon_f
+import CG_PositionRotatedEntityOnTag
+import CG_PositionEntityOnTag
+import CG_AdjustPositionForMover
+import CG_Beam
+import CG_AddPacketEntities
+import CG_SetEntitySoundPosition
+import CG_PainVehicleEvent
+import CG_PainEvent
+import CG_EntityEvent
+import CG_PlaceString
+import CG_CheckEvents
+import CG_ReloadPlayers
+import CG_LoadDeferredPlayers
+import CG_PredictPlayerState
+import CG_Trace
+import CG_PointContents
+import CG_BuildSolidList
+import CG_CustomSound
+import CG_NewClientInfo
+import CG_AddRefEntityWithPowerups
+import CG_ResetPlayerEntity
+import CG_Player
+import CG_AddToGenericConsole
+import CG_StatusHandle
+import CG_OtherTeamHasFlag
+import CG_YourTeamHasFlag
+import CG_GameTypeString
+import CG_CheckOrderPending
+import CG_Text_PaintChar
+import CG_Draw3DModelCopy
+import CG_Draw3DModel
+import CG_GetKillerText
+import CG_GetGameStatusText
+import CG_GetTeamColor
+import CG_InitTeamChat
+import CG_SetPrintString
+import CG_ShowResponseHead
+import CG_RunMenuScript
+import CG_OwnerDrawVisible
+import CG_GetValue
+import CG_SelectNextPlayer
+import CG_SelectPrevPlayer
+import CG_Text_Height
+import CG_Text_Width
+import CG_Text_Paint
+import CG_OwnerDraw
+import CG_DrawTeamBackground
+import CG_DrawFlagModel
+import CG_DrawActive
+import CG_DrawHead
+import CG_CenterPrintRus
+import CG_CenterPrint
+import CG_AddLagometerSnapshotInfo
+import CG_AddLagometerFrameInfo
+import CG_DrawFade
+import CG_Fade
+import teamChat2
+import teamChat1
+import systemChat
+import drawTeamOverlayModificationCount
+import numSortedTeamPlayers
+import sortedTeamPlayers
+import CG_InsideBox
+import CG_DrawTopBottom
+import CG_DrawSides
+import CG_DrawRect
+import UI_DrawProportionalString
+import CG_GetColorForHealth
+import CG_ColorForHealth
+import CG_TileClear
+import CG_TeamColor
+import CG_FadeColor
+import CG_DrawStrlen
+import CG_DrawSmallStringColor
+import CG_DrawSmallString
+import CG_DrawBigStringColor
+import CG_DrawGiantString
+import CG_DrawBigString
+import CG_DrawStringExt
+import CG_DrawString
+import CG_DrawPic
+import CG_DrawRoundedRect
+import CG_FillRect2
+import CG_FillRect
+import CG_AdjustFrom640
+import CG_DrawActiveFrame
+import CG_AddBufferedSound
+import CG_ZoomUp_f
+import CG_ZoomDown_f
+import CG_TestModelPrevSkin_f
+import CG_TestModelNextSkin_f
+import CG_TestModelPrevFrame_f
+import CG_TestModelNextFrame_f
+import CG_TestGun_f
+import CG_TestModel_f
+import CG_CloadMap_f
+import CG_FairCvars
+import SnapVectorTowards
+import CG_RegisterOverlay
+import CG_IsTeamGame
+import CG_BuildSpectatorString
+import CG_SetScoreSelection
+import CG_RankRunFrame
+import CG_EventHandling
+import CG_MouseEvent
+import CG_KeyEvent
+import CG_LoadMenus
+import CG_LastAttacker
+import CG_CrosshairPlayer
+import CG_UpdateCvars
+import CG_StartMusic
+import CG_Error
+import CG_Printf
+import CG_Argv
+import CG_ConfigString
+import CG_Cvar_ClampInt
+import CG_PredictWeaponEffects
+import cg_teamChatBeep
+import cg_chatBeep
+import cg_weaponOrder
+import cg_weaponBarStyle
+import cg_crosshairColorBlue
+import cg_crosshairColorGreen
+import cg_crosshairColorRed
+import cg_ch13size
+import cg_ch13
+import cg_ch12size
+import cg_ch12
+import cg_ch11size
+import cg_ch11
+import cg_ch10size
+import cg_ch10
+import cg_ch9slze
+import cg_ch9size
+import cg_ch9
+import cg_ch8size
+import cg_ch8
+import cg_ch7size
+import cg_ch7
+import cg_ch6size
+import cg_ch6
+import cg_ch5size
+import cg_ch5
+import cg_ch4size
+import cg_ch4
+import cg_ch3size
+import cg_ch3
+import cg_ch2size
+import cg_ch2
+import cg_ch1size
+import cg_ch1
+import cg_differentCrosshairs
+import cg_crosshairPulse
+import cg_atmosphericLevel
+import cg_fragmsgsize
+import cg_autovertex
+import cg_vote_custom_commands
+import cg_cyclegrapple
+import cg_voteflags
+import cg_voip_teamonly
+import cg_hitsound
+import cg_alwaysWeaponBar
+import cl_timeNudge
+import cg_optimizePrediction
+import cg_projectileNudge
+import sv_fps
+import cg_cmdTimeNudge
+import cg_delag
+import cg_enableBreath
+import cg_enableDust
+import cg_obeliskRespawnDelay
+import cg_recordSPDemoName
+import cg_recordSPDemo
+import cg_singlePlayerActive
+import cg_singlePlayer
+import cg_currentSelectedPlayerName
+import cg_currentSelectedPlayer
+import cg_blueTeamName
+import cg_redTeamName
+import cg_music
+import cg_trueLightning
+import cg_oldPlasma
+import cg_cameraEyes_Up
+import cg_cameraEyes_Fwd
+import cg_cameraEyes
+import cg_cameramode
+import cg_leiBrassNoise
+import cg_leiGoreNoise
+import cg_leiEnhancement
+import cg_lodScale
+import cg_letterBoxSize
+import cg_oldRocket
+import cg_oldRail
+import cg_noProjectileTrail
+import cg_noTaunt
+import cg_bigFont
+import cg_smallFont
+import cg_cameraMode
+import cg_timescale
+import cg_timescaleFadeSpeed
+import cg_timescaleFadeEnd
+import cg_cameraOrbitDelay
+import cg_cameraOrbit
+import pmove_float
+import pmove_msec
+import pmove_fixed
+import cg_commonConsole
+import cg_teamChatLines
+import cg_chatLines
+import cg_commonConsoleLines
+import cg_consoleLines
+import cg_teamChatSizeY
+import cg_teamChatSizeX
+import cg_chatSizeY
+import cg_chatSizeX
+import cg_consoleSizeY
+import cg_consoleSizeX
+import cg_fontShadow
+import cg_fontScale
+import cg_consoleTime
+import cg_chatTime
+import cg_newConsole
+import cg_newFont
+import cg_scorePlum
+import cg_noVoiceText
+import cg_noVoiceChats
+import cg_teamChatsOnly
+import cg_drawFriend
+import cg_deferPlayers
+import cg_predictItems
+import cg_blood
+import cg_paused
+import cg_buildScript
+import cg_stats
+import cg_teamChatScaleY
+import cg_teamChatScaleX
+import cg_chatY
+import cg_teamChatY
+import cg_teamChatHeight
+import cg_teamChatTime
+import cg_synchronousClients
+import cg_drawSpeed
+import cg_drawAttacker
+import cg_lagometer
+import cg_thirdPerson
+import cg_thirdPersonAngle
+import cg_thirdPersonRange
+import cg_thirdPersonOffset
+import cg_zoomFov
+import cg_fov
+import cg_simpleItems
+import cg_ignore
+import cg_tracerLength
+import cg_tracerWidth
+import cg_tracerChance
+import cg_viewsize
+import cg_drawGun
+import cg_gun_z
+import cg_gun_y
+import cg_gun_x
+import cg_gun_frame
+import cg_brassTime
+import cg_addMarks
+import cg_footsteps
+import cg_showmiss
+import cg_noPlayerAnims
+import cg_nopredict
+import cg_errorDecay
+import cg_bigheadMode
+import cg_disableLevelStartFade
+import cg_paintballMode
+import cg_railTrailTime
+import cg_debugEvents
+import cg_debugPosition
+import cg_debugAnim
+import cg_animSpeed
+import cg_draw2D
+import cg_drawStatus
+import cg_crosshairScale
+import cg_crosshairY
+import cg_crosshairX
+import cg_teamOverlayUserinfo
+import cg_drawTeamOverlay
+import cg_drawCrosshairNames
+import cg_drawCrosshair
+import cg_drawIcons
+import cg_draw3dIcons
+import cg_drawSnapshot
+import cg_drawFPS
+import cg_drawTimer
+import cg_gibs
+import cg_shadows
+import cg_swingSpeed
+import cg_bobroll
+import cg_bobpitch
+import cg_bobup
+import cg_runroll
+import cg_runpitch
+import cg_drawSyncMessage
+import cg_drawsubtitles
+import cg_centertime
+import cg_gibtime
+import cg_itemstyle
+import cg_oldscoreboard
+import team_legsskin
+import legsskin
+import ui_backcolors
+import cl_screenoffset
+import cg_cameraeyes
+import cg_leiChibi
+import cg_plightradius
+import cg_plightblue
+import cg_plightgreen
+import cg_plightred
+import cg_tolightblue
+import cg_tolightgreen
+import cg_tolightred
+import cg_hetex
+import cg_totex
+import cg_ptex
+import cg_helightblue
+import cg_helightgreen
+import cg_helightred
+import con_notifytime
+import cl_language
+import cg_toolguninfo
+import cg_postprocess
+import cg_hide255
+import sb_texturename
+import sb_texture_view
+import sb_classnum_view
+import toolgun_modelst
+import toolgun_toolmode4
+import toolgun_toolmode3
+import toolgun_toolmode2
+import toolgun_toolmode1
+import toolgun_tooltip4
+import toolgun_tooltip3
+import toolgun_tooltip2
+import toolgun_tooltip1
+import toolgun_tooltext
+import toolgun_toolcmd4
+import toolgun_toolcmd3
+import toolgun_toolcmd2
+import toolgun_toolcmd1
+import toolgun_tool
+import toolgun_mod19
+import toolgun_mod18
+import toolgun_mod17
+import toolgun_mod16
+import toolgun_mod15
+import toolgun_mod14
+import toolgun_mod13
+import toolgun_mod12
+import toolgun_mod11
+import toolgun_mod10
+import toolgun_mod9
+import toolgun_mod8
+import toolgun_mod7
+import toolgun_mod6
+import toolgun_mod5
+import toolgun_mod4
+import toolgun_mod3
+import toolgun_mod2
+import toolgun_mod1
+import cg_weaponBarActiveWidth
+import cg_weaponselecttime
+import cg_itemscaletime
+import cg_zoomtime
+import cg_gibmodifier
+import cg_gibvelocity
+import cg_gibjump
+import cl_giantcharheight
+import cl_giantcharwidth
+import cl_bigcharheight
+import cl_bigcharwidth
+import cl_smallcharheight
+import cl_smallcharwidth
+import cl_propgapwidth
+import cl_propspacewidth
+import cl_propheight
+import cl_propsmallsizescale
+import g_gametype
+import mod_skyColorA
+import mod_skyColorB
+import mod_skyColorG
+import mod_skyColorR
+import mod_skyShader
+import mod_fogColorA
+import mod_fogColorB
+import mod_fogColorG
+import mod_fogColorR
+import mod_fogInterval
+import mod_fogDistance
+import mod_fogShader
+import mod_fogModel
+import mod_zround
+import mod_gravity
+import mod_roundmode
+import mod_overlay
+import mod_slickmove
+import mod_accelerate
+import mod_invulinf
+import mod_kamikazeinf
+import mod_portalinf
+import mod_teleporterinf
+import mod_medkitinf
+import mod_medkitlimit
+import mod_teamblue_firespeed
+import mod_teamred_firespeed
+import mod_invulmove
+import mod_ammolimit
+import mod_noplayerclip
+import mod_doublerfirespeed
+import mod_guardfirespeed
+import mod_scoutfirespeed
+import mod_ammoregenfirespeed
+import mod_hastefirespeed
+import mod_amdelay
+import mod_ftdelay
+import mod_cgdelay
+import mod_pldelay
+import mod_ngdelay
+import mod_bfgdelay
+import mod_rgdelay
+import mod_pgdelay
+import mod_lgdelay
+import mod_rldelay
+import mod_gldelay
+import mod_sgdelay
+import mod_mgdelay
+import mod_gdelay
+import mod_jumpheight
+import mod_sgspread
+import mod_sgcount
+import mod_lgrange
+import mod_cgspread
+import mod_mgspread
+export cg_markPolys
+align 4
+LABELV cg_markPolys
+skip 12779520
+import cg_items
+import cg_weapons
+import cg_entities
+import cg
+import cgs
+import BG_TeamName
+import BG_GetVehicleSettings
+import BG_VehicleCheckClass
+import BG_PlayerTouchesItem
+import BG_PlayerStateToEntityStateExtraPolate
+import BG_PlayerStateToEntityState
+import BG_TouchJumpPad
+import BG_AddPredictableEventToPlayerstate
+import BG_EvaluateTrajectoryDelta
+import BG_EvaluateTrajectory
+import BG_DefragmentMemory
+import BG_Free
+import BG_InitMemory
+import BG_Alloc
+import BG_CanAlloc
+import BG_CanItemBeGrabbed
+import BG_FindItemForBackpack
+import BG_FindItemForHoldable
+import BG_FindItemForPowerup
+import BG_FindItemForWeapon
+import BG_FindSwepAmmo
+import BG_FindSwep
+import BG_FindItem
+import bg_numItems
+import bg_itemlist
+import Pmove
+import PM_UpdateViewAngles
+import COM_LoadLevelScores
+import COM_CalculatePlayerScore
+import Com_Printf
+import Com_Error
+import Info_NextPair
+import Info_Validate
+import Info_SetValueForKey_Big
+import Info_SetValueForKey
+import Info_RemoveKey_big
+import Info_RemoveKey
+import Info_ValueForKey
+import vectoyaw
+import AngleDifference
+import Com_TruncateLongString
+import va
+import Q_CountChar
+import Q_CleanStr
+import Q_PrintStrlen
+import Q_strcat
+import Q_strncpyz
+import Q_stristr
+import Q_strupr
+import Q_strlwr
+import Q_stricmpn
+import Q_strncmp
+import Q_stricmp
+import Q_isalpha
+import Q_isupper
+import Q_islower
+import Q_isprint
+import Com_RandomBytes
+import Com_SkipCharset
+import Com_SkipTokens
+import Com_sprintf
+import Parse3DMatrix
+import Parse2DMatrix
+import Parse1DMatrix
+import SkipRestOfLine
+import SkipBracedSection
+import COM_MatchToken
+import COM_ParseWarning
+import COM_ParseError
+import COM_Compress
+import COM_ParseExt
+import COM_Parse
+import COM_GetCurrentParseLine
+import COM_BeginParseSession
+import COM_DefaultExtension
+import COM_StripExtension
+import COM_GetExtension
+import COM_SkipPath
+import Com_Clamp
+import Q_isnan
+import PerpendicularVector
+import AngleVectors
+import MatrixMultiply
+import MakeNormalVectors
+import RotateAroundDirection
+import RotatePointAroundVector
+import ProjectPointOnPlane
+import PlaneFromPoints
+import AngleDelta
+import AngleNormalize180
+import AngleNormalize360
+import AnglesSubtract
+import AngleSubtract
+import LerpAngle
+import AngleMod
+import BoundsIntersectPoint
+import BoundsIntersectSphere
+import BoundsIntersect
+import BoxOnPlaneSide
+import SetPlaneSignbits
+import AxisCopy
+import AxisClear
+import Lerp
+import VelocityToAxis
+import AnglesToAxis
+import vectoangles
+import Q_crandom
+import Q_random
+import Q_rand
+import Q_acos
+import Q_log2
+import VectorRotate
+import Vector4Scale
+import VectorNormalize2
+import VectorNormalize
+import CrossProduct
+import VectorInverse
+import VectorNormalizeFast
+import DistanceSquared
+import Distance
+import VectorLengthSquared
+import VectorLength
+import VectorCompare
+import AddPointToBounds
+import ClearBounds
+import RadiusFromBounds
+import NormalizeColor
+import ColorBytes4
+import ColorBytes3
+import _VectorMA
+import _VectorScale
+import _VectorCopy
+import _VectorAdd
+import _VectorSubtract
+import _DotProduct
+import ByteToDir
+import DirToByte
+import ClampShort
+import ClampChar
+import Q_rsqrt
+import Q_fabs
+import axisDefault
+import vec3_origin
+import g_color_table
+import colorDkGrey
+import colorMdGrey
+import colorLtGrey
+import colorWhite
+import colorCyan
+import colorMagenta
+import colorYellow
+import colorBlue
+import colorGreen
+import colorRed
+import colorBlack
+import bytedirs
+import Hunk_Alloc
+import FloatSwap
+import LongSwap
+import ShortSwap
+import acos
+import fabs
+import abs
+import tan
+import atan2
+import cos
+import sin
+import sqrt
+import floor
+import ceil
+import memcpy
+import memset
+import memmove
+import sscanf
+import Q_snprintf
+import Q_vsnprintf
+import strtol
+import _atoi
+import atoi
+import strtod
+import _atof
+import atof
+import toupper
+import tolower
+import strncpy
+import strstr
+import strrchr
+import strchr
+import strcmp
+import strcpy
+import strcat
+import ifstrlenru
+import strlenru
+import strlen
+import rand
+import srand
+import qsort
+lit
+align 1
+LABELV $1643
+byte 1 67
+byte 1 71
+byte 1 95
+byte 1 66
+byte 1 108
+byte 1 111
+byte 1 111
+byte 1 100
+byte 1 80
+byte 1 111
+byte 1 111
+byte 1 108
+byte 1 32
+byte 1 112
+byte 1 115
+byte 1 104
+byte 1 97
+byte 1 100
+byte 1 101
+byte 1 114
+byte 1 32
+byte 1 61
+byte 1 61
+byte 1 32
+byte 1 90
+byte 1 69
+byte 1 82
+byte 1 79
+byte 1 33
+byte 1 10
+byte 1 0
+align 1
+LABELV $1589
+byte 1 67
+byte 1 71
+byte 1 95
+byte 1 79
+byte 1 105
+byte 1 108
+byte 1 83
+byte 1 108
+byte 1 105
+byte 1 99
+byte 1 107
+byte 1 82
+byte 1 101
+byte 1 118
+byte 1 111
+byte 1 118
+byte 1 101
+byte 1 32
+byte 1 78
+byte 1 85
+byte 1 76
+byte 1 76
+byte 1 32
+byte 1 105
+byte 1 100
+byte 1 10
+byte 1 0
+align 1
+LABELV $1575
+byte 1 67
+byte 1 71
+byte 1 95
+byte 1 80
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 105
+byte 1 99
+byte 1 108
+byte 1 101
+byte 1 95
+byte 1 79
+byte 1 105
+byte 1 108
+byte 1 83
+byte 1 108
+byte 1 105
+byte 1 99
+byte 1 107
+byte 1 32
+byte 1 61
+byte 1 61
+byte 1 32
+byte 1 90
+byte 1 69
+byte 1 82
+byte 1 79
+byte 1 33
+byte 1 10
+byte 1 0
+align 1
+LABELV $1567
+byte 1 67
+byte 1 71
+byte 1 95
+byte 1 80
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 105
+byte 1 99
+byte 1 108
+byte 1 101
+byte 1 95
+byte 1 79
+byte 1 105
+byte 1 108
+byte 1 80
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 105
+byte 1 99
+byte 1 108
+byte 1 101
+byte 1 32
+byte 1 61
+byte 1 61
+byte 1 32
+byte 1 90
+byte 1 69
+byte 1 82
+byte 1 79
+byte 1 33
+byte 1 10
+byte 1 0
+align 1
+LABELV $1553
+byte 1 67
+byte 1 71
+byte 1 95
+byte 1 80
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 105
+byte 1 99
+byte 1 108
+byte 1 101
+byte 1 95
+byte 1 66
+byte 1 108
+byte 1 101
+byte 1 101
+byte 1 100
+byte 1 32
+byte 1 112
+byte 1 115
+byte 1 104
+byte 1 97
+byte 1 100
+byte 1 101
+byte 1 114
+byte 1 32
+byte 1 61
+byte 1 61
+byte 1 32
+byte 1 90
+byte 1 69
+byte 1 82
+byte 1 79
+byte 1 33
+byte 1 10
+byte 1 0
+align 1
+LABELV $1543
+byte 1 67
+byte 1 71
+byte 1 95
+byte 1 80
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 105
+byte 1 99
+byte 1 108
+byte 1 101
+byte 1 73
+byte 1 109
+byte 1 112
+byte 1 97
+byte 1 99
+byte 1 116
+byte 1 83
+byte 1 109
+byte 1 111
+byte 1 107
+byte 1 101
+byte 1 80
+byte 1 117
+byte 1 102
+byte 1 102
+byte 1 32
+byte 1 112
+byte 1 115
+byte 1 104
+byte 1 97
+byte 1 100
+byte 1 101
+byte 1 114
+byte 1 32
+byte 1 61
+byte 1 61
+byte 1 32
+byte 1 90
+byte 1 69
+byte 1 82
+byte 1 79
+byte 1 33
+byte 1 10
+byte 1 0
+align 1
+LABELV $1483
+byte 1 67
+byte 1 71
+byte 1 95
+byte 1 80
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 105
+byte 1 99
+byte 1 108
+byte 1 101
+byte 1 69
+byte 1 120
+byte 1 112
+byte 1 108
+byte 1 111
+byte 1 115
+byte 1 105
+byte 1 111
+byte 1 110
+byte 1 58
+byte 1 32
+byte 1 117
+byte 1 110
+byte 1 107
+byte 1 110
+byte 1 111
+byte 1 119
+byte 1 110
+byte 1 32
+byte 1 97
+byte 1 110
+byte 1 105
+byte 1 109
+byte 1 97
+byte 1 116
+byte 1 105
+byte 1 111
+byte 1 110
+byte 1 32
+byte 1 115
+byte 1 116
+byte 1 114
+byte 1 105
+byte 1 110
+byte 1 103
+byte 1 58
+byte 1 32
+byte 1 37
+byte 1 115
+byte 1 10
+byte 1 0
+align 1
+LABELV $1474
+byte 1 67
+byte 1 71
+byte 1 95
+byte 1 80
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 105
+byte 1 99
+byte 1 108
+byte 1 101
+byte 1 69
+byte 1 120
+byte 1 112
+byte 1 108
+byte 1 111
+byte 1 115
+byte 1 105
+byte 1 111
+byte 1 110
+byte 1 58
+byte 1 32
+byte 1 97
+byte 1 110
+byte 1 105
+byte 1 109
+byte 1 83
+byte 1 116
+byte 1 114
+byte 1 32
+byte 1 105
+byte 1 115
+byte 1 32
+byte 1 112
+byte 1 114
+byte 1 111
+byte 1 98
+byte 1 97
+byte 1 98
+byte 1 108
+byte 1 121
+byte 1 32
+byte 1 97
+byte 1 110
+byte 1 32
+byte 1 105
+byte 1 110
+byte 1 100
+byte 1 101
+byte 1 120
+byte 1 32
+byte 1 114
+byte 1 97
+byte 1 116
+byte 1 104
+byte 1 101
+byte 1 114
+byte 1 32
+byte 1 116
+byte 1 104
+byte 1 97
+byte 1 110
+byte 1 32
+byte 1 97
+byte 1 32
+byte 1 115
+byte 1 116
+byte 1 114
+byte 1 105
+byte 1 110
+byte 1 103
+byte 1 0
+align 1
+LABELV $1455
+byte 1 67
+byte 1 71
+byte 1 95
+byte 1 80
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 105
+byte 1 99
+byte 1 108
+byte 1 101
+byte 1 83
+byte 1 109
+byte 1 111
+byte 1 107
+byte 1 101
+byte 1 32
+byte 1 61
+byte 1 61
+byte 1 32
+byte 1 90
+byte 1 69
+byte 1 82
+byte 1 79
+byte 1 33
+byte 1 10
+byte 1 0
+align 1
+LABELV $1434
+byte 1 67
+byte 1 71
+byte 1 95
+byte 1 80
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 105
+byte 1 99
+byte 1 108
+byte 1 101
+byte 1 83
+byte 1 110
+byte 1 111
+byte 1 119
+byte 1 32
+byte 1 112
+byte 1 115
+byte 1 104
+byte 1 97
+byte 1 100
+byte 1 101
+byte 1 114
+byte 1 32
+byte 1 61
+byte 1 61
+byte 1 32
+byte 1 90
+byte 1 69
+byte 1 82
+byte 1 79
+byte 1 33
+byte 1 10
+byte 1 0
+align 1
+LABELV $1419
+byte 1 67
+byte 1 71
+byte 1 95
+byte 1 80
+byte 1 97
+byte 1 114
+byte 1 116
+byte 1 105
+byte 1 99
+byte 1 108
+byte 1 101
+byte 1 83
+byte 1 110
+byte 1 111
+byte 1 119
+byte 1 70
+byte 1 108
+byte 1 117
+byte 1 114
+byte 1 114
+byte 1 121
+byte 1 32
+byte 1 112
+byte 1 115
+byte 1 104
+byte 1 97
+byte 1 100
+byte 1 101
+byte 1 114
+byte 1 32
+byte 1 61
+byte 1 61
+byte 1 32
+byte 1 90
+byte 1 69
+byte 1 82
+byte 1 79
+byte 1 33
+byte 1 10
+byte 1 0
+align 1
+LABELV $294
+byte 1 37
+byte 1 115
+byte 1 37
+byte 1 105
+byte 1 0
+align 1
+LABELV $276
+byte 1 101
+byte 1 120
+byte 1 112
+byte 1 108
+byte 1 111
+byte 1 100
+byte 1 101
+byte 1 49
+byte 1 0
+align 1
+LABELV $109
+byte 1 67
+byte 1 71
+byte 1 95
+byte 1 73
+byte 1 109
+byte 1 112
+byte 1 97
+byte 1 99
+byte 1 116
+byte 1 77
+byte 1 97
+byte 1 114
+byte 1 107
+byte 1 32
+byte 1 99
+byte 1 97
+byte 1 108
+byte 1 108
+byte 1 101
+byte 1 100
+byte 1 32
+byte 1 119
+byte 1 105
+byte 1 116
+byte 1 104
+byte 1 32
+byte 1 60
+byte 1 61
+byte 1 32
+byte 1 48
+byte 1 32
+byte 1 114
+byte 1 97
+byte 1 100
+byte 1 105
+byte 1 117
+byte 1 115
+byte 1 0
+align 1
+LABELV $92
+byte 1 67
+byte 1 71
+byte 1 95
+byte 1 70
+byte 1 114
+byte 1 101
+byte 1 101
+byte 1 76
+byte 1 111
+byte 1 99
+byte 1 97
+byte 1 108
+byte 1 69
+byte 1 110
+byte 1 116
+byte 1 105
+byte 1 116
+byte 1 121
+byte 1 58
+byte 1 32
+byte 1 110
+byte 1 111
+byte 1 116
+byte 1 32
+byte 1 97
+byte 1 99
+byte 1 116
+byte 1 105
+byte 1 118
+byte 1 101
+byte 1 0

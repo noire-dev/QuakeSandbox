@@ -328,7 +328,7 @@ static cvarTable_t		cvarTable[] = {
 
 	{ &ui_scrollbtnsize, "ui_scrollbtnsize", "1", 	 CVAR_ARCHIVE },
 
-	{ &ui_3dmap, "ui_3dmap", "uimap_1", CVAR_ARCHIVE },
+	{ &ui_3dmap, "ui_3dmap", "", CVAR_ARCHIVE },
 
 	{ &ui_singlemode, "ui_singlemode", "0", CVAR_ARCHIVE },
 	{ &ui_loaded, "ui_loaded", "0", 0 },
