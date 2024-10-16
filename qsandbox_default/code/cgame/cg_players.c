@@ -407,7 +407,7 @@ static qboolean	CG_RegisterClientSkin( clientInfo_t *ci, const char *modelName, 
 	ci->headSkin = trap_R_RegisterSkin( filename );
 	if (!ci->headSkin) {
 		Com_sprintf( filename, sizeof( filename ), "models/players/%s/head_%s", headModelName, headSkinName );
-		ci->torsoShader = trap_R_RegisterShader( filename );
+		ci->headShader = trap_R_RegisterShader( filename );
 	}
 
 	// if one skin loaded
