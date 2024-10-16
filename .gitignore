@@ -6,5 +6,7 @@ milab/mitechui.dat
 milab/q3key
 pk3cache.dat
 milab/q3history
-qsandbox_default/windows
-qsandbox_default/linux
+/qsandbox_default/windows
+/qsandbox_default/linux
+/qsandbox_default/linux/build
+*.asm

@@ -1523,13 +1523,13 @@ qboolean UI_RegisterClientModelname( modelAnim_t* m)
 	}
 
 	// this is the body part of the model
-	UI_RegisterClientSkin( pi, bodyName, skinBodyName, qfalse, qfalse, qtrue );
+	//UI_RegisterClientSkin( pi, bodyName, skinBodyName, qfalse, qfalse, qtrue );
 
 	// and this is the head part of the model
 	UI_RegisterClientSkin( pi, headName, skinHeadName, qtrue, qfalse, qfalse );
 	
 	// and this is the legs part of the model
-	UI_RegisterClientSkin( pi, legsName, skinLegsName, qfalse, qtrue, qfalse );
+	//UI_RegisterClientSkin( pi, legsName, skinLegsName, qfalse, qtrue, qfalse );
 
 	// load the animations
 	// always for the body, never the head!
