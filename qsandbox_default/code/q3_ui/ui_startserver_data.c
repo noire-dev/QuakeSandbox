@@ -38,6 +38,10 @@ char* gametype_cvar_base[NUM_GAMETYPES] = {
 const char* idmap_list[] = {
 	"gm_construct",
 	"gm_flatgrass",
+	"gm_bigconstruct",
+	"qs_construct",
+	"qs_flatgrass",
+	"qs_bigconstruct",
 	0
 };
 
