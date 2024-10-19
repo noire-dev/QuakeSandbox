@@ -446,7 +446,3 @@ qboolean trap_GetEntityToken( char *buffer, int bufferSize ) {
 qboolean trap_R_inPVS( const vec3_t p1, const vec3_t p2 ) {
 	return syscall( CG_R_INPVS, p1, p2 );
 }
-
-int		trap_CM_PointShader( const vec3_t p, clipHandle_t model ) {
-	return syscall( CG_CM_POINTSHADER, p, model );
-}
