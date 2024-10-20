@@ -1616,7 +1616,6 @@ if ( cg.snap->ps.pm_type == PM_CUTSCENE ) {
 		1.0 - parent->backlerp, "tag_weapon");
 	VectorCopy(parent->origin, gun.origin);
 
-	if ( strcmp( ci->modelName, "voxel" ) && strcmp( ci->modelName, "voxel_slim" ) ) {
 	VectorMA(gun.origin, lerped.origin[0], parent->axis[0], gun.origin);
 
 	// Make weapon appear left-handed for 2 and centered for 3
@@ -1628,7 +1627,7 @@ if ( cg.snap->ps.pm_type == PM_CUTSCENE ) {
 	VectorMA(gun.origin, lerped.origin[2], parent->axis[2], gun.origin);
 
 	MatrixMultiply(lerped.axis, ((refEntity_t *)parent)->axis, gun.axis);
-	}
+
 	gun.backlerp = parent->backlerp;
 
 	CG_AddWeaponWithPowerups( &gun, cent->currentState.powerups );
