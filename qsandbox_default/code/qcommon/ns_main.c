@@ -118,68 +118,6 @@ char* NS_Parse(char** p) {
 
 /*
 ###############
-Выражения
-###############
-*/
-
-float NS_evaluateExpression(const char* expr) {
-    float result = 0;
-    float currentNumber = 0;
-    char operation = '+'; // Начинаем с операции сложения
-    int i;
-
-    for (i = 0; expr[i] != '\0'; ++i) {
-        char currentChar = expr[i];
-
-        if (isdigit(currentChar)) {
-            currentNumber = currentNumber * 10 + (currentChar - '0'); // Обработка многозначных чисел
-        }
-
-        // Если текущий символ - оператор или последний символ строки
-        if (!isdigit(currentChar) && currentChar != ' ' || expr[i + 1] == '\0') {
-            switch (operation) {
-                case '+': result += currentNumber; break;
-                case '-': result -= currentNumber; break;
-                case '*': result *= currentNumber; break;
-                case '/': 
-                    if (currentNumber != 0) {
-                        result /= currentNumber; 
-                    } else {
-                        Com_Printf("Error: divide by zero\n");
-                        return 0.0;
-                    }
-                    break;
-            }
-            currentNumber = 0; // Сбрасываем текущее число
-            operation = currentChar; // Устанавливаем текущую операцию
-        }
-    }
-    return result;
-}
-
-void* NS_calculate(const char* expression, VarType type) {
-    float result = NS_evaluateExpression(expression);
-
-    if (type == TYPE_INT) {
-        int* intResult = (int*)Q_malloc(sizeof(int));
-        *intResult = (int)result;
-        return intResult;
-    } else if (type == TYPE_FLOAT) {
-        float* floatResult = (float*)Q_malloc(sizeof(float));
-        *floatResult = result;
-        return floatResult;
-    } else if (type == TYPE_CHAR) {
-        char* charResult = (char*)Q_malloc(sizeof(char));
-        *charResult = (char)result; // Приводим к char
-        return charResult;
-    } else {
-        Com_Printf("Error: Unsupported type\n");
-        return NULL;
-    }
-}
-
-/*
-###############
 Переменные
 ###############
 */
@@ -237,6 +175,95 @@ Variable* find_variable(const char *name) {
 
 /*
 ###############
+Выражения
+###############
+*/
+
+float NS_evaluateExpression(const char* expr) {
+    float result = 0;
+    float currentNumber = 0;
+    char operation = '+'; // Начинаем с операции сложения
+    int i;
+    Variable* var;
+
+    for (i = 0; expr[i] != '\0'; ++i) {
+        char currentChar = expr[i];
+
+        if (isdigit(currentChar)) {
+            currentNumber = currentNumber * 10 + (currentChar - '0'); // Обработка многозначных чисел
+        }
+
+        // Обработка переменных
+        else if (isalpha(currentChar)) {
+            char varName[100]; // Предполагаем, что имя переменной не превышает 99 символов
+            int j = 0;
+
+            // Считываем имя переменной
+            while (isalnum(currentChar) || currentChar == '_') {
+                varName[j++] = currentChar;
+                currentChar = expr[++i];
+            }
+            varName[j] = '\0'; // Завершаем строку
+
+            // Находим переменную
+            var = find_variable(varName);
+            if (var != NULL) {
+                // Используем значение переменной в зависимости от её типа
+                if (var->type == TYPE_INT) { // int
+                    currentNumber = (float)var->value.i;
+                } else if (var->type == TYPE_FLOAT) { // float
+                    currentNumber = var->value.f;
+                }
+            } else {
+                Com_Printf("Warning: variable '%s' not found\n", varName);
+                currentNumber = 0; // Вернуть 0
+            }
+
+            // Сдвиг индекса, чтобы не обрабатывать текущий символ ещё раз
+            --i; // Уменьшаем i, чтобы вернуться к текущему символу
+        }
+
+        // Если текущий символ - оператор или последний символ строки
+        if (!isdigit(currentChar) && currentChar != ' ' || expr[i + 1] == '\0') {
+            switch (operation) {
+                case '+': result += currentNumber; break;
+                case '-': result -= currentNumber; break;
+                case '*': result *= currentNumber; break;
+                case '/': 
+                    if (currentNumber != 0) {
+                        result /= currentNumber; 
+                    } else {
+                        Com_Printf("Error: divide by zero\n");
+                        return 0.0;
+                    }
+                    break;
+            }
+            currentNumber = 0; // Сбрасываем текущее число
+            operation = currentChar; // Устанавливаем текущую операцию
+        }
+    }
+    return result;
+}
+
+void* NS_calculate(const char* expression, VarType type) {
+    float result = NS_evaluateExpression(expression);
+
+    if (type == TYPE_INT) {
+        int* intResult = (int*)Q_malloc(sizeof(int));
+        *intResult = (int)result;
+        return intResult;
+    } else if (type == TYPE_FLOAT) {
+        float* floatResult = (float*)Q_malloc(sizeof(float));
+        *floatResult = result;
+        return floatResult;
+    } else {
+        Com_Printf("Error: Unsupported type\n");
+        return NULL;
+    }
+}
+
+/*
+###############
 Функции
 ###############
 */
@@ -288,7 +315,13 @@ void NS_ExecuteScript(char* script) {
                     // Устанавливаем значение переменной в зависимости от её типа
                     switch (resultType) {
                         case TYPE_INT: {
-                            resultValue.i = (int)NS_calculate(valueToken, TYPE_INT); // Преобразуем строку в int
+                            int* temp = (int*)NS_calculate(valueToken, TYPE_INT);
+                            if (temp) {
+                                resultValue.i = *temp;
+                                Q_free(temp);
+                            } else {
+                                Com_Printf("Variable %s: Initial value error.", varName);
+                            }
                             break;
                         }
                         case TYPE_FLOAT: {
@@ -302,7 +335,7 @@ void NS_ExecuteScript(char* script) {
                             break;
                         }
                         case TYPE_CHAR: { // Для char мы можем использовать строку
-                            CopyAllocLen(resultValue.c, (char*)NS_calculate(valueToken, TYPE_CHAR));
+                            CopyAllocLen(resultValue.c, valueToken);
                             break;
                         }
                     }

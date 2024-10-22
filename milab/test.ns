@@ -1,7 +1,9 @@
-char word = "eatmyshit"
+char word = eatmyshit
 float loh = 16+2*4
-int number = 122
+int number = 25
+int summa = number+1+number+loh
 
 word
 loh
 number
+summa
