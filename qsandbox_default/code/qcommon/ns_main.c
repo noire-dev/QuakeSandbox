@@ -195,7 +195,7 @@ float NS_evaluateExpression(const char* expr) {
 
         // Обработка переменных
         else if (isalpha(currentChar)) {
-            char varName[100]; // Предполагаем, что имя переменной не превышает 99 символов
+            char varName[MAX_VAR_NAME]; // Предполагаем, что имя переменной не превышает 99 символов
             int j = 0;
 
             // Считываем имя переменной

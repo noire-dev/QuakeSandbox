@@ -28,6 +28,7 @@
 
 #define MAX_FILE_SIZE 1024*30   //Макс длина скрипта
 #define MAX_VARS      10        //Макс переменных
+#define MAX_VAR_NAME  32        //Макс имя переменной
 //#define NS_DEBUG_TOKEN        //Дебаг токенов
 
 /*
