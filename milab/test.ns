@@ -1,6 +1,6 @@
 char word = "eatmyshit"
 float loh = 16+2*4
-int number = 1488
+int number = 122
 
 word
 loh
