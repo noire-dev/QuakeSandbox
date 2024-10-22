@@ -76,6 +76,7 @@ copy  ..\..\..\code\game\g_syscalls.asm ..
 
 %cc%  ../../../code/qcommon/q_math.c
 %cc%  ../../../code/qcommon/q_shared.c
+%cc%  ../../../code/qcommon/ns_main.c
 
 echo -----------------
 echo game.qvm compiled
@@ -146,6 +147,7 @@ copy  ..\..\..\code\cgame\cg_syscalls.asm ..
 
 %cc%  ../../../code/qcommon/q_math.c
 %cc%  ../../../code/qcommon/q_shared.c
+%cc%  ../../../code/qcommon/ns_main.c
 
 %cc%  ../../../code/ui/ui_shared.c
 
@@ -252,6 +254,7 @@ copy  ..\..\..\code\ui\ui_syscalls.asm ..
 
 %cc%  ../../../code/qcommon/q_math.c
 %cc%  ../../../code/qcommon/q_shared.c
+%cc%  ../../../code/qcommon/ns_main.c
 
 echo -----------------
 echo ui.qvm compiled

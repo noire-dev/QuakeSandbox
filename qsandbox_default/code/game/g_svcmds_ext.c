@@ -747,3 +747,23 @@ void Svcmd_HideSandObj_f( void )
   trap_SetConfigstring(CS_SHADERSTATE, BuildShaderStateConfig());
 }
 
+/*
+============
+Svcmd_NS_OpenScript_f
+Opens Noire.Script file
+============
+*/
+void Svcmd_NS_OpenScript_f( void )
+{
+	int    i;
+	char   filename[256];
+	if( trap_Argc( ) == 1 ){
+		G_Printf( "usage: ns_openscript <filename>\n" );
+		return;
+	}
+  
+	trap_Argv( 1, filename, sizeof( filename ) );
+  
+	NS_OpenScript(filename);
+
+}

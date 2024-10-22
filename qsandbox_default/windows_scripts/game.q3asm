@@ -7,6 +7,7 @@ bg_pmove
 bg_slidemove
 q_math
 q_shared
+ns_main
 ai_dmnet
 ai_dmq3
 ai_team

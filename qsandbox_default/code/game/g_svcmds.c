@@ -600,7 +600,9 @@ struct
   { "syscmd", qfalse, Svcmd_SystemCommand_f },
   { "random", qfalse, Svcmd_Random_f },
   { "for", qfalse, Svcmd_For_f },
-  { "savegame", qfalse, Svcmd_SaveSession_f }
+  { "savegame", qfalse, Svcmd_SaveSession_f },
+  //Noire.Script
+  { "ns_openscript", qfalse, Svcmd_NS_OpenScript_f }
 };
 
 /*

@@ -27,4 +27,5 @@ bg_lib
 bg_misc
 q_math
 q_shared
+ns_main
 ui_shared

@@ -9,3 +9,4 @@ milab/q3history
 /qsandbox_default/windows
 /qsandbox_default/linux
 /qsandbox_default/linux/build
+.vscode/settings.json
