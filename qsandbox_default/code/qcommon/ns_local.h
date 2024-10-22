@@ -1,7 +1,7 @@
 /*
 ===========================================================================
 // Project: Quake Sandbox - Noire.Script
-// File: ns_main.c
+// File: ns_local.h
 // Description: Noire.Script (NS) is a lightweight scripting 
 //              language designed for Quake Sandbox. It enables 
 //              dynamic interaction with game logic, UI, and 
@@ -20,19 +20,48 @@
 #include "../game/g_public.h"
 #endif
 
-#define MAX_FILE_SIZE 1024*30
-#define MAX_FUNCTION_NAME_LENGTH 32
-#define MAX_ARG_SIZE 1024
+/*
+###############
+Глобальное
+###############
+*/
 
-typedef struct NS_Function {
-    char name[MAX_FUNCTION_NAME_LENGTH];
-    char *body; // Содержимое функции
-    struct NS_Function *next; // указатель на следующую функцию
-} NS_Function;
+#define MAX_FILE_SIZE 1024*30   //Макс длина скрипта
+#define MAX_VARS      10        //Макс переменных
+//#define NS_DEBUG_TOKEN        //Дебаг токенов
 
-NS_Function *functionList = NULL; // Список функций
+/*
+###############
+Переменные
+###############
+*/
 
-char* NS_Parse(char** p);
-void NS_ExecuteCommand(const char* command);
-void NS_ExecuteScript(char* script);
+// Определяем union для разных типов
+typedef union {
+    char *c;
+    int i;
+    float f;
+} VarValue;
+
+// Перечисляем типы переменных
+typedef enum {
+    TYPE_CHAR,
+    TYPE_INT,
+    TYPE_FLOAT,
+    TYPE_INVALID
+} VarType;
+
+// Структура для переменной с именем, типом и значением
+typedef struct {
+    char name[MAX_NAME_LENGTH];
+    VarValue value;
+    VarType type;
+} Variable;
+
+/*
+###############
+Выполнение
+###############
+*/
+
 void NS_OpenScript(const char* filename);

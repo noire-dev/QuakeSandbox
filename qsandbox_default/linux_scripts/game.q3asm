@@ -8,6 +8,7 @@ bg_slidemove
 q_math
 q_shared
 ns_main
+ns_func
 ai_dmnet
 ai_dmq3
 ai_team

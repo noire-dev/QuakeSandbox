@@ -509,6 +509,40 @@ typedef struct {
 } while(0)
 #endif
 
+#ifdef QAGAME
+#define CopyAllocLen(dest, src) do {\
+    dest = (char*)BG_Alloc(strlen(src) + 1); \
+    if (dest != NULL) { \
+        strcpy(dest, src); \
+    } \
+} while(0)
+#endif
+#ifdef Q3_UI
+#define CopyAllocLen(dest, src) do {\
+    dest = (char*)UI_Alloc(strlen(src) + 1); \
+    if (dest != NULL) { \
+        strcpy(dest, src); \
+    } \
+} while(0)
+#endif
+
+#ifdef QAGAME
+#define Q_malloc(size) BG_Alloc(size)
+#endif
+
+#ifdef Q3_UI
+#define Q_malloc(size) UI_Alloc(size)
+#endif
+
+#ifdef QAGAME
+#define Q_free(ptr) BG_Free(ptr)
+#endif
+
+#ifdef Q3_UI
+#define Q_free(ptr) UI_Free(ptr)
+#endif
+
+
 #define	SnapVector(v) {v[0]=((int)(v[0]));v[1]=((int)(v[1]));v[2]=((int)(v[2]));}
 // just in case you do't want to use the macros
 vec_t _DotProduct( const vec3_t v1, const vec3_t v2 );

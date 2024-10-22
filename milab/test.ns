@@ -1,13 +1,7 @@
-//Script example
-/*
-print com test
-print 444
-*/
+char word = "eatmyshit"
+float loh = 16+2*4
+int number = 1488
 
-print hi
-print lol idk
-print 12
-23
-24
-67
-print "hihihiha"
+word
+loh
+number

@@ -75,6 +75,7 @@ $cc ../../../code/game/g_weapon.c
 $cc ../../../code/qcommon/q_math.c
 $cc ../../../code/qcommon/q_shared.c
 $cc ../../../code/qcommon/ns_main.c
+$cc ../../../code/qcommon/ns_func.c
 
 echo "-----------------"
 echo "game.qvm compiled"
@@ -143,7 +144,6 @@ cp ../../../code/cgame/cg_syscalls.asm ..
 
 $cc ../../../code/qcommon/q_math.c
 $cc ../../../code/qcommon/q_shared.c
-$cc ../../../code/qcommon/ns_main.c
 
 $cc ../../../code/ui/ui_shared.c
 
@@ -249,6 +249,7 @@ $cc ../../../code/game/bg_misc.c
 $cc ../../../code/qcommon/q_math.c
 $cc ../../../code/qcommon/q_shared.c
 $cc ../../../code/qcommon/ns_main.c
+$cc ../../../code/qcommon/ns_func.c
 
 echo "-----------------"
 echo "ui.qvm compiled"
