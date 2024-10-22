@@ -20,81 +20,105 @@ char* NS_Parse(char** p) {
     char* token;
     char* s = *p;
 
-    // Skip spaces and comments
+    // Пропустим пробелы
     while (*s) {
-        // Skip whitespace
+        // Пропустим \t
         while (*s && (*s == ' ' || *s == '\t')) {
             s++;
         }
 
-        // Check for single-line comment
+        // Проверяем одно-строчный комент
         if (s[0] == '/' && s[1] == '/') {
-            while (*s && *s != '\n') { // Skip to the end of the line
+            while (*s && *s != '\n') { // Пропустим /n
                 s++;
             }
-            continue; // Go back to the while loop to check for more tokens
+            continue; // Идем дальше собирать токены
         }
 
-        // Check for multi-line comment
+        // Проверяем много-строчный комент
         if (s[0] == '/' && s[1] == '*') {
-            s += 2; // Move past '/*'
+            s += 2; // Двигаемся отсюда и скипаем абсолютно все '/*'
             while (*s) {
                 if (s[0] == '*' && s[1] == '/') {
-                    s += 2; // Move past '*/'
-                    break; // End of comment block
+                    s += 2; // Пока не придем сюда '*/'
+                    break; // Идем дальше собирать токены
                 }
                 s++;
             }
-            continue; // Go back to the while loop to check for more tokens
+            continue; // Идем дальше собирать токены
         }
 
         if (*s == '\0') {
-            // If we reached the end of the string, return NULL
-            *p = s; // Update pointer
+            // Мы достигли конца строки, вернем NULL
+            *p = s; // Обновим указатель
             return NULL;
         }
 
-        token = s; // Start of the token
+        token = s; // Старт токена
 
-        // Find the end of the token
+        // Ищем конец токена
         while (*s && *s != '\n') {
             s++;
         }
 
         if (*s) {
-            *s++ = '\0'; // Null-terminate the string
+            *s++ = '\0'; // Терминальный ноль строки
         }
 
-        *p = s; // Update pointer
-        return token; // Return the found token
+        *p = s; // Обновим указатель
+        return token; // Вернем найденый токен
     }
 
-    // Return NULL if no tokens are found
-    *p = s; // Update pointer
+    // Вернем NULL если не нашли ничего
+    *p = s; // Обновим указатель
     return NULL;
 }
 
-void NS_ExecuteCommand(const char* command) {
-    // Print for test
-    if (Q_strncmp(command, "print ", 6) == 0) {
-        // Offset to get the actual message
-        const char* message = command + 6;
-        Com_Printf("Noire.Script: %s\n", message);  // Print it to console
-    } else {
-        // Unknown command
-        Com_Printf("Noire.Script: Unknown command '%s'\n", command);
+void NS_Init() {
+    NS_AddFunction("print", "Com_Printf(\"Noire.Script: %s\\n\", args);");
+}
+
+void NS_AddFunction(const char* name, const char* body) {
+    NS_Function* newFunction = (NS_Function*)malloc(sizeof(NS_Function));
+    strncpy(newFunction->name, name, MAX_FUNCTION_NAME_LENGTH);
+    newFunction->body = strdup(body);
+    newFunction->next = functionList;
+    functionList = newFunction;
+}
+
+void NS_ExecuteFunction(const char* functionName, const char* args) {
+    NS_Function* current = functionList;
+
+    while (current != NULL) {
+        if (strcmp(current->name, functionName) == 0) {
+            Com_Printf("Noire.Script: Executing function '%s' with args: %s\n", functionName, args);
+            NS_ExecuteScript(current->body); // Выполняем тело функции
+            return;
+        }
+        current = current->next;
     }
+
+    Com_Printf("Noire.Script: Unknown function '%s'\n", functionName);
+}
+
+void NS_ExecuteCommand(const char* command) {
+    char functionName[MAX_FUNCTION_NAME_LENGTH];
+    char args[MAX_ARG_SIZE];
+    
+    sscanf(command, "%31s %[^\n]", functionName, args);     //здесь MAX_FUNCTION_NAME_LENGTH-1
+    
+    NS_ExecuteFunction(functionName, args);
 }
 
 void NS_ExecuteScript(char* script) {
-    char *pointer = script; // Pointer to the beginning of the script
+    char *pointer = script; // Указатель начала скрипта
     char *token;
 
     while ((token = NS_Parse(&pointer)) != NULL) {
         if (token[0] == 0) {
-            continue; // Skip empty tokens
+            continue; // Пропускаем пустые токены
         }
-        NS_ExecuteCommand(token); // Execute command
+        NS_ExecuteCommand(token); // Выполняем команду
     }
 }
 
@@ -103,22 +127,24 @@ void NS_OpenScript(const char* filename) {
     fileHandle_t f;
     char buffer[MAX_FILE_SIZE];
 
-    // Open script file with .ns extension
+    NS_Init();      //Noire.Script инициализация
+
+    // Открыть скрипт с .ns расширением
     len = trap_FS_FOpenFile(filename, &f, FS_READ);
 
     if (len <= 0) {
-        // If file is NULL or cannot be opened
+        // Если файл NULL его не открыть
         Com_Printf("Noire.Script: Could not open script file %s\n", filename);
         return;
     }
 
-    // Read the file into buffer
+    // Читаем файл прям в буфер
     trap_FS_Read(buffer, len, f);
-    buffer[len] = '\0'; // Null-terminate the string
+    buffer[len] = '\0'; // Терминальный ноль строки
 
-    // Close file
+    // Закроем файл
     trap_FS_FCloseFile(f);
 
-    // Execute the script
+    // Запустим скрипт
     NS_ExecuteScript(buffer);
 }

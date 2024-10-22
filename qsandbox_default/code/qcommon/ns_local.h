@@ -21,6 +21,16 @@
 #endif
 
 #define MAX_FILE_SIZE 1024*30
+#define MAX_FUNCTION_NAME_LENGTH 32
+#define MAX_ARG_SIZE 1024
+
+typedef struct NS_Function {
+    char name[MAX_FUNCTION_NAME_LENGTH];
+    char *body; // Содержимое функции
+    struct NS_Function *next; // указатель на следующую функцию
+} NS_Function;
+
+NS_Function *functionList = NULL; // Список функций
 
 char* NS_Parse(char** p);
 void NS_ExecuteCommand(const char* command);
