@@ -51,6 +51,8 @@ int is_literal(const char* token) {
 char* NS_Parse(char** p) {
     char* token;
     char* s = *p;
+    size_t len;
+    char* result;
 
     // Пропустим пробелы
     while (*s) {
@@ -78,6 +80,30 @@ char* NS_Parse(char** p) {
                 s++;
             }
             continue; // Идем дальше собирать токены
+        }
+        // Проверяем на строковые литералы
+        if (*s == '"' || *s == '\'') {
+            char quote = *s; // Сохраняем тип кавычек
+            char* token = s; // Сохраняем начало токена
+            s++; // Пропускаем открывающую кавычку
+    
+            // Ищем конец строкового литерала
+            while (*s) {
+                if (*s == quote && *(s - 1) != '\\') {
+                    s++; // Пропускаем закрывающую кавычку
+                    break; // Закрывающая кавычка найдена
+                }
+                s++;
+            }
+
+            // Завершаем токен, не изменяя строку
+            len = s - token;
+            result = (char*)Q_malloc(len + 1);
+            strncpy(result, token, len);
+            result[len] = '\0';
+
+            *p = s; // Обновляем указатель
+            return result; // Возвращаем найденный токен
         }
 
         if (*s == '\0') {
@@ -267,6 +293,26 @@ void* NS_calculate(const char* expression, VarType type) {
 Функции
 ###############
 */
+
+// Массив с названиями функций
+const char *function_list[MAX_FUNCS] = {
+    "print",
+    "command",
+    "get_cvar"
+};
+
+// Функция для проверки, является ли строка названием функции
+int is_function(const char *token) {
+    int i;
+    
+    for (i = 0; i < MAX_FUNCS; i++) {
+        if (strcmp(token, function_list[i]) == 0) {
+            return 1;  // Нашли функцию
+        }
+    }
+    return 0;  // Не является функцией
+}
+
 
 /*
 ###############

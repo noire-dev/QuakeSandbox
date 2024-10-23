@@ -789,6 +789,7 @@ const char	*Q_stristr( const char *s, const char *find);
  * @param destsize size of the destination array, at most destsize-1 will be copied
  */
 void	Q_strncpyz( char *dest, const char *src, int destsize );
+char* 	Q_strncat(char* dest, const char* src, size_t n);
 /**
  * Appends a string to another string. The function protects against overflow.
  * The size is the max size of the destination AFTER the string has been appended

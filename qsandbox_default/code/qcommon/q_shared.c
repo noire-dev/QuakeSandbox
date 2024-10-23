@@ -803,6 +803,26 @@ void Q_strncpyz( char *dest, const char *src, int destsize ) {
 	strncpy( dest, src, destsize-1 );
   dest[destsize-1] = 0;
 }
+
+// Функция для безопасного объединения строк
+char* Q_strncat(char* dest, const char* src, size_t n) {
+	size_t dest_len;
+	size_t i;
+    if (!dest || !src) {
+        return dest; // Возвращаем dest, если один из указателей NULL
+    }
+
+    dest_len = strlen(dest); // Длина строки назначения
+
+    // Объединяем строки с учетом максимальной длины
+    for (i = 0; i < n && src[i] != '\0'; i++) {
+        dest[dest_len + i] = src[i]; // Копируем символы из src в dest
+    }
+    
+    dest[dest_len + i] = '\0'; // Завершаем строку
+
+    return dest; // Возвращаем указатель на строку назначения
+}
                  
 int Q_stricmpn (const char *s1, const char *s2, int n) {
 	int		c1, c2;
