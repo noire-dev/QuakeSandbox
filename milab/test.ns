@@ -1,4 +1,12 @@
 float Variable = 0
-char Vaaarrr = g_rldelay
+char bloomstatus = r_bloom
 
-Variable = getCvar_float ( "$Vaaarrr" )
+Variable = getCvar_float ( "$bloomstatus" )
+
+if Variable == 0
+command (EXEC_NOW "say Bloom is off")
+endif
+
+if Variable == 1
+command (EXEC_NOW "say Bloom is on")
+endif

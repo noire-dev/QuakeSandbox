@@ -81,6 +81,7 @@ char* NS_Parse(char** p) {
             }
             continue; // Идем дальше собирать токены
         }
+
         // Проверяем на строковые литералы
         if (*s == '"' || *s == '\'') {
             char quote = *s; // Сохраняем тип кавычек
@@ -357,6 +358,46 @@ float NS_evaluateExpression(const char* expr) {
     return result;
 }
 
+int NS_ifResult(int num1, NSOperator operator, int num2) {
+    Com_Printf("NS_ifResult: left = %i, operator = %i, right = %i\n", num1, operator, num2);
+    switch (operator) {
+        case EQUAL:
+            return (num1 == num2) ? 1 : 0;
+        case NOT_EQUAL:
+            return (num1 != num2) ? 1 : 0;
+        case LESS_THAN:
+            return (num1 < num2) ? 1 : 0;
+        case GREATER_THAN:
+            return (num1 > num2) ? 1 : 0;
+        case LESS_OR_EQUAL:
+            return (num1 <= num2) ? 1 : 0;
+        case GREATER_OR_EQUAL:
+            return (num1 >= num2) ? 1 : 0;
+        default:
+            return 0; // Возвращаем 0, если оператор не распознан
+    }
+}
+
+NSOperator NS_CharToOp(const char* operator) {
+    if (strcmp(operator, "==") == 0) {
+        return EQUAL;
+    } else if (strcmp(operator, "!=") == 0) {
+        return NOT_EQUAL;
+    } else if (strcmp(operator, "<") == 0) {
+        return LESS_THAN;
+    } else if (strcmp(operator, ">") == 0) {
+        return GREATER_THAN;
+    } else if (strcmp(operator, "<=") == 0) {
+        return LESS_OR_EQUAL;
+    } else if (strcmp(operator, ">=") == 0) {
+        return GREATER_OR_EQUAL;
+    } else {
+        // Возвращаем значение по умолчанию или обрабатываем ошибку
+        Com_Printf("Noire.Script Error: Unsupported operator: %s\n", operator);
+        return -1; // Предполагаем, что -1 не является допустимым значением
+    }
+}
+
 // Функция для обработки текста с подстановкой значений переменных через $
 char* NS_Text(const char *input) {
     // Создаем буфер для результирующей строки
@@ -430,6 +471,15 @@ void* NS_Exp(const char* expression, VarType type) {
         float* floatResult = (float*)Q_malloc(sizeof(float));
         *floatResult = result;
         return floatResult;
+    } else if (type == TYPE_CHAR) {
+        char* stringResult = (char*)Q_malloc(MAX_VAR_CHAR_BUF * sizeof(char));
+        if (stringResult) {
+            Q_snprintf(stringResult, MAX_VAR_CHAR_BUF, "%.2f", result); // Форматируем float в строку
+            return stringResult;
+        } else {
+            Com_Printf("Noire.Script Error: Memory allocation failed\n");
+            return NULL;
+        }
     } else {
         Com_Printf("Noire.Script Error: Unsupported type\n");
         return NULL;
@@ -678,6 +728,32 @@ void NS_ExecuteScript(char* script) {
             Com_Printf("Noire.Script Operand token: %s\n", token);
         }
         #endif
+
+        // Проверка на оператор if
+        if (strcmp(token, "if") == 0) {
+            char* firstValueToken;         // Первое значение
+            NSOperator operator;           // Оператор
+            char* secondValueToken;        // Второе значение
+
+            firstValueToken = (char*)NS_Exp(NS_Parse(&pointer), TYPE_CHAR);
+            token = NS_Parse(&pointer);
+            operator = NS_CharToOp(token);
+            secondValueToken = (char*)NS_Exp(NS_Parse(&pointer), TYPE_CHAR);
+
+            // Выполняем условие
+            if (NS_ifResult(atoi(firstValueToken), operator, atoi(secondValueToken))) {
+                // Если условие истинно, продолжаем обрабатывать токены
+                continue; // Продолжаем с следующего токена
+            } else {
+                // Условие ложно, пропускаем блок
+                while ((token = NS_Parse(&pointer)) != NULL) {
+                    if (strcmp(token, "endif") == 0) {
+                        break; // Выходим из блока if
+                    }
+                }
+                continue; // Переходим к следующему токену после блока if
+            }
+        }
 
         // Проверяем, является ли токен объявлением переменной
         if (strcmp(token, "int") == 0 || strcmp(token, "float") == 0 || strcmp(token, "char") == 0) {

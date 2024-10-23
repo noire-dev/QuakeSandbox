@@ -35,6 +35,16 @@
 #define MAX_ARGS            64            //Количество аргументов
 //#define NS_DEBUG_TOKEN                  //Дебаг токенов
 
+typedef enum {
+    EQUAL,            // == 
+    NOT_EQUAL,       // != 
+    LESS_THAN,       // <  
+    GREATER_THAN,    // >  
+    LESS_OR_EQUAL,   // <= 
+    GREATER_OR_EQUAL  // >=
+} NSOperator;
+
+
 /*
 ###############
 Переменные
