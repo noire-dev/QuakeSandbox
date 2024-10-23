@@ -755,7 +755,6 @@ Opens Noire.Script file
 */
 void Svcmd_NS_OpenScript_f( void )
 {
-	int    i;
 	char   filename[256];
 	if( trap_Argc( ) == 1 ){
 		G_Printf( "usage: ns_openscript <filename>\n" );
@@ -765,5 +764,18 @@ void Svcmd_NS_OpenScript_f( void )
 	trap_Argv( 1, filename, sizeof( filename ) );
   
 	NS_OpenScript(filename);
+
+}
+
+/*
+============
+Svcmd_NS_VariableList_f
+Show Noire.Script variables
+============
+*/
+void Svcmd_NS_VariableList_f( void )
+{
+  
+	print_variables();
 
 }

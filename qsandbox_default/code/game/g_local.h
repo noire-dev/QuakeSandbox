@@ -2170,6 +2170,7 @@ char	*AU_Cvar_VariableString( const char *var_name );
 
 //Noire.Script
 void Svcmd_NS_OpenScript_f( void );
+void Svcmd_NS_VariableList_f( void );
 
 #include "g_killspree.h"
 #include "g_admin.h"

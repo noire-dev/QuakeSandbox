@@ -657,4 +657,7 @@ void CG_InitConsoleCommands( void ) {
 	trap_AddCommand ("loadmapall");
 	trap_AddCommand ("save_menu");
 	trap_AddCommand ("load_menu");
+	//Noire.Script
+	trap_AddCommand ("ns_openscript");
+	trap_AddCommand ("ns_variablelist");
 }

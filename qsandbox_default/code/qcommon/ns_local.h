@@ -26,11 +26,12 @@
 ###############
 */
 
-#define MAX_FILE_SIZE 1024*30   //Макс длина скрипта
-#define MAX_VARS      10        //Макс переменных
-#define MAX_VAR_NAME  32        //Макс имя переменной
-#define MAX_FUNCS 3             // Количество функций
-#define NS_DEBUG_TOKEN        //Дебаг токенов
+#define MAX_FILE_SIZE 1024*30       //Макс длина скрипта
+#define MAX_VARS      10            //Макс переменных
+#define MAX_VAR_NAME  32            //Макс имя переменной
+#define MAX_VAR_CHAR_BUF  256            //Макс буфер char переменной
+#define MAX_FUNCS 4                 //Количество функций
+//#define NS_DEBUG_TOKEN              //Дебаг токенов
 
 /*
 ###############
@@ -59,6 +60,8 @@ typedef struct {
     VarValue value;
     VarType type;
 } Variable;
+
+void print_variables();
 
 /*
 ###############

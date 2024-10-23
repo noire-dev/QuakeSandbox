@@ -602,7 +602,8 @@ struct
   { "for", qfalse, Svcmd_For_f },
   { "savegame", qfalse, Svcmd_SaveSession_f },
   //Noire.Script
-  { "ns_openscript", qfalse, Svcmd_NS_OpenScript_f }
+  { "ns_openscript", qfalse, Svcmd_NS_OpenScript_f },
+  { "ns_variablelist", qfalse, Svcmd_NS_VariableList_f },
 };
 
 /*
