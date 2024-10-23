@@ -1,8 +1,4 @@
-int test = 5
-float hihihiha = test+52.5
-char myt = ff
-int hhh = 85+1+test
-char mytext = "my okay $hihihiha"
-char mytexts = lets
+float Variable = 0
+char Vaaarrr = g_rldelay
 
-test = 56
+Variable = getCvar_float ( "$Vaaarrr" )
