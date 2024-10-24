@@ -24,7 +24,7 @@
 
 // Список операторов для парсера
 const char* operators[] = {
-    "=", "+", "-", "*", "/", "==", "!=", "<", ">", "<=", ">="
+    "=", "+", "-", "*", "/", "==", "!=", "<", ">", "<=", ">=", "+=", "-=", "/=", "*="
 };
 const int num_operators = sizeof(operators) / sizeof(operators[0]);
 
@@ -755,7 +755,7 @@ int is_operand(const char *token) {
 ###############
 */
 
-void NS_ExecuteScript(char* script) {
+void Interpret(char* script) {
     char *pointer = script; // Указатель начала скрипта
     char *token;
     Variable* var;
@@ -800,7 +800,7 @@ void NS_ExecuteScript(char* script) {
                 Q_free(secondValueToken);    //Освободить память
                 // Условие ложно, пропускаем блок
                 while ((token = NS_Parse(&pointer)) != NULL) {
-                    if (strcmp(token, "endif") == 0) {
+                    if (strcmp(token, "}") == 0) {
                         break; // Выходим из блока if
                     }
                 }
@@ -888,16 +888,15 @@ void NS_ExecuteScript(char* script) {
         // Проверка, является ли токен именем переменной
         var = find_variable(token);
         if (var != NULL) {
-            VarValue resultValue;
-            char*     resultOperator;
-            char*     resultArgs;
-            qboolean  func = qfalse;
+            VarValue    resultValue;
+            char*       resultOperator;
+            char*       valueToken;
+            char*       resultArgs;
+            qboolean    func = qfalse;
 
             // Проверяем следующий токен оператор
             token = NS_Parse(&pointer);
             if (is_operator(token)) {
-                char* valueToken;
-
                 CopyAllocLen(resultOperator, token);    //сохраняем оператор
                 // Получаем следующее значение
                 valueToken = NS_Parse(&pointer);
@@ -933,6 +932,7 @@ void NS_ExecuteScript(char* script) {
                     resultArgs = NS_Parse(&pointer);
                     callfunc(var, valueToken, resultOperator, resultArgs);  //valueToken это имя функции
                     func = qtrue;
+                    Q_free(resultArgs);
                 }
             }
             // Добавляем переменную в список
@@ -940,11 +940,17 @@ void NS_ExecuteScript(char* script) {
             set_variable(var, resultValue, resultOperator);
             }
 
+            // Освобождаем память для значения в зависимости от типа
+            if (var->type == TYPE_CHAR) {
+               Q_free(resultValue.c); // Освобождаем строку
+            }
+            // Освобождаем имя переменной только после успешного добавления
+            Q_free(resultOperator);
+            
             continue; // Переходим к следующему токену
         }
 
         if (is_function(token)) {
-            char*     resultArgs;
             char*     valueToken;
 
             CopyAllocLen(valueToken, token);    //сохраняем название функции
@@ -952,8 +958,9 @@ void NS_ExecuteScript(char* script) {
             // Проверяем следующий токен - аргументы
             token = NS_Parse(&pointer);
 
-            CopyAllocLen(resultArgs, token);    //сохраняем аргументы
-            callfunc(NULL, valueToken, NULL, resultArgs);  //valueToken это имя функции
+            callfunc(NULL, valueToken, NULL, token);  //valueToken это имя функции
+
+            Q_free(valueToken);
 
             continue; // Переходим к следующему токену
         }
@@ -982,5 +989,5 @@ void NS_OpenScript(const char* filename) {
     trap_FS_FCloseFile(f);
 
     // Запустим скрипт
-    NS_ExecuteScript(buffer);
+    Interpret(buffer);
 }
