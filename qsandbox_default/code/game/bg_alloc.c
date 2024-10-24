@@ -27,11 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "bg_public.h"
 #include "g_local.h"
 
-#ifdef GAME
-# define  POOLSIZE ( 1024 * 1024 ) * 8
-#else
-# define  POOLSIZE ( 1024 * 1024 ) * 8
-#endif
+#define  POOLSIZE ( 1024 * 1024 ) * 8
 
 #define  FREEMEMCOOKIE  ((int)0xDEADBE3F)  // Any unlikely to be used value
 #define  ROUNDBITS    (unsigned int)31          // Round to 32 bytes

@@ -1,12 +1,71 @@
 float Variable = 0
-char bloomstatus = r_bloom
+int bloomstatus = 122222
+int bloomstatus1 = 122222
+int bloomstatus2 = 122222
+int bloomstatus3 = 122222
+int bloomstatus4 = 122222
+int bloomstatus5 = 122222
+int bloomstatus6 = 122222
+int bloomstatus7 = 122222
+int bloomstatus8 = 122222
+int bloomstatus9 = 122222
+int bloomstatus10 = 122222
+int bloomstatus11 = 122222
+int bloomstatus12 = 122222
+int bloomstatus13 = 122222
+int bloomstatus14 = 122222
+int bloomstatus15 = 122222
+int bloomstatus16 = 122222
+int bloomstatus17 = 122222
+int bloomstatus18 = 122222
+int bloomstatus19 = 122222
+int bloomstatus20 = 122222
+int bloomstatus21 = 122222
+int bloomstatus22 = 122222
+int bloomstatus23 = 122222
+int bloomstatus24 = 122222
+int bloomstatus25 = 122222
+int bloomstatus26 = 122222
+int bloomstatus27 = 122222
+int bloomstatus28 = 122222
+int bloomstatus29 = 122222
+char chbloomstatus = 122222
+char chbloomstatus1 = 122222
+char chbloomstatus2 = 122222
+char chbloomstatus3 = 122222
+char chbloomstatus4 = 122222
+char chbloomstatus5 = 122222
+char chbloomstatus6 = 122222
+char chbloomstatus7 = 122222
+char chbloomstatus8 = 122222
+char chbloomstatus9 = 122222
+char chbloomstatus10 = 122222
+char chbloomstatus11 = 122222
+char chbloomstatus12 = 122222
+char chbloomstatus13 = 122222
+char chbloomstatus14 = 122222
+char chbloomstatus15 = 122222
+char chbloomstatus16 = 122222
+char chbloomstatus17 = 122222
+char chbloomstatus18 = 122222
+char chbloomstatus19 = 122222
+char chbloomstatus20 = 122222
+char chbloomstatus21 = 122222
+char chbloomstatus22 = 122222
+char chbloomstatus23 = 122222
+char chbloomstatus24 = 122222
+char chbloomstatus25 = 122222
+char chbloomstatus26 = 122222
+char chbloomstatus27 = 122222
+char chbloomstatus28 = 122222
+char chbloomstatus29 = 122222
 
-Variable = getCvar_float ( "$bloomstatus" )
+Variable = getCvar_float ( "r_bloom" )
 
 if Variable == 0
-command (EXEC_NOW "say Bloom is off")
+print ("say Bloom is off")
 endif
 
 if Variable == 1
-command (EXEC_NOW "say Bloom is on")
+print ("say Bloom is on")
 endif
