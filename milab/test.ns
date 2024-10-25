@@ -1,15 +1,3 @@
-float Variable = 0
-int num = 0
-
-Variable = getCvar_float ( "r_bloom" )
-
-if Variable == 0 {
-    print ("say Bloom is off")     i can do this
+for 1
+    command (EXEC_INSERT "say From ui")
 }
-
-if Variable == 1 {
-    print ("say Bloom is on")    hihihiha
-}
-
-num += 1
-//command (EXEC_INSERT "set hihihiha$num")

@@ -244,6 +244,36 @@ int set_variable(Variable *var, VarValue value, const char *operation) {
     return 1; // Успешно обновлено
 }
 
+// Функция для добавления переменной
+int set_variable_int(Variable *var, int value, const char *operation) {
+    if (var == NULL) {
+        Com_Printf("Noire.Script: variable cannot be NULL.\n");
+        return 0; // Переменная не может быть NULL
+    }
+
+    // Выполняем операцию
+    if (strcmp(operation, "=") == 0) {
+        var->value.i = value;
+    } else if (strcmp(operation, "+=") == 0) {
+            var->value.i += value;
+    } else if (strcmp(operation, "-=") == 0) {
+            var->value.i -= value;
+    } else if (strcmp(operation, "*=") == 0) {
+            var->value.i *= value;
+    } else if (strcmp(operation, "/=") == 0) {
+            if (value == 0) {
+                Com_Printf("Noire.Script: Divide by zero for variable '%s'.\n", var->name);
+                return 0;
+            }
+            var->value.i /= value;
+    } else {
+        Com_Printf("Noire.Script: Unknown operator '%s'.\n", operation);
+        return 0;
+    }
+
+    return 1; // Успешно обновлено
+}
+
 // Функция для отображения переменных
 void print_variables() {
     int i;
@@ -382,7 +412,7 @@ float NS_evaluateExpression(const char* expr) {
 }
 
 int NS_ifResult(int num1, NSOperator operator, int num2) {
-    Com_Printf("NS_ifResult: left = %i, operator = %i, right = %i\n", num1, operator, num2);
+    //Com_Printf("NS_ifResult: left = %i, operator = %i, right = %i\n", num1, operator, num2);
     switch (operator) {
         case EQUAL:
             return (num1 == num2) ? 1 : 0;
@@ -513,14 +543,7 @@ void* NS_Exp(const char* expression, VarType type) {
 ###############
 */
 
-// Массив с названиями функций
-const char *function_list[MAX_FUNCS] = {
-    "print",
-    "command",
-    "getCvar_float" 
-};
-
-char* removeOuterBrackets(char* str) {
+char* removeOuterBrackets(const char* str) {
     size_t len;
     
     if (str == NULL || *str == '\0') {
@@ -647,40 +670,40 @@ int splitArgs(const char* args, char* result[]) {
     return count; // Возвращаем количество аргументов
 }
 
-// Функция вызова
+// Массив с названиями функций
+const char *function_list[MAX_FUNCS] = {
+    "print",
+    "command",
+    "getCvar_int",
+    "getCvar_float",
+    "getCvar_char"
+};
+
 void callfunc(Variable *var, const char *name, const char *operation, const char *args) {
     VarValue result;
     int called = 0; // 0 - not called, 1 - called without return, 2 - called and have return value
-    char* copiedArgs = NULL;
+    int i;
     char* cleanedArgs = NULL;
     int argCount;
     char* arguments[MAX_ARGS]; // Массив для хранения указателей на аргументы
-    int i;
 
     // Копируем аргументы и удаляем скобки
-    CopyAllocLen(copiedArgs, args);
-    
-    cleanedArgs = removeOuterBrackets(copiedArgs); // Удаляем скобки из аргументов
+    cleanedArgs = removeOuterBrackets(args); // Сразу удаляем скобки из аргументов
     argCount = splitArgs(cleanedArgs, arguments); // Разделяем аргументы
 
+    // print
     if (strcmp(name, "print") == 0 && argCount >= 1) {
         Com_Printf("%s\n", NS_Text(arguments[0]));
         called = 1;
-    } 
+    }
 
-    if (strcmp(name, "command") == 0 && argCount >= 2) {
-        int exec_mode = EXEC_APPEND;
-
-        if (strcmp(arguments[0], "EXEC_APPEND") == 0) {
-            exec_mode = EXEC_APPEND;
-        } else if (strcmp(arguments[0], "EXEC_INSERT") == 0) {
-            exec_mode = EXEC_INSERT;
-        } else if (strcmp(arguments[0], "EXEC_NOW") == 0) {
-            exec_mode = EXEC_NOW;
-        }
+    // command
+    else if (strcmp(name, "command") == 0 && argCount >= 2) {
+        int exec_mode = (!strcmp(arguments[0], "EXEC_NOW")) ? EXEC_NOW :
+                        (!strcmp(arguments[0], "EXEC_INSERT")) ? EXEC_INSERT : EXEC_APPEND;
 
         #ifdef QAGAME
-        trap_SendConsoleCommand(exec_mode, NS_Text(arguments[1])); // Начинаем с [1] 2 аргумента ибо в первом режим
+        trap_SendConsoleCommand(exec_mode, NS_Text(arguments[1])); // Используем второй аргумент как команду
         #endif
         #ifdef Q3_UI
         trap_Cmd_ExecuteText(exec_mode, NS_Text(arguments[1]));
@@ -688,10 +711,31 @@ void callfunc(Variable *var, const char *name, const char *operation, const char
         called = 1;
     }
 
-    if (strcmp(name, "getCvar_float") == 0 && argCount >= 1) {
+    // getCvar_int
+    else if (strcmp(name, "getCvar_int") == 0 && argCount >= 1) {
+        char cvarValue[MAX_NCVAR_NAME];
+        trap_Cvar_VariableStringBuffer(NS_Text(arguments[0]), cvarValue, sizeof(cvarValue));
+        result.i = atoi(cvarValue); // Преобразуем строку в int
+        called = 2;
+    }
+
+    // getCvar_float
+    else if (strcmp(name, "getCvar_float") == 0 && argCount >= 1) {
         char cvarValue[MAX_NCVAR_NAME];
         trap_Cvar_VariableStringBuffer(NS_Text(arguments[0]), cvarValue, sizeof(cvarValue));
         result.f = atof(cvarValue); // Преобразуем строку в float
+        called = 2;
+    }
+
+    // getCvar_char
+    else if (strcmp(name, "getCvar_char") == 0 && argCount >= 1) {
+        char cvarValue[MAX_NCVAR_NAME];
+        trap_Cvar_VariableStringBuffer(NS_Text(arguments[0]), cvarValue, sizeof(cvarValue));
+
+        // Копируем строку в result
+        strncpy(result.c, cvarValue, sizeof(result.c) - 1);
+        result.c[sizeof(result.c) - 1] = '\0';
+
         called = 2;
     }
 
@@ -710,17 +754,11 @@ void callfunc(Variable *var, const char *name, const char *operation, const char
         Q_free(arguments[i]);
     }
 
-    // Освобождение памяти для copiedArgs
-    Q_free(copiedArgs);
-    
-    // Освобождение cleanedArgs, если оно было выделено динамически
-    if (cleanedArgs != copiedArgs) { // Проверка на адреса для избежания двойного освобождения
-        Q_free(cleanedArgs);
-    }
-    
+    // Освобождение памяти для cleanedArgs
+    Q_free(cleanedArgs);
+
     return;
 }
-
 
 // Функция для проверки, является ли строка названием функции
 int is_function(const char *token) {
@@ -759,6 +797,7 @@ void Interpret(char* script) {
     char *pointer = script; // Указатель начала скрипта
     char *token;
     Variable* var;
+    int i;
 
     while ((token = NS_Parse(&pointer)) != NULL) {
         if (token[0] == 0) {
@@ -778,34 +817,75 @@ void Interpret(char* script) {
         }
         #endif
 
-        // Проверка на оператор if
+        // Упрощённый блок обработки if
         if (strcmp(token, "if") == 0) {
-            char* firstValueToken;         // Первое значение
-            NSOperator operator;           // Оператор
-            char* secondValueToken;        // Второе значение
-
-            firstValueToken = (char*)NS_Exp(NS_Parse(&pointer), TYPE_CHAR);
-            token = NS_Parse(&pointer);
-            operator = NS_CharToOp(token);
-            secondValueToken = (char*)NS_Exp(NS_Parse(&pointer), TYPE_CHAR);
+            int firstValue = atoi(NS_Exp(NS_Parse(&pointer), TYPE_CHAR));
+            NSOperator op = NS_CharToOp(NS_Parse(&pointer));
+            int secondValue = atoi(NS_Exp(NS_Parse(&pointer), TYPE_CHAR));
 
             // Выполняем условие
-            if (NS_ifResult(atoi(firstValueToken), operator, atoi(secondValueToken))) {
-                Q_free(firstValueToken);    //Освободить память
-                Q_free(secondValueToken);   //Освободить память
-                // Если условие истинно, продолжаем обрабатывать токены
-                continue; // Продолжаем с следующего токена
+            if (NS_ifResult(firstValue, op, secondValue)) {
+                continue; // Условие истинно, продолжаем обрабатывать токены
             } else {
-                Q_free(firstValueToken);     //Освободить память
-                Q_free(secondValueToken);    //Освободить память
-                // Условие ложно, пропускаем блок
+                // Пропускаем блок if, если условие ложно
                 while ((token = NS_Parse(&pointer)) != NULL) {
                     if (strcmp(token, "}") == 0) {
-                        break; // Выходим из блока if
+                        break; // Выход из блока if
                     }
                 }
                 continue; // Переходим к следующему токену после блока if
             }
+        }
+
+        // Упрощённый блок обработки for
+        if (strcmp(token, "for") == 0) {
+            int iterations = atoi(NS_Exp(NS_Parse(&pointer), TYPE_CHAR));
+            char originalBuffer[MAX_CYCLE_SIZE]; // Оригинальный буфер для хранения кода внутри for
+            char operationBuffer[MAX_CYCLE_SIZE]; // Буфер для выполнения операций
+            int originalBufferIndex = 0;
+            int tokenLength = 0;
+            int i = 0;
+
+            // Сначала собираем код внутри блока for в оригинальный буфер
+            while ((token = NS_Parse(&pointer)) != NULL) {
+                if (strcmp(token, "}") == 0) {
+                    break; // Выход из блока for
+                }
+
+                // Записываем токен в оригинальный буфер с пробелом между токенами
+                tokenLength = strlen(token);
+                if (originalBufferIndex + tokenLength + 1 < MAX_CYCLE_SIZE) { // +1 для пробела
+                    if (originalBufferIndex > 0) {
+                        originalBuffer[originalBufferIndex++] = ' '; // добавляем пробел между токенами
+                    }
+                    strcpy(originalBuffer + originalBufferIndex, token);
+                    originalBufferIndex += tokenLength;
+                } else {
+                    // Буфер переполнен
+                    Com_Printf("Noire.Script Warning: Buffer overflow while processing 'for' loop\n");
+                    break;
+                }
+            }
+
+            // Завершаем строку
+            originalBuffer[originalBufferIndex] = '\0';
+
+            // Выводим полученный оригинальный буфер в консоль
+            Com_Printf("Noire.Script: Original buffer contents: %s\n", originalBuffer);
+
+            // Запускаем интерпретацию кода из оригинального буфера нужное количество раз
+            for (i = 0; i < iterations; i++) {
+                // Копируем содержимое оригинального буфера в буфер для операций
+                strcpy(operationBuffer, originalBuffer);
+
+                // Выводим номер текущей итерации
+                Com_Printf("Noire.Script: Iteration %d executed.\n", i + 1); // Выводим номер текущей итерации
+
+                // Запускаем интерпретацию кода из буфера для операций
+                Interpret(operationBuffer);
+            }
+
+            continue; // Переходим к следующему токену после блока for
         }
 
         // Проверяем, является ли токен объявлением переменной
@@ -819,7 +899,7 @@ void Interpret(char* script) {
 
             // Проверяем, существует ли переменная с таким именем
             if (variable_exists(varName)) {
-                Com_Printf("Noire.Script: Variable '%s' already exists.\n", varName);
+                //Com_Printf("Noire.Script: Variable '%s' already exists.\n", varName);
                 continue; // Переходим к следующему токену так как создавать ничего не нужно
             }
 
@@ -946,7 +1026,7 @@ void Interpret(char* script) {
             }
             // Освобождаем имя переменной только после успешного добавления
             Q_free(resultOperator);
-            
+
             continue; // Переходим к следующему токену
         }
 

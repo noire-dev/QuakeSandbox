@@ -27,11 +27,12 @@
 */
 
 #define MAX_FILE_SIZE       1024*30       //Макс длина скрипта
+#define MAX_CYCLE_SIZE      1024*8        //Макс длина цикла
 #define MAX_VARS            4096          //Макс переменных
 #define MAX_VAR_NAME        32            //Макс имя переменной
 #define MAX_NCVAR_NAME      64            //Макс имя консольной переменной
 #define MAX_VAR_CHAR_BUF    256           //Макс буфер char переменной
-#define MAX_FUNCS           3             //Количество функций
+#define MAX_FUNCS           5             //Количество функций
 #define MAX_ARGS            64            //Количество аргументов
 #define MAX_ARG_LENGTH      64            //Количество аргументов
 //#define NS_DEBUG_TOKEN                  //Дебаг токенов

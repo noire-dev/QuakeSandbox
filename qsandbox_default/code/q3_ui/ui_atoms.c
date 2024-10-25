@@ -21,7 +21,7 @@ void QDECL Com_Error( int level, const char *error, ... ) {
 	va_list		argptr;
 	char		text[1024];
 	va_start (argptr, error);
-//	vsprintf (text, error, argptr);
+	Q_vsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
 
 	trap_Error( va("%s", text) );
@@ -32,7 +32,7 @@ void QDECL Com_Printf( const char *msg, ... ) {
 	char		text[1024];
 
 	va_start (argptr, msg);
-//	vsprintf (text, msg, argptr);
+	Q_vsnprintf (text, sizeof(text), msg, argptr);
 	va_end (argptr);
 
 	trap_Print( va("%s", text) );
@@ -1804,6 +1804,11 @@ if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {
 
 	if ( Q_stricmp (UI_Argv(0), "mgui") == 0 ) {
 		trap_Cmd_ExecuteText( EXEC_INSERT, va("execscript \"mgui/%s\"", UI_ConcatArgs(1)));
+		return qtrue;
+	}
+
+	if ( Q_stricmp (UI_Argv(0), "ns_openscript_cl") == 0 ) {
+		NS_OpenScript(UI_ConcatArgs(1));
 		return qtrue;
 	}
 	
