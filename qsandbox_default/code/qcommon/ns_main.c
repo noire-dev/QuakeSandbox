@@ -49,10 +49,10 @@ int is_literal(const char* token) {
 }
 
 char* NS_Parse(char** p) {
-    char* token;
     char* s = *p;
+    static char result[MAX_TOKEN_LENGTH]; // Статический буфер для токенов
     size_t len;
-    char* result = NULL; // Инициализация указателя
+    char* token;
 
     // Пропустим пробелы
     while (*s) {
@@ -87,7 +87,7 @@ char* NS_Parse(char** p) {
             char quote = *s; // Сохраняем тип кавычек
             char* token = s; // Сохраняем начало токена
             s++; // Пропускаем открывающую кавычку
-    
+
             // Ищем конец строкового литерала
             while (*s) {
                 if (*s == quote && *(s - 1) != '\\') {
@@ -99,9 +99,9 @@ char* NS_Parse(char** p) {
 
             // Завершаем токен, не изменяя строку
             len = s - token;
-            result = (char*)Q_malloc(len + 1);
-            if (!result) return NULL; // Проверка на успешное выделение памяти
-        
+            if (len >= MAX_TOKEN_LENGTH) {
+                return NULL; // Слишком длинный токен
+            }
             strncpy(result, token, len);
             result[len] = '\0';
 
@@ -113,7 +113,7 @@ char* NS_Parse(char** p) {
         if (*s == '(') {
             char* token = s; // Сохраняем начало токена
             s++; // Пропускаем открывающую скобку
-        
+
             // Ищем конец содержимого скобок
             while (*s) {
                 if (*s == ')') {
@@ -122,16 +122,15 @@ char* NS_Parse(char** p) {
                 }
                 s++;
             }
-        
+
             // Завершаем токен, не изменяя строку
             len = s - token;
-            result = (char*)Q_malloc(len + 1);
-            if (!result) return NULL; // Проверка на успешное выделение памяти
-        
-            // Копируем содержимое между скобками
+            if (len >= MAX_TOKEN_LENGTH) {
+                return NULL; // Слишком длинный токен
+            }
             strncpy(result, token, len);
             result[len] = '\0'; // Завершаем строку
-        
+
             *p = s; // Обновляем указатель
             return result; // Возвращаем найденный токен
         }
@@ -141,7 +140,8 @@ char* NS_Parse(char** p) {
             return NULL; // Достигнут конец строки
         }
 
-        token = s; // Старт токена
+        // Старт токена
+        token = s;
 
         // Ищем конец токена
         while (*s && *s != ' ' && *s != '\t' && *s != '\n' && *s != ';' && *s != ',' && *s != '(' && *s != ')') {
@@ -331,10 +331,8 @@ int variable_exists(const char *name) {
 */
 
 float NS_evaluateExpression(const char* expr) {
-    float result = 0;
-    float currentNumber = 0;
-    float decimalFactor = 1; // Для обработки десятичной части
-    char operation = '+'; // Начинаем с операции сложения
+    float result = 0, currentNumber = 0, decimalFactor = 1;
+    char operation = '+';
     int i;
     Variable* var;
 
@@ -342,73 +340,65 @@ float NS_evaluateExpression(const char* expr) {
         char currentChar = expr[i];
 
         if (isdigit(currentChar)) {
-            currentNumber = currentNumber * 10 + (currentChar - '0'); // Обработка многозначных чисел
-        } 
-        else if (currentChar == '.') {
-            // Обработка десятичной точки
-            decimalFactor = 0.1f; // Начинаем с 0.1 для первой цифры после точки
-            currentChar = expr[++i]; // Переходим к следующему символу после точки
-
+            currentNumber = currentNumber * 10 + (currentChar - '0');
+        } else if (currentChar == '.') {
+            currentChar = expr[++i];
             while (isdigit(currentChar)) {
-                currentNumber += (currentChar - '0') * decimalFactor; // Добавляем цифру к текущему числу
-                decimalFactor *= 0.1f; // Уменьшаем десятичный фактор
-                currentChar = expr[++i]; // Переходим к следующему символу
+                currentNumber += (currentChar - '0') * decimalFactor;
+                decimalFactor *= 0.1f;
+                currentChar = expr[++i];
             }
-
-            --i; // Уменьшаем i, чтобы вернуться к текущему символу
-        }
-
-        // Обработка переменных
-        else if (isalpha(currentChar)) {
-            char varName[MAX_VAR_NAME]; // Предполагаем, что имя переменной не превышает 99 символов
+            --i;
+        } else if (isalpha(currentChar)) {
+            char varName[MAX_VAR_NAME];
             int j = 0;
 
-            // Считываем имя переменной
             while (isalnum(currentChar) || currentChar == '_') {
                 varName[j++] = currentChar;
                 currentChar = expr[++i];
             }
-            varName[j] = '\0'; // Завершаем строку
+            varName[j] = '\0';
 
-            // Находим переменную
             var = find_variable(varName);
-            if (var != NULL) {
-                // Используем значение переменной в зависимости от её типа
-                if (var->type == TYPE_INT) { // int
-                    currentNumber = (float)var->value.i;
-                } else if (var->type == TYPE_FLOAT) { // float
-                    currentNumber = var->value.f;
-                }
-            } else {
+            currentNumber = var ? (var->type == TYPE_INT ? (float)var->value.i : var->value.f) : 0;
+            if (!var) {
                 Com_Printf("Noire.Script Warning: variable '%s' not defined\n", varName);
-                currentNumber = 0; // Вернуть 0
             }
-
-            // Сдвиг индекса, чтобы не обрабатывать текущий символ ещё раз
-            --i; // Уменьшаем i, чтобы вернуться к текущему символу
+            --i;
         }
 
-        // Если текущий символ - оператор или последний символ строки
         if (!isdigit(currentChar) && currentChar != ' ' || expr[i + 1] == '\0') {
             switch (operation) {
                 case '+': result += currentNumber; break;
                 case '-': result -= currentNumber; break;
                 case '*': result *= currentNumber; break;
                 case '/':
-                    if (currentNumber != 0) {
-                        result /= currentNumber; 
-                    } else {
+                    if (currentNumber != 0) result /= currentNumber;
+                    else {
                         Com_Printf("Noire.Script Error: divide by zero\n");
                         return 0.0;
                     }
                     break;
             }
-            currentNumber = 0; // Сбрасываем текущее число
-            decimalFactor = 1; // Сбрасываем фактор десятичной части
-            operation = currentChar; // Устанавливаем текущую операцию
+            currentNumber = 0;
+            decimalFactor = 1;
+            operation = currentChar;
         }
     }
     return result;
+}
+
+void* NS_Exp(const char* expression) {
+    float result = NS_evaluateExpression(expression);
+    char* stringResult = (char*)Q_malloc(MAX_VAR_CHAR_BUF * sizeof(char));
+
+    if (stringResult) {
+        Q_snprintf(stringResult, MAX_VAR_CHAR_BUF, "%.6f", result);
+        return stringResult;
+    }
+    
+    Com_Printf("Noire.Script Error: Memory allocation failed in NS_Exp\n");
+    return NULL;
 }
 
 int NS_ifResult(int num1, NSOperator operator, int num2) {
@@ -452,9 +442,7 @@ NSOperator NS_CharToOp(const char* operator) {
 }
 
 // Функция для обработки текста с подстановкой значений переменных через $
-char* NS_Text(const char *input) {
-    // Создаем буфер для результирующей строки
-    char *result = (char*)Q_malloc(MAX_VAR_CHAR_BUF);
+void NS_Text(const char *input, char *result, int resultSize) {
     int resultIndex = 0; // Индекс для результирующей строки
     char placeholder[MAX_VAR_NAME + 2]; // $ + имя переменной
     char value[100]; // Буфер для значения
@@ -462,12 +450,7 @@ char* NS_Text(const char *input) {
     int i;
     int k;
 
-    if (!result) {
-        Com_Printf("Noire.Script Error: Memory allocation failed\n");
-        return NULL;
-    }
-
-    for (i = 0; input[i] != '\0'; i++) {
+    for (i = 0; input[i] != '\0' && resultIndex < resultSize - 1; i++) {
         if (input[i] == '$') {
             int j = 0;
             i++; // Пропускаем символ $
@@ -491,13 +474,13 @@ char* NS_Text(const char *input) {
                 }
 
                 // Копируем значение переменной в результирующую строку
-                for (k = 0; value[k] != '\0'; k++) {
+                for (k = 0; value[k] != '\0' && resultIndex < resultSize - 1; k++) {
                     result[resultIndex++] = value[k];
                 }
             } else {
                 // Если переменная не найдена, просто добавляем '$' и имя
                 result[resultIndex++] = '$';
-                for (k = 0; placeholder[k] != '\0'; k++) {
+                for (k = 0; placeholder[k] != '\0' && resultIndex < resultSize - 1; k++) {
                     result[resultIndex++] = placeholder[k];
                 }
             }
@@ -507,34 +490,6 @@ char* NS_Text(const char *input) {
         }
     }
     result[resultIndex] = '\0'; // Завершаем результирующую строку
-
-    return result;
-}
-
-void* NS_Exp(const char* expression, VarType type) {
-    float result = NS_evaluateExpression(expression);
-
-    if (type == TYPE_INT) {
-        int* intResult = (int*)Q_malloc(sizeof(int));
-        *intResult = (int)result;
-        return intResult;
-    } else if (type == TYPE_FLOAT) {
-        float* floatResult = (float*)Q_malloc(sizeof(float));
-        *floatResult = result;
-        return floatResult;
-    } else if (type == TYPE_CHAR) {
-        char* stringResult = (char*)Q_malloc(MAX_VAR_CHAR_BUF * sizeof(char));
-        if (stringResult) {
-            Q_snprintf(stringResult, MAX_VAR_CHAR_BUF, "%.2f", result); // Форматируем float в строку
-            return stringResult;
-        } else {
-            Com_Printf("Noire.Script Error: Memory allocation failed\n");
-            return NULL;
-        }
-    } else {
-        Com_Printf("Noire.Script Error: Unsupported type\n");
-        return NULL;
-    }
 }
 
 /*
@@ -561,26 +516,12 @@ char* removeOuterBrackets(const char* str) {
             result[len - 2] = '\0'; // Завершаем строку
             return result; // Возвращаем результат
         } else {
-            Com_Printf("Memory allocation failed\n");
+            Com_Printf("Noire.Script Error: Memory allocation failed in removeOuterBrackets\n");
             return NULL; // Если выделение не удалось
         }
     }
 
     return NULL; 
-}
-
-// Функция для удаления кавычек
-void removeQuotes(char* str) {
-    char* src = str;
-    char* dst = str;
-
-    while (*src) {
-        if (*src != '"' && *src != '\'') {
-            *dst++ = *src; // Копируем символ, если он не кавычка
-        }
-        src++;
-    }
-    *dst = '\0'; // Завершаем строку
 }
 
 int splitArgs(const char* args, char* result[]) {
@@ -642,18 +583,20 @@ int splitArgs(const char* args, char* result[]) {
                 return -1; // Ошибка выделения памяти
             }
 
+            // Копируем аргумент
             strncpy(result[count], start, len);
             result[count][len] = '\0'; // Завершаем строку
 
-            // Проверяем и удаляем кавычки в начале и в конце
-            if (result[count][0] == '"' || result[count][0] == '\'') {
-                memmove(result[count], result[count] + 1, len); // Сдвигаем влево, удаляя первую кавычку
-                result[count][len - 1] = '\0'; // Завершаем строку
+            // Удаляем кавычки в начале
+            if ((result[count][0] == '"' || result[count][0] == '\'') && len > 0) {
+                memmove(result[count], result[count] + 1, len); // Сдвигаем влево
+                len--; // Уменьшаем длину на 1
+                result[count][len] = '\0'; // Завершаем строку
             }
 
-            // Проверяем, если последний символ кавычка
-            if (len > 1 && (result[count][len - 2] == '"' || result[count][len - 2] == '\'')) {
-                result[count][len - 2] = '\0'; // Удаляем последнюю кавычку
+            // Удаляем кавычки в конце
+            if (len > 0 && (result[count][len - 1] == '"' || result[count][len - 1] == '\'')) {
+                result[count][len - 1] = '\0'; // Удаляем последнюю кавычку
             }
 
             count++;
@@ -679,85 +622,106 @@ const char *function_list[MAX_FUNCS] = {
     "getCvar_char"
 };
 
+// Список типов аргументов для каждой функции
+const char *function_arg_types[MAX_FUNCS][MAX_ARGS] = {
+    {"char"},                                       // print
+    {"char", "char"},                               // command
+    {"char"},                                       // getCvar_int
+    {"char"},                                       // getCvar_float
+    {"char"}                                        // getCvar_char
+};
+
+ArgValue ns_args[MAX_ARGS]; // Массив аргументов типа VarValue
+
+// Функция для поиска индекса функции по её названию
+int funcforindex(const char *name) {
+    int i;
+    for (i = 0; i < MAX_FUNCS; i++) {
+        if (strcmp(function_list[i], name) == 0) {
+            return i; // Возвращаем индекс, если найдено совпадение
+        }
+    }
+    return -1; // Если функция не найдена, возвращаем -1
+}
+
 void callfunc(Variable *var, const char *name, const char *operation, const char *args) {
     VarValue result;
-    int called = 0; // 0 - not called, 1 - called without return, 2 - called and have return value
-    int i;
-    char* cleanedArgs = NULL;
+    qboolean hasReturnValue = qfalse;
     int argCount;
-    char* arguments[MAX_ARGS]; // Массив для хранения указателей на аргументы
+    char* cleanedArgs = removeOuterBrackets(args); // Удаляем внешние скобки
+    char* stringArgs[MAX_ARGS]; // Для хранения строковых аргументов
+    int i;
 
-    // Копируем аргументы и удаляем скобки
-    cleanedArgs = removeOuterBrackets(args); // Сразу удаляем скобки из аргументов
-    argCount = splitArgs(cleanedArgs, arguments); // Разделяем аргументы
+    // Разделяем аргументы
+    argCount = splitArgs(cleanedArgs, stringArgs);
 
-    // print
-    if (strcmp(name, "print") == 0 && argCount >= 1) {
-        Com_Printf("%s\n", NS_Text(arguments[0]));
-        called = 1;
+    for (i = 0; i < argCount; i++) {
+        const char* expectedType = function_arg_types[funcforindex(name)][i];
+        // Применяем NS_Exp к int и float, и NS_Text к char
+        if (strcmp(expectedType, "int") == 0) {
+        stringArgs[i] = NS_Exp(stringArgs[i]);
+        ns_args[i].i = atoi(stringArgs[i]);
+        } else if (strcmp(expectedType, "float") == 0) {
+        stringArgs[i] = NS_Exp(stringArgs[i]);
+        ns_args[i].f = atof(stringArgs[i]);
+        } else {
+        NS_Text(stringArgs[i], ns_args[i].c, sizeof(ns_args[i].c));
+        }
     }
 
-    // command
-    else if (strcmp(name, "command") == 0 && argCount >= 2) {
-        int exec_mode = (!strcmp(arguments[0], "EXEC_NOW")) ? EXEC_NOW :
-                        (!strcmp(arguments[0], "EXEC_INSERT")) ? EXEC_INSERT : EXEC_APPEND;
+    if (strcmp(name, "print") == 0 && argCount >= 1) {
+        Com_Printf("%s\n", ns_args[0].c);
+    }
 
+    else if (strcmp(name, "command") == 0 && argCount >= 2) {
+        int exec_mode = (!strcmp(ns_args[0].c, "EXEC_NOW")) ? EXEC_NOW :
+                        (!strcmp(ns_args[0].c, "EXEC_INSERT")) ? EXEC_INSERT : EXEC_APPEND;
+        
         #ifdef QAGAME
-        trap_SendConsoleCommand(exec_mode, NS_Text(arguments[1])); // Используем второй аргумент как команду
+        trap_SendConsoleCommand(exec_mode, ns_args[1].c);
         #endif
         #ifdef Q3_UI
-        trap_Cmd_ExecuteText(exec_mode, NS_Text(arguments[1]));
+        trap_Cmd_ExecuteText(exec_mode, ns_args[1].c);
         #endif
-        called = 1;
     }
 
-    // getCvar_int
     else if (strcmp(name, "getCvar_int") == 0 && argCount >= 1) {
-        char cvarValue[MAX_NCVAR_NAME];
-        trap_Cvar_VariableStringBuffer(NS_Text(arguments[0]), cvarValue, sizeof(cvarValue));
-        result.i = atoi(cvarValue); // Преобразуем строку в int
-        called = 2;
+        char cvarValue[MAX_VAR_CHAR_BUF];
+
+        trap_Cvar_VariableStringBuffer(ns_args[0].c, cvarValue, sizeof(cvarValue));
+        result.i = atoi(cvarValue);
+
+        hasReturnValue = qtrue;
     }
 
-    // getCvar_float
     else if (strcmp(name, "getCvar_float") == 0 && argCount >= 1) {
-        char cvarValue[MAX_NCVAR_NAME];
-        trap_Cvar_VariableStringBuffer(NS_Text(arguments[0]), cvarValue, sizeof(cvarValue));
-        result.f = atof(cvarValue); // Преобразуем строку в float
-        called = 2;
+        char cvarValue[MAX_VAR_CHAR_BUF];
+
+        trap_Cvar_VariableStringBuffer(ns_args[0].c, cvarValue, sizeof(cvarValue));
+        result.f = atof(cvarValue);
+
+        hasReturnValue = qtrue;
     }
 
-    // getCvar_char
     else if (strcmp(name, "getCvar_char") == 0 && argCount >= 1) {
-        char cvarValue[MAX_NCVAR_NAME];
-        trap_Cvar_VariableStringBuffer(NS_Text(arguments[0]), cvarValue, sizeof(cvarValue));
+        trap_Cvar_VariableStringBuffer(ns_args[0].c, result.c, sizeof(result.c));
 
-        // Копируем строку в result
-        strncpy(result.c, cvarValue, sizeof(result.c) - 1);
-        result.c[sizeof(result.c) - 1] = '\0';
-
-        called = 2;
+        hasReturnValue = qtrue;
     }
 
-    // Устанавливаем переменную, если функция возвращает значение
-    if (called == 2) {
-        set_variable(var, result, operation);
-    }
-
-    // Обработка неизвестных функций или некорректного количества аргументов
-    if (called == 0) {
+    else {
         Com_Printf("Noire.Script: %s - Unknown function or incorrect number of arguments.\n", name);
     }
 
-    // Освобождение памяти для аргументов
-    for (i = 0; i < argCount; i++) {
-        Q_free(arguments[i]);
+    if (hasReturnValue) {
+        set_variable(var, result, operation);
     }
 
-    // Освобождение памяти для cleanedArgs
-    Q_free(cleanedArgs);
-
-    return;
+    // Освобождение памяти
+    for (i = 0; i < argCount; i++) {
+        Q_free(stringArgs[i]);
+    }
+    Q_free(cleanedArgs); // Освобождаем очищенные аргументы
 }
 
 // Функция для проверки, является ли строка названием функции
@@ -774,17 +738,7 @@ int is_function(const char *token) {
 
 // Функция для проверки, является ли строка названием функции
 int is_operand(const char *token) {
-
-    if(is_literal(token)){
-        return 0;  // Не является операндом   
-    }
-    if(is_operator(token)){
-        return 0;  // Не является операндом   
-    }
-    if(is_function(token)){
-        return 0;  // Не является операндом   
-    }
-    return 1;  // Это операнд
+    return !(is_literal(token) || is_operator(token) || is_function(token));
 }
 
 /*
@@ -819,9 +773,14 @@ void Interpret(char* script) {
 
         // Упрощённый блок обработки if
         if (strcmp(token, "if") == 0) {
-            int firstValue = atoi(NS_Exp(NS_Parse(&pointer), TYPE_CHAR));
+            char* firstValueStr = NS_Exp(NS_Parse(&pointer));
+            int firstValue = atoi(firstValueStr);
             NSOperator op = NS_CharToOp(NS_Parse(&pointer));
-            int secondValue = atoi(NS_Exp(NS_Parse(&pointer), TYPE_CHAR));
+            char* secondValueStr = NS_Exp(NS_Parse(&pointer));
+            int secondValue = atoi(secondValueStr);
+
+            Q_free(firstValueStr);      //Освобождаем результат NS_Exp
+            Q_free(secondValueStr);     //Освобождаем результат NS_Exp
 
             // Выполняем условие
             if (NS_ifResult(firstValue, op, secondValue)) {
@@ -829,7 +788,7 @@ void Interpret(char* script) {
             } else {
                 // Пропускаем блок if, если условие ложно
                 while ((token = NS_Parse(&pointer)) != NULL) {
-                    if (strcmp(token, "}") == 0) {
+                    if (strcmp(token, "endif") == 0) {
                         break; // Выход из блока if
                     }
                 }
@@ -839,16 +798,19 @@ void Interpret(char* script) {
 
         // Упрощённый блок обработки for
         if (strcmp(token, "for") == 0) {
-            int iterations = atoi(NS_Exp(NS_Parse(&pointer), TYPE_CHAR));
+            char* iterationsStr = NS_Exp(NS_Parse(&pointer));
+            int iterations = atoi(iterationsStr);
             char originalBuffer[MAX_CYCLE_SIZE]; // Оригинальный буфер для хранения кода внутри for
             char operationBuffer[MAX_CYCLE_SIZE]; // Буфер для выполнения операций
             int originalBufferIndex = 0;
             int tokenLength = 0;
             int i = 0;
 
+            Q_free(iterationsStr);     //Освобождаем результат NS_Exp
+
             // Сначала собираем код внутри блока for в оригинальный буфер
             while ((token = NS_Parse(&pointer)) != NULL) {
-                if (strcmp(token, "}") == 0) {
+                if (strcmp(token, "endfor") == 0) {
                     break; // Выход из блока for
                 }
 
@@ -871,7 +833,7 @@ void Interpret(char* script) {
             originalBuffer[originalBufferIndex] = '\0';
 
             // Выводим полученный оригинальный буфер в консоль
-            Com_Printf("Noire.Script: Original buffer contents: %s\n", originalBuffer);
+            //Com_Printf("Noire.Script: Original buffer contents: %s\n", originalBuffer);
 
             // Запускаем интерпретацию кода из оригинального буфера нужное количество раз
             for (i = 0; i < iterations; i++) {
@@ -879,7 +841,7 @@ void Interpret(char* script) {
                 strcpy(operationBuffer, originalBuffer);
 
                 // Выводим номер текущей итерации
-                Com_Printf("Noire.Script: Iteration %d executed.\n", i + 1); // Выводим номер текущей итерации
+                //Com_Printf("Noire.Script: Iteration %d executed.\n", i + 1); // Выводим номер текущей итерации
 
                 // Запускаем интерпретацию кода из буфера для операций
                 Interpret(operationBuffer);
@@ -888,161 +850,79 @@ void Interpret(char* script) {
             continue; // Переходим к следующему токену после блока for
         }
 
-        // Проверяем, является ли токен объявлением переменной
+        // Объявление переменных
         if (strcmp(token, "int") == 0 || strcmp(token, "float") == 0 || strcmp(token, "char") == 0) {
-            // Получаем имя переменной
             char* varName = NS_Parse(&pointer);
-            char*  resultName;
-            char*   valueToken;
-            VarValue resultValue;
-            VarType  resultType;
+            VarType type;
+            VarValue value;
+            char* valueToken;
+            char* resultValue;
+            if (variable_exists(varName)) continue; // Пропускаем, если переменная уже существует
 
-            // Проверяем, существует ли переменная с таким именем
-            if (variable_exists(varName)) {
-                //Com_Printf("Noire.Script: Variable '%s' already exists.\n", varName);
-                continue; // Переходим к следующему токену так как создавать ничего не нужно
+            type =  strcmp(token, "int") == 0 ? TYPE_INT :
+                    strcmp(token, "float") == 0 ? TYPE_FLOAT : TYPE_CHAR;
+
+            token = NS_Parse(&pointer); // Пропускаем "="
+            valueToken = NS_Parse(&pointer);
+            if(type != TYPE_CHAR){
+            resultValue = NS_Exp(valueToken);
             }
-
-            // Копируем имя переменной
-            CopyAllocLen(resultName, varName);
-
-            // Устанавливаем тип переменной
-            if (strcmp(token, "int") == 0) {
-                resultType = TYPE_INT;
-            } else if (strcmp(token, "float") == 0) {
-                resultType = TYPE_FLOAT;
-            } else if (strcmp(token, "char") == 0) {
-                resultType = TYPE_CHAR; // Используем строку для хранения char
-            } else {
-                resultType = TYPE_INVALID; // Используем строку для хранения char
+            switch (type) {
+                case TYPE_INT:
+                    value.i = atoi(resultValue);
+                    break;
+                case TYPE_FLOAT:
+                    value.f = atof(resultValue);
+                    break;
+                case TYPE_CHAR:
+                    NS_Text(valueToken, value.c, sizeof(value.c));
+                    break;
+                default:
+                    break;
             }
-
-            // Проверяем следующий токен на знак присваивания
-            token = NS_Parse(&pointer);
-            if (token != NULL && strcmp(token, "=") == 0) {
-                // Получаем следующее значение
-                valueToken = NS_Parse(&pointer);
-                if (valueToken != NULL) {
-                    // Устанавливаем значение переменной в зависимости от её типа
-                    switch (resultType) {
-                        case TYPE_INT: {
-                            int* temp = (int*)NS_Exp(valueToken, TYPE_INT);
-                            if (temp) {
-                                resultValue.i = *temp;
-                                Q_free(temp);
-                            } else {
-                                Com_Printf("Noire.Script Variable %s: Initial value error.", varName);
-                            }
-                            break;
-                        }
-                        case TYPE_FLOAT: {
-                            float* temp = (float*)NS_Exp(valueToken, TYPE_FLOAT);
-                            if (temp) {
-                                resultValue.f = *temp; // Разыменование указателя для получения значения
-                                Q_free(temp);
-                            } else {
-                                Com_Printf("Noire.Script Variable %s: Initial value error.", resultName);
-                            }
-                            break;
-                        }
-                        case TYPE_CHAR: { // Для char мы можем использовать строку
-                            CopyAllocLen(resultValue.c, NS_Text(valueToken));
-                            break;
-                        }
-                    }
-                }
+            add_variable(varName, value, type);
+            if(type != TYPE_CHAR){
+            Q_free(resultValue);     //Освобождаем результат NS_Exp
             }
-            // Добавляем переменную в список
-            add_variable(resultName, resultValue, resultType);
-
-            // Освобождаем память для значения в зависимости от типа
-            if (resultType == TYPE_CHAR) {
-               Q_free(resultValue.c); // Освобождаем строку
-            }
-            // Освобождаем имя переменной только после успешного добавления
-            Q_free(resultName);
-
-            continue; // Переходим к следующему токену
+            continue;
         }
 
-        // Проверка, является ли токен именем переменной
+        // Обработка переменных
         var = find_variable(token);
         if (var != NULL) {
-            VarValue    resultValue;
-            char*       resultOperator;
-            char*       valueToken;
-            char*       resultArgs;
-            qboolean    func = qfalse;
-
-            // Проверяем следующий токен оператор
-            token = NS_Parse(&pointer);
-            if (is_operator(token)) {
-                CopyAllocLen(resultOperator, token);    //сохраняем оператор
-                // Получаем следующее значение
-                valueToken = NS_Parse(&pointer);
-                if (valueToken != NULL && !is_function(valueToken)) {
-                    // Устанавливаем значение переменной в зависимости от её типа
-                    switch (var->type) {
-                        case TYPE_INT: {
-                            int* temp = (int*)NS_Exp(valueToken, TYPE_INT);
-                            if (temp) {
-                                resultValue.i = *temp;
-                                Q_free(temp);
-                            } else {
-                                Com_Printf("Noire.Script Variable %s: Calculate value error.", var->name);
-                            }
-                            break;
-                        }
-                        case TYPE_FLOAT: {
-                            float* temp = (float*)NS_Exp(valueToken, TYPE_FLOAT);
-                            if (temp) {
-                                resultValue.f = *temp; // Разыменование указателя для получения значения
-                                Q_free(temp);
-                            } else {
-                                Com_Printf("Noire.Script Variable %s: Calculate value error.", var->name);
-                            }
-                            break;
-                        }
-                        case TYPE_CHAR: { // Для char мы можем использовать строку
-                            CopyAllocLen(resultValue.c, NS_Text(valueToken));
-                            break;
-                        }
-                    }
-                } else {
-                    resultArgs = NS_Parse(&pointer);
-                    callfunc(var, valueToken, resultOperator, resultArgs);  //valueToken это имя функции
-                    func = qtrue;
-                    Q_free(resultArgs);
+            char* op = NS_Parse(&pointer);
+            char* valueToken = NS_Parse(&pointer);
+            char* resultValue;
+            if (!is_function(valueToken)) {
+                VarValue value;
+                if(var->type != TYPE_CHAR){
+                resultValue = NS_Exp(valueToken);       //Если не функция то вычисляем значение
                 }
+                switch (var->type) {
+                    case TYPE_INT:
+                        value.i = atoi(resultValue);
+                        break;
+                    case TYPE_FLOAT:
+                        value.f = atof(resultValue);
+                        break;
+                    case TYPE_CHAR:
+                        NS_Text(valueToken, value.c, sizeof(value.c));
+                        break;
+                }
+                set_variable(var, value, op);
+                if(var->type != TYPE_CHAR){
+                Q_free(resultValue);     //Освобождаем результат NS_Exp так как память выделена
+                }
+            } else {
+                callfunc(var, valueToken, op, NS_Parse(&pointer));
             }
-            // Добавляем переменную в список
-            if(!func){
-            set_variable(var, resultValue, resultOperator);
-            }
-
-            // Освобождаем память для значения в зависимости от типа
-            if (var->type == TYPE_CHAR) {
-               Q_free(resultValue.c); // Освобождаем строку
-            }
-            // Освобождаем имя переменной только после успешного добавления
-            Q_free(resultOperator);
-
-            continue; // Переходим к следующему токену
+            continue;
         }
 
+        // Обработка функций
         if (is_function(token)) {
-            char*     valueToken;
-
-            CopyAllocLen(valueToken, token);    //сохраняем название функции
-
-            // Проверяем следующий токен - аргументы
-            token = NS_Parse(&pointer);
-
-            callfunc(NULL, valueToken, NULL, token);  //valueToken это имя функции
-
-            Q_free(valueToken);
-
-            continue; // Переходим к следующему токену
+            callfunc(NULL, token, NULL, NS_Parse(&pointer));
+            continue;
         }
     }
 }

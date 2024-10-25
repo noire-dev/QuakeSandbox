@@ -2627,7 +2627,7 @@ CheckIntermissionExit
 The level will stay at the intermission for a minimum of 5 seconds
 If all players wish to continue, the level will then exit.
 If one or more players have not acknowledged the continue, the game will
-wait 10 seconds before going on.
+0 seconds before going on.
 =================
 */
 void CheckIntermissionExit( void ) {

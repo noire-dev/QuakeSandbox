@@ -1,3 +1,55 @@
-for 1
-    command (EXEC_INSERT "say From ui")
-}
+char hh1 = "text1 this is space hi hi hi ha"
+char hh2 = "text2 this is space hi hi hi ha"
+char hh3 = "text3 this is space hi hi hi ha"
+char hh4 = "text4 this is space hi hi hi ha"
+char hh5 = "text5 this is space hi hi hi ha"
+char hh6 = "text6 this is space hi hi hi ha"
+char hh7 = "text7 this is space hi hi hi ha"
+char hh8 = "text8 this is space hi hi hi ha"
+int ll1 = 1
+int ll2 = 12
+int ll3 = 123
+int ll4 = 1234
+int ll5 = 12345
+int ll6 = 123456
+int ll7 = 1234567
+int ll8 = 12345678
+float gg1 = 1
+float gg2 = 12
+float gg3 = 123
+float gg4 = 1234
+float gg5 = 12345
+float gg6 = 123456
+float gg7 = 1234567
+float gg8 = 12345678
+float speed = 0
+float gravity = 0
+char name = ""
+
+hh9 = "changed hi hi hi ha lol"
+
+speed = getCvar_float ("g_speed")
+gravity = getCvar_float ("g_gravity")
+name = getCvar_char ("name")
+
+name = "$name-sigma"
+
+//command (EXEC_INSERT "set name $name")
+
+//command (EXEC_INSERT "say hihihiha")
+
+for ll1+ll1+ll1
+if ll1 < ll8
+print ("ll1 < ll8")
+endif
+
+if ll1 < ll7
+print ("ll1 < ll7")
+endif
+
+if ll1 < ll6
+print ("ll1 < ll6")
+endif
+endfor
+
+print ("testing")

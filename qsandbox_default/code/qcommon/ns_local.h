@@ -27,11 +27,12 @@
 */
 
 #define MAX_FILE_SIZE       1024*30       //Макс длина скрипта
+#define MAX_TOKEN_LENGTH    1024          //Макс количество символов в токене
 #define MAX_CYCLE_SIZE      1024*8        //Макс длина цикла
-#define MAX_VARS            4096          //Макс переменных
+#define MAX_VARS            8192          //Макс переменных
 #define MAX_VAR_NAME        32            //Макс имя переменной
 #define MAX_NCVAR_NAME      64            //Макс имя консольной переменной
-#define MAX_VAR_CHAR_BUF    256           //Макс буфер char переменной
+#define MAX_VAR_CHAR_BUF    1024          //Макс буфер char переменной
 #define MAX_FUNCS           5             //Количество функций
 #define MAX_ARGS            64            //Количество аргументов
 #define MAX_ARG_LENGTH      64            //Количество аргументов
@@ -55,10 +56,17 @@ typedef enum {
 
 // Определяем union для разных типов
 typedef union {
-    char *c;
+    char c[MAX_VAR_CHAR_BUF];
     int i;
     float f;
 } VarValue;
+
+// Определяем для разных типов
+typedef union {
+    char c[MAX_VAR_CHAR_BUF];
+    int i;
+    float f;
+} ArgValue;
 
 // Перечисляем типы переменных
 typedef enum {
