@@ -166,11 +166,7 @@ struct gentity_s {
 	char		*message;
 	char		*messageru;
 	
-	char		*playername;			// set in client
 	char		*selectedpr;			// set in QuakeEd
-	int			maxHealth;				// for handicapping
-	team_t		playerTeam;
-	int		arenaid;				//id for selecting into arenascript
 	pspecial_t	playerspecial;	   // The players current special
 
 
@@ -2148,29 +2144,15 @@ void Svcmd_DumpUser_f( void );
 void Svcmd_Chat_f( void );
 void Svcmd_ListIP_f( void );
 void Svcmd_MessageWrapper( void );
-//ArenaScript
-void Svcmd_Condition_f( void );
-void Svcmd_Operation_f( void );
-void Svcmd_Cvar_f( void );
-void Svcmd_Random_f( void );
-void Svcmd_Editline_f( void );
-void Svcmd_ClientCommand_f( void );
-void Svcmd_SystemCommand_f( void );
-void Svcmd_For_f( void );
 void Svcmd_SaveSession_f( void );
-int G_ArenaScriptFindInt( char *type, char *name );
-char *G_ArenaScriptFindChar( char *type, char *name );
-float G_ArenaScriptFindFloat( char *type, char *name );
-int G_ArenaScriptAutoInt( char *name );
-char *G_ArenaScriptAutoChar( char *name );
-char *G_ArenaScriptAutoNonPointChar( char *name );
-float G_ArenaScriptAutoFloat( char *name );
-int G_ArenaScriptRandom(int min, int max);
-char	*AU_Cvar_VariableString( const char *var_name );
+
+char *G_CvarAutoChar( char *name );
 
 //Noire.Script
 void Svcmd_NS_OpenScript_f( void );
+void Svcmd_NS_Interpret_f( void );
 void Svcmd_NS_VariableList_f( void );
+void Svcmd_NS_ThreadList_f( void );
 
 #include "g_killspree.h"
 #include "g_admin.h"

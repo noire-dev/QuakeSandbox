@@ -3264,7 +3264,7 @@ if(!g_allowsettings.integer){ return; }
 	trap_Argv( 3, p3, sizeof( p3 ) );
 	
 	if(atoi(p3) >= 1){
-	trap_SendServerCommand( -1, va("print \"Variable %s is %s\n\"", p1, G_ArenaScriptAutoChar( p1 )));
+	trap_SendServerCommand( -1, va("print \"Variable %s is %s\n\"", p1, G_CvarAutoChar( p1 )));
 	return;
 	}
 	

@@ -810,7 +810,7 @@ int CG_ParseVoiceChats( const char *filename, voiceChatList_t *voiceChatList, in
 
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );
 	if ( !f ) {
-		trap_Print( va( S_COLOR_RED "voice chat file not found: %s\n", filename ) );
+		//trap_Print( va( S_COLOR_RED "voice chat file not found: %s\n", filename ) );
 		return qfalse;
 	}
 	if ( len >= MAX_VOICEFILESIZE ) {

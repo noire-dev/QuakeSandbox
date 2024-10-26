@@ -1406,11 +1406,6 @@ void ClientUserinfoChanged( int clientNum ) {
         }
     }
 
-//ArenaScript
-ent->playername = ent->client->pers.netname;
-ent->maxHealth = ent->client->pers.maxHealth;
-ent->playerTeam = ent->client->sess.sessionTeam;
-
 ent->tool_id = atoi( Info_ValueForKey( userinfo, "toolgun_tool" ) );
 
 if ( ent->r.svFlags & SVF_BOT ) {

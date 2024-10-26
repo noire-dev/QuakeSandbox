@@ -457,7 +457,7 @@ void Svcmd_AdmUseCvar_f( void ) {
 	trap_Argv( 3, p3, sizeof( p3 ) );
 	
 	if(atoi(p3) >= 1){
-	trap_SendServerCommand( -1, va("print \"Variable %s is %s\n\"", p1, G_ArenaScriptAutoChar( p1 )));
+	trap_SendServerCommand( -1, va("print \"Variable %s is %s\n\"", p1, G_CvarAutoChar( p1 )));
 	return;
 	}
 	
@@ -588,22 +588,15 @@ struct
   
   { "hideobjects", qfalse, G_HideObjects },
   { "showobjects", qfalse, G_ShowObjects },
-  
-  //ArenaScript
   { "useadmcvar", qfalse, Svcmd_AdmUseCvar_f },
-  { "if", qfalse, Svcmd_Condition_f },
   { "picktarget", qfalse, Svcmd_PickTarget_f },
-  { "op", qfalse, Svcmd_Operation_f },
-  { "cvar", qfalse, Svcmd_Cvar_f },
-  { "editline", qfalse, Svcmd_Editline_f },
-  { "clientcmd", qfalse, Svcmd_ClientCommand_f },
-  { "syscmd", qfalse, Svcmd_SystemCommand_f },
-  { "random", qfalse, Svcmd_Random_f },
-  { "for", qfalse, Svcmd_For_f },
   { "savegame", qfalse, Svcmd_SaveSession_f },
+
   //Noire.Script
   { "ns_openscript", qfalse, Svcmd_NS_OpenScript_f },
+  { "ns_interpret", qfalse, Svcmd_NS_Interpret_f },
   { "ns_variablelist", qfalse, Svcmd_NS_VariableList_f },
+  { "ns_threadlist", qfalse, Svcmd_NS_ThreadList_f },
 };
 
 /*

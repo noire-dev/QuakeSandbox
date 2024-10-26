@@ -1745,24 +1745,11 @@ playerscore_t G_CalculatePlayerScore( gentity_t *ent ) {
 
 /*
 ==================
-G_ArenaScriptAutoInt
-Return type int
-==================
-*/
-int G_ArenaScriptAutoInt( char *name ) {  
-	if(trap_Cvar_VariableIntegerValue(name)){
-		return trap_Cvar_VariableIntegerValue(name);
-	}
-		return atoi(name);
-}
-
-/*
-==================
-G_ArenaScriptAutoChar
+G_CvarAutoChar
 Return type char
 ==================
 */
-char *G_ArenaScriptAutoChar( char *name ) {
+char *G_CvarAutoChar( char *name ) {
 char finaltext[1024];
 
 trap_Cvar_VariableStringBuffer(name, finaltext, sizeof( finaltext ));
@@ -1770,41 +1757,6 @@ trap_Cvar_VariableStringBuffer(name, finaltext, sizeof( finaltext ));
 		return va("%s", finaltext );
 	}
 	return va("%s", name );
-}
-
-/*
-==================
-G_ArenaScriptAutoFloat
-Return type char
-==================
-*/
-float G_ArenaScriptAutoFloat( char *name ) {
-
-	if(trap_Cvar_VariableValue(name)){
-		return trap_Cvar_VariableValue(name);
-	}
-	return atof(name);
-}
-
-/*
-==================
-G_ArenaScriptRandom
-Return random int
-==================
-*/
-int G_ArenaScriptRandom(int min, int max)
-{
-	int number;
-	number = (rand() % (max - min + 1)) + (min);
-	return number;
-}
-
-char *AU_Cvar_VariableString( const char *var_name ) {
-	static char	buffer[MAX_STRING_CHARS];
-
-	trap_Cvar_VariableStringBuffer( var_name, buffer, sizeof( buffer ) );
-
-	return buffer;
 }
 
 /*

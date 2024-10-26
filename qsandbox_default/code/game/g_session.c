@@ -283,7 +283,7 @@ void G_UpdateGlobalSessionDataForMapChange() {
 
 	trap_Cvar_Set( "save_epsession", "" );
 
-	trap_Cvar_Set( "save_epsession", G_ArenaScriptAutoChar( "epsession" ) );
+	trap_Cvar_Set( "save_epsession", G_CvarAutoChar( "epsession" ) );
 }
 
 /*
@@ -348,7 +348,7 @@ void G_SaveClientSessionDataSave( gclient_t *client ) {
 	sess->posY = (int)(client->ps.origin[1]);
 	sess->posZ = (int)(client->ps.origin[2]);
 
-	trap_Cvar_Set( "save_curmap", G_ArenaScriptAutoChar( "mapname" ) );
+	trap_Cvar_Set( "save_curmap", G_CvarAutoChar( "mapname" ) );
 	
 	G_SaveClientSessionData(client);
 	

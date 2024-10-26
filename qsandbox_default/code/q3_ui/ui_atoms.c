@@ -1471,7 +1471,6 @@ char	*UI_ConcatArgs( int start ) {
 	return line;
 }
 
-
 /*
 ==================
 UI_ArenaScriptAutoInt
@@ -1483,6 +1482,14 @@ int UI_ArenaScriptAutoInt( char *name ) {
 		return trap_Cvar_VariableValue(name);
 	}
 		return atoi(name);
+}
+
+char *UI_Cvar_VariableString( const char *var_name ) {
+	static char	buffer[MAX_STRING_CHARS];
+
+	trap_Cvar_VariableStringBuffer( var_name, buffer, sizeof( buffer ) );
+
+	return buffer;
 }
 
 /*
@@ -1515,28 +1522,6 @@ float UI_ArenaScriptAutoFloat( char *name ) {
 	}
 		return atof(name);
 }
-
-/*
-==================
-UI_ArenaScriptRandom
-Return random int
-==================
-*/
-int UI_ArenaScriptRandom(int min, int max)
-{
-	int number;
-	number = (rand() % (max - min + 1)) + (min);
-	return number;
-}
-
-char *UI_Cvar_VariableString( const char *var_name ) {
-	static char	buffer[MAX_STRING_CHARS];
-
-	trap_Cvar_VariableStringBuffer( var_name, buffer, sizeof( buffer ) );
-
-	return buffer;
-}
-
 
 /*
 =================
@@ -1808,7 +1793,22 @@ if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {
 	}
 
 	if ( Q_stricmp (UI_Argv(0), "ns_openscript_cl") == 0 ) {
-		NS_OpenScript(UI_ConcatArgs(1));
+		NS_OpenScript(UI_Argv(1), NULL, 0);
+		return qtrue;
+	}
+
+	if ( Q_stricmp (UI_Argv(0), "ns_interpret_cl") == 0 ) {
+		Interpret(UI_ConcatArgs(1));
+		return qtrue;
+	}
+
+	if ( Q_stricmp (UI_Argv(0), "ns_variablelist_cl") == 0 ) {
+		print_variables();
+		return qtrue;
+	}
+
+	if ( Q_stricmp (UI_Argv(0), "ns_threadlist_cl") == 0 ) {
+		print_threads();
 		return qtrue;
 	}
 	
@@ -1817,156 +1817,6 @@ if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {
 		trap_Cmd_ExecuteText( EXEC_INSERT, va("execscript \"mgui/%s\"", UI_ConcatArgs(1)));
 		return qtrue;
 	}
-
-if ( Q_stricmp (UI_Argv(0), "as_run") == 0 ) {
-	if ( Q_stricmp (UI_Argv(1), "syscommand") == 0 ) {
-		trap_System( va("\"%s\"", UI_ConcatArgs(2)));
-	}
-	if ( Q_stricmp (UI_Argv(1), "if") == 0 ) {
-		if(!Q_stricmp (UI_Argv(3), "=")){
-			if(!Q_stricmp (UI_ArenaScriptAutoChar( UI_Argv(2) ), UI_ArenaScriptAutoChar( UI_Argv(4) ))){
-				trap_Cmd_ExecuteText( EXEC_INSERT, va("%s\n", UI_ConcatArgs( 5 )) );
-			}
-		}
-		if(!Q_stricmp (UI_Argv(3), "==")){
-			if(UI_ArenaScriptAutoInt( UI_Argv(2) ) == UI_ArenaScriptAutoInt( UI_Argv(4) )){
-				trap_Cmd_ExecuteText( EXEC_INSERT, va("%s\n", UI_ConcatArgs( 5 )) );
-			}
-		}
-		if(!Q_stricmp (UI_Argv(3), "!=")){
-			if(Q_stricmp (UI_ArenaScriptAutoChar( UI_Argv(2) ), UI_ArenaScriptAutoChar( UI_Argv(4) )) != 0){
-				trap_Cmd_ExecuteText( EXEC_INSERT, va("%s\n", UI_ConcatArgs( 5 )) );
-			}
-		}
-		if(!Q_stricmp (UI_Argv(3), "!==")){
-			if(UI_ArenaScriptAutoInt( UI_Argv(2) ) != UI_ArenaScriptAutoInt( UI_Argv(4) )){
-				trap_Cmd_ExecuteText( EXEC_INSERT, va("%s\n", UI_ConcatArgs( 5 )) );
-			}
-		}
-		if(!Q_stricmp (UI_Argv(3), "<")){
-			if(UI_ArenaScriptAutoInt( UI_Argv(2) ) < UI_ArenaScriptAutoInt( UI_Argv(4) )){
-				trap_Cmd_ExecuteText( EXEC_INSERT, va("%s\n", UI_ConcatArgs( 5 )) );
-			}
-		}
-		if(!Q_stricmp (UI_Argv(3), ">")){
-			if(UI_ArenaScriptAutoInt( UI_Argv(2) ) > UI_ArenaScriptAutoInt( UI_Argv(4) )){
-				trap_Cmd_ExecuteText( EXEC_INSERT, va("%s\n", UI_ConcatArgs( 5 )) );
-			}
-		}
-		if(!Q_stricmp (UI_Argv(3), "<=")){
-			if(UI_ArenaScriptAutoInt( UI_Argv(2) ) <= UI_ArenaScriptAutoInt( UI_Argv(4) )){
-				trap_Cmd_ExecuteText( EXEC_INSERT, va("%s\n", UI_ConcatArgs( 5 )) );
-			}
-		}
-		if(!Q_stricmp (UI_Argv(3), ">=")){
-			if(UI_ArenaScriptAutoInt( UI_Argv(2) ) >= UI_ArenaScriptAutoInt( UI_Argv(4) )){
-				trap_Cmd_ExecuteText( EXEC_INSERT, va("%s\n", UI_ConcatArgs( 5 )) );
-			}
-		}
-	}	
-	if ( Q_stricmp (UI_Argv(1), "op") == 0 ) {
-		number01 = UI_ArenaScriptAutoInt( UI_Argv(2) );
-		number02 = UI_ArenaScriptAutoInt( UI_Argv(4) );
-		if(!Q_stricmp (UI_Argv(3), "+=")){
-			number01 += number02;
-			trap_Cvar_Set( UI_Argv(2), va("%i", number01) );
-		}
-		if(!Q_stricmp (UI_Argv(3), "-=")){
-			number01 -= number02;
-			trap_Cvar_Set( UI_Argv(2), va("%i", number01) );
-		}
-		if(!Q_stricmp (UI_Argv(3), "*=")){
-			number01 *= number02;
-			trap_Cvar_Set( UI_Argv(2), va("%i", number01) );
-		}
-		if(!Q_stricmp (UI_Argv(3), "/=")){
-			number01 /= number02;
-			trap_Cvar_Set( UI_Argv(2), va("%i", number01) );
-		}
-		if(!Q_stricmp (UI_Argv(3), "=")){
-			trap_Cvar_Set( UI_Argv(2), UI_ArenaScriptAutoChar(UI_Argv(4)) );
-		}
-	}
-	if ( Q_stricmp (UI_Argv(1), "random") == 0 ) {
-		number01 = UI_ArenaScriptAutoInt( UI_Argv(2) );
-		number02 = UI_ArenaScriptRandom( atoi(UI_Argv(4)), atoi(UI_Argv(5)) );
-		if(!Q_stricmp (UI_Argv(3), "=")){
-			number01 = number02;
-				trap_Cvar_Set( UI_Argv(2), va("%f", number01) );
-		}
-		if(!Q_stricmp (UI_Argv(3), "+=")){
-			number01 += number02;
-				trap_Cvar_Set( UI_Argv(2), va("%f", number01) );
-		}
-		if(!Q_stricmp (UI_Argv(3), "-=")){
-			number01 -= number02;
-				trap_Cvar_Set( UI_Argv(2), va("%f", number01) );
-		}
-		if(!Q_stricmp (UI_Argv(3), "*=")){
-			number01 *= number02;
-				trap_Cvar_Set( UI_Argv(2), va("%f", number01) );
-		}
-		if(!Q_stricmp (UI_Argv(3), "/=")){
-			number01 /= number02;
-				trap_Cvar_Set( UI_Argv(2), va("%f", number01) );
-		}
-	}	
-	if ( Q_stricmp (UI_Argv(1), "editline") == 0 ) {
-	if(!Q_stricmp (UI_Argv(3), "add")){
-	trap_Cvar_Set( UI_Argv(2), va("%s%s", UI_Cvar_VariableString(UI_Argv(2)), UI_ArenaScriptAutoChar( UI_Argv(3) )) );
-	}
-	
-	if(!Q_stricmp (UI_Argv(3), "begin")){
-	trap_Cvar_Set( UI_Argv(2), va("%s%s", UI_ArenaScriptAutoChar( UI_Argv(3) ), UI_Cvar_VariableString(UI_Argv(2))) );
-	}
-	}
-	if ( Q_stricmp (UI_Argv(1), "cvar") == 0 ) {
-	if(!Q_stricmp (UI_Argv(2), "delete")){
-	trap_Cmd_ExecuteText( EXEC_APPEND, va("unset %s\n", UI_Argv(3)));
-	}
-	
-	if(!Q_stricmp (UI_Argv(2), "save")){
-	trap_Cmd_ExecuteText( EXEC_APPEND, va("seta %s %s\n", UI_Argv(4), UI_ArenaScriptAutoChar( UI_Argv(3) )));
-	}
-	
-	if(!Q_stricmp (UI_Argv(2), "load")){
-	trap_Cmd_ExecuteText( EXEC_APPEND, va("set %s %s\n", UI_Argv(3), UI_ArenaScriptAutoChar( UI_Argv(4) )));
-	}
-	}
-	if ( Q_stricmp (UI_Argv(1), "for") == 0 ) {
-	if(!Q_stricmp (UI_Argv(3), "==")){ 
-	for( i = UI_ArenaScriptAutoInt( UI_Argv(2) ); i == UI_ArenaScriptAutoInt( UI_Argv(4) ); i += UI_ArenaScriptAutoInt( UI_Argv(5) ) ){
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("%s\n", UI_ConcatArgs( 6 )) );
-	}
-	}
-	if(!Q_stricmp (UI_Argv(3), "!=")){
-	for( i = UI_ArenaScriptAutoInt( UI_Argv(2) ); i != UI_ArenaScriptAutoInt( UI_Argv(4) ); i += UI_ArenaScriptAutoInt( UI_Argv(5) ) ){
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("%s\n", UI_ConcatArgs( 6 )) );
-	}
-	}
-	if(!Q_stricmp (UI_Argv(3), "<")){
-	for( i = UI_ArenaScriptAutoInt( UI_Argv(2) ); i < UI_ArenaScriptAutoInt( UI_Argv(4) ); i += UI_ArenaScriptAutoInt( UI_Argv(5) ) ){
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("%s\n", UI_ConcatArgs( 6 )) );
-	}
-	}
-	if(!Q_stricmp (UI_Argv(3), ">")){
-	for( i = UI_ArenaScriptAutoInt( UI_Argv(2) ); i > UI_ArenaScriptAutoInt( UI_Argv(4) ); i += UI_ArenaScriptAutoInt( UI_Argv(5) ) ){
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("%s\n", UI_ConcatArgs( 6 )) );
-	}
-	}
-	if(!Q_stricmp (UI_Argv(3), "<=")){
-	for( i = UI_ArenaScriptAutoInt( UI_Argv(2) ); i <= UI_ArenaScriptAutoInt( UI_Argv(4) ); i += UI_ArenaScriptAutoInt( UI_Argv(5) ) ){
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("%s\n", UI_ConcatArgs( 6 )) );
-	}
-	}
-	if(!Q_stricmp (UI_Argv(3), ">=")){
-	for( i = UI_ArenaScriptAutoInt( UI_Argv(2) ); i >= UI_ArenaScriptAutoInt( UI_Argv(4) ); i += UI_ArenaScriptAutoInt( UI_Argv(5) ) ){
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("%s\n", UI_ConcatArgs( 6 )) );
-	}
-	}
-	}
-return qtrue;
-}
 
 	if ( Q_stricmp (cmd, "workshop") == 0 ) {
 		UI_WorkshopMenu();

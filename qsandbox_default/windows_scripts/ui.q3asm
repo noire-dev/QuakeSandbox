@@ -68,4 +68,5 @@ bg_misc
 bg_lib
 q_math
 q_shared
-ns_main
+ns_main_client
+ns_func_client

@@ -111,7 +111,7 @@ static void UI_LoadArenasFromFile( char *filename ) {
 
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );
 	if ( !f ) {
-		trap_Print( va( S_COLOR_RED "file not found: %s\n", filename ) );
+		//trap_Print( va( S_COLOR_RED "file not found: %s\n", filename ) );
 		return;
 	}
 	if ( len >= MAX_ARENAS_TEXT ) {
@@ -234,7 +234,7 @@ static void UI_LoadBotsFromFile( char *filename ) {
 
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );
 	if ( !f ) {
-		trap_Print( va( S_COLOR_RED "file not found: %s\n", filename ) );
+		//trap_Print( va( S_COLOR_RED "file not found: %s\n", filename ) );
 		return;
 	}
 	if ( len >= MAX_BOTS_TEXT ) {

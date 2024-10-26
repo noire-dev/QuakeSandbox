@@ -21,7 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 //
 
-#include "g_local.h"
+//#include "g_local.h"
+#include "../qcommon/ns_local.h"	//load ns_local instead
 
 level_locals_t	level;
 
@@ -1689,6 +1690,8 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 		BotAILoadMap( restart );
 		G_InitBots( restart );
 	}
+
+	NS_OpenScript("noirescript/init.ns", NULL, 0);		//Noire.Script initialization script
 
 	//elimination:
 	level.roundNumber = 1;
@@ -3680,6 +3683,33 @@ void G_RunCutscene( int levelTime ) {
 }
 
 /*
+###############
+Noire.Script API - Threads
+###############
+*/
+
+// Load threads
+void RunScriptThreads(int time) {
+    int i;
+	char tempBuffer[MAX_CYCLE_SIZE];
+
+    for (i = 0; i < threadsCount; i++) {
+        ScriptLoop* script = &threadsLoops[i];
+        if (time - script->lastRunTime >= script->interval) {
+            // Обновляем время последнего запуска
+            script->lastRunTime = time;
+
+            // Используем временный буфер для выполнения скрипта
+            tempBuffer[MAX_CYCLE_SIZE]; // Временный буфер для выполнения
+            strncpy(tempBuffer, script->code, MAX_CYCLE_SIZE - 1);
+            tempBuffer[MAX_CYCLE_SIZE - 1] = '\0'; // Убедимся, что буфер терминальный
+
+            Interpret(tempBuffer); // Запускаем скрипт из временного буфера
+        }
+    }
+}
+
+/*
 ================
 G_RunFrame
 
@@ -3710,34 +3740,11 @@ void G_RunFrame( int levelTime ) {
 	
 	trap_Cvar_VariableStringBuffer("mapname", cmapname, sizeof(cmapname));
 	trap_Cvar_Set( "g_currentmap", cmapname );
-	//trap_Cvar_Set("sv_cheats", "1");
-
-if(mins == mod_zround + 1){
-	NextCustomRound_f();
-	trap_SendConsoleCommand( EXEC_APPEND, va("execscript gamescripts/%s/script_min%i.cfg\n", cmapname, mins));
-	trap_SendConsoleCommand( EXEC_APPEND, va("execscript gamescripts/script_min%i.cfg\n", mins));
-}
-
-if((tens*10)+seconds == mod_zsround + 1){
-	mod_zsround += 1;
-	trap_SendConsoleCommand( EXEC_APPEND, va("execscript gamescripts/%s/script_sec%i.cfg\n", cmapname, (tens*10)+seconds));
-	trap_SendConsoleCommand( EXEC_APPEND, va("execscript gamescripts/script_sec%i.cfg\n", (tens*10)+seconds));
-}
-
-if((tens*10)+seconds >= 59){
-mod_zsround = 0;	
-}
-
-if(CustomModRun == 0){
-	trap_SendConsoleCommand( EXEC_APPEND, "exec CustomMod/CustomRestart.cfg\n");
-	trap_SendConsoleCommand( EXEC_APPEND, va("loadmapall CustomMod/maps/%s.ent\n", cmapname));
-	trap_SendConsoleCommand( EXEC_APPEND, va("loadmap CustomMod/maps/%s.add\n", cmapname));
-	trap_SendConsoleCommand( EXEC_APPEND, va("exec CustomMod/maps/%s.cfg\n", cmapname));
-	CustomModRun = 1;
-}
 
 	// get any cvar changes
 	G_UpdateCvars();
+
+	RunScriptThreads(level.time);	//Noire.Script - run threads
 
         if( (g_gametype.integer==GT_ELIMINATION || g_gametype.integer==GT_CTF_ELIMINATION) && !(g_elimflags.integer & EF_NO_FREESPEC) && g_elimination_lockspectator.integer>1)
             trap_Cvar_Set("elimflags",va("%i",g_elimflags.integer|EF_NO_FREESPEC));
