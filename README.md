@@ -2,7 +2,7 @@
 
 <a href="https://discord.com/invite/TZubjHHKty"><img src="https://img.shields.io/discord/1145198169441960067?color=7289da&logo=discord&logoColor=white" alt="QS Discord" /></a>
 
-Open-Source sandbox game on [MiTech Engine](https://github.com/noire-dev/MiTech).
+Open-Source sandbox game on [SourceTech Engine](https://github.com/noire-dev/SourceTech).
 
 # Features:
 
@@ -85,10 +85,9 @@ Open-Source sandbox game on [MiTech Engine](https://github.com/noire-dev/MiTech)
 * Seamless change of QVM
 * Improved lighting (high resolution lightmaps and post-processing)
 * Render distance for entity (server-side)
-* MGui (MiTech GUI) interface system with QVM and map integration
+* MGui interface system with QVM and map integration
 * Vehicles and additional properties of the entity
 * Support huge size maps up to 4GB
-* Android support
 
 ## Links
 
