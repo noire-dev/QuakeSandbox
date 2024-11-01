@@ -700,7 +700,6 @@ int slickmove;
 int spawnprotect;
 int elimination_lockspectator;
 int awardpushing;
-int specChat;
 int randomteleport;
 int falldamagesmall;
 int falldamagebig;

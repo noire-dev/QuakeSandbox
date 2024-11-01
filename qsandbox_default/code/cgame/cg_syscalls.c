@@ -446,3 +446,15 @@ qboolean trap_GetEntityToken( char *buffer, int bufferSize ) {
 qboolean trap_R_inPVS( const vec3_t p1, const vec3_t p2 ) {
 	return syscall( CG_R_INPVS, p1, p2 );
 }
+
+void void	trap_R_AddRefEntityToScene2( const refEntity_t *re, qboolean intShaderTime ) {
+	syscall( CG_R_ADDREFENTITYTOSCENE2, re, intShaderTime );
+}
+
+void trap_R_ForceFixedDLights( void ) {
+	syscall( CG_R_FORCEFIXEDDLIGHTS );
+}
+
+void trap_R_AddLinearLightToScene( const vec3_t start, const vec3_t end, float intensity, float r, float g, float b ) {
+	syscall( CG_R_ADDLINEARLIGHTTOSCENE, start, end, PASSFLOAT(intensity), PASSFLOAT(r), PASSFLOAT(g), PASSFLOAT(b) );
+}

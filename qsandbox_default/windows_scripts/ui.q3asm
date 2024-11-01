@@ -1,7 +1,6 @@
 -o "../../milab/vm/ui"
 ui_main
 ..\ui_syscalls
-mgui
 ui_addbots
 ui_advanced
 ui_atoms
@@ -68,5 +67,6 @@ bg_misc
 bg_lib
 q_math
 q_shared
-ns_main_client
-ns_func_client
+ns_main_ui
+ns_func_ui
+ns_interface_ui

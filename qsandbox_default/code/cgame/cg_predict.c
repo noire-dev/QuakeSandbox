@@ -663,11 +663,11 @@ void CG_PredictPlayerState( void ) {
 		cg.physicsTime = cg.snap->serverTime;
 	}
 
-	if ( pmove_msec.integer < 8 ) {
-		trap_Cvar_Set("pmove_msec", "8");
+	if ( pmove_msec.integer < 1 ) {
+		trap_Cvar_Set("pmove_msec", "1");
 	}
-	else if (pmove_msec.integer > 33) {
-		trap_Cvar_Set("pmove_msec", "33");
+	else if (pmove_msec.integer > 125) {
+		trap_Cvar_Set("pmove_msec", "125");
 	}
 
 	cg_pmove.pmove_fixed = pmove_fixed.integer;// | cg_pmove_fixed.integer;

@@ -681,7 +681,7 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_cameraMode, "com_cameraMode", "0", CVAR_CHEAT},
 
 	{ &pmove_fixed, "pmove_fixed", "0", CVAR_SYSTEMINFO},
-	{ &pmove_msec, "pmove_msec", "11", CVAR_SYSTEMINFO},
+	{ &pmove_msec, "pmove_msec", "16", CVAR_SYSTEMINFO},
         { &pmove_float, "pmove_float", "1", CVAR_SYSTEMINFO},
 	{ &cg_noTaunt, "cg_noTaunt", "0", CVAR_ARCHIVE},
 	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
@@ -2648,6 +2648,8 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	CG_RegisterCvars();
 
 	CG_InitConsoleCommands();
+
+	NS_OpenScript("nscript/cgame/init.ns", NULL, 0);		//Noire.Script Init in cgame.qvm
 
 	cg.weaponSelect = WP_MACHINEGUN;
 

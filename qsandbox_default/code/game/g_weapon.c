@@ -59,7 +59,6 @@ Flash Light Functions
 void Laser_Gen( gentity_t *ent )	{
 
 	gentity_t	*las;
-	int oldtype;
 
 	las = G_Spawn();
 
@@ -69,67 +68,73 @@ void Laser_Gen( gentity_t *ent )	{
 	las->parent = ent;
 	las->s.eType = ET_LASER;
 
-		las->s.eventParm = 2; //tells CG that it is a flashlight
-		las->classname = "flashlight";
+	las->s.eventParm = 1; //for distance
+	las->classname = "flashlight";
 
 	ent->client->lasersight = las;
 }
 
-void Laser_Think( gentity_t *self )	{
-	vec3_t		end, start, forward, up, add;
-	trace_t		tr;
+void Laser_Think(gentity_t *self) {
+    vec3_t end, start, forward, right, up, add;
+    trace_t tr;
+    float distance, scaled_distance;
 
-	//If Player Dies, You Die -> now thanks to Camouflage!
-	if (self->parent->client->ps.pm_type == PM_DEAD)  {
-		G_FreeEntity(self);
-		return;
-	}
-	
-	if (self->parent->client->ps.pm_type == PM_DEAD)  {
-		G_FreeEntity(self);
-		return;
-	}
+    // If Player Dies, You Die -> now thanks to Camouflage!
+    if (self->parent->client->ps.pm_type == PM_DEAD) {
+        G_FreeEntity(self);
+        return;
+    }
 
-	//Set Aiming Directions
-	if(!self->parent->client->vehiclenum){
-	AngleVectors(self->parent->client->ps.viewangles, forward, right, up);
-	CalcMuzzlePoint(self->parent, forward, right, up, start);
-	VectorMA (start, 999, forward, end);
-	} else {
-	add[0] = 0;
-	add[1] = self->parent->s.apos.trBase[1];
-	add[2] = 0;
-	AngleVectors(add, forward, right, up);
-	CalcMuzzlePoint(self->parent, forward, right, up, start);
-	VectorMA (start, 320, forward, end);	
-	}
-	VectorScale( forward, 20, forward );
+    // Set Aiming Directions
+    if (!self->parent->client->vehiclenum) {
+        AngleVectors(self->parent->client->ps.viewangles, forward, right, up);
+        CalcMuzzlePoint(self->parent, forward, right, up, start);
+        VectorMA(start, 1024, forward, end);
+    } else {
+        add[0] = 0;
+        add[1] = self->parent->s.apos.trBase[1];
+        add[2] = 0;
+        AngleVectors(add, forward, right, up);
+        CalcMuzzlePoint(self->parent, forward, right, up, start);
+        VectorMA(start, 320, forward, end);	
+    }
 
-	//Trace Position
-	trap_Trace (&tr, start, NULL, NULL, end, self->parent->s.number, MASK_SHOT );
+    // Trace Position
+    trap_Trace(&tr, start, NULL, NULL, end, self->parent->s.number, MASK_SHOT);
 
-	//Did you not hit anything?
-	if (tr.surfaceFlags & SURF_NOIMPACT || tr.surfaceFlags & SURF_SKY)	{
-		self->nextthink = level.time + 5;
-		trap_UnlinkEntity(self);
-		return;
-	}
+    // Calculate distance to the first collision point
+    distance = VectorDistance(start, tr.endpos);
 
-	//Move you forward to keep you visible
-	if (tr.fraction != 1)	VectorMA(tr.endpos,-4,forward,tr.endpos);
+    // Scale distance to the range of 0 to 255
+    scaled_distance = 255.0f * (1.0f - (distance / 1024.0f));
+    if (scaled_distance > 255.0f) {
+        scaled_distance = 255.0f;  // Clamp to 255 if exceeding
+    }
 
-	//Set Your position
-	VectorCopy( tr.endpos, self->r.currentOrigin );
-	VectorCopy( tr.endpos, self->s.pos.trBase );
+    // Did you not hit anything?
+    if (tr.surfaceFlags & SURF_NOIMPACT || tr.surfaceFlags & SURF_SKY) {
+        self->nextthink = level.time + 8;
+        trap_UnlinkEntity(self);
+        return;
+    }
 
-	vectoangles(tr.plane.normal, self->s.angles);
+    // Move you forward to keep you visible
+    VectorMA(tr.endpos, -16, forward, tr.endpos);
 
-	trap_LinkEntity(self);
+    // Set scaled distance in eventParm
+    self->s.eventParm = (int)scaled_distance;
 
-	//Prep next move
-	self->nextthink = level.time + 5;
+    // Set your position
+    VectorCopy(tr.endpos, self->r.currentOrigin);
+    VectorCopy(tr.endpos, self->s.pos.trBase);
+
+    vectoangles(tr.plane.normal, self->s.angles);
+
+    trap_LinkEntity(self);
+
+    // Prep next move
+    self->nextthink = level.time + 8;
 }
-
 
 /*
 ======================================================================

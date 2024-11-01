@@ -24,10 +24,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "cg_local.h"
 
-
-static void CG_LaserSight( centity_t *cent );
-
-
 /*
 ======================
 CG_PositionEntityOnTag
@@ -145,7 +141,7 @@ static void CG_EntityEffects( centity_t *cent ) {
 	if(cent->currentState.constantLight)
 	{
 		int		cl;
-		float		i, r, g, b;
+		float	i, r, g, b;
 
 		cl = cent->currentState.constantLight;
 
@@ -502,13 +498,6 @@ if(cg_itemstyle.integer == 3){
 		VectorScale( ent.axis[2], es->scales[2], ent.axis[2] );}
 	}
 
-	// items without glow textures need to keep a minimum light value
-	// so they are always visible
-	if ( ( item->giType == IT_WEAPON ) ||
-		 ( item->giType == IT_ARMOR ) ) {
-		ent.renderfx |= RF_MINLIGHT;
-	}
-
 	// increase the size of the weapons when they are presented as items
 	if ( item->giType == IT_WEAPON ) {
 		VectorScale( ent.axis[0], 1.5, ent.axis[0] );
@@ -605,23 +594,7 @@ static void CG_Missile( centity_t *cent ) {
 	{
 		weapon->missileTrailFunc( cent, weapon );
 	}
-/*
-	if ( cent->currentState.modelindex == TEAM_RED ) {
-		col = 1;
-	}
-	else if ( cent->currentState.modelindex == TEAM_BLUE ) {
-		col = 2;
-	}
-	else {
-		col = 0;
-	}
 
-	// add dynamic light
-	if ( weapon->missileDlight ) {
-		trap_R_AddLightToScene(cent->lerpOrigin, weapon->missileDlight,
-			weapon->missileDlightColor[col][0], weapon->missileDlightColor[col][1], weapon->missileDlightColor[col][2] );
-	}
-*/
 	// add dynamic light
 	if ( weapon->missileDlight ) {
 		trap_R_AddLightToScene(cent->lerpOrigin, weapon->missileDlight,
@@ -1308,9 +1281,6 @@ static void CG_AddCEntity( centity_t *cent ) {
 	case ET_GRAPPLE:
 		CG_Grapple( cent );
 		break;
-	case ET_LASER:
-		CG_LaserSight( cent );
-		break;
 	case ET_WEATHER:
 		CG_Weather( cent );
 		break;
@@ -1318,37 +1288,6 @@ static void CG_AddCEntity( centity_t *cent ) {
 		CG_TeamBase( cent );
 		break;
 	}
-}
-
-/*
-==================
-CG_LaserSight
-  Creates the laser
-==================
-*/
-
-static void CG_LaserSight( centity_t *cent )  {
-	refEntity_t			ent;
-
-
-	// create the render entity
-	memset (&ent, 0, sizeof(ent));
-	VectorCopy( cent->lerpOrigin, ent.origin);
-	VectorCopy( cent->lerpOrigin, ent.oldorigin);
-
-/*	if (cent->currentState.eventParm == 1)
-	{
-		ent.reType = RT_SPRITE;
-		ent.radius = 2;
-		ent.rotation = 0;
-		ent.customShader = cgs.media.laserShader;
-		trap_R_AddRefEntityToScene( &ent );
-	}
-	else	{*/
-		trap_R_AddLightToScene(ent.origin, 700, 0.3, 0.3, 0.3);
-//	}
-
-	
 }
 
 /*

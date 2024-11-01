@@ -1528,6 +1528,7 @@ The main player will have this called for BOTH cases, so effects like light and
 sound should only be done on the world model case.
 =============
 */
+
 void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent, int team, clientInfo_t *ci ) {
 	refEntity_t	gun;
 	refEntity_t	barrel;
@@ -1538,15 +1539,19 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	centity_t	*nonPredictedCent;
 	orientation_t	lerped;
 
-if ( cg.snap->ps.pm_type == PM_CUTSCENE ) {
-	weaponNum = 1;
-} else {
-	if(ci->swepid <= 15){
-	weaponNum = cent->currentState.weapon;
+	if ( cg.snap->ps.pm_type == PM_CUTSCENE ) {
+		weaponNum = 1;
 	} else {
-	weaponNum = ci->swepid;
+		if(ci->swepid <= 15){
+		weaponNum = cent->currentState.weapon;
+		} else {
+		weaponNum = ci->swepid;
+		}
 	}
-}
+
+	if(ci->flashlight == 1){
+		CG_PlayerFlashlight( &cg_entities[cent->currentState.clientNum] );
+	}
 
 	CG_RegisterWeapon( weaponNum );
 	weapon = &cg_weapons[weaponNum];
@@ -1592,9 +1597,6 @@ if ( cg.snap->ps.pm_type == PM_CUTSCENE ) {
 	if (!gun.hModel) {
 		return;
 	}
-	//if ( cent->currentState.eFlags & EF_TALK ) {
-	//	gun.hModel = trap_R_RegisterModel_MiTech( "smartphone.md3" );
-	//}
 
 	if ( !ps ) {
 		// add weapon ready sound
@@ -1632,10 +1634,6 @@ if ( cg.snap->ps.pm_type == PM_CUTSCENE ) {
 
 	CG_AddWeaponWithPowerups( &gun, cent->currentState.powerups );
 
-	// add the spinning barrel
-	//if ( cent->currentState.eFlags & EF_TALK ) {
-	//	return;
-	//}
 	if ( weapon->barrelModel ) {
 		memset( &barrel, 0, sizeof( barrel ) );
 		VectorCopy( parent->lightingOrigin, barrel.lightingOrigin );
@@ -1813,7 +1811,7 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 	}
 
 	hand.hModel = weapon->handsModel;
-	hand.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON | RF_MINLIGHT;
+	hand.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON ;
 
 	// add everything onto the hand
 	CG_AddPlayerWeapon( &hand, ps, &cg.predictedPlayerEntity, ps->persistant[PERS_TEAM], ci );
@@ -2302,84 +2300,6 @@ void CG_FireWeapon( centity_t *cent ) {
 //unlagged - attack prediction #1
 }
 
-
-/*
-==========================
-CG_Explosionia LEILEI
-==========================
-
-static void CG_Explosionia ( centity_t *cent ) {
-	localEntity_t	*le;
-	ec3_t			velocity, xvelocity;
-	vec3_t			offset, xoffset;
-	float			waterScale = 1.0f;
-	vec3_t			v[3];
-
-	if ( cg_brassTime.integer <= 0 ) {
-		return;
-	}
-
-	le = CG_AllocLocalEntity();
-	
-
-	velocity[0] = -50 + 100 * crandom();
-	velocity[1] = -50 + 100 * crandom();
-	velocity[2] = -50 + 100 * crandom();
-
-	le->leType = LE_FALL_SCALE_FADE;
-	le->startTime = cg.time;
-	le->endTime = le->startTime + cg_brassTime.integer + ( cg_brassTime.integer / 4 ) * random();
-
-	//le->pos.trType = TR_GRAVITY;
-	le->pos.trTime = cg.time - (rand()&15);
-
-	AnglesToAxis( cent->lerpAngles, v );
-
-	offset[0] = 8;
-	offset[1] = -4;
-	offset[2] = 24;
-
-	xoffset[0] = offset[0] * v[0][0] + offset[1] * v[1][0] + offset[2] * v[2][0];
-	xoffset[1] = offset[0] * v[0][1] + offset[1] * v[1][1] + offset[2] * v[2][1];
-	xoffset[2] = offset[0] * v[0][2] + offset[1] * v[1][2] + offset[2] * v[2][2];
-	VectorAdd( cent->lerpOrigin, xoffset, re->origin );
-
-	VectorCopy( re->origin, le->pos.trBase );
-
-	if ( CG_PointContents( re->origin, -1 ) & CONTENTS_WATER ) {
-		waterScale = 0.10f;
-	}
-
-	xvelocity[0] = velocity[0] * v[0][0] + velocity[1] * v[1][0] + velocity[2] * v[2][0];
-	xvelocity[1] = velocity[0] * v[0][1] + velocity[1] * v[1][1] + velocity[2] * v[2][1];
-	xvelocity[2] = velocity[0] * v[0][2] + velocity[1] * v[1][2] + velocity[2] * v[2][2];
-	VectorScale( xvelocity, waterScale, le->pos.trDelta );
-
-	le->bounceFactor = 0.4 * waterScale;
-
-	le->angles.trType = TR_LINEAR;
-	le->angles.trTime = cg.time;
-	le->angles.trBase[0] = rand()&31;
-	le->angles.trBase[1] = rand()&31;
-	le->angles.trBase[2] = rand()&31;
-	le->angles.trDelta[0] = 2;
-	le->angles.trDelta[1] = 1;
-	le->angles.trDelta[2] = 0;
-	le = CG_SmokePuff( le->origin, le->velocity, 
-					  30,		// radius
-					  1, 1, 1, 1,	// color
-					  2000,		// trailTime
-					  cg.time,		// startTime
-					  0,		// fadeInTime
-					  0,		// flags
-					  cgs.media.lbumShader1 );
-	le->leFlags = LEF_TUMBLE;
-	le->leBounceSoundType = LEBS_NONE;
-	le->leMarkType = LEMT_NONE;
-}
-
-*/
-
 /*
 =================
 CG_MissileHitWall
@@ -2803,8 +2723,6 @@ static void CG_ShotgunPellet( vec3_t start, vec3_t end, int skipNum ) {
 	localEntity_t	*smoke;
 	vec3_t  kapow;
 
-
-
 	CG_Trace( &tr, start, NULL, NULL, end, skipNum, MASK_SHOT );
 
 	sourceContentType = CG_PointContents( start, 0 );
@@ -3067,7 +2985,6 @@ void CG_Tracer( vec3_t source, vec3_t dest ) {
 
 }
 
-
 /*
 ======================
 CG_CalcMuzzlePoint
@@ -3107,6 +3024,54 @@ static qboolean	CG_CalcMuzzlePoint( int entityNum, vec3_t muzzle ) {
 
 }
 
+void CG_PlayerFlashlight(centity_t *cent) {
+    vec3_t forward, right, up;
+    vec3_t start, end;
+    trace_t trace;
+    float distance, lightIntensity, correctedIntensity;
+    float minRadius = 32.0f;      // Minimum radius for focused light
+    float maxRadius = 300.0f;    // Maximum radius for spread-out light
+	float lightRadius = 600.0f;    // Maximum radius for spread-out light
+    float maxBrightness = 0.32f;  // Maximum brightness intensity
+    float minBrightness = 0.01f;  // Minimum brightness intensity
+	float radius;
+
+    AngleVectors(cent->lerpAngles, forward, right, up);
+    VectorCopy(cent->lerpOrigin, start);
+    VectorMA(start, lightRadius, forward, end);
+
+    CG_Trace(&trace, start, NULL, NULL, end, cent->currentState.number, MASK_SHOT);
+
+    VectorMA(trace.endpos, -32, forward, trace.endpos);
+    distance = VectorDistance(start, trace.endpos);
+
+    // Calculate light intensity, clamped between minBrightness and maxBrightness
+    lightIntensity = 1.0f - (distance / lightRadius);
+    if (lightIntensity < 0.0f) {
+        lightIntensity = 0.0f;
+    }
+    lightIntensity = lightIntensity * (maxBrightness - minBrightness) + minBrightness;
+    if (lightIntensity > maxBrightness) {
+        lightIntensity = maxBrightness;
+    } else if (lightIntensity < minBrightness) {
+        lightIntensity = minBrightness;
+    }
+
+    // Calculate radius based on distance, scaling between minRadius and maxRadius
+    radius = minRadius + (distance / lightRadius) * (maxRadius - minRadius);
+    if (radius > maxRadius) {
+        radius = maxRadius;
+    } else if (radius < minRadius) {
+        radius = minRadius;
+    }
+
+    // Scale correctedIntensity with clamped lightIntensity
+    correctedIntensity = (lightIntensity * 0.5f)+0.03;
+
+    // Add light with adjustable radius and intensity limits
+    trap_R_AddLinearLightToScene(start, trace.endpos, radius, correctedIntensity, correctedIntensity, correctedIntensity);
+}
+
 /*
 ======================
 CG_Bullet
@@ -3122,9 +3087,6 @@ void CG_Bullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, 
 	localEntity_t	*smoke;
 	vec3_t	kapew;	
 	vec3_t  kapow;
-
-
-
 
 	// if the shooter is currently valid, calc a source point and possibly
 	// do trail effects

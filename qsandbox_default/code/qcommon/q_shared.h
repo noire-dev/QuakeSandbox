@@ -1444,3 +1444,7 @@ typedef struct highscores_s {
 
 playerscore_t COM_CalculatePlayerScore(int persistant[MAX_PERSISTANT], int accuracy, float skill);
 highscores_t COM_LoadLevelScores( char *levelname );
+
+void VectorLerp(const vec3_t start, float t, const vec3_t end, vec3_t result);
+float VectorDot(const vec3_t v1, const vec3_t v2);
+float VectorDistance(const vec3_t v1, const vec3_t v2);

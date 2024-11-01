@@ -326,7 +326,6 @@ typedef struct
 	char *text;
 	char *picn;
 	char *cmd;
-	char *cmd2;
 	int	id;
 	int x, y;
 	int xoffset, yoffset;
@@ -436,7 +435,6 @@ typedef struct
 	int	numitems;
 	int	top;
 	
-		
 	const char **itemnames;
 	const char **itemnames2;
 

@@ -441,7 +441,7 @@ name:						default:			module(s):			description:
 "cddir"						""					l_utils.c			CD directory
 
 "log"						"0"					l_log.c				enable/disable creating a log file
-"maxclients"				"4"					be_interface.c		maximum number of clients
+"maxclients"				"256"					be_interface.c		maximum number of clients
 "maxentities"				"1024"				be_interface.c		maximum number of entities
 "bot_developer"				"0"					be_interface.c		bot developer mode
 

@@ -121,7 +121,7 @@ Replaces the current view weapon with the given model
 void CG_TestGun_f (void) {
 	CG_TestModel_f();
 	cg.testGun = qtrue;
-	cg.testModelEntity.renderfx = RF_MINLIGHT | RF_DEPTHHACK | RF_FIRST_PERSON;
+	cg.testModelEntity.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON;
 }
 
 

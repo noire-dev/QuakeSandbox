@@ -85,7 +85,7 @@ Open-Source sandbox game on [SourceTech Engine](https://github.com/noire-dev/Sou
 * Seamless change of QVM
 * Improved lighting (high resolution lightmaps and post-processing)
 * Render distance for entity (server-side)
-* MGui interface system with QVM and map integration
+* NSGui interface system with QVM and map integration
 * Vehicles and additional properties of the entity
 * Support huge size maps up to 4GB
 

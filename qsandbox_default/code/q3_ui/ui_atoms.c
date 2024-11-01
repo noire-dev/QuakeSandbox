@@ -1539,21 +1539,6 @@ qboolean UI_ConsoleCommand( int realTime ) {
 	// ensure minimum menu data is available
 	Menu_Cache();
 
-if ( Q_stricmp (UI_Argv(0), "mgui_load") == 0 ) {
-	MGUI_Load();
-	return qtrue;
-}
-
-if ( Q_stricmp (UI_Argv(0), "mguicall") == 0 ) {
-	if( Q_stricmp (UI_Argv(1), "listvalue") == 0 ){
-	UI_MGUI_Edit( 1, atoi(UI_Argv(2)), atoi(UI_Argv(3)), NULL );
-	}
-	if( Q_stricmp (UI_Argv(1), "press") == 0 ){
-	UI_MGUI_Edit( 2, atoi(UI_Argv(2)), NULL, UI_Argv(3) );
-	}
-	return qtrue;
-}
-
 UI_ScreenOffset();
 
 if( Q_stricmp (UI_Argv(0), "ui_addbots") == 0 ){
@@ -1697,75 +1682,6 @@ UI_WorkshopMenu();
 return qtrue;
 }
 
-if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {
-	UI_MGUI_Clear();
-	trap_Cmd_ExecuteText( EXEC_NOW, "unset mgui_scroll\n");
-	for ( i = 1; i < 250; i++ ) {
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_type\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_acttype\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_xtype\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_ytype\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_x\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_y\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_wtype\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_htype\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_w\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_h\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_text\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_cmd\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_cmd2\n", i));	
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_1arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_2arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_3arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_4arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_5arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_6arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_7arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_8arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_9arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_10arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_11arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_12arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_13arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_14arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_15arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_16arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_17arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_18arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_19arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_20arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_21arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_22arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_23arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_24arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_25arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_26arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_27arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_28arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_29arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_30arg\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_file\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_value\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorR\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorG\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorB\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorA\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorinnerR\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorinnerG\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorinnerB\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_colorinnerA\n", i));	
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_fontsize\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_corner\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_col\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_mode\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_style\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_min\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_max\n", i));
-	trap_Cmd_ExecuteText( EXEC_NOW, va("unset mitem%i_savecvar\n", i));
-	}
-	return qtrue;
-}
-
 	if ( Q_stricmp (UI_Argv(0), "remapShader") == 0 ) {
 		char shader1[MAX_QPATH];
 		char shader2[MAX_QPATH];
@@ -1792,22 +1708,22 @@ if ( Q_stricmp (UI_Argv(0), "mgui_init") == 0 ) {
 		return qtrue;
 	}
 
-	if ( Q_stricmp (UI_Argv(0), "ns_openscript_cl") == 0 ) {
+	if ( Q_stricmp (UI_Argv(0), "ns_openscript_ui") == 0 ) {
 		NS_OpenScript(UI_Argv(1), NULL, 0);
 		return qtrue;
 	}
 
-	if ( Q_stricmp (UI_Argv(0), "ns_interpret_cl") == 0 ) {
+	if ( Q_stricmp (UI_Argv(0), "ns_interpret_ui") == 0 ) {
 		Interpret(UI_ConcatArgs(1));
 		return qtrue;
 	}
 
-	if ( Q_stricmp (UI_Argv(0), "ns_variablelist_cl") == 0 ) {
+	if ( Q_stricmp (UI_Argv(0), "ns_variablelist_ui") == 0 ) {
 		print_variables();
 		return qtrue;
 	}
 
-	if ( Q_stricmp (UI_Argv(0), "ns_threadlist_cl") == 0 ) {
+	if ( Q_stricmp (UI_Argv(0), "ns_threadlist_ui") == 0 ) {
 		print_threads();
 		return qtrue;
 	}
@@ -1925,6 +1841,8 @@ void UI_Init( void ) {
 
 	uis.activemenu = NULL;
 	uis.menusp     = 0;
+
+	NS_OpenScript("nscript/ui/init.ns", NULL, 0);		//Noire.Script Init in ui.qvm
 }
 
 /*

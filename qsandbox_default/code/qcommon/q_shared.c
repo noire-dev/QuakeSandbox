@@ -1710,3 +1710,23 @@ playerscore_t COM_CalculatePlayerScore(int persistant[MAX_PERSISTANT], int accur
 
 	return scores;
 }
+
+void VectorLerp(const vec3_t start, float t, const vec3_t end, vec3_t result) {
+    result[0] = start[0] + t * (end[0] - start[0]);
+    result[1] = start[1] + t * (end[1] - start[1]);
+    result[2] = start[2] + t * (end[2] - start[2]);
+}
+
+float VectorDot(const vec3_t v1, const vec3_t v2) {
+    return (v1[0] * v2[0]) + (v1[1] * v2[1]) + (v1[2] * v2[2]);
+}
+
+float VectorDistance(const vec3_t v1, const vec3_t v2) {
+    vec3_t diff;
+    
+    diff[0] = v1[0] - v2[0];
+    diff[1] = v1[1] - v2[1];
+    diff[2] = v1[2] - v2[2];
+    
+    return sqrt(diff[0] * diff[0] + diff[1] * diff[1] + diff[2] * diff[2]);
+}

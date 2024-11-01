@@ -1088,7 +1088,7 @@ void SP_func_prop( gentity_t *ent ) {
 			ent->r.contents = CONTENTS_SOLID | CONTENTS_BODY;	
 			}
 			if(ent->sb_coll == 1){
-			ent->r.contents = CONTENTS_TRIGGER;	
+			ent->r.contents = CONTENTS_TRANSLUCENT;	
 			}
 			ent->s.generic2 = ent->sb_generic1;
 			ent->classname = "func_prop";
@@ -1124,7 +1124,7 @@ void SP_func_prop( gentity_t *ent ) {
 	ent->r.contents = CONTENTS_SOLID;	
 	}
 	if(ent->sb_coll == 1){
-	ent->r.contents = CONTENTS_TRIGGER;	
+	ent->r.contents = CONTENTS_TRANSLUCENT;	
 	}
 	ent->s.generic2 = ent->sb_generic1;
 	ent->s.scales[0] = ent->sb_colscale0;
@@ -1144,7 +1144,7 @@ void SP_func_prop( gentity_t *ent ) {
 	trap_LinkEntity( ent );
 }
 
-void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, char *arg04, char *arg05, char *arg06, char *arg07, char *arg08, char *arg09, char *arg10, char *arg11, char *arg12, char *arg13, char *arg14, char *arg15, char *arg16, char *arg17, char *arg18, char *arg19, char *arg20, char *arg21, char *arg22, char *arg23, char *arg24, char *arg25, char *arg26, char *arg27, char *arg28, char *arg29, char *arg30, char *arg31, char *arg32, char *arg33, char *arg34, char *arg35, char *arg36, char *arg37, char *arg38, char *arg39, char *arg40, char *arg41, char *arg42, char *arg43, char *arg44, char *arg45, char *arg46, char *arg47, char *arg48, char *arg49, char *arg50, char *arg51, char *arg52, char *arg53, char *arg54, char *arg55, char *arg56, char *arg57, char *arg58, char *arg59, char *arg60, char *arg61 ) {
+void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, char *arg04, char *arg05, char *arg06, char *arg07, char *arg08, char *arg09, char *arg10, char *arg11, char *arg12, char *arg13, char *arg14, char *arg15, char *arg16, char *arg17, char *arg18, char *arg19, char *arg20, char *arg21, char *arg22) {
 	gentity_t	*ent;
 	vec3_t		snapped;
 	vec3_t		o;
@@ -1173,7 +1173,6 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	}
 	CopyAlloc(ent->classname, arg03);
 
-
 	//spawn item or func
 	VectorCopy( snapped, ent->s.origin );
 	VectorCopy( snapped, ent->s.pos.trBase );
@@ -1190,7 +1189,7 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent->s.pos.trType = TR_STATIONARY; ent->physicsObject = qfalse; ent->sb_phys = 1;
 	}
 	if(atoi(arg09) == 1){
-	ent->s.pos.trType = TR_GRAVITY; ent->s.pos.trTime = level.time; ent->physicsObject = qtrue; ent->physicsBounce = atof(arg61); ent->sb_phys = 2;
+	ent->s.pos.trType = TR_GRAVITY; ent->s.pos.trTime = level.time; ent->physicsObject = qtrue; ent->physicsBounce = atof(arg22); ent->sb_phys = 2;
 	}
 
 	if(atoi(arg10) == 0){
@@ -1198,7 +1197,7 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent->sb_coll = 0;
 	}
 	if(atoi(arg10) == 1){
-	ent->r.contents = CONTENTS_TRIGGER;
+	ent->r.contents = CONTENTS_TRANSLUCENT;
 	ent->sb_coll = 1;
 	}
 	ent->s.loopSound = G_SoundIndex(arg11);
@@ -1219,109 +1218,8 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent->s.scales[2] = atof(arg19);
 	ent->sb_colscale2 = atof(arg19);
 	
-	if ( strcmp(arg20, "0") ) {
-	CopyAlloc(ent->target, arg20);
-	}
-	if ( strcmp(arg21, "0") ) {
-	CopyAlloc(ent->targetname, arg21);
-	}
-	
-	ent->mtype = atoi(arg22);
-	ent->mtimeout = atoi(arg23);
-	ent->mhoming = atoi(arg24);
-	ent->mbounce = atoi(arg25);
-	ent->mdamage = atoi(arg26);
-	ent->msdamage = atoi(arg27);
-	ent->msradius = atoi(arg28);
-	ent->mgravity = atoi(arg29);
-	ent->mnoclip = atoi(arg30);
-	ent->mspeed = atoi(arg31);
-	
-	ent->allowuse = atoi(arg32);
-	if ( strcmp(arg33, "0") ) {
-	ent->speed = atoi(arg33);
-	}
-	if ( strcmp(arg34, "0") ) {
-	CopyAlloc(ent->message, arg34);
-	}
-	if ( strcmp(arg35, "0") ) {
-	CopyAlloc(ent->messageru, arg35);
-	}
-	if ( strcmp(arg36, "0") ) {
-	CopyAlloc(ent->team, arg36);
-	}
-	if ( strcmp(arg37, "0") ) {
-	ent->wait = atoi(arg37);
-	}
-	if ( strcmp(arg38, "0") ) {
-	ent->random = atoi(arg38);
-	}
-	if ( strcmp(arg39, "0") ) {
-	ent->playerangle = atoi(arg39);
-	}
-	if ( strcmp(arg40, "0") ) {
-	ent->price = atoi(arg40);
-	}
-	if ( strcmp(arg41, "0") ) {
-	ent->damage = atoi(arg41);
-	}
-	if ( strcmp(arg42, "0") ) {
-	CopyAlloc(ent->targetShaderName, arg42);
-	}
-	if ( strcmp(arg43, "0") ) {
-	CopyAlloc(ent->targetShaderNewName, arg43);
-	}
-	if ( strcmp(arg44, "0") ) {
-	CopyAlloc(ent->mapname, arg44);
-	}
-	if ( strcmp(arg45, "0") ) {
-	CopyAlloc(ent->clientname, arg45);
-	}
-	if ( strcmp(arg46, "0") ) {
-	CopyAlloc(ent->teleporterTarget, arg46);
-	}
-	if ( strcmp(arg47, "0") ) {
-	CopyAlloc(ent->deathTarget, arg47);
-	}
-	if ( strcmp(arg48, "0") ) {
-	CopyAlloc(ent->lootTarget, arg48);
-	}
-	if ( strcmp(arg49, "0") ) {
-	ent->skill = atoi(arg49);
-	}
-	if ( strcmp(arg50, "0") ) {
-	ent->objectType = atoi(arg50);
-	}
-	if ( strcmp(arg51, "0") ) {
-	CopyAlloc(ent->target2, arg51);
-	}
-	if ( strcmp(arg52, "0") ) {
-	CopyAlloc(ent->damagetarget, arg52);
-	}
-	if ( strcmp(arg53, "0") ) {
-	CopyAlloc(ent->targetname2, arg53);
-	}
-	if ( strcmp(arg54, "0") ) {
-	CopyAlloc(ent->key, arg54);
-	}
-	if ( strcmp(arg55, "0") ) {
-	CopyAlloc(ent->value, arg55);
-	}
-	if ( strcmp(arg56, "0") ) {
-	ent->armor = atoi(arg56);
-	}
-	if ( strcmp(arg57, "0") ) {
-	CopyAlloc(ent->music, arg57);
-	}
-	if ( strcmp(arg58, "0") ) {
-	ent->distance = atoi(arg58);
-	}
-	if ( strcmp(arg59, "0") ) {
-	ent->type = atoi(arg59);
-	}
-	if ( strcmp(arg60, "0") ) {
-	ent->vehicle = atoi(arg60);
-	}
+	ent->objectType = atoi(arg20);
+	ent->vehicle = atoi(arg21);
 
 	// check item spawn functions
 	for ( item=bg_itemlist+1 ; item->classname ; item++ ) {
@@ -1363,7 +1261,7 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent->die = BlockDie;		
 	ent->s.modelindex = G_ModelIndex( va("props/%s",arg02) );
 	CopyAlloc(ent->sb_model, arg02);
-	if(atoi(arg60) <= 0){
+	if(atoi(arg21) <= 0){
 	ent->sb_coltype = atoi(arg05);
 	VectorSet( ent->r.mins, -ent->sb_coltype*ent->sb_colscale0, -ent->sb_coltype*ent->sb_colscale1, -ent->sb_coltype*ent->sb_colscale2);
 	VectorSet( ent->r.maxs, ent->sb_coltype*ent->sb_colscale0, ent->sb_coltype*ent->sb_colscale1, ent->sb_coltype*ent->sb_colscale2 );
@@ -1525,30 +1423,50 @@ G_BounceProp
 
 ================
 */
-void G_BounceProp( gentity_t *ent, trace_t *trace ) {
-	vec3_t	velocity;
-	float	dot;
-	int		hitTime;
 
-	// reflect the velocity on the trace plane
-	hitTime = level.previousTime + ( level.time - level.previousTime ) * trace->fraction;
-	BG_EvaluateTrajectoryDelta( &ent->s.pos, hitTime, velocity );
-	dot = DotProduct( velocity, trace->plane.normal );
-	VectorMA( velocity, -2*dot, trace->plane.normal, ent->s.pos.trDelta );
+void G_BounceProp(gentity_t *ent, trace_t *trace) {
+    vec3_t velocity;
+    float dot;
+    int hitTime;
+    float randomOffset[3];
+    int i;
+	float currentSpeed;
+	float speedThreshold;
 
-	// cut the velocity to keep from bouncing forever
-	VectorScale( ent->s.pos.trDelta, ent->physicsBounce, ent->s.pos.trDelta );
-	
-	// check for stop
-	if ( trace->plane.normal[2] > 0.2 && ent->s.pos.trDelta[2] < 30 ) {
-		ent->s.apos.trBase[0] = 0;		// reset rotate
-		ent->s.apos.trBase[2] = 0;		// reset rotate
-		G_DisablePropPhysics( ent, trace->endpos );	//disable phys if it not moving
-	}
+    hitTime = level.previousTime + (level.time - level.previousTime) * trace->fraction;
+    BG_EvaluateTrajectoryDelta(&ent->s.pos, hitTime, velocity);
+    dot = DotProduct(velocity, trace->plane.normal);
+    VectorMA(velocity, -2 * dot, trace->plane.normal, ent->s.pos.trDelta);
 
-	VectorAdd( ent->r.currentOrigin, trace->plane.normal, ent->r.currentOrigin);
-	VectorCopy( ent->r.currentOrigin, ent->s.pos.trBase );
-	ent->s.pos.trTime = level.time;
+    VectorScale(ent->s.pos.trDelta, ent->physicsBounce, ent->s.pos.trDelta);
+
+    for (i = 0; i < 3; i++) {
+        randomOffset[i] = ((float)rand() / 32767 - 0.5f) * 16.0f;
+    }
+    VectorAdd(ent->s.pos.trDelta, randomOffset, ent->s.pos.trDelta);
+
+    if (trace->plane.normal[2] > 0.2) {
+        vec3_t slideDirection;
+        float slideFactor = 0.5;
+
+        VectorScale(trace->plane.normal, -1, slideDirection);
+        VectorNormalize(slideDirection);
+
+        VectorMA(ent->s.pos.trDelta, slideFactor, slideDirection, ent->s.pos.trDelta);
+    }
+
+    speedThreshold = 40.0f;
+    currentSpeed = VectorLength(ent->s.pos.trDelta);
+    
+    if (trace->plane.normal[2] > 0.2 && currentSpeed < speedThreshold) {
+        ent->s.apos.trBase[0] = 0;
+        ent->s.apos.trBase[2] = 0;
+        G_DisablePropPhysics(ent, trace->endpos);
+    }
+
+    VectorAdd(ent->r.currentOrigin, trace->plane.normal, ent->r.currentOrigin);
+    VectorCopy(ent->r.currentOrigin, ent->s.pos.trBase);
+    ent->s.pos.trTime = level.time;
 }
 
 /*
@@ -1566,7 +1484,7 @@ void G_RunProp(gentity_t *ent) {
 	float impactForceFixed;
 	vec3_t impactVector;
 	
-	if(ent->r.currentOrigin[2] <= -70000){
+	if(ent->r.currentOrigin[2] <= -520000){
 		G_FreeEntity(ent);
 		return;
 	}
@@ -1592,8 +1510,7 @@ void G_RunProp(gentity_t *ent) {
 
     // Trace a line from the current origin to the new position
     trap_Trace(&tr, ent->r.currentOrigin, ent->r.mins, ent->r.maxs, origin, ent->s.number, MASK_PLAYERSOLID);
-	
-    // Update entity position to the end of the trace
+
     VectorCopy(tr.endpos, ent->r.currentOrigin);
     VectorCopy(ent->r.currentOrigin, ent->s.origin);
 	
@@ -1674,6 +1591,10 @@ void G_RunProp(gentity_t *ent) {
     // Rotate entity during movement (optional physics feature)
 	if (!ent->isGrabbed){
 	if(ent->s.pos.trType != TR_GRAVITY_WATER){
+    if (ent->s.pos.trDelta[2] != 0) {
+        ent->s.apos.trBase[0] -= ent->s.pos.trDelta[2] * PHYS_ROTATING * 0.20;
+		ent->s.apos.trBase[1] -= ent->s.pos.trDelta[2] * PHYS_ROTATING * 0.20;
+    }
     if (ent->s.pos.trDelta[1] != 0) {
         ent->s.apos.trBase[1] -= ent->s.pos.trDelta[1] * PHYS_ROTATING;
     }
@@ -1681,6 +1602,10 @@ void G_RunProp(gentity_t *ent) {
         ent->s.apos.trBase[0] += ent->s.pos.trDelta[0] * PHYS_ROTATING;
     }
 	} else {
+    if (ent->s.pos.trDelta[2] != 0) {
+        ent->s.apos.trBase[0] -= ent->s.pos.trDelta[2] * PHYS_ROTATING * 0.10;
+		ent->s.apos.trBase[1] -= ent->s.pos.trDelta[2] * PHYS_ROTATING * 0.10;
+    }
     if (ent->s.pos.trDelta[1] != 0) {
         ent->s.apos.trBase[1] -= ent->s.pos.trDelta[1] * PHYS_ROTATING * 0.50;
     }
@@ -1707,9 +1632,8 @@ void G_RunProp(gentity_t *ent) {
 		return;
 	}
 
-	G_BounceProp( ent, &tr );
+	G_BounceProp(ent, &tr);
 }
-
 
 /*
 ================

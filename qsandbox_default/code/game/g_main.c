@@ -601,32 +601,6 @@ vmCvar_t	g_truePing;
 vmCvar_t	sv_fps;
 vmCvar_t        g_lagLightning; //Adds a little lag to the lightninggun to make it less powerfull
 //unlagged - server options
-//KK-OAX
-vmCvar_t        g_sprees;
-vmCvar_t        g_altExcellent;
-vmCvar_t        g_spreeDiv;
-
-//Command/Chat spamming/flooding
-vmCvar_t        g_floodMaxDemerits;
-vmCvar_t        g_floodMinTime;
-
-//Admin
-vmCvar_t        g_admin;
-vmCvar_t        g_adminLog;
-vmCvar_t        g_adminParseSay;
-vmCvar_t        g_adminNameProtect;
-vmCvar_t        g_adminTempBan;
-vmCvar_t        g_adminMaxBan;
-vmCvar_t        g_specChat;
-vmCvar_t        g_publicAdminMessages;
-
-vmCvar_t        g_maxWarnings;
-vmCvar_t        g_warningExpire;
-
-vmCvar_t        g_minNameChangePeriod;
-vmCvar_t        g_maxNameChanges;
-
-vmCvar_t        g_timestamp_startgame;
 
 int CustomModRun;
 char cmapname[64];
@@ -1178,7 +1152,7 @@ static cvarTable_t		gameCvarTable[] = {
 
 	{ &g_smoothClients, "g_smoothClients", "1", 0, 0, qfalse},
 	{ &pmove_fixed, "pmove_fixed", "1", CVAR_SYSTEMINFO | CVAR_ARCHIVE, 0, qfalse},
-	{ &pmove_msec, "pmove_msec", "8", CVAR_SYSTEMINFO | CVAR_ARCHIVE, 0, qfalse},
+	{ &pmove_msec, "pmove_msec", "16", CVAR_SYSTEMINFO | CVAR_ARCHIVE, 0, qfalse},
 
         { &pmove_float, "pmove_float", "1", CVAR_SYSTEMINFO | CVAR_ARCHIVE, 0, qtrue},
 
@@ -1287,36 +1261,7 @@ static cvarTable_t		gameCvarTable[] = {
         { &g_humanplayers, "g_humanplayers", "0", CVAR_ROM | CVAR_NORESTART, 0, qfalse },
 //used for voIP
         { &g_redTeamClientNumbers, "g_redTeamClientNumbers", "0",CVAR_ROM, 0, qfalse },
-        { &g_blueTeamClientNumbers, "g_blueTeamClientNumbers", "0",CVAR_ROM, 0, qfalse },
-
-        //KK-OAX
-        { &g_sprees, "g_sprees", "sprees.dat", 0, 0, qfalse },
-        { &g_altExcellent, "g_altExcellent", "0", CVAR_SERVERINFO, 0, qtrue},
-        { &g_spreeDiv, "g_spreeDiv", "5", 0, 0, qfalse},
-
-        //Used for command/chat flooding
-        { &g_floodMaxDemerits, "g_floodMaxDemerits", "5000", CVAR_ARCHIVE, 0, qfalse  },
-        { &g_floodMinTime, "g_floodMinTime", "2000", CVAR_ARCHIVE, 0, qfalse  },
-
-        //Admin
-        { &g_admin, "g_admin", "admin.dat", CVAR_ARCHIVE, 0, qfalse  },
-        { &g_adminLog, "g_adminLog", "admin.log", CVAR_ARCHIVE, 0, qfalse  },
-        { &g_adminParseSay, "g_adminParseSay", "1", CVAR_ARCHIVE, 0, qfalse  },
-        { &g_adminNameProtect, "g_adminNameProtect", "1", CVAR_ARCHIVE, 0, qfalse  },
-        { &g_adminTempBan, "g_adminTempBan", "2m", CVAR_ARCHIVE, 0, qfalse  },
-        { &g_adminMaxBan, "g_adminMaxBan", "2w", CVAR_ARCHIVE, 0, qfalse  },
-
-        { &g_specChat, "g_specChat", "1", CVAR_ARCHIVE, 0, qfalse  },
-        { &g_publicAdminMessages, "g_publicAdminMessages", "1", CVAR_ARCHIVE, 0, qfalse  },
-
-        { &g_maxWarnings, "g_maxWarnings", "3", CVAR_ARCHIVE, 0, qfalse },
-	    { &g_warningExpire, "g_warningExpire", "3600", CVAR_ARCHIVE, 0, qfalse },
-
-	    { &g_minNameChangePeriod, "g_minNameChangePeriod", "10", 0, 0, qfalse},
-        { &g_maxNameChanges, "g_maxNameChanges", "50", 0, 0, qfalse},
-
-        { &g_timestamp_startgame, "g_timestamp", "0001-01-01 00:00:00", CVAR_SERVERINFO, 0, qfalse}
-
+        { &g_blueTeamClientNumbers, "g_blueTeamClientNumbers", "0",CVAR_ROM, 0, qfalse }
 };
 
 // bk001129 - made static to avoid aliasing
@@ -1554,20 +1499,6 @@ void G_UpdateCvars( void ) {
 }
 
 /*
- Sets the cvar g_timestamp. Return 0 if success or !0 for errors.
- */
-int G_UpdateTimestamp( void ) {
-    int ret = 0;
-    qtime_t timestamp;
-    ret = trap_RealTime(&timestamp);
-    trap_Cvar_Set("g_timestamp",va("%04i-%02i-%02i %02i:%02i:%02i",
-    1900+timestamp.tm_year,1+timestamp.tm_mon, timestamp.tm_mday,
-    timestamp.tm_hour,timestamp.tm_min,timestamp.tm_sec));
-
-    return ret;
-}
-
-/*
 ============
 G_InitGame
 
@@ -1590,8 +1521,6 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	srand( randomSeed );
 
 	G_RegisterCvars();
-
-    G_UpdateTimestamp();
 
 	G_ProcessIPBans();
 
@@ -1627,15 +1556,10 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 		G_Printf( "Not logging to disk.\n" );
 	}
 
-        //Parse the custom vote names:
-        VoteParseCustomVotes();
+    //Parse the custom vote names:
+    VoteParseCustomVotes();
 
 	G_InitWorldSession();
-
-    //KK-OAX Get Admin Configuration
-    G_admin_readconfig( NULL, 0 );
-	//Let's Load up any killing sprees/multikills
-	G_ReadAltKillSettings( NULL, 0 );
 
 	// initialize all entities for this game
 	memset( g_entities, 0, MAX_GENTITIES * sizeof(g_entities[0]) );
@@ -1656,9 +1580,9 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	// range are NEVER anything but clients
 	level.num_entities = MAX_CLIENTS;
 
-        for ( i=0 ; i<MAX_CLIENTS ; i++ ) {
-                g_entities[i].classname = "clientslot";
-        }
+    for ( i=0 ; i<MAX_CLIENTS ; i++ ) {
+            g_entities[i].classname = "clientslot";
+    }
 
 	// let the server system know where the entites are
 	trap_LocateGameData( level.gentities, level.num_entities, sizeof( gentity_t ),
@@ -1691,7 +1615,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 		G_InitBots( restart );
 	}
 
-	NS_OpenScript("noirescript/init.ns", NULL, 0);		//Noire.Script initialization script
+	NS_OpenScript("nscript/game/init.ns", NULL, 0);		//Noire.Script Init in qagame.qvm
 
 	//elimination:
 	level.roundNumber = 1;
@@ -1711,9 +1635,6 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	}
 
         PlayerStoreInit();
-//		g_teamred_damage.integer = 1;
-//		g_teamblue_damage.integer = 1;
-        //Set vote flags
         {
             int voteflags=0;
 			int mod_zround = 0;
@@ -1780,10 +1701,6 @@ void G_ShutdownGame( int restart ) {
 
 	// write all the client session data so we can get it back
 	G_WriteSessionData();
-
-	//KK-OAX Admin Cleanup
-    G_admin_cleanup( );
-    G_admin_namelog_cleanup( );
 
 	if ( trap_Cvar_VariableIntegerValue( "bot_enable" ) ) {
 		BotAIShutdown( restart );
@@ -3688,10 +3605,11 @@ Noire.Script API - Threads
 ###############
 */
 
+char qagameThreadBuffer[MAX_CYCLE_SIZE];
+
 // Load threads
 void RunScriptThreads(int time) {
     int i;
-	char tempBuffer[MAX_CYCLE_SIZE];
 
     for (i = 0; i < threadsCount; i++) {
         ScriptLoop* script = &threadsLoops[i];
@@ -3700,11 +3618,10 @@ void RunScriptThreads(int time) {
             script->lastRunTime = time;
 
             // Используем временный буфер для выполнения скрипта
-            tempBuffer[MAX_CYCLE_SIZE]; // Временный буфер для выполнения
-            strncpy(tempBuffer, script->code, MAX_CYCLE_SIZE - 1);
-            tempBuffer[MAX_CYCLE_SIZE - 1] = '\0'; // Убедимся, что буфер терминальный
+            strncpy(qagameThreadBuffer, script->code, MAX_CYCLE_SIZE - 1);
+            qagameThreadBuffer[MAX_CYCLE_SIZE - 1] = '\0'; // Убедимся, что буфер терминальный
 
-            Interpret(tempBuffer); // Запускаем скрипт из временного буфера
+            Interpret(qagameThreadBuffer); // Запускаем скрипт из временного буфера
         }
     }
 }

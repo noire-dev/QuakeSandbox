@@ -632,45 +632,47 @@ if(b->type == 5){
 
 	x =	b->generic.x;
 	
-	for( column = 0; column < b->columns; column++ ) {
-		y =	b->generic.y;
-		base = b->top + column * b->height;
-		for( i = base; i < base + b->height; i++) {
-			if (i >= b->numitems)
-				break;
+for (column = 0; column < b->columns; column++) {
+    y = b->generic.y;
+    // Calculate the base index using the top variable
+    for (base = 0; base < b->height; base++) {
+        // Calculate the index based on the column and row, offset by the top variable
+        i = (base * b->columns + column) + b->top;
 
-			if (i == b->curvalue)
-			{
-				u = x - 2;
-				if( b->generic.flags & QMF_CENTER_JUSTIFY ) {
-					if(b->styles <= 1){
-					u -= (b->width * (SMALLCHAR_WIDTH*b->fontsize)) / 2 + 1;
-					}
-					if(b->styles == 2){
-					u -= (b->width * (SMALLCHAR_WIDTH)) / 2 + 1;
-					}
-				}
-				if(b->styles <= 1){
-				UI_FillRect(u,y,(b->width*SMALLCHAR_WIDTH)*b->fontsize,(SMALLCHAR_HEIGHT)*b->fontsize,listbar_color);
-				}
-				if(b->styles == 2){
-				UI_FillRect(u,y,(b->width*SMALLCHAR_WIDTH),(b->width*SMALLCHAR_WIDTH),listbar_color);
-				}
-				color = text_color_highlight;
+        // Check if the calculated index is within the number of items
+        if (i >= b->numitems)
+            break;
 
-				if (hasfocus)
-					style = UI_PULSE|UI_LEFT|UI_SMALLFONT;
-				else
-					style = UI_LEFT|UI_SMALLFONT;
-			}
-			else
-			{
-				color = b->color;
-				style = UI_LEFT|UI_SMALLFONT;
-			}
-			if( b->generic.flags & QMF_CENTER_JUSTIFY ) {
-				style |= UI_CENTER;
-			}
+        if (i == b->curvalue) {
+            u = x - 2;
+            if (b->generic.flags & QMF_CENTER_JUSTIFY) {
+                if (b->styles <= 1) {
+                    u -= (b->width * (SMALLCHAR_WIDTH * b->fontsize)) / 2 + 1;
+                }
+                if (b->styles == 2) {
+                    u -= (b->width * (SMALLCHAR_WIDTH)) / 2 + 1;
+                }
+            }
+            if (b->styles <= 1) {
+                UI_FillRect(u, y, (b->width * SMALLCHAR_WIDTH) * b->fontsize, (SMALLCHAR_HEIGHT) * b->fontsize, listbar_color);
+            }
+            if (b->styles == 2) {
+                UI_FillRect(u, y, (b->width * SMALLCHAR_WIDTH), (b->width * SMALLCHAR_WIDTH), listbar_color);
+            }
+            color = text_color_highlight;
+
+            if (hasfocus)
+                style = UI_PULSE | UI_LEFT | UI_SMALLFONT;
+            else
+                style = UI_LEFT | UI_SMALLFONT;
+        } else {
+            color = b->color;
+            style = UI_LEFT | UI_SMALLFONT;
+        }
+
+        if (b->generic.flags & QMF_CENTER_JUSTIFY) {
+            style |= UI_CENTER;
+        }
 			if(b->styles <= 0){
 			UI_DrawStringCustom(x,y,b->itemnames[i],style,color, b->fontsize, 512 );
 			}
@@ -1011,7 +1013,7 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 					cursorx = (uis.cursorx - x)/(SMALLCHAR_WIDTH*b->fontsize);
 					column = cursorx / (b->width + b->seperation);
 					cursory = (uis.cursory - y)/(SMALLCHAR_HEIGHT*b->fontsize);
-					index = column * b->height + cursory;
+					index = (cursory * b->columns) + column;
 					if (b->top + index < b->numitems)
 					{
 						b->oldvalue = b->curvalue;
@@ -1042,7 +1044,7 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 					cursorx = (uis.cursorx - x)/(SMALLCHAR_WIDTH);
 					column = cursorx / (b->width + b->seperation);
 					cursory = (uis.cursory - y)/(SMALLCHAR_WIDTH*b->width);
-					index = column * b->height + cursory;
+					index = (cursory * b->columns) + column;
 					if (b->top + index < b->numitems)
 					{
 						b->oldvalue = b->curvalue;
@@ -1156,6 +1158,64 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 		case K_KP_UPARROW:
 		case K_UPARROW:
 		case K_MWHEELUP:
+			if( b->columns == 1 ) {
+				return menu_null_sound;
+			}
+
+			if( b->curvalue < b->height ) {
+				return menu_buzz_sound;
+			}
+
+			b->oldvalue = b->curvalue;
+			b->curvalue -= b->columns;
+
+			if( b->curvalue < b->top ) {
+				b->top -= b->columns;
+			}
+
+			if(b->top < 0 || b->curvalue < 0){
+				b->curvalue = 0;
+				b->top = 0;
+			}
+
+			if( b->generic.callback ) {
+				b->generic.callback( b, QM_GOTFOCUS );
+			}
+
+			return menu_move_sound;
+
+		case K_KP_DOWNARROW:
+		case K_DOWNARROW:
+		case K_MWHEELDOWN:
+			if( b->columns == 1 ) {
+				return menu_null_sound;
+			}
+
+			if(b->curvalue + b->columns >= b->numitems){
+			c = b->numitems - 1;
+			} else {
+			c = b->curvalue + b->columns;
+			}
+
+			if( c >= b->numitems ) {
+				return menu_buzz_sound;
+			}
+
+			b->oldvalue = b->curvalue;
+			b->curvalue = c;
+
+			if( b->curvalue > b->top + b->columns * b->height - 1 ) {
+				b->top += b->columns;
+			}
+
+			if( b->generic.callback ) {
+				b->generic.callback( b, QM_GOTFOCUS );
+			}
+
+			return menu_move_sound;
+
+		case K_KP_LEFTARROW:
+		case K_LEFTARROW:
 			if( b->curvalue == 0 ) {
 				return menu_buzz_sound;
 			}
@@ -1168,8 +1228,13 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 					b->top--;
 				}
 				else {
-					b->top -= b->height;
+					b->top -= b->columns;
 				}
+			}
+
+			if(b->top < 0 || b->curvalue < 0){
+				b->curvalue = 0;
+				b->top = 0;
 			}
 
 			if( b->generic.callback ) {
@@ -1178,9 +1243,8 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 
 			return (menu_move_sound);
 
-		case K_KP_DOWNARROW:
-		case K_DOWNARROW:
-		case K_MWHEELDOWN:
+		case K_KP_RIGHTARROW:
+		case K_RIGHTARROW:
 			if( b->curvalue == b->numitems - 1 ) {
 				return menu_buzz_sound;
 			}
@@ -1193,56 +1257,8 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 					b->top++;
 				}
 				else {
-					b->top += b->height;
+					b->top += b->columns;
 				}
-			}
-
-			if( b->generic.callback ) {
-				b->generic.callback( b, QM_GOTFOCUS );
-			}
-
-			return menu_move_sound;
-
-		case K_KP_LEFTARROW:
-		case K_LEFTARROW:
-			if( b->columns == 1 ) {
-				return menu_null_sound;
-			}
-
-			if( b->curvalue < b->height ) {
-				return menu_buzz_sound;
-			}
-
-			b->oldvalue = b->curvalue;
-			b->curvalue -= b->height;
-
-			if( b->curvalue < b->top ) {
-				b->top -= b->height;
-			}
-
-			if( b->generic.callback ) {
-				b->generic.callback( b, QM_GOTFOCUS );
-			}
-
-			return menu_move_sound;
-
-		case K_KP_RIGHTARROW:
-		case K_RIGHTARROW:
-			if( b->columns == 1 ) {
-				return menu_null_sound;
-			}
-
-			c = b->curvalue + b->height;
-
-			if( c >= b->numitems ) {
-				return menu_buzz_sound;
-			}
-
-			b->oldvalue = b->curvalue;
-			b->curvalue = c;
-
-			if( b->curvalue > b->top + b->columns * b->height - 1 ) {
-				b->top += b->height;
 			}
 
 			if( b->generic.callback ) {

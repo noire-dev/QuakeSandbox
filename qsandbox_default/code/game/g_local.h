@@ -429,7 +429,7 @@ typedef struct {
 	int			teamVoteCount;		// to prevent people from constantly calling votes
 	qboolean	teamInfo;			// send team overlay updates?
 
-   pspecial_t	playerspecial;	   // The players current special
+   	pspecial_t	playerspecial;	   // The players current special
 	//elimination:
 	int		roundReached;			//Only spawn if we are new to this round
 	int		livesLeft;			//lives in LMS
@@ -451,27 +451,20 @@ typedef struct {
 	int			pingsamples[NUM_PING_SAMPLES];
 	int			samplehead;
 //unlagged - true ping
-//KK-OAX Killing Sprees/Multikills
-    int         killstreak;
-    int         deathstreak;
-    qboolean    onSpree;
-    int         multiKillCount;
-
-//KK-OAX Admin Stuff
-    char        guid[ 33 ];
-    char        ip[ 40 ];
-    qboolean    muted;
-    qboolean    disoriented;
-    qboolean    wasdisoriented;
-    int         adminLevel;
-
-// flood protection
-    int         floodDemerits;
-    int         floodTime;
-
-//Used To Track Name Changes
-    int         nameChangeTime;
-    int         nameChanges;
+    int         customparm01;	//do not delete this, game crashing without it, IDK WHY
+    int         customparm02;
+    qboolean    customparm03;
+    int         customparm04;
+    char        customparm05[ 33 ];
+    char        customparm06[ 40 ];
+    qboolean    customparm07;
+    qboolean    customparm08;
+    qboolean    customparm09;
+    int         customparm10;
+    int         customparm11;
+    int         customparm12;
+    int         customparm13;
+    int         customparm14;
 	
     int         oldmoney;
 
@@ -703,20 +696,10 @@ typedef struct {
 	int domination_points_count;
 	char domination_points_names[MAX_DOMINATION_POINTS][MAX_DOMINATION_POINTS_NAMES];
 
-//unlagged - backward reconciliation #4
+	//unlagged - backward reconciliation #4
 	// actual time this server frame started
 	int			frameStartTime;
-//unlagged - backward reconciliation #4
-//KK-OAX Storing upper bounds of spree/multikill arrays
-    int         kSpreeUBound;
-    int         dSpreeUBound;
-    int         mKillUBound;
-//KK-OAX Storing g_spreeDiv to avoid dividing by 0.
-    int         spreeDivisor;
-
-    qboolean    RedTeamLocked;
-    qboolean    BlueTeamLocked;
-    qboolean    FFALocked;
+	//unlagged - backward reconciliation #4
 
     //Obelisk tell
     int healthRedObelisk; //health in percent
@@ -728,11 +711,6 @@ typedef struct {
 } level_locals_t;
 
 extern int				MiTechEntityList[MAX_GENTITIES];
-
-//KK-OAX These are some Print Shortcuts for KillingSprees and Admin
-//KK-Moved to g_admin.h
-//Prints to All when using "va()" in conjunction.
-//#define AP(x)   trap_SendServerCommand(-1, x)
 
 //
 // g_spawn.c
@@ -758,25 +736,6 @@ char *ConcatArgs( int start );  //KK-OAX This declaration moved from g_svccmds.c
 //KK-OAX Added this to make accessible from g_svcmds_ext.c
 void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText );
 void	NextCustomRound_f( void );
-
-// KK-OAX Added these in a seperate file to keep g_cmds.c familiar.
-// g_cmds_ext.c
-//
-
-int         G_SayArgc( void );
-qboolean    G_SayArgv( int n, char *buffer, int bufferLength );
-char        *G_SayConcatArgs( int start );
-void        G_DecolorString( char *in, char *out, int len );
-void        G_MatchOnePlayer( int *plist, int num, char *err, int len );
-void        G_SanitiseString( char *in, char *out, int len );
-int         G_ClientNumbersFromString( char *s, int *plist, int max );
-int         G_FloodLimited( gentity_t *ent );
-//void QDECL G_AdminMessage( const char *prefix, const char *fmt, ... )
-// ^^ Do Not Need to Declare--Just for Documentation of where it is.
-void        Cmd_AdminMessage_f( gentity_t *ent );
-int         G_ClientNumberFromString( char *s );
-qboolean    G_ClientIsLagging( gclient_t *client );
-void        SanitizeString( char *in, char *out );
 
 // KK-OAX Added this for common file stuff between Admin and Sprees.
 // g_fileops.c
@@ -1879,30 +1838,6 @@ extern	vmCvar_t	g_truePing;
 extern	vmCvar_t	sv_fps;
 extern  vmCvar_t        g_lagLightning;
 //unlagged - server options
-//KK-OAX Killing Sprees
-extern  vmCvar_t    g_sprees; //Used for specifiying the config file
-extern  vmCvar_t    g_altExcellent; //Turns on Multikills instead of Excellent
-extern  vmCvar_t    g_spreeDiv; // Interval of a "streak" that form the spree triggers
-//KK-OAX Command/Chat Flooding/Spamming
-extern  vmCvar_t    g_floodMaxDemerits;
-extern  vmCvar_t    g_floodMinTime;
-//KK-OAX Admin
-extern  vmCvar_t    g_admin;
-extern  vmCvar_t    g_adminLog;
-extern  vmCvar_t    g_adminParseSay;
-extern  vmCvar_t    g_adminNameProtect;
-extern  vmCvar_t    g_adminTempBan;
-extern  vmCvar_t    g_adminMaxBan;
-//KK-OAX Admin-Like
-extern  vmCvar_t    g_specChat;
-extern  vmCvar_t    g_publicAdminMessages;
-
-extern  vmCvar_t    g_maxWarnings;
-extern  vmCvar_t    g_warningExpire;
-
-extern  vmCvar_t    g_minNameChangePeriod;
-extern  vmCvar_t    g_maxNameChanges;
-
 
 void	trap_Printf( const char *fmt );
 void	trap_Error( const char *fmt ) __attribute__((noreturn));
@@ -2110,18 +2045,13 @@ int		trap_GeneticParentsAndChildSelection(int numranks, float *ranks, int *paren
 
 void	trap_SnapVector( float *v );
 
-//KK-OAX
-//These enable the simplified command handling.
-
 #define CMD_CHEAT           0x0001
 #define CMD_CHEAT_TEAM      0x0002 // is a cheat when used on a team
 #define CMD_MESSAGE         0x0004 // sends message to others (skip when muted)
 #define CMD_TEAM            0x0008 // must be on a team
 #define CMD_NOTEAM          0x0010 // must not be on a team
-#define CMD_RED             0x0020 // must be on the red team (useless right now)
-#define CMD_BLUE            0x0040 // must be on the blue team (useless right now)
-#define CMD_LIVING          0x0080
-#define CMD_INTERMISSION    0x0100 // valid during intermission
+#define CMD_LIVING          0x0020
+#define CMD_INTERMISSION    0x0040 // valid during intermission
 
 
 typedef struct
@@ -2144,6 +2074,7 @@ void Svcmd_DumpUser_f( void );
 void Svcmd_Chat_f( void );
 void Svcmd_ListIP_f( void );
 void Svcmd_MessageWrapper( void );
+void Svcmd_PropNpc_AS_f( void );
 void Svcmd_SaveSession_f( void );
 
 char *G_CvarAutoChar( char *name );
@@ -2153,6 +2084,3 @@ void Svcmd_NS_OpenScript_f( void );
 void Svcmd_NS_Interpret_f( void );
 void Svcmd_NS_VariableList_f( void );
 void Svcmd_NS_ThreadList_f( void );
-
-#include "g_killspree.h"
-#include "g_admin.h"

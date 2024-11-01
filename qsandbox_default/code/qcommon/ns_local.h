@@ -17,6 +17,9 @@
 #ifdef QAGAME
 #include "../game/g_local.h"
 #endif
+#ifdef CGAME
+#include "../cgame/cg_local.h"
+#endif
 #ifdef Q3_UI
 #include "../q3_ui/ui_local.h"
 #endif
@@ -27,17 +30,17 @@
 ###############
 */
 
-#define MAX_NSSCRIPT_SIZE   1024*30       //Макс длина скрипта
+#define MAX_NSSCRIPT_SIZE   1024*256      //Макс длина скрипта
 #define MAX_TOKEN_LENGTH    1024          //Макс количество символов в токене
-#define MAX_SCRIPTS         512           //Макс количество потоков скриптов
-#define MAX_CYCLE_SIZE      1024*8        //Макс длина цикла
-#define MAX_VARS            8192          //Макс переменных
+#define MAX_SCRIPTS         128           //Макс количество потоков скриптов
+#define MAX_CYCLE_SIZE      1024*256        //Макс длина буфера кода
+#define MAX_VARS            32768         //Макс переменных
 #define MAX_VAR_NAME        32            //Макс имя переменной
 #define MAX_NCVAR_NAME      64            //Макс имя консольной переменной
 #define MAX_VAR_CHAR_BUF    1024          //Макс буфер char переменной
 #define MAX_FUNCS           4096          //Макс количество функций
 #define MAX_ARGS            64            //Количество аргументов
-#define MAX_ARG_LENGTH      256           //Длина аргументов
+#define MAX_ARG_LENGTH      1024          //Длина аргументов
 #define MAX_THREAD_NAME     32            //Макс длина названия потока
 
 typedef struct {
@@ -91,6 +94,9 @@ typedef struct {
 } Variable;
 
 void print_variables();
+int get_variable_int(const char *name);
+float get_variable_float(const char *name);
+char* get_variable_char(const char *name);
 
 /*
 ###############
@@ -140,5 +146,10 @@ Noire.Script API
 void NS_getCvar(VarValue *modify, VarType type, const char *cvarName);
 void NS_setCvar(const char *cvarName, const char *cvarValue);
 
-/*extern float NS_getPlayerPosById(int id, int dir);
-extern void NS_setPlayerPosById(int id, int dir, float value);*/
+/*
+###############
+NS Gui API
+###############
+*/
+
+#define	 MAX_OBJECTS 99

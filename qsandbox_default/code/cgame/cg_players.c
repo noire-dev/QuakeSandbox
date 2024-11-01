@@ -927,6 +927,10 @@ void CG_NewClientInfo( int clientNum ) {
 	v = Info_ValueForKey( configstring, "tl" );
 	newInfo.teamLeader = atoi(v);
 
+	// flashlight
+	v = Info_ValueForKey( configstring, "flashl" );
+	newInfo.flashlight = atoi(v);
+
 	v = Info_ValueForKey( configstring, "g_redteam" );
 	
 	Q_strncpyz( newInfo.legsModelName, v, sizeof( newInfo.legsModelName ) );
@@ -1527,12 +1531,8 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 
 	// offset from the model we have.
 	VectorClear(eyelookfrom);
-//	eyelookfrom[0] += 3.0; // cg_modelEyes_Up.value;		// TODO: Read from eeys.cfg or some eye parameter from animation.cfg
-//	eyelookfrom[1] += 1.4; // cg_modelEyes_Right.value;
-//	eyelookfrom[2] += 3.3; //cg_modelEyes_Fwd.value;
 
 	VectorCopy(ci->eyepos, cent->pe.eyepos);
-	//VectorCopy(eyelookfrom, cent->pe.eyepos);			// leilei - copy eye poistion
 	}
 
 }
@@ -1770,25 +1770,6 @@ static void CG_PlayerFlag( centity_t *cent, qhandle_t hSkin, refEntity_t *torso 
 			// change the yaw angle
 			CG_SwingAngles( angles[YAW], 25, 90, 0.15f, &cent->pe.flag.yawAngle, &cent->pe.flag.yawing );
 		}
-
-		/*
-		d = DotProduct(pole.axis[2], dir);
-		angle = Q_acos(d);
-
-		d = DotProduct(pole.axis[1], dir);
-		if (d < 0) {
-			angle = 360 - angle * 180 / M_PI;
-		}
-		else {
-			angle = angle * 180 / M_PI;
-		}
-		if (angle > 340 && angle < 20) {
-			flagAnim = FLAG_RUNUP;
-		}
-		if (angle > 160 && angle < 200) {
-			flagAnim = FLAG_RUNDOWN;
-		}
-		*/
 	}
 
 	// set the yaw angle
@@ -2177,8 +2158,6 @@ static void CG_PlayerSplash( centity_t *cent ) {
 	trap_R_AddPolyToScene( cgs.media.wakeMarkShader, 4, verts );
 }
 
-
-
 /*
 ===============
 CG_AddRefEntityWithPowerups
@@ -2195,46 +2174,36 @@ void CG_AddRefEntityWithPowerups( refEntity_t *ent, entityState_t *state, int te
 		trap_R_AddRefEntityToScene( ent );
             }
 	} else {
-		/*
-		if ( state->eFlags & EF_KAMIKAZE ) {
-			if (team == TEAM_BLUE)
-				ent->customShader = cgs.media.blueKamikazeShader;
-			else
-				ent->customShader = cgs.media.redKamikazeShader;
 			trap_R_AddRefEntityToScene( ent );
-		}
-		else {*/
-			trap_R_AddRefEntityToScene( ent );
-		//}
-                        if(!isMissile && (mod_overlay) && !(state->eFlags & EF_DEAD)  ) {
-                            switch(team) {
-                                case TEAM_RED:
-									if(mod_overlay == 1){
-                                    ent->customShader = cgs.media.redOverlay;
-                                    trap_R_AddRefEntityToScene( ent );
-									}
-									if(mod_overlay == 2){
-                                    ent->customShader = cgs.media.redOverlay;
-                                    trap_R_AddRefEntityToScene( ent );
-									}
-                                    break;
-                                case TEAM_BLUE:
-									if(mod_overlay == 1){
-                                    ent->customShader = cgs.media.blueOverlay;
-                                    trap_R_AddRefEntityToScene( ent );
-									}
-									if(mod_overlay == 3){
-                                    ent->customShader = cgs.media.blueOverlay;
-                                    trap_R_AddRefEntityToScene( ent );
-									}
-                                    break;
-                                default:
-									if(mod_overlay){
-                                    ent->customShader = cgs.media.neutralOverlay;
-                                    trap_R_AddRefEntityToScene( ent );
-									}
-                            }
-                        }
+            if(!isMissile && (mod_overlay) && !(state->eFlags & EF_DEAD)  ) {
+                switch(team) {
+                    case TEAM_RED:
+						if(mod_overlay == 1){
+                        ent->customShader = cgs.media.redOverlay;
+                        trap_R_AddRefEntityToScene( ent );
+						}
+						if(mod_overlay == 2){
+                        ent->customShader = cgs.media.redOverlay;
+                        trap_R_AddRefEntityToScene( ent );
+						}
+                        break;
+                    case TEAM_BLUE:
+						if(mod_overlay == 1){
+                        ent->customShader = cgs.media.blueOverlay;
+                        trap_R_AddRefEntityToScene( ent );
+						}
+						if(mod_overlay == 3){
+                        ent->customShader = cgs.media.blueOverlay;
+                        trap_R_AddRefEntityToScene( ent );
+						}
+                        break;
+                    default:
+						if(mod_overlay){
+                        ent->customShader = cgs.media.neutralOverlay;
+                        trap_R_AddRefEntityToScene( ent );
+						}
+                }
+            }
 
 		if ( state->powerups & ( 1 << PW_QUAD ) )
 		{
@@ -2311,7 +2280,6 @@ int CG_LightVerts( vec3_t normal, int numVerts, polyVert_t *verts )
 CG_Player
 ===============
 */
-//extern	vmCvar_t	cg_leiChibi;
 
 void CG_Player( centity_t *cent ) {
 	clientInfo_t	*ci;
@@ -2392,7 +2360,6 @@ void CG_Player( centity_t *cent ) {
 		}
 	}
 
-
 	memset( &legs, 0, sizeof(legs) );
 	memset( &torso, 0, sizeof(torso) );
 	memset( &head, 0, sizeof(head) );
@@ -2406,7 +2373,7 @@ void CG_Player( centity_t *cent ) {
 
 	// add the talk baloon or disconnect icon
 	if ( cent->currentState.number == cg.snap->ps.clientNum) {
-//	CG_PlayerSprites( cent );
+
 	} else {
 	if(cgs.gametype != GT_SINGLE)
 	CG_PlayerSprites( cent );
@@ -2415,9 +2382,6 @@ void CG_Player( centity_t *cent ) {
 	// add the shadow
 	shadow = CG_PlayerShadow( cent, &shadowPlane );
 
-	// add a water splash if partially in and out of water
-//	CG_PlayerSplash( cent );
-
 	if ( cg_shadows.integer == 3 && shadow ) {
 		renderfx |= RF_SHADOW_PLANE;
 	}
@@ -2425,21 +2389,6 @@ void CG_Player( centity_t *cent ) {
 	if( cgs.gametype == GT_HARVESTER ) {
 		CG_PlayerTokens( cent, renderfx );
 	}
-
-/*	if ( cent->currentState.eFlags & EF_DEAD ) {
-		bcol[0] = teamcolormodels[ci->team][0]*0xff;
-		bcol[1] = teamcolormodels[ci->team][1]*0xff;
-		bcol[2] = teamcolormodels[ci->team][2]*0xff;
-	} else {
-		bcol[0] = teamcolormodels[ci->team][0]*0xff;
-		bcol[1] = teamcolormodels[ci->team][1]*0xff;
-		bcol[2] = teamcolormodels[ci->team][2]*0xff;
-	}
-	bcol[3] = 0xff;
-
-	Byte4Copy( bcol, legs.shaderRGBA );
-	Byte4Copy( bcol, torso.shaderRGBA );
-	Byte4Copy( bcol, head.shaderRGBA );*/
 
 	//
 	// add the legs
@@ -2469,7 +2418,6 @@ void CG_Player( centity_t *cent ) {
 		VectorScale(legs.axis[2], 0, legs.axis[2]);
 	}
 
-
 	legs.shadowPlane = shadowPlane;
 	legs.renderfx = renderfx;
 	VectorCopy (legs.origin, legs.oldorigin);	// don't positionally lerp at all
@@ -2477,7 +2425,6 @@ void CG_Player( centity_t *cent ) {
 	if (cg.renderingEyesPerson){
 			legs.renderfx &= RF_FIRST_PERSON;
 	}
-
 
 	CG_AddRefEntityWithPowerups( &legs, &cent->currentState, ci->team, qfalse );
 
@@ -2526,7 +2473,7 @@ void CG_Player( centity_t *cent ) {
 	CG_AddRefEntityWithPowerups( &torso, &cent->currentState, ci->team, qfalse );
 
 	if ( cent->currentState.number == cg.snap->ps.clientNum) {
-//	CG_PlayerSprites( cent );
+
 	} else {
 	if ( cent->currentState.eFlags & EF_KAMIKAZE ) {
 
@@ -2573,15 +2520,6 @@ void CG_Player( centity_t *cent ) {
 			angles[2] = 0;
 			AnglesToAxis( angles, skull.axis );
 
-			/*
-			dir[2] = 0;
-			VectorInverse(dir);
-			VectorCopy(dir, skull.axis[1]);
-			VectorNormalize(skull.axis[1]);
-			VectorSet(skull.axis[2], 0, 0, 1);
-			CrossProduct(skull.axis[1], skull.axis[2], skull.axis[0]);
-			*/
-
 			skull.hModel = cgs.media.kamikazeHeadModel;
 			trap_R_AddRefEntityToScene( &skull );
 			// flip the trail because this skull is spinning in the other direction
@@ -2603,14 +2541,6 @@ void CG_Player( centity_t *cent ) {
 				angles[1] -= 360;
 			angles[2] = 0;
 			AnglesToAxis( angles, skull.axis );
-
-			/*
-			dir[2] = 0;
-			VectorCopy(dir, skull.axis[1]);
-			VectorNormalize(skull.axis[1]);
-			VectorSet(skull.axis[2], 0, 0, 1);
-			CrossProduct(skull.axis[1], skull.axis[2], skull.axis[0]);
-			*/
 
 			skull.hModel = cgs.media.kamikazeHeadModel;
 			trap_R_AddRefEntityToScene( &skull );
@@ -2638,10 +2568,8 @@ void CG_Player( centity_t *cent ) {
 	}
 	}
 
-
-
 	if ( cent->currentState.number == cg.snap->ps.clientNum) {
-//	CG_PlayerSprites( cent );
+
 	} else {
 	if ( cent->currentState.powerups & ( 1 << PW_GUARD ) ) {
 		memcpy(&powerup, &torso, sizeof(torso));
@@ -2775,9 +2703,6 @@ void CG_Player( centity_t *cent ) {
 
 	VectorCopy(cent->lerpAngles, headang);
 	}
-
-
-
 
 	if (cg.renderingEyesPerson){
 	VectorCopy(head.origin, cent->eyesOrigin);

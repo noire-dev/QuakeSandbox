@@ -398,94 +398,68 @@ static void CG_TaskSuicide_f (void ) {
 	trap_SendClientCommand( command );
 }
 
-
-
-/*
-==================
-CG_TeamMenu_f
-==================
-*/
-/*
-static void CG_TeamMenu_f( void ) {
-  if (trap_Key_GetCatcher() & KEYCATCH_CGAME) {
-    CG_EventHandling(CGAME_EVENT_NONE);
-    trap_Key_SetCatcher(0);
-  } else {
-    CG_EventHandling(CGAME_EVENT_TEAMMENU);
-    //trap_Key_SetCatcher(KEYCATCH_CGAME);
-  }
-}
-*/
-
-/*
-==================
-CG_EditHud_f
-==================
-*/
-/*
-static void CG_EditHud_f( void ) {
-  //cls.keyCatchers ^= KEYCATCH_CGAME;
-  //VM_Call (cgvm, CG_EVENT_HANDLING, (cls.keyCatchers & KEYCATCH_CGAME) ? CGAME_EVENT_EDITHUD : CGAME_EVENT_NONE);
-}
-*/
-
 #endif
 
 /*
-static void CG_Camera_f( void ) {
-	char name[1024];
-	trap_Argv( 1, name, sizeof(name));
-	if (trap_loadCamera(name)) {
-		cg.cameraMode = qtrue;
-		trap_startCamera(cg.time);
-	} else {
-		CG_Printf ("Unable to load camera %s\n",name);
-	}
-}
+============
+CG_NS_OpenScript_f
+Opens Noire.Script file
+============
 */
-
-/*
-===============
-CG_SetUp_f
-===============
-*/
-static void CG_SetUp_f( void ) {
-	const char		*cvar;
-	char		*cvarvalue;
-	int		number;
-
-	if ( !CG_Argv( 1 ) ) {
+void CG_NS_OpenScript_f( void )
+{
+	char   filename[64];
+	if( trap_Argc( ) == 1 ){
+		CG_Printf( "usage: ns_openscript_cl <filename>\n" );
 		return;
 	}
-	if ( !atoi(CG_Argv( 2 )) ) {
-		number = 1;
-	}
-	cvar = CG_Argv( 1 );
-	cvarvalue = va("%s.integer", CG_Argv( 1 ));
+  
+	trap_Argv( 1, filename, sizeof( filename ) );
+  
+	NS_OpenScript(filename, NULL, 0);
 
-	trap_Cvar_Set(cvar, va("%i",(int)(atoi(cvarvalue)+number)));
 }
 
 /*
-===============
-CG_SetDown_f
-===============
+============
+CG_NS_Interpret_f
+Show Noire.Script variables
+============
 */
-static void CG_SetDown_f( void ) {
-	const char		*cvar;
-	char		*cvarvalue;
-	int		number;
+void CG_NS_Interpret_f( void )
+{
+	char	code[2048];
 
-	if ( !CG_Argv( 1 ) ) {
-		return;
-	}
-	if ( !atoi(CG_Argv( 2 )) ) {
-		number = 1;
-	}
-	cvar = CG_Argv( 1 );
-	cvarvalue = va("%s.integer", CG_Argv( 1 ));
+	trap_Args( code, 2048 );
+  
+	Interpret(code);
 
-	trap_Cvar_Set(cvar, va("%i",(int)(atoi(cvarvalue)-number)));
+}
+
+/*
+============
+CG_NS_VariableList_f
+Show Noire.Script variables
+============
+*/
+void CG_NS_VariableList_f( void )
+{
+  
+	print_variables();
+
+}
+
+/*
+============
+CG_NS_ThreadList_f
+Show Noire.Script threads
+============
+*/
+void CG_NS_ThreadList_f( void )
+{
+  
+	print_threads();
+
 }
 
 /*
@@ -559,6 +533,11 @@ static consoleCommand_t	commands[] = {
 	{ "scoresDown", CG_scrollScoresDown_f },
 	{ "scoresUp", CG_scrollScoresUp_f },
 #endif
+  	//Noire.Script
+  	{ "ns_openscript_cl", CG_NS_OpenScript_f },
+  	{ "ns_interpret_cl", CG_NS_Interpret_f },
+  	{ "ns_variablelist_cl", CG_NS_VariableList_f },
+  	{ "ns_threadlist_cl", CG_NS_ThreadList_f },
 //	{ "camera", CG_Camera_f },
 	{ "loaddeferred", CG_LoadDeferredPlayers },
         { "+acc", CG_AccDown_f },
@@ -662,4 +641,14 @@ void CG_InitConsoleCommands( void ) {
 	trap_AddCommand ("ns_interpret");
 	trap_AddCommand ("ns_variablelist");
 	trap_AddCommand ("ns_threadlist");
+
+	trap_AddCommand ("ns_openscript_cl");
+	trap_AddCommand ("ns_interpret_cl");
+	trap_AddCommand ("ns_variablelist_cl");
+	trap_AddCommand ("ns_threadlist_cl");
+
+	trap_AddCommand ("ns_openscript_ui");
+	trap_AddCommand ("ns_interpret_ui");
+	trap_AddCommand ("ns_variablelist_ui");
+	trap_AddCommand ("ns_threadlist_ui");
 }

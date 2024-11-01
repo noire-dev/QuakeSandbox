@@ -1155,25 +1155,20 @@ team_t PickTeam( int ignoreClientNum ) {
 	counts[TEAM_BLUE] = TeamCount( ignoreClientNum, TEAM_BLUE );
 	counts[TEAM_RED] = TeamCount( ignoreClientNum, TEAM_RED );
 
-    //KK-OAX Both Teams locked...forget about it, print an error message, keep as spec
-    if ( level.RedTeamLocked && level.BlueTeamLocked ) {
-        G_Printf( "Both teams have been locked by the Admin! \n" );
-        return TEAM_NONE;
-    }
-	if ( ( counts[TEAM_BLUE] > counts[TEAM_RED] ) && ( !level.RedTeamLocked ) ) {
+	if ( ( counts[TEAM_BLUE] > counts[TEAM_RED] ) ) {
 		return TEAM_RED;
 	}
-	if ( ( counts[TEAM_RED] > counts[TEAM_BLUE] ) && ( !level.BlueTeamLocked ) ) {
+	if ( ( counts[TEAM_RED] > counts[TEAM_BLUE] ) ) {
 		return TEAM_BLUE;
 	}
 	// equal team count, so join the team with the lowest score
-	if ( ( level.teamScores[TEAM_BLUE] > level.teamScores[TEAM_RED] ) && ( !level.RedTeamLocked ) ) {
+	if ( ( level.teamScores[TEAM_BLUE] > level.teamScores[TEAM_RED] ) ) {
 		return TEAM_RED;
 	}
-	if ( ( level.teamScores[TEAM_RED] > level.teamScores[TEAM_BLUE] ) && ( !level.BlueTeamLocked ) ) {
+	if ( ( level.teamScores[TEAM_RED] > level.teamScores[TEAM_BLUE] ) ) {
 	    return TEAM_BLUE;
     }
-    //KK-OAX Force Team Blue?
+
     return TEAM_BLUE;
 }
 
@@ -1335,7 +1330,7 @@ void ClientUserinfoChanged( int clientNum ) {
 		client->pers.predictItemPickup = qtrue;
 	}
 
-//unlagged - client options
+	//unlagged - client options
 	// see if the player has opted out
 	s = Info_ValueForKey( userinfo, "cg_delag" );
 	if ( !atoi( s ) ) {
@@ -1356,69 +1351,32 @@ void ClientUserinfoChanged( int clientNum ) {
     //KK-OAPub Added From Tremulous-Control Name Changes
     if( strcmp( oldname, client->pers.netname ) )
     {
-        if( client->pers.nameChangeTime &&
-            ( level.time - client->pers.nameChangeTime )
-            <= ( g_minNameChangePeriod.value * 1000 ) )
-        {
-            trap_SendServerCommand( ent - g_entities, va(
-            "print \"Name change spam protection (g_minNameChangePeriod = %d)\n\"",
-            g_minNameChangePeriod.integer ) );
-            revertName = qtrue;
-        }
-        else if( g_maxNameChanges.integer > 0
-            && client->pers.nameChanges >= g_maxNameChanges.integer  )
-        {
-            trap_SendServerCommand( ent - g_entities, va(
-                "print \"Maximum name changes reached (g_maxNameChanges = %d)\n\"",
-                g_maxNameChanges.integer ) );
-            revertName = qtrue;
-        }
-        else if( client->pers.muted )
-        {
-            trap_SendServerCommand( ent - g_entities,
-                "print \"You cannot change your name while you are muted\n\"" );
-            revertName = qtrue;
-        }
-        else if( !G_admin_name_check( ent, client->pers.netname, err, sizeof( err ) ) )
-        {
-            trap_SendServerCommand( ent - g_entities, va( "print \"%s\n\"", err ) );
-            revertName = qtrue;
-        }
-
         //Never revert a bots name... just to bad if it hapens... but the bot will always be expendeble :-)
         if (ent->r.svFlags & SVF_BOT)
             revertName = qfalse;
 
         if( revertName )
         {
-            Q_strncpyz( client->pers.netname, *oldname ? oldname : "UnnamedPlayer",
+            Q_strncpyz( client->pers.netname, *oldname ? oldname : "QSPlayer",
                 sizeof( client->pers.netname ) );
             Info_SetValueForKey( userinfo, "name", oldname );
             trap_SetUserinfo( clientNum, userinfo );
         }
-        else
-        {
-            if( client->pers.connected == CON_CONNECTED )
-            {
-                client->pers.nameChangeTime = level.time;
-                client->pers.nameChanges++;
-            }
-        }
     }
 
-ent->tool_id = atoi( Info_ValueForKey( userinfo, "toolgun_tool" ) );
+	ent->tool_id = atoi( Info_ValueForKey( userinfo, "toolgun_tool" ) );
 
-if ( ent->r.svFlags & SVF_BOT ) {
-botskill = atoi( Info_ValueForKey( userinfo, "skill" ) );
-ent->botskill = botskill;
-singlebot = atoi( Info_ValueForKey( userinfo, "singlebot" ) );
-ent->singlebot = singlebot;
-if(ent->singlebot){
-if(!G_NpcFactionProp(NP_PICKUP, ent)){
-ent->client->ps.stats[STAT_NO_PICKUP] = 1;
-ent->wait_to_pickup = 100000000;
-}}
-}
+	if ( ent->r.svFlags & SVF_BOT ) {
+	botskill = atoi( Info_ValueForKey( userinfo, "skill" ) );
+	ent->botskill = botskill;
+	singlebot = atoi( Info_ValueForKey( userinfo, "singlebot" ) );
+	ent->singlebot = singlebot;
+	if(ent->singlebot){
+	if(!G_NpcFactionProp(NP_PICKUP, ent)){
+	ent->client->ps.stats[STAT_NO_PICKUP] = 1;
+	ent->wait_to_pickup = 100000000;
+	}}
+	}
 
 	// N_G: this condition makes no sense to me and I'm not going to
 	// try finding out what it means, I've added parentheses according to
@@ -1442,18 +1400,6 @@ ent->wait_to_pickup = 100000000;
 		}
 	}
 
-	// set max health
-	if (client->ps.powerups[PW_GUARD]) {
-		client->pers.maxHealth = 200*g_guardhealthmodifier.value;
-	} else {
-		health = atoi( Info_ValueForKey( userinfo, "handicap" ) );
-		client->pers.maxHealth = health;
-		if ( client->pers.maxHealth < 1 || client->pers.maxHealth > 100 ) {
-			client->pers.maxHealth = 100;
-		}
-	}
-	client->ps.stats[STAT_MAX_HEALTH] = client->pers.maxHealth;
-
 	// set model
 	if( g_gametype.integer >= GT_TEAM && g_ffa_gt==0) {
 		Q_strncpyz( model, Info_ValueForKey (userinfo, "team_model"), sizeof( model ) );
@@ -1465,13 +1411,13 @@ ent->wait_to_pickup = 100000000;
 		strcpy(redTeam, Info_ValueForKey( userinfo, "legsskin" ));
 	}
 	
-if ( ent->r.svFlags & SVF_BOT ) {
-	if( g_gametype.integer >= GT_TEAM && g_ffa_gt==0) {
-		strcpy(redTeam, Info_ValueForKey( userinfo, "team_model" ));
-	} else {
-		strcpy(redTeam, Info_ValueForKey( userinfo, "model" ));
-	}	
-}
+	if ( ent->r.svFlags & SVF_BOT ) {
+		if( g_gametype.integer >= GT_TEAM && g_ffa_gt==0) {
+			strcpy(redTeam, Info_ValueForKey( userinfo, "team_model" ));
+		} else {
+			strcpy(redTeam, Info_ValueForKey( userinfo, "model" ));
+		}	
+	}
 
 	// bots set their team a few frames later
 	if (g_gametype.integer >= GT_TEAM && g_ffa_gt==0 && g_entities[clientNum].r.svFlags & SVF_BOT) {
@@ -1550,16 +1496,15 @@ if ( ent->r.svFlags & SVF_BOT ) {
 			client->pers.maxHealth, client->sess.wins, client->sess.losses,
 			Info_ValueForKey( userinfo, "skill" ), teamTask, teamLeader );
 	} else {
-		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\g_redteam\\%s\\g_blueteam\\%s\\hr\\%s\\hg\\%s\\hb\\%s\\tr\\%s\\tg\\%s\\tb\\%s\\pr\\%s\\pg\\%s\\pb\\%s\\pg_r\\%s\\pg_g\\%s\\pg_b\\%s\\si\\%s\\vn\\%i\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\tt\\%d\\tl\\%d",
+		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\g_redteam\\%s\\g_blueteam\\%s\\hr\\%s\\hg\\%s\\hb\\%s\\tr\\%s\\tg\\%s\\tb\\%s\\pr\\%s\\pg\\%s\\pb\\%s\\pg_r\\%s\\pg_g\\%s\\pg_b\\%s\\si\\%s\\vn\\%i\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\tt\\%d\\tl\\%d\\flashl\\%i",
 			client->pers.netname, client->sess.sessionTeam, model, headModel, redTeam, blueTeam, heligred, heliggreen, heligblue, toligred, toliggreen, toligblue, pligred, pliggreen, pligblue, pgred, pggreen, pgblue, swep_id, client->vehiclenum, c1, c2,
-			client->pers.maxHealth, client->sess.wins, client->sess.losses, teamTask, teamLeader);
+			client->pers.maxHealth, client->sess.wins, client->sess.losses, teamTask, teamLeader, ent->flashon);
 	}
 
 	trap_SetConfigstring( CS_PLAYERS+clientNum, s );
 
 	G_LogPrintf( "ClientUserinfoChanged: %i %s\\id\\%s\n", clientNum, s, Info_ValueForKey(userinfo, "cl_guid") );
 }
-
 
 /*
 ===========
@@ -1583,14 +1528,9 @@ restarts.
 */
 char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 	char		*value;
-//	char		*areabits;
 	gclient_t	*client;
 	char		userinfo[MAX_INFO_STRING];
 	gentity_t	*ent;
-	char        reason[ MAX_STRING_CHARS ] = {""};
-	int         i;
-	int icount;
-	gentity_t		*entscr;
 
 	/*if ( !isBot && level.player )
 		return "Server is running a single player gametype.";*/
@@ -1603,30 +1543,16 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 
 	trap_GetUserinfo( clientNum, userinfo, sizeof( userinfo ) );
 
- 	value = Info_ValueForKey( userinfo, "cl_guid" );
- 	Q_strncpyz( client->pers.guid, value, sizeof( client->pers.guid ) );
-
-
- 	// IP filtering //KK-OAX Has this been obsoleted?
- 	// https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=500
- 	// recommanding PB based IP / GUID banning, the builtin system is pretty limited
- 	// check to see if they are on the banned IP list
 	value = Info_ValueForKey (userinfo, "ip");
-	Q_strncpyz( client->pers.ip, value, sizeof( client->pers.ip ) );
+    //Check for local client
+    if( !strcmp( value, "localhost" ) )
+        client->pers.localClient = qtrue;
 
 	if ( G_FilterPacket( value ) && !Q_stricmp(value,"localhost") ) {
             G_Printf("Player with IP: %s is banned\n",value);
 		return "You are banned from this server.";
 	}
 
-    if( G_admin_ban_check( userinfo, reason, sizeof( reason ) ) ) {
- 	    return va( "%s", reason );
- 	}
-
-  //KK-OAX
-  // we don't check GUID or password for bots and local client
-  // NOTE: local client <-> "ip" "localhost"
-  //   this means this client is not running in our current process
 	if ( !isBot && (strcmp(value, "localhost") != 0)) {
 		// check for a password
 		value = Info_ValueForKey (userinfo, "password");
@@ -1634,31 +1560,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 			strcmp( g_password.string, value) != 0) {
 			return "Invalid password";
 		}
-		for( i = 0; i < sizeof( client->pers.guid ) - 1 &&
-		    isxdigit( client->pers.guid[ i ] ); i++ );
-		if( i < sizeof( client->pers.guid ) - 1 )
-		    return "Invalid GUID";
-
-		for( i = 0; i < level.maxclients; i++ ) {
-
-		    if( level.clients[ i ].pers.connected == CON_DISCONNECTED )
-		        continue;
-
-		    if( !Q_stricmp( client->pers.guid, level.clients[ i ].pers.guid ) ) {
-		        if( !G_ClientIsLagging( level.clients + i ) ) {
-		            //trap_SendServerCommand( i, "cp \"Your GUID is not secure\"" );
-		                //return "Duplicate GUID";
-		        }
-		        //trap_DropClient( i, "Ghost" );
-		    }
-		}
-
 	}
-
-    //Check for local client
-    if( !strcmp( client->pers.ip, "localhost" ) )
-        client->pers.localClient = qtrue;
-        client->pers.adminLevel = G_admin_level( ent );
 
 	client->pers.connected = CON_CONNECTING;
 
@@ -1718,15 +1620,9 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 	else {
 		trap_SendServerCommand( clientNum, "print \"Full lag compensation is OFF!\n\"" );
 	}
-
-		trap_SendServerCommand( clientNum, "print \"QSandbox By Noire.dev\n\"" );
-		
-		icount = 0;
-		/*while ( (entscr = G_Find(entscr, FOFS(classname), "info_player_deathmatch")) != NULL ) {icount += 1;}	
-		trap_SendServerCommand( clientNum, va("print \"Spawn point count is %i\n\"", icount) );*/
+	trap_SendServerCommand( clientNum, "print \"QSandbox By Noire.dev\n\"" );
 
 //unlagged - backward reconciliation #5
-    G_admin_namelog_update( client, qfalse );
 	return NULL;
 }
 
@@ -2044,7 +1940,7 @@ void ClientSpawn(gentity_t *ent) {
 
 	trap_GetUserinfo( index, userinfo, sizeof(userinfo) );
 	// set max health
-	health = atoi( Info_ValueForKey( userinfo, "handicap" ) );
+	health = 100;
 	client->pers.maxHealth = health;
 	if (!(ent->r.svFlags & SVF_BOT)){
 		if ( client->pers.maxHealth < 1 || client->pers.maxHealth > 100 ) {
@@ -2287,7 +2183,7 @@ void ClientSpawn(gentity_t *ent) {
 
 	trap_GetUserinfo( index, userinfo, sizeof(userinfo) );
 	// set max health
-	health = atoi( Info_ValueForKey( userinfo, "handicap" ) );
+	health = 100;
 	client->pers.maxHealth = health;
 	if (!(ent->r.svFlags & SVF_BOT)){
 		if ( client->pers.maxHealth < 1 || client->pers.maxHealth > 100 ) {
@@ -2571,7 +2467,7 @@ void ClientSpawn(gentity_t *ent) {
 
 	trap_GetUserinfo( index, userinfo, sizeof(userinfo) );
 	// set max health
-	health = atoi( Info_ValueForKey( userinfo, "handicap" ) );
+	health = 100;
 	client->pers.maxHealth = health;
 	if (!(ent->r.svFlags & SVF_BOT)){
 		if ( client->pers.maxHealth < 1 || client->pers.maxHealth > 100 ) {
@@ -2727,11 +2623,8 @@ void ClientDisconnect( int clientNum ) {
 		return;
 	}
 
-        ClientLeaving( clientNum);
-    //KK-OAX Admin
-    G_admin_namelog_update( ent->client, qtrue );
-
-        trap_GetUserinfo( clientNum, userinfo, sizeof( userinfo ) );
+    ClientLeaving( clientNum);
+    trap_GetUserinfo( clientNum, userinfo, sizeof( userinfo ) );
 
 	// stop any following clients
 	for ( i = 0 ; i < level.maxclients ; i++ ) {

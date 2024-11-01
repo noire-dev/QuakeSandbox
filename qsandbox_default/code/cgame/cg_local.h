@@ -227,7 +227,7 @@ typedef struct centity_s {
 	vec3_t			lerpOrigin;
 	vec3_t			lerpAngles;
 
-	int		newcamrunning;	// leilei - determines if we should look in a direction for running
+	int				newcamrunning;	// leilei - determines if we should look in a direction for running
 	vec3_t			eyesOrigin;
 	vec3_t			eyesAngles;
 
@@ -407,6 +407,7 @@ typedef struct {
 
 	int				teamTask;		// task in teamplay (offence/defence)
 	qboolean		teamLeader;		// true when this is a team leader
+	int				flashlight;
 
 	int				powerups;		// so can display quad/flag status
 
@@ -1412,9 +1413,6 @@ typedef struct {
 //unlagged - client options
 	// this will be set to the server's g_delagHitscan
 	int				delagHitscan;
-//unlagged - client options
-//KK-OAX For storing whether or not the server has multikills enabled.
-    int             altExcellent;
 } cgs_t;
 
 //==============================================================================
@@ -2225,6 +2223,7 @@ void		trap_R_AddRefEntityToScene( const refEntity_t *re );
 void		trap_R_AddPolyToScene( qhandle_t hShader , int numVerts, const polyVert_t *verts );
 void		trap_R_AddPolysToScene( qhandle_t hShader , int numVerts, const polyVert_t *verts, int numPolys );
 void		trap_R_AddLightToScene( const vec3_t org, float intensity, float r, float g, float b );
+void		trap_R_AddLinearLightToScene( const vec3_t start, const vec3_t end, float intensity, float r, float g, float b );
 int			trap_R_LightForPoint( vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir );
 void		trap_R_RenderScene( const refdef_t *fd );
 void		trap_R_SetColor( const float *rgba );	// NULL = 1,1,1,1

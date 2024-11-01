@@ -195,7 +195,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 { "uie_inactivity", "0" },
 { "uie_config_showid", "0" },
 { "uie_pmove_fixed", "1" },
-{ "uie_pmove_msec", "8" },
+{ "uie_pmove_msec", "16" },
 { "uie_smoothclients", "1" },
 { "uie_syncclients", "0" },
 { "uie_allowmaxrate", "0" },
@@ -361,7 +361,6 @@ uie_cvarTable_t uie_cvarTable[] = {
 { "uie_spawnprotect", "500" },
 { "uie_elimination_lockspectator", "0" },
 { "uie_awardpushing", "1" },
-{ "uie_specChat", "1" },
 { "uie_randomteleport", "0" },
 { "uie_falldamagesmall", "5"  },
 { "uie_falldamagebig", "10" },
@@ -3432,7 +3431,6 @@ s_scriptdata.server.slickmove = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, N
 s_scriptdata.server.spawnprotect = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_spawnprotect" );
 s_scriptdata.server.elimination_lockspectator = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_elimination_lockspectator" );
 s_scriptdata.server.awardpushing = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_awardpushing" );
-s_scriptdata.server.specChat = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_specChat" );
 s_scriptdata.server.randomteleport = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_randomteleport" );
 s_scriptdata.server.falldamagesmall = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_falldamagesmall" );
 s_scriptdata.server.falldamagebig = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_falldamagebig" );
@@ -3889,7 +3887,6 @@ UIE_SetSkirmishCvarInt( NULL, "uie_slickmove", s_scriptdata.server.slickmove);
 UIE_SetSkirmishCvarInt( NULL, "uie_spawnprotect", s_scriptdata.server.spawnprotect);
 UIE_SetSkirmishCvarInt( NULL, "uie_elimination_lockspectator", s_scriptdata.server.elimination_lockspectator);
 UIE_SetSkirmishCvarInt( NULL, "uie_awardpushing", s_scriptdata.server.awardpushing);
-UIE_SetSkirmishCvarInt( NULL, "uie_specChat", s_scriptdata.server.specChat);
 UIE_SetSkirmishCvarInt( NULL, "uie_randomteleport", s_scriptdata.server.randomteleport);
 UIE_SetSkirmishCvarInt( NULL, "uie_falldamagesmall", s_scriptdata.server.falldamagesmall);
 UIE_SetSkirmishCvarInt( NULL, "uie_falldamagebig", s_scriptdata.server.falldamagebig);

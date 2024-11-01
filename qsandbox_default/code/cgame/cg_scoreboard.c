@@ -71,9 +71,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  wins/losses are drawn on bot icon now
 
 static qboolean localClient; // true if local client has been displayed
-
-
-							 /*
+/*
 =================
 CG_DrawScoreboard
 =================

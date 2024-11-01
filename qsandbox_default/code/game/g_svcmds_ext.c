@@ -130,6 +130,142 @@ void Svcmd_ReplaceTexture_f( void )
 }
 
 /*
+==================
+Svcmd_PropNpc_AS_f
+Added for QSandbox.
+==================
+*/
+void Svcmd_PropNpc_AS_f( void ){
+	vec3_t		end;
+	gentity_t 	*tent;
+	char		cord_x[64];
+	char		cord_y[64];
+	char		cord_z[64];
+	char		arg01[64];
+	char		arg02[64];
+	char		arg03[64];
+	char		arg04[64];
+	char		arg05[64];
+	char		arg06[64];
+	char		arg07[64];
+	char		arg08[64];
+	char		arg09[64];
+	char		arg10[64];
+	char		arg11[64];
+	char		arg12[64];
+	char		arg13[64];
+	char		arg14[64];
+	char		arg15[64];
+	char		arg16[64];
+	char		arg17[64];
+	char		arg18[64];
+	char		arg19[64];
+	char		arg20[64];
+	char		arg21[64];
+	char		arg22[64];
+	
+	if(g_gametype.integer != GT_SANDBOX){ return; }
+		
+	//tr.endpos
+	trap_Argv( 1, cord_x, sizeof( cord_x ) );
+	trap_Argv( 2, cord_y, sizeof( cord_y ) );
+	trap_Argv( 3, cord_z, sizeof( cord_z ) );
+	trap_Argv( 4, arg01, sizeof( arg01 ) );
+	trap_Argv( 5, arg02, sizeof( arg02 ) );
+	trap_Argv( 6, arg03, sizeof( arg03 ) );
+	trap_Argv( 7, arg04, sizeof( arg04 ) );
+	trap_Argv( 8, arg05, sizeof( arg05 ) );
+	trap_Argv( 9, arg06, sizeof( arg06 ) );
+	trap_Argv( 10, arg07, sizeof( arg07 ) );
+	trap_Argv( 11, arg08, sizeof( arg08 ) );
+	trap_Argv( 12, arg09, sizeof( arg09 ) );
+	trap_Argv( 13, arg10, sizeof( arg10 ) );
+	trap_Argv( 14, arg11, sizeof( arg11 ) );
+	trap_Argv( 15, arg12, sizeof( arg12 ) );
+	trap_Argv( 16, arg13, sizeof( arg13 ) );
+	trap_Argv( 17, arg14, sizeof( arg14 ) );
+	trap_Argv( 18, arg15, sizeof( arg15 ) );
+	trap_Argv( 19, arg16, sizeof( arg16 ) );
+	trap_Argv( 20, arg17, sizeof( arg17 ) );
+	trap_Argv( 21, arg18, sizeof( arg18 ) );
+	trap_Argv( 22, arg19, sizeof( arg19 ) );
+	trap_Argv( 23, arg20, sizeof( arg20 ) );
+	trap_Argv( 24, arg21, sizeof( arg21 ) );
+	trap_Argv( 25, arg22, sizeof( arg22 ) );
+	
+	end[0] = atof(cord_x);
+	end[1] = atof(cord_y);
+	end[2] = atof(cord_z);
+	
+	if(!Q_stricmp (arg01, "prop")){
+	if(!g_allowprops.integer){ return; }
+	if(g_safe.integer){
+	if(!Q_stricmp (arg03, "script_cmd")){
+	return;
+	}
+	if(!Q_stricmp (arg03, "target_modify")){
+	return;
+	}
+	}
+	G_BuildPropSL( arg02, arg03, end, level.player, arg04, arg05, arg06, arg07, arg08, arg09, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22);
+	
+	
+	return;
+	}
+	if(!Q_stricmp (arg01, "npc")){
+	if(!g_allownpc.integer){ return; }
+	
+	tent = G_Spawn();
+	tent->sb_ettype = 1;
+	VectorCopy( end, tent->s.origin);
+	tent->s.origin[2] += 25;
+	tent->classname = "target_botspawn";
+	CopyAlloc(tent->clientname, arg02);
+	tent->type = NPC_ENEMY;
+	if(!Q_stricmp (arg03, "NPC_Enemy")){
+	tent->type = NPC_ENEMY;
+	}
+	if(!Q_stricmp (arg03, "NPC_Citizen")){
+	tent->type = NPC_CITIZEN;
+	}
+	if(!Q_stricmp (arg03, "NPC_Guard")){
+	tent->type = NPC_GUARD;
+	}
+	if(!Q_stricmp (arg03, "NPC_Partner")){
+	tent->type = NPC_PARTNER;
+	}
+	if(!Q_stricmp (arg03, "NPC_PartnerEnemy")){
+	tent->type = NPC_PARTNERENEMY;
+	}
+	tent->skill = atof(arg04);
+	tent->health = atoi(arg05);
+	CopyAlloc(tent->message, arg06);	
+	tent->spawnflags = atoi(arg08);
+	if(!Q_stricmp (arg07, "0") ){
+	CopyAlloc(tent->target, arg02);	
+	} else {
+	CopyAlloc(tent->target, arg07);	
+	}
+	if(tent->health <= 0){
+	tent->health = 100;
+	}
+	if(tent->skill <= 0){
+	tent->skill = 1;
+	}
+	if(tent->spawnflags <= 0){
+	tent->spawnflags = 1;
+	}
+	if(!Q_stricmp (tent->message, "0") || !tent->message ){
+	CopyAlloc(tent->message, tent->clientname);
+	}
+	G_AddBot(tent->clientname, tent->skill, "Blue", 0, tent->message, tent->s.number, tent->target, tent->type, tent );
+	
+	trap_Cvar_Set("g_spSkill", arg04);
+	return;
+	}
+}
+
+/*
 ============
 Svcmd_SaveSession_f
 Editing line with variables
@@ -336,11 +472,6 @@ void Svcmd_MessageWrapper( void )
 {
   char cmd[ 5 ];
   trap_Argv( 0, cmd, sizeof( cmd ) );
-  /*if( !Q_stricmp( cmd, "a" ) )
-    Cmd_AdminMessage_f( NULL );
-  else if( !Q_stricmp( cmd, "m" ) )
-    Cmd_PrivateMessage_f( NULL );
-  else*/
   if( !Q_stricmp( cmd, "say" ) )
     G_Say( NULL, NULL, SAY_ALL, ConcatArgs( 1 ) );
 }

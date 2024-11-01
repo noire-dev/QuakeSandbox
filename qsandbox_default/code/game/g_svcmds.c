@@ -509,7 +509,7 @@ void	ClientKick_f( void ) {
         idnum = atoi( str );
 
         //Local client
-        if( !strcmp( level.clients[idnum].pers.ip, "localhost" ) ) {
+        if( level.clients[idnum].pers.localClient ) {
             G_Printf("Kick failed - local player\n");
             return;
         }
@@ -560,24 +560,16 @@ struct
   { "addip", qfalse, Svcmd_AddIP_f },
   { "removeip", qfalse, Svcmd_RemoveIP_f },
 
-  //KK-OAX Uses wrapper in g_svccmds_ext.c
   { "listip", qfalse, Svcmd_ListIP_f },
-  //KK-OAX New
   { "status", qfalse, Svcmd_Status_f },
   { "eject", qfalse, Svcmd_EjectClient_f },
   { "dumpuser", qfalse, Svcmd_DumpUser_f },
-  // don't handle communication commands unless dedicated
   { "centerprint", qfalse, Svcmd_CenterPrint_f },
   { "replacetexture", qfalse, Svcmd_ReplaceTexture_f },
   { "say_team", qtrue, Svcmd_TeamMessage_f },
   { "say", qtrue, Svcmd_MessageWrapper },
   { "chat", qtrue, Svcmd_Chat_f },
-  /*{ "m", qtrue, Svcmd_MessageWrapper },
-  { "a", qtrue, Svcmd_MessageWrapper },
-  { "bp", qtrue, Svcmd_BannerPrint_f }, */
-  //Shuffle the teams
   { "shuffle", qfalse, ShuffleTeams },
-  //Kicks a player by number in the game logic rather than the server number
   { "clientkick_game", qfalse, ClientKick_f },
   { "endgamenow", qfalse, EndGame_f },
   { "savemap", qfalse, G_WriteMapfile_f },
@@ -590,6 +582,7 @@ struct
   { "showobjects", qfalse, G_ShowObjects },
   { "useadmcvar", qfalse, Svcmd_AdmUseCvar_f },
   { "picktarget", qfalse, Svcmd_PickTarget_f },
+  { "create", qfalse, Svcmd_PropNpc_AS_f },
   { "savegame", qfalse, Svcmd_SaveSession_f },
 
   //Noire.Script
@@ -622,10 +615,6 @@ qboolean  ConsoleCommand( void )
       return qtrue;
     }
   }
-  // KK-OAX Will be enabled when admin is added.
-  // see if this is an admin command
-  if( G_admin_cmd_check( NULL, qfalse ) )
-    return qtrue;
 
   if( g_dedicated.integer )
     G_Printf( "unknown command: %s\n", cmd );

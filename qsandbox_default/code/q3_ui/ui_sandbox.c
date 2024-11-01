@@ -550,7 +550,7 @@ static void SandboxMain_SaveChanges( void ) {
 	trap_Cvar_Set( "toolgun_modelst", va("props/%s", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 	}
 	if(uis.sb_tab == 6){
-	trap_Cmd_ExecuteText( EXEC_INSERT, va("set toolcmd_spawn execscript spawnlists/%s/%s.as\n", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
+	trap_Cmd_ExecuteText( EXEC_INSERT, va("set toolcmd_spawn ns_openscript_ui spawnlists/%s/%s.ns\n", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 	}
 	trap_Cvar_SetValue( "sb_private", s_sandboxmain.priv.curvalue );
 	trap_Cvar_Set( "sb_grid", s_sandboxmain.grid.field.buffer );
@@ -606,7 +606,7 @@ static void SandboxMain_SpawnListUpdate( void ) {
 	
 	
 	uis.spawnlist_folder 				= trap_Cvar_VariableValue("sb_classnum");
-	s_sandboxmain.list.numitems			= trap_FS_GetFileList( va("spawnlists/%s", s_sandboxmain.classlist.itemnames[uis.spawnlist_folder]), "as", s_sandboxmain.names, 524288 );
+	s_sandboxmain.list.numitems			= trap_FS_GetFileList( va("spawnlists/%s", s_sandboxmain.classlist.itemnames[uis.spawnlist_folder]), "ns", s_sandboxmain.names, 524288 );
 
 	if (!s_sandboxmain.list.numitems) {
 		strcpy(s_sandboxmain.names,"No items");
@@ -621,7 +621,7 @@ static void SandboxMain_SpawnListUpdate( void ) {
 
 		// strip extension
 		len = strlen( configname );
-		if (!Q_stricmp(configname +  len - 3,".as"))
+		if (!Q_stricmp(configname +  len - 3,".ns"))
 			configname[len-3] = '\0';
 
 		//Q_strupr(configname);
@@ -763,27 +763,6 @@ static void SandboxMain_MenuDraw( void ) {
 		s_sandboxmain.modif[17].generic.name           	= "--------:";
 	}
 	
-		if(uis.sb_tab == 8){
-		s_sandboxmain.modif[0].generic.name       		= "Key:";
-		s_sandboxmain.modif[1].generic.name           	= "--------:";
-		s_sandboxmain.modif[2].generic.name          	= "--------:";
-		s_sandboxmain.modif[3].generic.name          	= "--------:";
-		s_sandboxmain.modif[4].generic.name           	= "--------:";
-		s_sandboxmain.modif[5].generic.name          	= "--------:";
-		s_sandboxmain.modif[6].generic.name          	= "--------:";
-		s_sandboxmain.modif[7].generic.name           	= "--------:";
-		s_sandboxmain.modif[8].generic.name          	= "--------:";
-		s_sandboxmain.modif[9].generic.name           	= "--------:";
-		s_sandboxmain.modif[10].generic.name           	= "--------:";
-		s_sandboxmain.modif[11].generic.name          	= "--------:";
-		s_sandboxmain.modif[12].generic.name          	= "--------:";
-		s_sandboxmain.modif[13].generic.name           	= "--------:";
-		s_sandboxmain.modif[14].generic.name           	= "--------:";
-		s_sandboxmain.modif[15].generic.name          	= "--------:";
-		s_sandboxmain.modif[16].generic.name          	= "--------:";
-		s_sandboxmain.modif[17].generic.name           	= "--------:";
-	}
-	
 	if(uis.sb_tab == 5 || uis.sb_tab == 9){
 		s_sandboxmain.modif[0].generic.name       		= "Value:";
 		s_sandboxmain.modif[1].generic.name           	= "--------:";
@@ -820,17 +799,17 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 	case ID_SPAWNOBJECT:
 		if(uis.sb_tab == 1){
 		Q_strncpyz( s_sandboxmain.modif[4].field.buffer, "0", sizeof(s_sandboxmain.modif[4].field.buffer) );
-		trap_Cmd_ExecuteText( EXEC_INSERT, "execscript tools/create\n" );
+		trap_Cmd_ExecuteText( EXEC_INSERT, "ns_openscript_ui tools/create.ns\n" );
 		trap_Cmd_ExecuteText( EXEC_INSERT, "menuback\n" );	
 		}
 		if(uis.sb_tab == 2){
 		Q_strncpyz( s_sandboxmain.modif[4].field.buffer, "0", sizeof(s_sandboxmain.modif[4].field.buffer) );
-		trap_Cmd_ExecuteText( EXEC_INSERT, "execscript tools/create\n" );
+		trap_Cmd_ExecuteText( EXEC_INSERT, "ns_openscript_ui tools/create.ns\n" );
 		trap_Cmd_ExecuteText( EXEC_INSERT, "menuback\n" );	
 		}
 		if(uis.sb_tab == 3){
 		Q_strncpyz( s_sandboxmain.modif[4].field.buffer, "0", sizeof(s_sandboxmain.modif[4].field.buffer) );
-		trap_Cmd_ExecuteText( EXEC_INSERT, "execscript tools/create\n" );
+		trap_Cmd_ExecuteText( EXEC_INSERT, "ns_openscript_ui tools/create.ns\n" );
 		trap_Cmd_ExecuteText( EXEC_INSERT, "menuback\n" );	
 		}
 		if(uis.sb_tab == 4){
@@ -841,14 +820,14 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		}
 		if(uis.sb_tab == 6){
 		Q_strncpyz( s_sandboxmain.modif[4].field.buffer, "0", sizeof(s_sandboxmain.modif[4].field.buffer) );
-		trap_Cmd_ExecuteText( EXEC_INSERT, "execscript tools/create\n" );
+		trap_Cmd_ExecuteText( EXEC_INSERT, "ns_openscript_ui tools/create.ns\n" );
 		trap_Cmd_ExecuteText( EXEC_INSERT, "menuback\n" );	
 		}
 		if(uis.sb_tab == 7){
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("execscript dscripts/%s.as\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("ns_openscript_ui dscripts/%s.ns\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 		}
 		if(uis.sb_tab == 8){
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("bind %s execscript tools/%s.as\n", s_sandboxmain.modif[0].field.buffer, s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
+		trap_Cmd_ExecuteText( EXEC_INSERT, "menuback\n" );
 		}
 		if(uis.sb_tab == 9){
 		trap_Cmd_ExecuteText( EXEC_INSERT, va("usecvar %s %s\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.modif[0].field.buffer) );
@@ -942,14 +921,14 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		trap_Cmd_ExecuteText( EXEC_INSERT, va("useadmcvar %s 0 1\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.modif[0].field.buffer) );
 		}
 		if(uis.sb_tab == 6){
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("execscript spawnlists/%s/%s.as\n", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("ns_openscript_ui spawnlists/%s/%s.ns\n", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 		}
 		if(uis.sb_tab == 7){
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("execscript dscripts/%s.as\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("ns_openscript_ui dscripts/%s.ns\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 		}
 		if(uis.sb_tab == 8){
 		Q_strncpyz( s_sandboxmain.modif[4].field.buffer, "0", sizeof(s_sandboxmain.modif[4].field.buffer) );
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("execscript tools/%s.as\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("ns_openscript_ui tools/%s.ns\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 		}
 		if(uis.sb_tab == 9){
 		trap_Cmd_ExecuteText( EXEC_INSERT, va("usecvar %s 0 1\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.modif[0].field.buffer) );
@@ -1572,7 +1551,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.y		= 70;
 	s_sandboxmain.list.width			= 39+(2*uis.wideoffset/SMALLCHAR_WIDTH);
 	s_sandboxmain.list.height			= 15+18;
-	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "dscripts", "as", s_sandboxmain.names, 524288 );
+	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "dscripts", "ns", s_sandboxmain.names, 524288 );
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
 	s_sandboxmain.list.columns			= 1;
 	s_sandboxmain.list.color			= s_sandboxmain_color1;
@@ -1624,7 +1603,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.y		= 70;
 	s_sandboxmain.list.width			= 39+(2*uis.wideoffset/SMALLCHAR_WIDTH);
 	s_sandboxmain.list.height			= 15+18;
-	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "tools", "as", s_sandboxmain.names, 524288 );
+	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "tools", "ns", s_sandboxmain.names, 524288 );
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
 	s_sandboxmain.list.columns			= 1;
 	s_sandboxmain.list.color			= s_sandboxmain_color1;
@@ -1662,7 +1641,7 @@ void SandboxMain_MenuInit( void ) {
 	
 	s_sandboxmain.propstext.string  				= "Tools:";
 	s_sandboxmain.classtext.string  				= "Class:";
-	s_sandboxmain.spawnobject.string          		= "Bind";
+	s_sandboxmain.spawnobject.string          		= "Select";
 	}
 	if(uis.sb_tab == 9){
 	s_sandboxmain.list.generic.type		= MTYPE_UIOBJECT;
@@ -1729,7 +1708,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.y		= 70;
 	s_sandboxmain.list.width			= 39+(2*uis.wideoffset/SMALLCHAR_WIDTH);
 	s_sandboxmain.list.height			= 15+18;
-	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "mgui", "as", s_sandboxmain.names, 524288 );
+	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "mgui", "ns", s_sandboxmain.names, 524288 );
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
 	s_sandboxmain.list.columns			= 1;
 	s_sandboxmain.list.color			= s_sandboxmain_color1;
@@ -1818,28 +1797,6 @@ if(uis.sb_tab == 1){
 		configname += len + 1;
 	}
 }
-if(uis.sb_tab == 2){
-	if (!s_sandboxmain.list.numitems) {
-		strcpy(s_sandboxmain.names,"No entities");
-		s_sandboxmain.list.numitems = 1;
-	}
-	else if (s_sandboxmain.list.numitems > 65536)
-		s_sandboxmain.list.numitems = 65536;
-
-	configname = s_sandboxmain.names;
-	for ( i = 0; i < s_sandboxmain.list.numitems; i++ ) {
-		s_sandboxmain.list.itemnames[i] = configname;
-
-		// strip extension
-		len = strlen( configname );
-		if (!Q_stricmp(configname +  len - 3,".as"))
-			configname[len-3] = '\0';
-
-		//Q_strupr(configname);
-
-		configname += len + 1;
-	}
-}
 if (uis.sb_tab == 3) {
     if (!s_sandboxmain.list.numitems) {
         strcpy(s_sandboxmain.names, "No NPC");
@@ -1890,7 +1847,7 @@ if(uis.sb_tab == 6){
 		configname += len + 1;
 	}
 	
-	s_sandboxmain.list.numitems			= trap_FS_GetFileList( va("spawnlists/%s", s_sandboxmain.classlist.itemnames[uis.spawnlist_folder]), "as", s_sandboxmain.names, 524288 );
+	s_sandboxmain.list.numitems			= trap_FS_GetFileList( va("spawnlists/%s", s_sandboxmain.classlist.itemnames[uis.spawnlist_folder]), "ns", s_sandboxmain.names, 524288 );
 	
 	if (!s_sandboxmain.list.numitems) {
 		strcpy(s_sandboxmain.names,"No items");
@@ -1905,7 +1862,7 @@ if(uis.sb_tab == 6){
 
 		// strip extension
 		len = strlen( configname );
-		if (!Q_stricmp(configname +  len - 3,".as"))
+		if (!Q_stricmp(configname +  len - 3,".ns"))
 			configname[len-3] = '\0';
 
 		//Q_strupr(configname);
@@ -1929,7 +1886,7 @@ if(uis.sb_tab == 7){
 
 		// strip extension
 		len = strlen( configname );
-		if (!Q_stricmp(configname +  len - 3,".as"))
+		if (!Q_stricmp(configname +  len - 3,".ns"))
 			configname[len-3] = '\0';
 
 		//Q_strupr(configname);
@@ -1951,7 +1908,7 @@ if(uis.sb_tab == 8){
 
 		// strip extension
 		len = strlen( configname );
-		if (!Q_stricmp(configname +  len - 3,".as"))
+		if (!Q_stricmp(configname +  len - 3,".ns"))
 			configname[len-3] = '\0';
 
 		//Q_strupr(configname);
@@ -1973,7 +1930,7 @@ if(uis.sb_tab == 10){
 
 		// strip extension
 		len = strlen( configname );
-		if (!Q_stricmp(configname +  len - 3,".as"))
+		if (!Q_stricmp(configname +  len - 3,".ns"))
 			configname[len-3] = '\0';
 
 		//Q_strupr(configname);

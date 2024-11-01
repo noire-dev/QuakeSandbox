@@ -643,7 +643,7 @@ void Cmd_LevelShot_f( gentity_t *ent ) {
 		return;
 	}
 
-        if(!ent->client->pers.localClient)
+    if(!ent->client->pers.localClient)
 	{
 		trap_SendServerCommand(ent-g_entities,
 		"print \"The levelshot command must be executed by a local client\n\"");
@@ -834,9 +834,6 @@ void SetTeam( gentity_t *ent, char *s ) {
 	int					specClient;
 	int					teamLeader;
     char	            userinfo[MAX_INFO_STRING];
-    qboolean            force;
-
-	force = G_admin_permission(ent, ADMF_FORCETEAMCHANGE);
 
 	//
 	// see what change is requested
@@ -872,41 +869,9 @@ void SetTeam( gentity_t *ent, char *s ) {
 			// pick the team with the least number of players
 			team = PickTeam( clientNum );
 		}
-        if ( !force ) {
-		    if ( g_teamForceBalance.integer  ) {
-			    int		counts[TEAM_NUM_TEAMS];
-
-			    counts[TEAM_BLUE] = TeamCount( ent->client->ps.clientNum, TEAM_BLUE );
-			    counts[TEAM_RED] = TeamCount( ent->client->ps.clientNum, TEAM_RED );
-
-			    // We allow a spread of two
-			    if ( team == TEAM_RED && counts[TEAM_RED] - counts[TEAM_BLUE] > 1 ) {
-				    trap_SendServerCommand( ent->client->ps.clientNum,
-					    "cp \"Red team has too many players.\n\"" );
-				    return; // ignore the request
-			    }
-			    if ( team == TEAM_BLUE && counts[TEAM_BLUE] - counts[TEAM_RED] > 1 ) {
-				    trap_SendServerCommand( ent->client->ps.clientNum,
-					    "cp \"Blue team has too many players.\n\"" );
-				    return; // ignore the request
-			    }
-
-			    // It's ok, the team we are switching to has less or same number of players
-		    }
-        }
 	} else {
 		// force them to spectators if there aren't any spots free
 		team = TEAM_FREE;
-	}
-    if ( !force ) {
-	    // override decision if limiting the players
-	    if ( (g_gametype.integer == GT_TOURNAMENT)
-		    && level.numNonSpectatorClients >= 2 ) {
-		    team = TEAM_SPECTATOR;
-	    } else if ( g_maxGameClients.integer > 0 &&
-		    level.numNonSpectatorClients >= g_maxGameClients.integer ) {
-		    team = TEAM_SPECTATOR;
-	    }
 	}
 
 	//
@@ -916,28 +881,11 @@ void SetTeam( gentity_t *ent, char *s ) {
 	if ( team == oldTeam && team != TEAM_SPECTATOR ) {
 		return;
 	}
-    //KK-OAX Check to make sure the team is not locked from Admin
-    if ( !force ) {
-        if ( team == TEAM_RED && level.RedTeamLocked ) {
-            trap_SendServerCommand( ent->client->ps.clientNum,
-            "cp \"The Red Team has been locked by the Admin! \n\"" );
-            return;
-        }
-        if ( team == TEAM_BLUE && level.BlueTeamLocked ) {
-            trap_SendServerCommand( ent->client->ps.clientNum,
-            "cp \"The Blue Team has been locked by the Admin! \n\"" );
-            return;
-        }
-        if ( team == TEAM_FREE && level.FFALocked ) {
-            trap_SendServerCommand( ent->client->ps.clientNum,
-            "cp \"This Deathmatch has been locked by the Admin! \n\"" );
-            return;
-        }
-    }
+
 	//
 	// execute the team change
 	//
-
+	
 	// if the player was dead leave the body
 	if ( client->ps.stats[STAT_HEALTH] <= 0 ) {
 		CopyToBodyQue(ent);
@@ -1024,7 +972,6 @@ Cmd_Team_f
 void Cmd_Team_f( gentity_t *ent ) {
 	int			oldTeam;
 	char		s[MAX_TOKEN_CHARS];
-	qboolean    force;
 
 	if ( trap_Argc() != 2 ) {
 		oldTeam = ent->client->sess.sessionTeam;
@@ -1043,15 +990,6 @@ void Cmd_Team_f( gentity_t *ent ) {
 			break;
 		}
 		return;
-	}
-
-    force = G_admin_permission(ent, ADMF_FORCETEAMCHANGE);
-
-	if( !force ) {
-	    if ( ent->client->switchTeamTime > level.time ) {
-		    trap_SendServerCommand( ent-g_entities, "print \"May not switch teams more than once per 5 seconds.\n\"" );
-		    return;
-		}
 	}
 
 	// if they are playing a tournement game, count as a loss
@@ -1307,11 +1245,6 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 		other = &g_entities[j];
 		G_SayTo( ent, other, mode, color, name, text );
 	}
-	//KK-OAX Admin Command Check from Say/SayTeam line
-	if( g_adminParseSay.integer )
-	{
-	    G_admin_cmd_check ( ent, qtrue );
-	}
 }
 
 
@@ -1329,25 +1262,6 @@ static void Cmd_Say_f( gentity_t *ent ){
     trap_Argv( 0, arg, sizeof( arg ) );
     if( Q_strequal( arg, "say_team" ) )
         mode = SAY_TEAM ;
-    // KK-OAX Disabled until PM'ing is added
-    // support parsing /m out of say text since some people have a hard
-    // time figuring out what the console is.
-    /*if( !Q_stricmpn( args, "say /m ", 7 ) ||
-      !Q_stricmpn( args, "say_team /m ", 12 ) ||
-      !Q_stricmpn( args, "say /mt ", 8 ) ||
-      !Q_stricmpn( args, "say_team /mt ", 13 ) )
-    {
-        Cmd_PrivateMessage_f( ent );
-        return;
-    }
-
-    // support parsing /a out of say text for the same reason
-    if( !Q_stricmpn( args, "say /a ", 7 ) ||
-    !Q_stricmpn( args, "say_team /a ", 12 ) )
-    {
-        Cmd_AdminMessage_f( ent );
-        return;
-    }*/
 
     if( trap_Argc( ) < 2 )
         return;
@@ -1415,47 +1329,12 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	char		arg20[64];
 	char		arg21[64];
 	char		arg22[64];
-	char		arg23[64];
-	char		arg24[64];
-	char		arg25[64];
-	char		arg26[64];
-	char		arg27[64];
-	char		arg28[64];
-	char		arg29[64];
-	char		arg30[64];
-	char		arg31[64];
-	char		arg32[64];
-	char		arg33[64];
-	char		arg34[64];
-	char		arg35[64];
-	char		arg36[64];
-	char		arg37[64];
-	char		arg38[64];
-	char		arg39[64];
-	char		arg40[64];
-	char		arg41[64];
-	char		arg42[64];
-	char		arg43[64];
-	char		arg44[64];
-	char		arg45[64];
-	char		arg46[64];
-	char		arg47[64];
-	char		arg48[64];
-	char		arg49[64];
-	char		arg50[64];
-	char		arg51[64];
-	char		arg52[64];
-	char		arg53[64];
-	char		arg54[64];
-	char		arg55[64];
-	char		arg56[64];
-	char		arg57[64];
-	char		arg58[64];
-	char		arg59[64];
-	char		arg60[64];
-	char		arg61[64];
 	
 	if(g_gametype.integer != GT_SANDBOX){ return; }
+
+	if ( (ent->client->sess.sessionTeam == TEAM_SPECTATOR) || ent->client->isEliminated ) {
+		return;
+	}
 		
 	//tr.endpos
 	trap_Argv( 1, arg01, sizeof( arg01 ) );
@@ -1480,45 +1359,6 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	trap_Argv( 20, arg20, sizeof( arg20 ) );
 	trap_Argv( 21, arg21, sizeof( arg21 ) );
 	trap_Argv( 22, arg22, sizeof( arg22 ) );
-	trap_Argv( 23, arg23, sizeof( arg23 ) );
-	trap_Argv( 24, arg24, sizeof( arg24 ) );
-	trap_Argv( 25, arg25, sizeof( arg25 ) );
-	trap_Argv( 26, arg26, sizeof( arg26 ) );
-	trap_Argv( 27, arg27, sizeof( arg27 ) );
-	trap_Argv( 28, arg28, sizeof( arg28 ) );
-	trap_Argv( 29, arg29, sizeof( arg29 ) );
-	trap_Argv( 30, arg30, sizeof( arg30 ) );
-	trap_Argv( 31, arg31, sizeof( arg31 ) );
-	trap_Argv( 32, arg32, sizeof( arg32 ) );
-	trap_Argv( 33, arg33, sizeof( arg33 ) );
-	trap_Argv( 34, arg34, sizeof( arg34 ) );
-	trap_Argv( 35, arg35, sizeof( arg35 ) );
-	trap_Argv( 36, arg36, sizeof( arg36 ) );
-	trap_Argv( 37, arg37, sizeof( arg37 ) );
-	trap_Argv( 38, arg38, sizeof( arg38 ) );
-	trap_Argv( 39, arg39, sizeof( arg39 ) );
-	trap_Argv( 40, arg40, sizeof( arg40 ) );
-	trap_Argv( 41, arg41, sizeof( arg41 ) );
-	trap_Argv( 42, arg42, sizeof( arg42 ) );
-	trap_Argv( 43, arg43, sizeof( arg43 ) );
-	trap_Argv( 44, arg44, sizeof( arg44 ) );
-	trap_Argv( 45, arg45, sizeof( arg45 ) );
-	trap_Argv( 46, arg46, sizeof( arg46 ) );
-	trap_Argv( 47, arg47, sizeof( arg47 ) );
-	trap_Argv( 48, arg48, sizeof( arg48 ) );
-	trap_Argv( 49, arg49, sizeof( arg49 ) );
-	trap_Argv( 50, arg50, sizeof( arg50 ) );
-	trap_Argv( 51, arg51, sizeof( arg51 ) );
-	trap_Argv( 52, arg52, sizeof( arg52 ) );
-	trap_Argv( 53, arg53, sizeof( arg53 ) );
-	trap_Argv( 54, arg54, sizeof( arg54 ) );
-	trap_Argv( 55, arg55, sizeof( arg55 ) );
-	trap_Argv( 56, arg56, sizeof( arg56 ) );
-	trap_Argv( 57, arg57, sizeof( arg57 ) );
-	trap_Argv( 58, arg58, sizeof( arg58 ) );
-	trap_Argv( 59, arg59, sizeof( arg59 ) );
-	trap_Argv( 60, arg60, sizeof( arg60 ) );
-	trap_Argv( 61, arg61, sizeof( arg61 ) );
 	
 	//Set Aiming Directions
 	AngleVectors(ent->client->ps.viewangles, forward, right, up);
@@ -1543,7 +1383,7 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	tent->s.eventParm = 24; //eventParm is used to determine the number of particles
 	tent->s.generic1 = 500; //generic1 is used to determine the speed of the particles
 	tent->s.generic2 = 16; //generic2 is used to determine the size of the particles
-	G_BuildPropSL( arg02, arg03, tr.endpos, ent, arg04, arg05, arg06, arg07, arg08, arg09, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30, arg31, arg32, arg33, arg34, arg35, arg36, arg37, arg38, arg39, arg40, arg41, arg42, arg43, arg44, arg45, arg46, arg47, arg48, arg49, arg50, arg51, arg52, arg53, arg54, arg55, arg56, arg57, arg58, arg59, arg60, arg61);
+	G_BuildPropSL( arg02, arg03, tr.endpos, ent, arg04, arg05, arg06, arg07, arg08, arg09, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22);
 	
 	return;
 	}
@@ -1632,6 +1472,10 @@ static void Cmd_Modify_Prop_f( gentity_t *ent ){
 	char		arg19[64];
 	
 	if(g_gametype.integer != GT_SANDBOX){ return; }
+
+	if ( (ent->client->sess.sessionTeam == TEAM_SPECTATOR) || ent->client->isEliminated ) {
+		return;
+	}
 		
 	//tr.endpos
 	trap_Argv( 1, arg01, sizeof( arg01 ) );
@@ -1686,220 +1530,6 @@ static void Cmd_Altfire_Physgun_f( gentity_t *ent ){
 				ent->grabbedEntity->grabNewPhys = 1;	//say physgun about freeze option
 			}
 		}
-	}
-}
-
-/*
-==================
-Cmd_PropNpc_AS_f
-Added for QSandbox.
-==================
-*/
-static void Cmd_PropNpc_AS_f( gentity_t *ent ){
-	vec3_t		end;
-	gentity_t 	*tent;
-	char		cord_x[64];
-	char		cord_y[64];
-	char		cord_z[64];
-	char		arg01[64];
-	char		arg02[64];
-	char		arg03[64];
-	char		arg04[64];
-	char		arg05[64];
-	char		arg06[64];
-	char		arg07[64];
-	char		arg08[64];
-	char		arg09[64];
-	char		arg10[64];
-	char		arg11[64];
-	char		arg12[64];
-	char		arg13[64];
-	char		arg14[64];
-	char		arg15[64];
-	char		arg16[64];
-	char		arg17[64];
-	char		arg18[64];
-	char		arg19[64];
-	char		arg20[64];
-	char		arg21[64];
-	char		arg22[64];
-	char		arg23[64];
-	char		arg24[64];
-	char		arg25[64];
-	char		arg26[64];
-	char		arg27[64];
-	char		arg28[64];
-	char		arg29[64];
-	char		arg30[64];
-	char		arg31[64];
-	char		arg32[64];
-	char		arg33[64];
-	char		arg34[64];
-	char		arg35[64];
-	char		arg36[64];
-	char		arg37[64];
-	char		arg38[64];
-	char		arg39[64];
-	char		arg40[64];
-	char		arg41[64];
-	char		arg42[64];
-	char		arg43[64];
-	char		arg44[64];
-	char		arg45[64];
-	char		arg46[64];
-	char		arg47[64];
-	char		arg48[64];
-	char		arg49[64];
-	char		arg50[64];
-	char		arg51[64];
-	char		arg52[64];
-	char		arg53[64];
-	char		arg54[64];
-	char		arg55[64];
-	char		arg56[64];
-	char		arg57[64];
-	char		arg58[64];
-	char		arg59[64];
-	char		arg60[64];
-	char		arg61[64];
-	
-	if(g_gametype.integer != GT_SANDBOX){ return; }
-		
-	//tr.endpos
-	trap_Argv( 1, cord_x, sizeof( cord_x ) );
-	trap_Argv( 2, cord_y, sizeof( cord_y ) );
-	trap_Argv( 3, cord_z, sizeof( cord_z ) );
-	trap_Argv( 4, arg01, sizeof( arg01 ) );
-	trap_Argv( 5, arg02, sizeof( arg02 ) );
-	trap_Argv( 6, arg03, sizeof( arg03 ) );
-	trap_Argv( 7, arg04, sizeof( arg04 ) );
-	trap_Argv( 8, arg05, sizeof( arg05 ) );
-	trap_Argv( 9, arg06, sizeof( arg06 ) );
-	trap_Argv( 10, arg07, sizeof( arg07 ) );
-	trap_Argv( 11, arg08, sizeof( arg08 ) );
-	trap_Argv( 12, arg09, sizeof( arg09 ) );
-	trap_Argv( 13, arg10, sizeof( arg10 ) );
-	trap_Argv( 14, arg11, sizeof( arg11 ) );
-	trap_Argv( 15, arg12, sizeof( arg12 ) );
-	trap_Argv( 16, arg13, sizeof( arg13 ) );
-	trap_Argv( 17, arg14, sizeof( arg14 ) );
-	trap_Argv( 18, arg15, sizeof( arg15 ) );
-	trap_Argv( 19, arg16, sizeof( arg16 ) );
-	trap_Argv( 20, arg17, sizeof( arg17 ) );
-	trap_Argv( 21, arg18, sizeof( arg18 ) );
-	trap_Argv( 22, arg19, sizeof( arg19 ) );
-	trap_Argv( 23, arg20, sizeof( arg20 ) );
-	trap_Argv( 24, arg21, sizeof( arg21 ) );
-	trap_Argv( 25, arg22, sizeof( arg22 ) );
-	trap_Argv( 26, arg23, sizeof( arg23 ) );
-	trap_Argv( 27, arg24, sizeof( arg24 ) );
-	trap_Argv( 28, arg25, sizeof( arg25 ) );
-	trap_Argv( 29, arg26, sizeof( arg26 ) );
-	trap_Argv( 30, arg27, sizeof( arg27 ) );
-	trap_Argv( 31, arg28, sizeof( arg28 ) );
-	trap_Argv( 32, arg29, sizeof( arg29 ) );
-	trap_Argv( 33, arg30, sizeof( arg30 ) );
-	trap_Argv( 34, arg31, sizeof( arg31 ) );
-	trap_Argv( 35, arg32, sizeof( arg32 ) );
-	trap_Argv( 36, arg33, sizeof( arg33 ) );
-	trap_Argv( 37, arg34, sizeof( arg34 ) );
-	trap_Argv( 38, arg35, sizeof( arg35 ) );
-	trap_Argv( 39, arg36, sizeof( arg36 ) );
-	trap_Argv( 40, arg37, sizeof( arg37 ) );
-	trap_Argv( 41, arg38, sizeof( arg38 ) );
-	trap_Argv( 42, arg39, sizeof( arg39 ) );
-	trap_Argv( 43, arg40, sizeof( arg40 ) );
-	trap_Argv( 44, arg41, sizeof( arg41 ) );
-	trap_Argv( 45, arg42, sizeof( arg42 ) );
-	trap_Argv( 46, arg43, sizeof( arg43 ) );
-	trap_Argv( 47, arg44, sizeof( arg44 ) );
-	trap_Argv( 48, arg45, sizeof( arg45 ) );
-	trap_Argv( 49, arg46, sizeof( arg46 ) );
-	trap_Argv( 50, arg47, sizeof( arg47 ) );
-	trap_Argv( 51, arg48, sizeof( arg48 ) );
-	trap_Argv( 52, arg49, sizeof( arg49 ) );
-	trap_Argv( 53, arg50, sizeof( arg50 ) );
-	trap_Argv( 54, arg51, sizeof( arg51 ) );
-	trap_Argv( 55, arg52, sizeof( arg52 ) );
-	trap_Argv( 56, arg53, sizeof( arg53 ) );
-	trap_Argv( 57, arg54, sizeof( arg54 ) );
-	trap_Argv( 58, arg55, sizeof( arg55 ) );
-	trap_Argv( 59, arg56, sizeof( arg56 ) );
-	trap_Argv( 60, arg57, sizeof( arg57 ) );
-	trap_Argv( 61, arg58, sizeof( arg58 ) );
-	trap_Argv( 62, arg59, sizeof( arg59 ) );
-	trap_Argv( 63, arg60, sizeof( arg60 ) );
-	trap_Argv( 64, arg61, sizeof( arg61 ) );
-	
-	end[0] = atof(cord_x);
-	end[1] = atof(cord_y);
-	end[2] = atof(cord_z);
-	
-	if(!Q_stricmp (arg01, "prop")){
-	if(!g_allowprops.integer){ return; }
-	if(g_safe.integer){
-	if(!Q_stricmp (arg03, "script_cmd")){
-	return;
-	}
-	if(!Q_stricmp (arg03, "target_modify")){
-	return;
-	}
-	}
-	G_BuildPropSL( arg02, arg03, end, ent, arg04, arg05, arg06, arg07, arg08, arg09, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30, arg31, arg32, arg33, arg34, arg35, arg36, arg37, arg38, arg39, arg40, arg41, arg42, arg43, arg44, arg45, arg46, arg47, arg48, arg49, arg50, arg51, arg52, arg53, arg54, arg55, arg56, arg57, arg58, arg59, arg60, arg61);
-	
-	
-	return;
-	}
-	if(!Q_stricmp (arg01, "npc")){
-	if(!g_allownpc.integer){ return; }
-	
-	tent = G_Spawn();
-	tent->sb_ettype = 1;
-	VectorCopy( ent, tent->s.origin);
-	tent->s.origin[2] += 25;
-	tent->classname = "target_botspawn";
-	CopyAlloc(tent->clientname, arg02);
-	tent->type = NPC_ENEMY;
-	if(!Q_stricmp (arg03, "NPC_Enemy")){
-	tent->type = NPC_ENEMY;
-	}
-	if(!Q_stricmp (arg03, "NPC_Citizen")){
-	tent->type = NPC_CITIZEN;
-	}
-	if(!Q_stricmp (arg03, "NPC_Guard")){
-	tent->type = NPC_GUARD;
-	}
-	if(!Q_stricmp (arg03, "NPC_Partner")){
-	tent->type = NPC_PARTNER;
-	}
-	if(!Q_stricmp (arg03, "NPC_PartnerEnemy")){
-	tent->type = NPC_PARTNERENEMY;
-	}
-	tent->skill = atof(arg04);
-	tent->health = atoi(arg05);
-	CopyAlloc(tent->message, arg06);	
-	tent->spawnflags = atoi(arg08);
-	if(!Q_stricmp (arg07, "0") ){
-	CopyAlloc(tent->target, arg02);	
-	} else {
-	CopyAlloc(tent->target, arg07);	
-	}
-	if(tent->health <= 0){
-	tent->health = 100;
-	}
-	if(tent->skill <= 0){
-	tent->skill = 1;
-	}
-	if(tent->spawnflags <= 0){
-	tent->spawnflags = 1;
-	}
-	if(!Q_stricmp (tent->message, "0") || !tent->message ){
-	CopyAlloc(tent->message, tent->clientname);
-	}
-	G_AddBot(tent->clientname, tent->skill, "Blue", 0, tent->message, tent->s.number, tent->target, tent->type, tent );
-	
-	trap_Cvar_Set("g_spSkill", arg04);
-	return;
 	}
 }
 
@@ -1978,12 +1608,20 @@ KK-OAX Added for QSandbox.
 static void Cmd_Flashlight_f( gentity_t *ent ){
 	char        arg[MAX_TOKEN_CHARS];
 
+if ( (ent->client->sess.sessionTeam == TEAM_SPECTATOR) || ent->client->isEliminated ) {
+	return;
+}
+
 if(ent->flashon != 1){
-	Cmd_FlashlightOn_f( ent );
+	//Cmd_FlashlightOn_f( ent );
+	ent->flashon = 1;
+	ClientUserinfoChanged( ent->s.clientNum );
 	return;
 }
 if(ent->flashon == 1){
-	Cmd_FlashlightOff_f( ent );
+	//Cmd_FlashlightOff_f( ent );
+	ent->flashon = 0;
+	ClientUserinfoChanged( ent->s.clientNum );
 	return;
 }
 	
@@ -3352,7 +2990,6 @@ commands_t cmds[ ] =
   { "sl", CMD_LIVING, Cmd_SpawnList_Item_f },
   { "tm", CMD_LIVING, Cmd_Modify_Prop_f },
   { "altfire_physgun", CMD_LIVING, Cmd_Altfire_Physgun_f },
-  { "create", 0, Cmd_PropNpc_AS_f },
   { "physgun_dist", CMD_LIVING, Cmd_PhysgunDist_f },
   { "flashlight", CMD_LIVING, Cmd_Flashlight_f },
   { "dropweapon", CMD_TEAM|CMD_LIVING, Cmd_DropWeapon_f },
@@ -3403,28 +3040,21 @@ void ClientCommand( int clientNum )
             break;
     }
 
-    if( i == numCmds )
-    {   // KK-OAX Admin Command Check
-        if( !G_admin_cmd_check( ent, qfalse ) )
-            trap_SendServerCommand( clientNum,
-                va( "print \"Unknown command %s\n\"", cmd ) );
-            return;
-    }
+	if (i == numCmds) 
+	{
+	    trap_SendServerCommand(clientNum, va("print \"Unknown command: %s\n\"", cmd));
+	    return;
+	}
 
-  // do tests here to reduce the amount of repeated code
+	// do tests here to reduce the amount of repeated code
     if( !( cmds[ i ].cmdFlags & CMD_INTERMISSION ) && level.intermissiontime )
         return;
 
     if( cmds[ i ].cmdFlags & CMD_CHEAT && !g_cheats.integer )
     {
-        trap_SendServerCommand( clientNum,
-            "print \"Cheats are not enabled on this server\n\"" );
+        trap_SendServerCommand( clientNum, "print \"Cheats are not enabled on this server\n\"" );
         return;
     }
-    //KK-OAX When the corresponding code is integrated, I will activate these.
-    //if( cmds[ i ].cmdFlags & CMD_MESSAGE &&
-    //    ( ent->client->pers.muted || G_FloodLimited( ent ) ) )
-    //    return;
 
     //KK-OAX Do I need to change this for FFA gametype?
     if( cmds[ i ].cmdFlags & CMD_TEAM &&
@@ -3438,31 +3068,13 @@ void ClientCommand( int clientNum )
         ( cmds[ i ].cmdFlags & CMD_CHEAT_TEAM && !g_cheats.integer ) ) &&
         ent->client->sess.sessionTeam != TEAM_NONE )
     {
-        trap_SendServerCommand( clientNum,
-            "print \"Cannot use this command when on a team\n\"" );
-        return;
-    }
-
-    if( cmds[ i ].cmdFlags & CMD_RED &&
-        ent->client->sess.sessionTeam != TEAM_RED )
-    {
-        trap_SendServerCommand( clientNum,
-            "print \"Must be on the Red Team to use this command\n\"" );
-        return;
-    }
-
-    if( cmds[ i ].cmdFlags & CMD_BLUE &&
-        ent->client->sess.sessionTeam != TEAM_BLUE )
-    {
-        trap_SendServerCommand( clientNum,
-            "print \"Must be on the Blue Team to use this command\n\"" );
+        trap_SendServerCommand( clientNum, "print \"Cannot use this command when on a team\n\"" );
         return;
     }
 
     if( ( ent->client->ps.pm_type == PM_DEAD ) && ( cmds[ i ].cmdFlags & CMD_LIVING ) )
     {
-        trap_SendServerCommand( clientNum,
-            "print \"Must be alive to use this command\n\"" );
+        trap_SendServerCommand( clientNum, "print \"Must be alive to use this command\n\"" );
         return;
     }
 

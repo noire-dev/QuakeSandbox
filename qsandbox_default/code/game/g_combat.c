@@ -570,12 +570,10 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 			
 	self->client->pers.oldmoney = self->client->pers.oldmoney;
 
-//unlagged - backward reconciliation #2
+	//unlagged - backward reconciliation #2
 	// make sure the body shows up in the client's current position
 	G_UnTimeShiftClient( self );
-//unlagged - backward reconciliation #2
-    //KK-OAX Here is where we run the streak logic.
-    G_RunStreakLogic( attacker, self );
+	//unlagged - backward reconciliation #2
 
 	// check for an almost capture
 	CheckAlmostCapture( self, attacker );
@@ -667,22 +665,12 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 			// check for two kills in a short amount of time
 			// if this is close enough to the last kill, give a reward sound
 			if ( level.time - attacker->client->lastKillTime < CARNAGE_REWARD_TIME ) {
-				// KK-OAX
-				// Check if Multikills are enabled
-				if( g_altExcellent.integer ) {
-				    attacker->client->pers.multiKillCount++;
-				    G_checkForMultiKill( attacker );
-				} // play excellent on player
 				attacker->client->ps.persistant[PERS_EXCELLENT_COUNT]++;
 				attacker->client->pers.oldmoney += 1;
 				// add the sprite over the player's head
 				attacker->client->ps.eFlags &= ~(EF_AWARD_IMPRESSIVE | EF_AWARD_EXCELLENT | EF_AWARD_GAUNTLET | EF_AWARD_ASSIST | EF_AWARD_DEFEND | EF_AWARD_CAP );
 				attacker->client->ps.eFlags |= EF_AWARD_EXCELLENT;
 				attacker->client->rewardTime = level.time + REWARD_SPRITE_TIME;
-			} else {
-			    //KK-OAX Clear multikill count
-			    //Must be 1 so the correct number of kills are displayed to the clients.
-			    attacker->client->pers.multiKillCount = 1;
 			}
 			attacker->client->lastKillTime = level.time;
 		}
@@ -1124,6 +1112,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 	if ( level.intermissionQueued ) {
 		return;
 	}
+
 	if ( targ->client && mod != MOD_JUICED) {
 		if ( targ->client->invulnerabilityTime > level.time) {
 			if ( dir && point ) {
@@ -1132,19 +1121,19 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 			return;
 		}
 	}
-        //Sago: This was moved up
-        client = targ->client;
 
-        //Sago: See if the client was sent flying
-        //Check if damage is by somebody who is not a player!
-        if( (!attacker || (attacker->s.eType != ET_PLAYER && attacker->s.eType != ET_GENERAL)) && client && client->lastSentFlying>-1 && ( mod==MOD_FALLING || mod==MOD_LAVA || mod==MOD_SLIME || mod==MOD_TRIGGER_HURT || mod==MOD_SUICIDE) )  {
-            if( client->lastSentFlyingTime+5000<level.time) {
-                client->lastSentFlying = -1; //More than 5 seconds, not a kill!
-            } else {
-                //G_Printf("LastSentFlying %i\n",client->lastSentFlying);
-                attacker = &g_entities[client->lastSentFlying];
-            }
+    //Sago: This was moved up
+    client = targ->client;
+    //Sago: See if the client was sent flying
+    //Check if damage is by somebody who is not a player!
+    if( (!attacker || (attacker->s.eType != ET_PLAYER && attacker->s.eType != ET_GENERAL)) && client && client->lastSentFlying>-1 && ( mod==MOD_FALLING || mod==MOD_LAVA || mod==MOD_SLIME || mod==MOD_TRIGGER_HURT || mod==MOD_SUICIDE) )  {
+        if( client->lastSentFlyingTime+5000<level.time) {
+            client->lastSentFlying = -1; //More than 5 seconds, not a kill!
+        } else {
+            //G_Printf("LastSentFlying %i\n",client->lastSentFlying);
+            attacker = &g_entities[client->lastSentFlying];
         }
+    }
 
 	if ( !inflictor ) {
 		inflictor = &g_entities[ENTITYNUM_WORLD];
@@ -1153,11 +1142,11 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		attacker = &g_entities[ENTITYNUM_WORLD];
 	}
 
-		// shootable doors / buttons don't actually have any health
+	// shootable doors / buttons don't actually have any health
 	if ( targ->s.eType == ET_MOVER) {
 		if (strcmp(targ->classname, "func_breakable") && targ->use && (targ->moverState == MOVER_POS1 || targ->moverState == ROTATOR_POS1)) {
 			targ->use(targ, inflictor, attacker);
-			}
+		}
 		if (!strcmp(targ->classname, "func_train") && targ->health > 0) {
 			G_UseTargets(targ, attacker);
 		} else {	// entity is a func_breakable
@@ -1168,7 +1157,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 			if ( (targ->spawnflags & 4096) && strstr(attacker->classname, "shooter_") )
 				return;
 			
-				}
+		}
 	}
 	if( g_gametype.integer == GT_OBELISK && CheckObeliskAttack( targ, attacker ) ) {
 		return;

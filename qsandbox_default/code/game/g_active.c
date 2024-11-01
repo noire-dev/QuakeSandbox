@@ -340,7 +340,7 @@ void G_KillVoid( gentity_t *ent ) {
 	}
 
 	VectorCopy( ent->client->ps.origin, orig );
-	if(orig[2] <= -70000){
+	if(orig[2] <= -520000){
 	G_Damage (ent, NULL, NULL, NULL, NULL, 1000, 0, MOD_UNKNOWN);	
 	}
 
@@ -1283,11 +1283,11 @@ void ClientThink_real( gentity_t *ent ) {
 		msec = 200;
 	}
 
-	if ( pmove_msec.integer < 8 ) {
-		trap_Cvar_Set("pmove_msec", "8");
+	if ( pmove_msec.integer < 1 ) {
+		trap_Cvar_Set("pmove_msec", "1");
 	}
-	else if (pmove_msec.integer > 33) {
-		trap_Cvar_Set("pmove_msec", "33");
+	else if (pmove_msec.integer > 125) {
+		trap_Cvar_Set("pmove_msec", "125");
 	}
 
 	if ( pmove_fixed.integer || client->pers.pmoveFixed ) {

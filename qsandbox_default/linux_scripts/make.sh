@@ -40,18 +40,15 @@ $cc ../../../code/game/bg_misc.c
 $cc ../../../code/game/bg_pmove.c
 $cc ../../../code/game/bg_slidemove.c
 $cc ../../../code/game/g_active.c
-$cc ../../../code/game/g_admin.c
 $cc ../../../code/game/g_arenas.c
 $cc ../../../code/game/g_bot.c
 $cc ../../../code/game/g_client.c
 $cc ../../../code/game/g_cmds.c
-$cc ../../../code/game/g_cmds_ext.c
 $cc ../../../code/game/g_combat.c
 $cc ../../../code/game/g_items.c
 $cc ../../../code/game/g_main.c
 $cc ../../../code/game/bg_alloc.c
 $cc ../../../code/game/g_fileops.c
-$cc ../../../code/game/g_killspree.c
 $cc ../../../code/game/g_misc.c
 $cc ../../../code/game/g_mapfiles.c
 $cc ../../../code/game/g_minigames.c
@@ -74,8 +71,8 @@ $cc ../../../code/game/g_weapon.c
 
 $cc ../../../code/qcommon/q_math.c
 $cc ../../../code/qcommon/q_shared.c
-$cc ../../../code/qcommon/ns_main_server.c
-$cc ../../../code/qcommon/ns_func_server.c
+$cc ../../../code/qcommon/ns_main_game.c
+$cc ../../../code/qcommon/ns_func_game.c
 
 echo "-----------------"
 echo "game.qvm compiled"
@@ -145,6 +142,9 @@ cp ../../../code/cgame/cg_syscalls.asm ..
 $cc ../../../code/qcommon/q_math.c
 $cc ../../../code/qcommon/q_shared.c
 
+$cc ../../../code/qcommon/ns_main_cgame.c
+$cc ../../../code/qcommon/ns_func_cgame.c
+
 $cc ../../../code/ui/ui_shared.c
 
 echo "-----------------"
@@ -182,7 +182,6 @@ cd linux/build/q3_ui
 # Files to compile to               ui.qvm
 # ########################################
 
-$cc ../../../code/q3_ui/mgui.c
 $cc ../../../code/q3_ui/ui_addbots.c
 $cc ../../../code/q3_ui/ui_advanced.c
 $cc ../../../code/q3_ui/ui_atoms.c
@@ -248,8 +247,9 @@ $cc ../../../code/game/bg_misc.c
 
 $cc ../../../code/qcommon/q_math.c
 $cc ../../../code/qcommon/q_shared.c
-$cc ../../../code/qcommon/ns_main_client.c
-$cc ../../../code/qcommon/ns_func_client.c
+$cc ../../../code/qcommon/ns_main_ui.c
+$cc ../../../code/qcommon/ns_func_ui.c
+$cc ../../../code/qcommon/ns_interface_ui.c
 
 echo "-----------------"
 echo "ui.qvm compiled"

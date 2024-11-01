@@ -175,7 +175,6 @@ static const char* saveparam_list[] = {
 "uie_spawnprotect",
 "uie_elimination_lockspectator",
 "uie_awardpushing",
-"uie_specChat",
 "uie_randomteleport",
 "uie_falldamagesmall",
 "uie_falldamagebig",
@@ -820,7 +819,6 @@ AddScript(va("set g_slickmove %i\n", s_scriptdata.server.slickmove));
 AddScript(va("set g_spawnprotect %i\n", s_scriptdata.server.spawnprotect));
 AddScript(va("set elimination_lockspectator %i\n", s_scriptdata.server.elimination_lockspectator));
 AddScript(va("set g_awardpushing %i\n", s_scriptdata.server.awardpushing));
-AddScript(va("set g_specChat %i\n", s_scriptdata.server.specChat));
 AddScript(va("set g_randomteleport %i\n", s_scriptdata.server.randomteleport));
 AddScript(va("set g_falldamagesmall %i\n", s_scriptdata.server.falldamagesmall));
 AddScript(va("set g_falldamagebig %i\n", s_scriptdata.server.falldamagebig));
