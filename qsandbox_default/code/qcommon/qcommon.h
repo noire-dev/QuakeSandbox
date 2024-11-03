@@ -32,10 +32,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #endif
 #endif
 
-//#define	PRE_RELEASE_DEMO
-
-//============================================================================
-
 //
 // msg.c
 //
@@ -110,8 +106,6 @@ void MSG_ReadDeltaPlayerstate( msg_t *msg, struct playerState_s *from, struct pl
 
 
 void MSG_ReportChangeVectors_f( void );
-
-//============================================================================
 
 /*
 ==============================================================
@@ -398,15 +392,6 @@ void Cbuf_Execute (void);
 // them through Cmd_ExecuteString.  Stops when the buffer is empty.
 // Normally called once per frame, but may be explicitly invoked.
 // Do not call inside a command function, or current args will be destroyed.
-
-//===========================================================================
-
-/*
-
-Command execution takes a null terminated string, breaks it into tokens,
-then searches for a command or variable that matches the first token.
-
-*/
 
 typedef void (*xcommand_t) (void);
 

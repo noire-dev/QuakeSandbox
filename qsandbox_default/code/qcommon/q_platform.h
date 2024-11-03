@@ -65,8 +65,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // for windows fastcall option
 #define QDECL
 
-//================================================================= WIN32 ===
-
 #ifdef __MINGW32__
 
 #undef QDECL
@@ -120,7 +118,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define DLL_EXT ".dll"
 
 #endif
-//============================================================== MAC OS X ===
 
 #if defined(MACOS_X) || defined(__APPLE_CC__)
 
@@ -144,8 +141,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define DLL_EXT ".dylib"
 
 #endif
-
-//================================================================= LINUX ===
 
 #ifdef __linux__
 
@@ -195,8 +190,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #endif
 
-//=================================================================== BSD ===
-
 #if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
 
 #include <sys/types.h>
@@ -233,8 +226,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #endif
 
-//================================================================= SUNOS ===
-
 #ifdef __sun
 
 #include <stdint.h>
@@ -260,8 +251,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #endif
 
-//================================================================== IRIX ===
-
 #ifdef __sgi
 
 #define OS_STRING "irix"
@@ -276,8 +265,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #endif
 
-//================================================================== Q3VM ===
-
 #ifdef Q3_VM
 
 #define OS_STRING "q3vm"
@@ -289,8 +276,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define DLL_EXT ".qvm"
 
 #endif
-
-//===========================================================================
 
 //catch missing defines in above blocks
 #if !defined( OS_STRING )

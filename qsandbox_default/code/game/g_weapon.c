@@ -981,8 +981,6 @@ void Weapon_Antimatter_Fire (gentity_t *ent) {
 //	VectorAdd( m->s.pos.trDelta, ent->client->ps.velocity, m->s.pos.trDelta );	// "real" physics
 }
 
-//======================================================================
-
 /*
 ======================================================================
 

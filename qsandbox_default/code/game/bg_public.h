@@ -270,9 +270,6 @@ typedef struct {
 void PM_UpdateViewAngles( playerState_t *ps, const usercmd_t *cmd );
 void Pmove (pmove_t *pmove);
 
-//===================================================================================
-
-
 // player_state->stats[] indexes
 // NOTE: may not have more than 16
 typedef enum {

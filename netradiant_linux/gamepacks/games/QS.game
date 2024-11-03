@@ -33,7 +33,3 @@
   no_bsp_monitor="0"
   shader_trigger = "textures/common/trigger"
 />
-<!--
-  knowngame="missionpack"
-  knowngamename="OpenArena Missionpack"
--->

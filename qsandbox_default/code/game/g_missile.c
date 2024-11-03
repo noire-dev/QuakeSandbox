@@ -573,17 +573,6 @@ void G_RunMissile( gentity_t *ent ) {
 	G_RunThink( ent );
 }
 
-
-//=============================================================================
-
-
-
-
-
-
-
-
-
 /*
 ================
 G_HomingMissile
@@ -666,10 +655,6 @@ void G_HomingMissile( gentity_t *ent )
            G_ExplodeMissile( ent );
 	}
 }
-
-
-
-
 
 /*
 ================
@@ -762,15 +747,6 @@ void Guided_Missile_Think( gentity_t *missile )
 	}
 }
 
-
-
-
-
-
-
-
-
-
 /*
 =================
 fire_plasma
@@ -839,8 +815,6 @@ if(g_pgguided.integer == 1){
 
 	return bolt;
 }
-
-//=============================================================================
 
 /*
 =================
@@ -977,8 +951,6 @@ if(g_bfgguided.integer == 1){
 	return bolt;
 }
 
-//=============================================================================
-
 /*
 =================
 fire_custom
@@ -1061,7 +1033,6 @@ if(!self->mhoming){
 
 	return bolt;
 }
-
 
 /*
 =================

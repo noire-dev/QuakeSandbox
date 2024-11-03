@@ -144,8 +144,6 @@ void SP_info_player_intermission( gentity_t *ent ) {
 
 }
 
-
-
 /*
 =======================================================================
 
@@ -669,9 +667,6 @@ void CopyToBodyQue( gentity_t *ent ) {
 	VectorCopy ( body->s.pos.trBase, body->r.currentOrigin );
 	trap_LinkEntity (body);
 }
-
-//======================================================================
-
 
 /*
 ==================

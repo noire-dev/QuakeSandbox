@@ -19,10 +19,8 @@ along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
-//
 
 #include "g_local.h"
-
 
 /*
 ===============
@@ -180,8 +178,6 @@ void P_WorldEffects( gentity_t *ent ) {
 	}
 }
 
-
-
 /*
 ===============
 G_SetClientSound
@@ -202,10 +198,6 @@ void G_SetClientSound( gentity_t *ent ) {
 		}
 	}
 }
-
-
-
-//==============================================================
 
 /*
 ==============
@@ -408,8 +400,6 @@ void SpectatorThink( gentity_t *ent, usercmd_t *ucmd ) {
 		StopFollowing(ent);
 	}
 }
-
-
 
 /*
 =================
@@ -1402,7 +1392,7 @@ if ( !ent->speed ){
 		client->ps.speed *= g_speedfactor.value;
 	}
 	if ( ent->botskill == 9 ) {
-		client->ps.speed *= 2.75;
+		client->ps.speed *= 2.20;
 	}
 
 	// Let go of the hook if we aren't firing
@@ -1475,21 +1465,6 @@ if ( !ent->speed ){
         pm.pmove_flags = g_dmflags.integer;
 
 	VectorCopy( client->ps.origin, client->oldOrigin );
-
-        #ifdef MISSIONPACK
-		if (level.intermissionQueued != 0 && g_singlePlayer.integer) {
-			if ( level.time - level.intermissionQueued >= 1000  ) {
-				pm.cmd.buttons = 0;
-				pm.cmd.forwardmove = 0;
-				pm.cmd.rightmove = 0;
-				pm.cmd.upmove = 0;
-				if ( level.time - level.intermissionQueued >= 2000 && level.time - level.intermissionQueued <= 2500 ) {
-					trap_SendConsoleCommand( EXEC_APPEND, "centerview\n");
-				}
-				ent->client->ps.pm_type = PM_SPINTERMISSION;
-			}
-		}
-        #endif
 	Pmove (&pm);
 
 	// save results of pmove
@@ -1658,7 +1633,6 @@ ClientUserinfoChanged(clientNum);
 
 return;
 }
-
 
 /*
 ==================

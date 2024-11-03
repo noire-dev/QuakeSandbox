@@ -54,9 +54,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "syn.h"				//synonyms
 #include "match.h"				//string matching types and vars
 
-// for the voice chats
-#include "../../ui/menudef.h" // sos001205 - for q3_ui also
-
 // from aasfile.h
 #define AREACONTENTS_MOVER				1024
 #define AREACONTENTS_MODELNUMSHIFT		24
@@ -516,7 +513,6 @@ void BotRefuseOrder(bot_state_t *bs) {
 	// if the bot was ordered to do something
 	if ( bs->order_time && bs->order_time > FloatTime() - 10 ) {
 		trap_EA_Action(bs->client, ACTION_NEGATIVE);
-		BotVoiceChat(bs, bs->decisionmaker, VOICECHAT_NO);
 		bs->order_time = 0;
 	}
 }
@@ -557,7 +553,6 @@ void BotCTFSeekGoals(bot_state_t *bs) {
 				bs->altroutegoal.areanum = 0;
 			}
 			BotSetUserInfo(bs, "teamtask", va("%d", TEAMTASK_OFFENSE));
-                        BotVoiceChat(bs, -1, VOICECHAT_IHAVEFLAG);
 		}
 		else if (bs->rushbaseaway_time > FloatTime()) {
 			if (BotTeam(bs) == TEAM_RED) flagstatus = bs->redflagstatus;
@@ -606,8 +601,6 @@ void BotCTFSeekGoals(bot_state_t *bs) {
 					bs->teammessage_time = 0;
 					//no arrive message
 					bs->arrive_time = 1;
-					//
-					BotVoiceChat(bs, bs->teammate, VOICECHAT_ONFOLLOW);
 					//get the team goal time
 					bs->teamgoal_time = FloatTime() + TEAM_ACCOMPANY_TIME;
 					bs->ltgtype = LTG_TEAMACCOMPANY;
@@ -683,8 +676,6 @@ void BotCTFSeekGoals(bot_state_t *bs) {
 					bs->teammessage_time = 0;
 					//no arrive message
 					bs->arrive_time = 1;
-					//
-					BotVoiceChat(bs, bs->teammate, VOICECHAT_ONFOLLOW);
 					//get the team goal time
 					bs->teamgoal_time = FloatTime() + TEAM_ACCOMPANY_TIME;
 					bs->ltgtype = LTG_TEAMACCOMPANY;
@@ -923,9 +914,7 @@ void Bot1FCTFSeekGoals(bot_state_t *bs) {
 			bs->ordered = qfalse;
 			//get an alternative route goal towards the enemy base
 			BotGetAlternateRouteGoal(bs, BotOppositeTeam(bs));
-			//
 			BotSetTeamStatus(bs);
-			BotVoiceChat(bs, -1, VOICECHAT_IHAVEFLAG);
 		}
 		return;
 	}
@@ -957,8 +946,6 @@ void Bot1FCTFSeekGoals(bot_state_t *bs) {
 					bs->teammessage_time = 0;
 					//no arrive message
 					bs->arrive_time = 1;
-					//
-					BotVoiceChat(bs, bs->teammate, VOICECHAT_ONFOLLOW);
 					//get the team goal time
 					bs->teamgoal_time = FloatTime() + TEAM_ACCOMPANY_TIME;
 					bs->ltgtype = LTG_TEAMACCOMPANY;
@@ -1355,7 +1342,6 @@ void BotHarvesterSeekGoals(bot_state_t *bs) {
 			//no arrive message
 			bs->arrive_time = 1;
 			//
-			BotVoiceChat(bs, bs->teammate, VOICECHAT_ONFOLLOW);
 			//get the team goal time
 			bs->teamgoal_time = FloatTime() + TEAM_ACCOMPANY_TIME;
 			bs->ltgtype = LTG_TEAMACCOMPANY;
@@ -1808,7 +1794,6 @@ if(!NpcFactionProp(bs, NP_GOAL, 0)){
 				// if we have a bot team leader
 				if (BotTeamLeader(bs)) {
 					// tell the leader we want to be on offence
-					BotVoiceChat(bs, leader, VOICECHAT_WANTONOFFENSE);
 					//BotAI_BotInitialChat(bs, "wantoffence", NULL);
 					//trap_BotEnterChat(bs->cs, leader, CHAT_TELL);
 				}
@@ -1823,7 +1808,6 @@ if(!NpcFactionProp(bs, NP_GOAL, 0)){
 						( ( gametype != GT_1FCTF ) ||
 						( bs->neutralflagstatus == 0 ) ) ) {
 							// tell the leader we want to be on offence
-							BotVoiceChat(bs, leader, VOICECHAT_WANTONOFFENSE);
 							//BotAI_BotInitialChat(bs, "wantoffence", NULL);
 							//trap_BotEnterChat(bs->cs, leader, CHAT_TELL);
 						}
@@ -1837,7 +1821,6 @@ if(!NpcFactionProp(bs, NP_GOAL, 0)){
 				// if we have a bot team leader
 				if (BotTeamLeader(bs)) {
 					// tell the leader we want to be on defense
-					BotVoiceChat(bs, -1, VOICECHAT_WANTONDEFENSE);
 					//BotAI_BotInitialChat(bs, "wantdefence", NULL);
 					//trap_BotEnterChat(bs->cs, leader, CHAT_TELL);
 				}
@@ -1851,7 +1834,6 @@ if(!NpcFactionProp(bs, NP_GOAL, 0)){
 					( bs->neutralflagstatus == 0 ) ) ) {
 
 					// tell the leader we want to be on defense
-					BotVoiceChat(bs, -1, VOICECHAT_WANTONDEFENSE);
 					//BotAI_BotInitialChat(bs, "wantdefence", NULL);
 					//trap_BotEnterChat(bs->cs, leader, CHAT_TELL);
 				}
@@ -2452,10 +2434,8 @@ int BotWantsToRetreat(bot_state_t *bs) {
 		BotEntityInfo(bs->enemy, &entinfo);
 		// if the enemy is carrying a flag
 		if (EntityCarriesFlag(&entinfo)) return qfalse;
-#ifdef MISSIONPACK
 		// if the enemy is carrying cubes
 		if (EntityCarriesCubes(&entinfo)) return qfalse;
-#endif
 	}
 	//if the bot is getting the flag
 	if (bs->ltgtype == LTG_GETFLAG)

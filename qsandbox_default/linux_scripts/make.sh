@@ -20,7 +20,7 @@ cp linux_scripts/game.q3asm linux/build/
 LIBRARY=""
 INCLUDE=""
 
-cc="./lcc -w -DQAGAME -DMISSIONPACK -DQ3_VM -S -Wf-target=bytecode -Wf-g -I../../../code/game -I../../../code/qcommon $1"
+cc="./lcc -w -DQAGAME -DQ3_VM -S -Wf-target=bytecode -Wf-g -I../../../code/game -I../../../code/qcommon $1"
 
 cd linux/build/game
 
@@ -34,7 +34,6 @@ $cc ../../../code/game/ai_dmnet.c
 $cc ../../../code/game/ai_dmq3.c
 $cc ../../../code/game/ai_main.c
 $cc ../../../code/game/ai_team.c
-$cc ../../../code/game/ai_vcmd.c
 $cc ../../../code/game/bg_lib.c
 $cc ../../../code/game/bg_misc.c
 $cc ../../../code/game/bg_pmove.c
@@ -71,7 +70,7 @@ $cc ../../../code/game/g_weapon.c
 
 $cc ../../../code/qcommon/q_math.c
 $cc ../../../code/qcommon/q_shared.c
-$cc ../../../code/qcommon/ns_main_game.c
+$cc ../../../code/qcommon/ns_main.c
 $cc ../../../code/qcommon/ns_func_game.c
 
 echo "-----------------"
@@ -101,7 +100,7 @@ cp linux_scripts/cgame.q3asm linux/build/
 LIBRARY=""
 INCLUDE=""
 
-cc="./lcc -w -DCGAME -DMISSIONPACK -DQ3_VM -S -Wf-target=bytecode -Wf-g -I..\..\..\code\cgame -I..\..\..\code\ui -I..\..\..\code\qcommon $1"
+cc="./lcc -w -DCGAME -DQ3_VM -S -Wf-target=bytecode -Wf-g -I..\..\..\code\cgame -I..\..\..\code\ui -I..\..\..\code\qcommon $1"
 
 cd linux/build/cgame
 
@@ -120,7 +119,6 @@ $cc ../../../code/cgame/cg_info.c
 $cc ../../../code/cgame/cg_localents.c
 $cc ../../../code/cgame/cg_main.c
 $cc ../../../code/cgame/cg_marks.c
-$cc ../../../code/cgame/cg_newdraw.c
 $cc ../../../code/cgame/cg_particles.c
 $cc ../../../code/cgame/cg_players.c
 $cc ../../../code/cgame/cg_playerstate.c
@@ -142,10 +140,8 @@ cp ../../../code/cgame/cg_syscalls.asm ..
 $cc ../../../code/qcommon/q_math.c
 $cc ../../../code/qcommon/q_shared.c
 
-$cc ../../../code/qcommon/ns_main_cgame.c
+$cc ../../../code/qcommon/ns_main.c
 $cc ../../../code/qcommon/ns_func_cgame.c
-
-$cc ../../../code/ui/ui_shared.c
 
 echo "-----------------"
 echo "cgame.qvm compiled"
@@ -163,82 +159,82 @@ cd ..
 
 mkdir -p linux/build
 mkdir -p linux/milab/vm
-mkdir -p linux/build/q3_ui
+mkdir -p linux/build/ui
 
-cp linux_scripts/lcc linux/build/q3_ui/
-cp linux_scripts/q3cpp linux/build/q3_ui/
-cp linux_scripts/q3rcc linux/build/q3_ui/
-cp linux_scripts/q3asm linux/build/q3_ui/
+cp linux_scripts/lcc linux/build/ui/
+cp linux_scripts/q3cpp linux/build/ui/
+cp linux_scripts/q3rcc linux/build/ui/
+cp linux_scripts/q3asm linux/build/ui/
 cp linux_scripts/ui.q3asm linux/build/
 
 LIBRARY=""
 INCLUDE=""
 
-cc="./lcc -w -DQ3_UI -DQ3_VM -S -Wf-target=bytecode -Wf-g -I..\..\..\code\q3_ui -I..\..\..\code\qcommon $1"
+cc="./lcc -w -DQ3_UI -DQ3_VM -S -Wf-target=bytecode -Wf-g -I..\..\..\code\ui -I..\..\..\code\qcommon $1"
 
-cd linux/build/q3_ui
+cd linux/build/ui
 
 # ########################################
 # Files to compile to               ui.qvm
 # ########################################
 
-$cc ../../../code/q3_ui/ui_addbots.c
-$cc ../../../code/q3_ui/ui_advanced.c
-$cc ../../../code/q3_ui/ui_atoms.c
-$cc ../../../code/q3_ui/ui_cdkey.c
-$cc ../../../code/q3_ui/ui_cinematics.c
-$cc ../../../code/q3_ui/ui_confirm.c
-$cc ../../../code/q3_ui/ui_connect.c
-$cc ../../../code/q3_ui/ui_controls2.c
-$cc ../../../code/q3_ui/ui_credits.c
-$cc ../../../code/q3_ui/ui_demo2.c
-$cc ../../../code/q3_ui/ui_display.c
-$cc ../../../code/q3_ui/ui_dynamicmenu.c
-$cc ../../../code/q3_ui/ui_gameinfo.c
-$cc ../../../code/q3_ui/ui_ingame.c
-$cc ../../../code/q3_ui/ui_ingame_mapvote.c
-$cc ../../../code/q3_ui/ui_loadconfig.c
-$cc ../../../code/q3_ui/ui_loadconfiged.c
-$cc ../../../code/q3_ui/ui_main.c
-$cc ../../../code/q3_ui/ui_menu.c
-$cc ../../../code/q3_ui/ui_mods.c
-$cc ../../../code/q3_ui/ui_network.c
-$cc ../../../code/q3_ui/ui_options.c
-$cc ../../../code/q3_ui/ui_playermodel.c
-$cc ../../../code/q3_ui/ui_players.c
-$cc ../../../code/q3_ui/ui_playersettings.c
-$cc ../../../code/q3_ui/ui_preferences.c
-$cc ../../../code/q3_ui/ui_qmenu.c
-$cc ../../../code/q3_ui/ui_removebots.c
-$cc ../../../code/q3_ui/ui_sandbox.c
-$cc ../../../code/q3_ui/ui_saveconfiged.c
-$cc ../../../code/q3_ui/ui_serverinfo.c
-$cc ../../../code/q3_ui/ui_servers2.c
-$cc ../../../code/q3_ui/ui_setup.c
-$cc ../../../code/q3_ui/ui_sound.c
-$cc ../../../code/q3_ui/ui_sparena.c
-$cc ../../../code/q3_ui/ui_specifyleague.c
-$cc ../../../code/q3_ui/ui_specifyserver.c
-$cc ../../../code/q3_ui/ui_splevel.c
-$cc ../../../code/q3_ui/ui_sppostgame.c
-$cc ../../../code/q3_ui/ui_spreset.c
-$cc ../../../code/q3_ui/ui_spskill.c
-$cc ../../../code/q3_ui/ui_startserver_bot.c
-$cc ../../../code/q3_ui/ui_startserver_botsel.c
-$cc ../../../code/q3_ui/ui_startserver_common.c
-$cc ../../../code/q3_ui/ui_startserver_custommaps.c
-$cc ../../../code/q3_ui/ui_startserver_data.c
-$cc ../../../code/q3_ui/ui_startserver_items.c
-$cc ../../../code/q3_ui/ui_startserver_items_old.c
-$cc ../../../code/q3_ui/ui_startserver_map.c
-$cc ../../../code/q3_ui/ui_startserver_mapsel.c
-$cc ../../../code/q3_ui/ui_startserver_script.c
-$cc ../../../code/q3_ui/ui_startserver_server.c
-$cc ../../../code/q3_ui/ui_startserver_weapon.c
-$cc ../../../code/q3_ui/ui_team.c
-$cc ../../../code/q3_ui/ui_teamorders.c
-$cc ../../../code/q3_ui/ui_video.c
-$cc ../../../code/q3_ui/ui_workshop.c
+$cc ../../../code/ui/ui_addbots.c
+$cc ../../../code/ui/ui_advanced.c
+$cc ../../../code/ui/ui_atoms.c
+$cc ../../../code/ui/ui_cdkey.c
+$cc ../../../code/ui/ui_cinematics.c
+$cc ../../../code/ui/ui_confirm.c
+$cc ../../../code/ui/ui_connect.c
+$cc ../../../code/ui/ui_controls2.c
+$cc ../../../code/ui/ui_credits.c
+$cc ../../../code/ui/ui_demo2.c
+$cc ../../../code/ui/ui_display.c
+$cc ../../../code/ui/ui_dynamicmenu.c
+$cc ../../../code/ui/ui_gameinfo.c
+$cc ../../../code/ui/ui_ingame.c
+$cc ../../../code/ui/ui_ingame_mapvote.c
+$cc ../../../code/ui/ui_loadconfig.c
+$cc ../../../code/ui/ui_loadconfiged.c
+$cc ../../../code/ui/ui_main.c
+$cc ../../../code/ui/ui_menu.c
+$cc ../../../code/ui/ui_mods.c
+$cc ../../../code/ui/ui_network.c
+$cc ../../../code/ui/ui_options.c
+$cc ../../../code/ui/ui_playermodel.c
+$cc ../../../code/ui/ui_players.c
+$cc ../../../code/ui/ui_playersettings.c
+$cc ../../../code/ui/ui_preferences.c
+$cc ../../../code/ui/ui_qmenu.c
+$cc ../../../code/ui/ui_removebots.c
+$cc ../../../code/ui/ui_sandbox.c
+$cc ../../../code/ui/ui_saveconfiged.c
+$cc ../../../code/ui/ui_serverinfo.c
+$cc ../../../code/ui/ui_servers2.c
+$cc ../../../code/ui/ui_setup.c
+$cc ../../../code/ui/ui_sound.c
+$cc ../../../code/ui/ui_sparena.c
+$cc ../../../code/ui/ui_specifyleague.c
+$cc ../../../code/ui/ui_specifyserver.c
+$cc ../../../code/ui/ui_splevel.c
+$cc ../../../code/ui/ui_sppostgame.c
+$cc ../../../code/ui/ui_spreset.c
+$cc ../../../code/ui/ui_spskill.c
+$cc ../../../code/ui/ui_startserver_bot.c
+$cc ../../../code/ui/ui_startserver_botsel.c
+$cc ../../../code/ui/ui_startserver_common.c
+$cc ../../../code/ui/ui_startserver_custommaps.c
+$cc ../../../code/ui/ui_startserver_data.c
+$cc ../../../code/ui/ui_startserver_items.c
+$cc ../../../code/ui/ui_startserver_items_old.c
+$cc ../../../code/ui/ui_startserver_map.c
+$cc ../../../code/ui/ui_startserver_mapsel.c
+$cc ../../../code/ui/ui_startserver_script.c
+$cc ../../../code/ui/ui_startserver_server.c
+$cc ../../../code/ui/ui_startserver_weapon.c
+$cc ../../../code/ui/ui_team.c
+$cc ../../../code/ui/ui_teamorders.c
+$cc ../../../code/ui/ui_video.c
+$cc ../../../code/ui/ui_workshop.c
 
 cp ../../../code/ui/ui_syscalls.asm ..
 
@@ -247,7 +243,7 @@ $cc ../../../code/game/bg_misc.c
 
 $cc ../../../code/qcommon/q_math.c
 $cc ../../../code/qcommon/q_shared.c
-$cc ../../../code/qcommon/ns_main_ui.c
+$cc ../../../code/qcommon/ns_main.c
 $cc ../../../code/qcommon/ns_func_ui.c
 $cc ../../../code/qcommon/ns_interface_ui.c
 

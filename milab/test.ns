@@ -1,0 +1,32 @@
+NSGui_Init ()
+NSGui_Reset ()
+
+int test = 0
+
+gui1_type = 4
+gui1_acttype = 1
+gui1_x = 150
+gui1_y = 0
+gui1_w = 32
+gui1_h = 480
+gui1_text = (Command:)
+gui1_cmd = (command (EXEC_INSERT "&gui1_value"))
+gui1_file = ( )
+gui1_value = (echo Hello World)
+gui1_colorR = 1.0
+gui1_colorG = 1.0
+gui1_colorB = 1.0
+gui1_colorA = 1.0
+gui1_colorinnerR = 0.0
+gui1_colorinnerG = 1.0
+gui1_colorinnerB = 1.0
+gui1_colorinnerA = 1.0
+gui1_fontsize = 1
+gui1_corner = 10
+gui1_col = 1
+gui1_style = 0
+gui1_min = 0
+gui1_max = 32
+gui1_mode = 0
+
+NSGui_Load ()

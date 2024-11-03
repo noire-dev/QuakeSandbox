@@ -25,8 +25,38 @@ typedef struct {
 
 static nsgui_t s_nsgui;
 
+void NSGUI_UpdateValues( void ){
+	char buffer[MAX_VAR_CHAR_BUF];
+	int i;
+	for ( i = 1; i < MAX_OBJECTS-1; i++ ) {
+			if(s_nsgui.item[i].type == 4){
+				set_variable_value(va("gui%i_value", i), s_nsgui.item[i].field.buffer, TYPE_CHAR);
+			}
+			if(s_nsgui.item[i].type == 5){
+				if(s_nsgui.item[i].mode <= 0){
+					set_variable_value(va("gui%i_value", i), s_nsgui.item[i].itemnames[s_nsgui.item[i].curvalue], TYPE_CHAR);
+				}
+				if(s_nsgui.item[i].mode == 1){
+					set_variable_value(va("gui%i_value", i), va("%i", s_nsgui.item[i].curvalue), TYPE_INT);
+				}
+			}
+			if(s_nsgui.item[i].type == 7){
+				if(s_nsgui.item[i].mode <= 0){
+				set_variable_value(va("gui%i_value", i), va("%i", s_nsgui.item[i].curvalue), TYPE_INT);
+				}
+				if(s_nsgui.item[i].mode == 1){
+				set_variable_value(va("gui%i_value", i), va("%i", !(s_nsgui.item[i].curvalue)), TYPE_INT);
+				}
+			}
+			if(s_nsgui.item[i].type == 8){
+				set_variable_value(va("gui%i_value", i), va("%.6f", (float)s_nsgui.item[i].curvalue / (float)s_nsgui.item[i].mode), TYPE_FLOAT);
+			}
+	}
+}
+
 void NSGUI_Event (void* ptr, int event) {
 	int i;
+	char temp_cmd[MAX_VAR_CHAR_BUF];
 	
 	if(get_variable_int(va("gui%i_acttype", ((menucommon_s*)ptr)->id)) <= 1){
 	if( event != QM_ACTIVATED ) { return; }
@@ -37,10 +67,13 @@ void NSGUI_Event (void* ptr, int event) {
 	if(get_variable_int(va("gui%i_acttype", ((menucommon_s*)ptr)->id)) == 3){
 	if( event != QM_GOTFOCUS ) { return; }
 	}
+
+	NSGUI_UpdateValues();
 		
 	for ( i = 1; i < MAX_OBJECTS-1; i++ ) {
 		if(i == ((menucommon_s*)ptr)->id){
-		trap_Cmd_ExecuteText( EXEC_NOW, ((menucommon_s*)ptr)->cmd);
+		NS_ArgumentText(((menucommon_s*)ptr)->cmd, temp_cmd, sizeof(temp_cmd));
+		Interpret(temp_cmd);
 		}
 	}
 }
@@ -71,16 +104,16 @@ static void NSGUI_MenuDraw( void ) {
 	Menu_Draw( &s_nsgui.menu );
 
 	if (uis.debug) {
-	UI_DrawString( vx(50), vy(0.4), "NS Gui v1.0 by Noire.dev", UI_CENTER|UI_SMALLFONT, color1 );
+	UI_DrawString( 320, 1, "NS Gui v1.0 by Noire.dev", UI_CENTER|UI_SMALLFONT, color1 );
 	}
 }
 
 /*
 ===============
-UI_NSGUI
+NSGUI
 ===============
 */
-void UI_NSGUI_Clear( void ) {
+void NSGUI_Clear( void ) {
 	int i;
 	for ( i = 1; i < MAX_OBJECTS-1; i++ ) {
 	UI_Free(s_nsgui.item[i].generic.cmd);
@@ -90,38 +123,42 @@ void UI_NSGUI_Clear( void ) {
 	}
 	memset( &s_nsgui, 0 ,sizeof(nsgui_t) );
 
-	set_variable_value("gui_scroll", "");
+	set_variable_value("gui_scroll", "", TYPE_INT);
 	for ( i = 1; i < MAX_OBJECTS; i++ ) {
-		set_variable_value(va("gui%i_type", i), "");
-		set_variable_value(va("gui%i_acttype", i), "");
-		set_variable_value(va("gui%i_x", i), "");
-		set_variable_value(va("gui%i_y", i), "");
-		set_variable_value(va("gui%i_w", i), "");
-		set_variable_value(va("gui%i_h", i), "");
-		set_variable_value(va("gui%i_text", i), "");
-		set_variable_value(va("gui%i_cmd", i), "");
-		set_variable_value(va("gui%i_file", i), "");
-		set_variable_value(va("gui%i_value", i), "");
-		set_variable_value(va("gui%i_colorR", i), "");
-		set_variable_value(va("gui%i_colorG", i), "");
-		set_variable_value(va("gui%i_colorB", i), "");
-		set_variable_value(va("gui%i_colorA", i), "");
-		set_variable_value(va("gui%i_colorinnerR", i), "");
-		set_variable_value(va("gui%i_colorinnerG", i), "");
-		set_variable_value(va("gui%i_colorinnerB", i), "");
-		set_variable_value(va("gui%i_colorinnerA", i), "");
-		set_variable_value(va("gui%i_fontsize", i), "");
-		set_variable_value(va("gui%i_corner", i), "");
-		set_variable_value(va("gui%i_col", i), "");
-		set_variable_value(va("gui%i_mode", i), "");
-		set_variable_value(va("gui%i_style", i), "");
-		set_variable_value(va("gui%i_min", i), "");
-		set_variable_value(va("gui%i_max", i), "");
+		set_variable_value(va("gui%i_type", i), "", TYPE_INT);
+		set_variable_value(va("gui%i_acttype", i), "", TYPE_INT);
+		set_variable_value(va("gui%i_x", i), "", TYPE_FLOAT);
+		set_variable_value(va("gui%i_y", i), "", TYPE_FLOAT);
+		set_variable_value(va("gui%i_w", i), "", TYPE_FLOAT);
+		set_variable_value(va("gui%i_h", i), "", TYPE_FLOAT);
+		set_variable_value(va("gui%i_text", i), "", TYPE_CHAR);
+		set_variable_value(va("gui%i_cmd", i), "", TYPE_CHAR);
+		set_variable_value(va("gui%i_file", i), "", TYPE_CHAR);
+		set_variable_value(va("gui%i_value", i), "", TYPE_CHAR);
+		set_variable_value(va("gui%i_colorR", i), "", TYPE_FLOAT);
+		set_variable_value(va("gui%i_colorG", i), "", TYPE_FLOAT);
+		set_variable_value(va("gui%i_colorB", i), "", TYPE_FLOAT);
+		set_variable_value(va("gui%i_colorA", i), "", TYPE_FLOAT);
+		set_variable_value(va("gui%i_colorinnerR", i), "", TYPE_FLOAT);
+		set_variable_value(va("gui%i_colorinnerG", i), "", TYPE_FLOAT);
+		set_variable_value(va("gui%i_colorinnerB", i), "", TYPE_FLOAT);
+		set_variable_value(va("gui%i_colorinnerA", i), "", TYPE_FLOAT);
+		set_variable_value(va("gui%i_fontsize", i), "", TYPE_FLOAT);
+		set_variable_value(va("gui%i_corner", i), "", TYPE_INT);
+		set_variable_value(va("gui%i_col", i), "", TYPE_INT);
+		set_variable_value(va("gui%i_mode", i), "", TYPE_INT);
+		set_variable_value(va("gui%i_style", i), "", TYPE_INT);
+		set_variable_value(va("gui%i_min", i), "", TYPE_INT);
+		set_variable_value(va("gui%i_max", i), "", TYPE_INT);
 	}
 }
 
-void UI_NSGUI_Init( void ) {
+void NSGUI_Init( void ) {
 	int i;
+	if(variable_exists("gui_scroll")){
+		return;
+	}
+	create_variable("gui_scroll", "", TYPE_INT);
 	for ( i = 1; i < MAX_OBJECTS; i++ ) {
 		create_variable(va("gui%i_type", i), "", TYPE_INT);
 		create_variable(va("gui%i_acttype", i), "", TYPE_INT);
@@ -132,6 +169,7 @@ void UI_NSGUI_Init( void ) {
 		create_variable(va("gui%i_text", i), "", TYPE_CHAR);
 		create_variable(va("gui%i_cmd", i), "", TYPE_CHAR);
 		create_variable(va("gui%i_file", i), "", TYPE_CHAR);
+		create_variable(va("gui%i_value", i), "", TYPE_CHAR);
 		create_variable(va("gui%i_colorR", i), "", TYPE_FLOAT);
 		create_variable(va("gui%i_colorG", i), "", TYPE_FLOAT);
 		create_variable(va("gui%i_colorB", i), "", TYPE_FLOAT);
@@ -209,16 +247,16 @@ void UI_NSGUI( void ) {
 	s_nsgui.menu.fullscreen = qfalse;	
 	}
 	s_nsgui.menu.wrapAround = qtrue;
-	s_nsgui.menu.native = qtrue;
+	s_nsgui.menu.native = qfalse;
 	s_nsgui.menu.downlimitscroll = get_variable_float("gui_scroll");
 	//s_nsgui.menu.key = NSGUI_Key;
 
 	for ( i = 1; i < MAX_OBJECTS-1; i++ ) {
 	type = get_variable_int(va("gui%i_type", i));
 	if(type >= 1 && type <= 8){
-	trap_Cvar_VariableStringBuffer(va("gui%i_text", i), text, sizeof( text ));
-	trap_Cvar_VariableStringBuffer(va("gui%i_cmd", i), command, sizeof( command ));
-	trap_Cvar_VariableStringBuffer(va("gui%i_file", i), pic, sizeof( pic ));
+	strncpy(text, get_variable_char(va("gui%i_text", i)), sizeof(text));
+	strncpy(command, get_variable_char(va("gui%i_cmd", i)), sizeof(command));
+	strncpy(pic, get_variable_char(va("gui%i_file", i)), sizeof(pic));
 	color_nsgui[i][0] = get_variable_float(va("gui%i_colorR", i));
 	color_nsgui[i][1] = get_variable_float(va("gui%i_colorG", i));
 	color_nsgui[i][2] = get_variable_float(va("gui%i_colorB", i));
@@ -289,7 +327,28 @@ void UI_NSGUI( void ) {
 				LoadNSGuiList(i);
 			}
 			Menu_AddItem( &s_nsgui.menu, &s_nsgui.item[i] );
-		}	
+		}
+		if(strlen(get_variable_char(va("gui%i_value", i))) != 0){
+			if(s_nsgui.item[i].type == 4){
+				Q_strncpyz( s_nsgui.item[i].field.buffer, get_variable_char(va("gui%i_value", i)), sizeof(s_nsgui.item[i].field.buffer) );
+			}
+			if(s_nsgui.item[i].type == 5){
+				if(s_nsgui.item[i].mode == 1){
+					s_nsgui.item[i].curvalue = get_variable_int(va("gui%i_value", i));
+				}
+			}
+			if(s_nsgui.item[i].type == 7){
+				if(s_nsgui.item[i].mode <= 0){
+				s_nsgui.item[i].curvalue = get_variable_int(va("gui%i_value", i));
+				}
+				if(s_nsgui.item[i].mode == 1){
+				s_nsgui.item[i].curvalue = !(get_variable_int(va("gui%i_value", i)));
+				}
+			}
+			if(s_nsgui.item[i].type == 8){
+				s_nsgui.item[i].curvalue = get_variable_float(va("gui%i_value", i)) * (float)s_nsgui.item[i].mode;
+			}
+		}
 	}
 }
 

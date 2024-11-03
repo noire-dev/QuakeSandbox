@@ -1401,11 +1401,6 @@ void Info_SetValueForKey_Big( char *s, const char *key, const char *value ) {
 	strcat (s, newi);
 }
 
-
-
-
-//====================================================================
-
 /*
 ==================
 Com_CharIsOneOfCharset
@@ -1471,8 +1466,6 @@ char *Com_SkipTokens( char *s, int numTokens, char *sep )
 	else
 		return s;
 }
-
-//====================================================================
 
 /*
 ==================

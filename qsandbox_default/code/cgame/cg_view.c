@@ -179,11 +179,6 @@ static void CG_AddTestModel (void) {
 	trap_R_AddRefEntityToScene( &cg.testModelEntity );
 }
 
-
-
-//============================================================================
-
-
 /*
 =================
 CG_CalcVrect
@@ -219,8 +214,6 @@ static void CG_CalcVrect (void) {
 	cg.refdef.x = (cgs.glconfig.vidWidth - cg.refdef.width)/2;
 	cg.refdef.y = (cgs.glconfig.vidHeight - cg.refdef.height)/2;
 }
-
-//==============================================================================
 
 // leilei - eyes hack
 
@@ -537,8 +530,6 @@ static void CG_OffsetFirstPersonView( void ) {
 	}
 #endif
 }
-
-//======================================================================
 
 void CG_ZoomDown_f( void ) { 
 	if ( cg.zoomed ) {
@@ -1004,8 +995,6 @@ static void CG_PlayBufferedSounds( void ) {
 	}
 }
 
-//=========================================================================
-
 /*
 =================
 CG_DrawActiveFrame
@@ -1083,9 +1072,6 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 
 	// add buffered sounds
 	CG_PlayBufferedSounds();
-
-	// play buffered voice chats
-	CG_PlayBufferedVoiceChats();
 
 	// finish up the rest of the refdef
 	if ( cg.testModelEntity.hModel ) {

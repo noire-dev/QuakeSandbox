@@ -26,8 +26,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "bg_public.h"
 #include "g_public.h"
 
-//==================================================================
-
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	BASEGAME
 
@@ -109,8 +107,6 @@ typedef enum {
 
 #define MAX_LOGIC_ENTITIES		256 //maximum number of entities that can target a target_logic
 #define MAX_NETNAME			36
-
-//============================================================================
 
 typedef struct gentity_s gentity_t;
 typedef struct gclient_s gclient_t;
@@ -1717,11 +1713,6 @@ extern	vmCvar_t	pmove_fixed;
 extern	vmCvar_t	pmove_msec;
 extern	vmCvar_t	pmove_float;
 extern	vmCvar_t	g_rankings;
-#ifdef MISSIONPACK
-extern	vmCvar_t	g_singlePlayer;
-extern	vmCvar_t	g_redteam;
-extern	vmCvar_t	g_blueteam;
-#endif
 extern	vmCvar_t	g_enableDust;
 extern	vmCvar_t	g_enableBreath;
 extern	vmCvar_t	g_proxMineTimeout;
@@ -1807,8 +1798,6 @@ extern vmCvar_t		g_lms_mode; //How do we score: 0 = One Survivor get a point, 1 
 extern vmCvar_t		g_elimination_ctf_oneway;	//Only attack in one direction (level.eliminationSides+level.roundNumber)%2 == 0 red attacks
 
 extern vmCvar_t         g_awardpushing; //The server can decide if players are awarded for pushing people in lave etc.
-
-extern vmCvar_t         g_persistantpowerups;
 
 extern vmCvar_t        g_catchup; //Favors the week players
 

@@ -509,9 +509,6 @@ static qboolean	PM_CheckWaterJump( void ) {
 	return qtrue;
 }
 
-//============================================================================
-
-
 /*
 ===================
 PM_WaterJumpMove
@@ -997,9 +994,6 @@ static void PM_DeadMove( void ) {
 	}
 }
 
-
-//============================================================================
-
 /*
 ================
 PM_FootstepForSurface
@@ -1116,22 +1110,6 @@ static void PM_CrashLand( void ) {
 	// start footstep cycle over
 	pm->ps->bobCycle = 0;
 }
-
-/*
-=============
-PM_CheckStuck
-=============
-*/
-/*
-void PM_CheckStuck(void) {
-	trace_t trace;
-
-	pm->trace (&trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->clientNum, pm->tracemask);
-	if (trace.allsolid) {
-		//int shit = qtrue;
-	}
-}
-*/
 
 /*
 =============
@@ -1437,11 +1415,6 @@ static void PM_CheckDuck (void)
 		pm->maxs[2] = 15;
 	}
 }
-
-
-
-//===================================================================
-
 
 /*
 ===============

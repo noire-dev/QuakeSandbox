@@ -48,11 +48,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define SVF_NOTSINGLECLIENT		0x00000800	// send entity to everyone but one client
 											// (entityShared_t->singleClient)
 
-
-
-//===============================================================
-
-
 typedef struct {
 	entityState_t	s;				// communicated by server to clients
 
@@ -95,10 +90,6 @@ typedef struct {
 	entityState_t	s;				// communicated by server to clients
 	entityShared_t	r;				// shared by both the server system and game
 } sharedEntity_t;
-
-
-
-//===============================================================
 
 //
 // system traps provided by the main engine

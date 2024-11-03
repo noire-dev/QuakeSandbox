@@ -20,8 +20,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
-//========================================================
-//========================================================
+
+
 //name
 #define CHARACTERISTIC_NAME							0	//string
 //gender of the bot
@@ -64,9 +64,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define CHARACTERISTIC_AIM_SKILL_GRENADELAUNCHER	18	//float [0, 1]
 #define CHARACTERISTIC_AIM_SKILL_PLASMAGUN			19	//float [0, 1]
 #define CHARACTERISTIC_AIM_SKILL_BFG10K				20	//float [0, 1]
-//========================================================
+
 //chat
-//========================================================
+
 //file with chats
 #define CHARACTERISTIC_CHAT_FILE					21	//string
 //name of the chat character
@@ -97,9 +97,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define CHARACTERISTIC_CHAT_RANDOM					34	//float [0, 1]
 //tendency to reply
 #define CHARACTERISTIC_CHAT_REPLY					35	//float [0, 1]
-//========================================================
+
 //movement
-//========================================================
+
 //tendency to crouch
 #define CHARACTERISTIC_CROUCHER						36	//float [0, 1]
 //tendency to jump
@@ -110,9 +110,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define CHARACTERISTIC_WEAPONJUMPING				38	//float [0, 1]
 //tendency to use the grapple hook when available
 #define CHARACTERISTIC_GRAPPLE_USER					39	//float [0, 1]	//use this!!
-//========================================================
+
 //goal
-//========================================================
+
 //item weight file
 #define CHARACTERISTIC_ITEMWEIGHTS					40	//string
 //the aggression of the bot
@@ -123,8 +123,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define CHARACTERISTIC_VENGEFULNESS					43	//float [0, 1]	//use this!!
 //tendency to camp
 #define CHARACTERISTIC_CAMPER						44	//float [0, 1]
-//========================================================
-//========================================================
+
+
 //tendency to get easy frags
 #define CHARACTERISTIC_EASY_FRAGGER					45	//float [0, 1]
 //how alert the bot is (view distance)

@@ -750,79 +750,6 @@ static qboolean CG_ScanForExistingClientInfo( clientInfo_t *ci ) {
 
 /*
 ======================
-CG_SetDeferredClientInfo
-
-We aren't going to load it now, so grab some other
-client's info to use until we have some spare time.
-======================
-*/
-static void CG_SetDeferredClientInfo( int clientNum, clientInfo_t *ci ) {
-	int		i;
-	clientInfo_t	*match;
-
-	// if someone else is already the same models and skins we
-	// can just load the client info
-	for ( i = 0 ; i < cgs.maxclients ; i++ ) {
-		match = &cgs.clientinfo[ i ];
-		if ( !match->infoValid || match->deferred ) {
-			continue;
-		}
-		if ( Q_stricmp( ci->skinName, match->skinName ) ||
-			 Q_stricmp( ci->modelName, match->modelName ) ||
-//			 Q_stricmp( ci->headModelName, match->headModelName ) ||
-//			 Q_stricmp( ci->headSkinName, match->headSkinName ) ||
-			 (cgs.gametype >= GT_TEAM && cgs.ffa_gt!=1 && ci->team != match->team) ) {
-			continue;
-		}
-		// just load the real info cause it uses the same models and skins
-		CG_LoadClientInfo( clientNum, ci );
-		return;
-	}
-
-	// if we are in teamplay, only grab a model if the skin is correct
-	if ( cgs.gametype >= GT_TEAM && cgs.ffa_gt!=1) {
-		for ( i = 0 ; i < cgs.maxclients ; i++ ) {
-			match = &cgs.clientinfo[ i ];
-			if ( !match->infoValid || match->deferred ) {
-				continue;
-			}
-			if ( Q_stricmp( ci->skinName, match->skinName ) ||
-				(cgs.gametype >= GT_TEAM && cgs.ffa_gt != 1 && ci->team != match->team) ) {
-				continue;
-			}
-			ci->deferred = qtrue;
-			CG_CopyClientInfoModel( match, ci );
-			return;
-		}
-		// load the full model, because we don't ever want to show
-		// an improper team skin.  This will cause a hitch for the first
-		// player, when the second enters.  Combat shouldn't be going on
-		// yet, so it shouldn't matter
-		CG_LoadClientInfo( clientNum, ci );
-		return;
-	}
-
-	// find the first valid clientinfo and grab its stuff
-	for ( i = 0 ; i < cgs.maxclients ; i++ ) {
-		match = &cgs.clientinfo[ i ];
-		if ( !match->infoValid ) {
-			continue;
-		}
-
-		ci->deferred = qtrue;
-		CG_CopyClientInfoModel( match, ci );
-		return;
-	}
-
-	// we should never get here...
-	CG_Printf( "CG_SetDeferredClientInfo: no valid clients!\n" );
-
-	CG_LoadClientInfo( clientNum, ci );
-}
-
-
-/*
-======================
 CG_NewClientInfo
 ======================
 */
@@ -978,22 +905,7 @@ void CG_NewClientInfo( int clientNum ) {
 	// scan for an existing clientinfo that matches this modelname
 	// so we can avoid loading checks if possible
 	if ( !CG_ScanForExistingClientInfo( &newInfo ) ) {
-		qboolean	forceDefer;
-
-		forceDefer = trap_MemoryRemaining() < 4000000;
-
-		// if we are defering loads, just have it pick the first valid
-		if ( forceDefer || (cg_deferPlayers.integer && !cg_buildScript.integer && !cg.loading ) ) {
-			// keep whatever they had if it won't violate team skins
-			CG_SetDeferredClientInfo( clientNum, &newInfo );
-			// if we are low on memory, leave them with this model
-			if ( forceDefer ) {
-				CG_Printf( "Memory is low. Using deferred model.\n" );
-				newInfo.deferred = qfalse;
-			}
-		} else {
-			CG_LoadClientInfo( clientNum, &newInfo );
-		}
+		CG_LoadClientInfo( clientNum, &newInfo );
 	}
 
 	// replace whatever was there with the new one
@@ -1001,51 +913,13 @@ void CG_NewClientInfo( int clientNum ) {
 	*ci = newInfo;
 }
 
-
-
-/*
-======================
-CG_LoadDeferredPlayers
-
-Called each frame when a player is dead
-and the scoreboard is up
-so deferred players can be loaded
-======================
-*/
-void CG_LoadDeferredPlayers( void ) {
-	int		i;
-	clientInfo_t	*ci;
-
-	// scan for a deferred player to load
-	for ( i = 0, ci = cgs.clientinfo ; i < cgs.maxclients ; i++, ci++ ) {
-		if ( ci->infoValid && ci->deferred ) {
-			// if we are low on memory, leave it deferred
-			if ( trap_MemoryRemaining() < 4000000 ) {
-				CG_Printf( "Memory is low. Using deferred model.\n" );
-				ci->deferred = qfalse;
-				continue;
-			}
-			CG_LoadClientInfo( i, ci );
-//			break;
-		}
-	}
-}
-
 void CG_ReloadPlayers( void ) {
 	int		i;
 	clientInfo_t	*ci;
 
-	// scan for a deferred player to load
 	for ( i = 0, ci = cgs.clientinfo ; i < cgs.maxclients ; i++, ci++ ) {
 		if ( ci->infoValid ) {
-			// if we are low on memory, leave it deferred
-			if ( trap_MemoryRemaining() < 4000000 ) {
-				CG_Printf( "Memory is low. Using deferred model.\n" );
-				ci->deferred = qfalse;
-				continue;
-			}
 			CG_ReloadClientInfo( i, ci );
-//			break;
 		}
 	}
 }
@@ -1057,7 +931,6 @@ PLAYER ANIMATION
 
 =============================================================================
 */
-
 
 /*
 ===============
@@ -1536,9 +1409,6 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 	}
 
 }
-
-
-//==========================================================================
 
 /*
 ===============
@@ -2759,9 +2629,6 @@ void CG_Player( centity_t *cent ) {
 	// add powerups floating behind the player
 	CG_PlayerPowerups( cent, &torso );
 }
-
-
-//=====================================================================
 
 /*
 ===============

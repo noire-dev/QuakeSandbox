@@ -121,9 +121,6 @@ int G_SoundIndex( char *name ) {
 	return G_FindConfigstringIndex (name, CS_SOUNDS, MAX_SOUNDS, qtrue);
 }
 
-//=====================================================================
-
-
 /*
 ================
 G_TeamCommand
@@ -1141,8 +1138,6 @@ void G_KillBox (gentity_t *ent) {
 
 }
 
-//==============================================================================
-
 /*
 ===============
 G_AddPredictableEvent
@@ -1229,9 +1224,6 @@ void G_GlobalSound( int soundIndex )
 	//Broadcast the sound event.
 	te->r.svFlags |= SVF_BROADCAST;
 }
-
-//==============================================================================
-
 
 /*
 ================

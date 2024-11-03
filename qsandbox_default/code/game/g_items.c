@@ -43,9 +43,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define	RESPAWN_MEGAHEALTH	g_megahealthrespawn.value//120
 #define	RESPAWN_POWERUP		g_poweruprespawn.value
 
-
-//======================================================================
-
 int Pickup_Powerup( gentity_t *ent, gentity_t *other ) {
 	int			quantity;
 	int			i;
@@ -143,8 +140,6 @@ int Pickup_Powerup( gentity_t *ent, gentity_t *other ) {
 	return RESPAWN_POWERUP;
 }
 
-//======================================================================
-
 int Pickup_PersistantPowerup( gentity_t *ent, gentity_t *other ) {
 	int		clientNum;
 	char	userinfo[MAX_INFO_STRING];
@@ -225,8 +220,6 @@ int Pickup_PersistantPowerup( gentity_t *ent, gentity_t *other ) {
 	return -1;
 }
 
-//======================================================================
-
 int Pickup_Holdable( gentity_t *ent, gentity_t *other ) {
 	int i;
 
@@ -248,8 +241,6 @@ int Pickup_Holdable( gentity_t *ent, gentity_t *other ) {
 
 	return RESPAWN_HOLDABLE;
 }
-
-//======================================================================
 
 int Pickup_Backpack( gentity_t *ent, gentity_t *other) {
 	//ent is the backpack
@@ -355,9 +346,6 @@ int Pickup_Backpack( gentity_t *ent, gentity_t *other) {
 
 	return -1;
 }
-
-
-//======================================================================
 
 void Set_Weapon (gentity_t *ent, int weapon, int status)
 {
@@ -480,9 +468,6 @@ int Pickup_Ammo (gentity_t *ent, gentity_t *other)
 
 	return RESPAWN_AMMO;
 }
-
-//======================================================================
-
 
 int Pickup_Weapon (gentity_t *ent, gentity_t *other) {
 	int		quantity;
@@ -618,9 +603,6 @@ int Pickup_Weapon (gentity_t *ent, gentity_t *other) {
 	return g_weaponRespawn.integer;
 }
 
-
-//======================================================================
-
 int Pickup_Health (gentity_t *ent, gentity_t *other) {
 	int			max;
 	int			quantity;
@@ -660,8 +642,6 @@ int Pickup_Health (gentity_t *ent, gentity_t *other) {
 	return RESPAWN_HEALTH;
 }
 
-//======================================================================
-
 int Pickup_Armor( gentity_t *ent, gentity_t *other ) {
 	int		upperBound;
 
@@ -682,8 +662,6 @@ int Pickup_Armor( gentity_t *ent, gentity_t *other ) {
 
 	return RESPAWN_ARMOR;
 }
-
-//======================================================================
 
 /*
 ===============
@@ -1060,9 +1038,6 @@ if(g_gametype.integer == GT_SINGLE){
 	trap_LinkEntity( ent );
 }
 
-
-//======================================================================
-
 /*
 ================
 LaunchItem
@@ -1315,8 +1290,6 @@ Respawn the item
 void Use_Item( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 	RespawnItem( ent );
 }
-
-//======================================================================
 
 /*
 ================
@@ -1623,8 +1596,6 @@ void G_SpawnItem (gentity_t *ent, gitem_t *item) {
 		if ( G_ItemDisabled(item) )
 			return;
 	}
-        if(!g_persistantpowerups.integer && item->giType == IT_PERSISTANT_POWERUP)
-            return;
 
 	ent->item = item;
 	// some movers spawn on the second frame, so delay item

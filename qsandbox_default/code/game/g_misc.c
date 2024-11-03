@@ -24,7 +24,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "g_local.h"
 
-
 typedef struct {
 	char	*name;
 	void	(*spawn)(gentity_t *ent);
@@ -580,17 +579,12 @@ void SP_misc_teleporter_dest( gentity_t *ent ) {
 	trap_LinkEntity( ent );
 }
 
-
-//===========================================================
-
 /*QUAKED misc_model (1 0 0) (-16 -16 -16) (16 16 16)
 "model"		arbitrary .md3 file to display
 */
 void SP_misc_model( gentity_t *ent ) {
 	G_FreeEntity( ent );
 }
-
-//===========================================================
 
 void locateCamera( gentity_t *ent ) {
 	vec3_t		dir;

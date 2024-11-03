@@ -53,9 +53,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "syn.h"				//synonyms
 #include "match.h"				//string matching types and vars
 
-// for the voice chats
-#include "../../ui/menudef.h"
-
 int notleader[MAX_CLIENTS];
 
 #ifdef DEBUG
@@ -1151,7 +1148,7 @@ void BotMatch_TaskPreference(bot_state_t *bs, bot_match_t *match) {
 	EasyClientName(teammate, teammatename, sizeof(teammatename));
 	BotAI_BotInitialChat(bs, "keepinmind", teammatename, NULL);
 	trap_BotEnterChat(bs->cs, teammate, CHAT_TELL);
-	BotVoiceChatOnly(bs, teammate, VOICECHAT_YES);
+
 	trap_EA_Action(bs->client, ACTION_AFFIRMATIVE);
 }
 
@@ -1383,7 +1380,6 @@ void BotMatch_Suicide(bot_state_t *bs, bot_match_t *match) {
 	trap_BotMatchVariable(match, NETNAME, netname, sizeof(netname));
 	client = ClientFromName(netname);
 	//
-	BotVoiceChat(bs, client, VOICECHAT_TAUNT);
 	trap_EA_Action(bs->client, ACTION_AFFIRMATIVE);
 }
 

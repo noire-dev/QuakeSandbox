@@ -78,7 +78,6 @@ CG_DrawScoreboard
 */
 static void CG_DrawClientScore( int y, score_t *score, float *color, float fade, qboolean largeFormat ) {
 	char	string[1024];
-	vec3_t	headAngles;
 	clientInfo_t	*ci;
 	int iconx, headx;
 
@@ -149,30 +148,14 @@ static void CG_DrawClientScore( int y, score_t *score, float *color, float fade,
 	}
 
 	// draw the face
-	VectorClear( headAngles );
-	headAngles[YAW] = 180;
 	if( largeFormat ) {
 		CG_DrawHead( headx, y - ( ICON_SIZE - BIGCHAR_HEIGHT ) / 2, ICON_SIZE, ICON_SIZE,
-			score->client, headAngles );
+			score->client );
 	}
 	else {
-		CG_DrawHead( headx, y, 16, 16, score->client, headAngles );
+		CG_DrawHead( headx, y, 16, 16, score->client );
 	}
-
-#ifdef MISSIONPACK
-	// draw the team task
-	if ( ci->teamTask != TEAMTASK_NONE ) {
-                if (ci->isDead) {
-                    CG_DrawPic( headx + 48, y, 16, 16, cgs.media.deathShader );
-                }
-                else if ( ci->teamTask == TEAMTASK_OFFENSE ) {
-			CG_DrawPic( headx + 48, y, 16, 16, cgs.media.assaultShader );
-		}
-		else if ( ci->teamTask == TEAMTASK_DEFENSE ) {
-			CG_DrawPic( headx + 48, y, 16, 16, cgs.media.defendShader );
-		}
-	}
-#endif
+	
 	// draw the score line
 	if ( score->ping == -1 ) {
 		Com_sprintf(string, sizeof(string),
@@ -284,7 +267,7 @@ CG_DrawScoreboard
 Draw the normal in-game scoreboard
 =================
 */
-qboolean CG_DrawOldScoreboard( void ) {
+qboolean CG_DrawScoreboard( void ) {
 	int		x, y, w, i, n1, n2;
 	float	fade;
 	float	*fadeColor;
@@ -389,20 +372,16 @@ qboolean CG_DrawOldScoreboard( void ) {
 
 		if ( cg.teamScores[0] >= cg.teamScores[1] ) {
 			n1 = CG_TeamScoreboard( y, TEAM_RED, fade, maxClients, lineHeight );
-			CG_DrawTeamBackground( 0, y - topBorderSize, 640, n1 * lineHeight + bottomBorderSize, 0.33f, TEAM_RED );
 			y += (n1 * lineHeight) + BIGCHAR_HEIGHT;
 			maxClients -= n1;
 			n2 = CG_TeamScoreboard( y, TEAM_BLUE, fade, maxClients, lineHeight );
-			CG_DrawTeamBackground( 0, y - topBorderSize, 640, n2 * lineHeight + bottomBorderSize, 0.33f, TEAM_BLUE );
 			y += (n2 * lineHeight) + BIGCHAR_HEIGHT;
 			maxClients -= n2;
 		} else {
 			n1 = CG_TeamScoreboard( y, TEAM_BLUE, fade, maxClients, lineHeight );
-			CG_DrawTeamBackground( 0, y - topBorderSize, 640, n1 * lineHeight + bottomBorderSize, 0.33f, TEAM_BLUE );
 			y += (n1 * lineHeight) + BIGCHAR_HEIGHT;
 			maxClients -= n1;
 			n2 = CG_TeamScoreboard( y, TEAM_RED, fade, maxClients, lineHeight );
-			CG_DrawTeamBackground( 0, y - topBorderSize, 640, n2 * lineHeight + bottomBorderSize, 0.33f, TEAM_RED );
 			y += (n2 * lineHeight) + BIGCHAR_HEIGHT;
 			maxClients -= n2;
 		}
@@ -429,15 +408,8 @@ qboolean CG_DrawOldScoreboard( void ) {
 		}
 	}
 
-	// load any models that have been deferred
-	if ( ++cg.deferredPlayerLoading > 10 ) {
-		CG_LoadDeferredPlayers();
-	}
-
 	return qtrue;
 }
-
-//================================================================================
 
 /*
 =================
@@ -725,10 +697,6 @@ qboolean CG_DrawSinglePlayerObjectives( void ) {
 	i = strlen(va("%i", scores.totalScore));
 	CG_DrawBigStringColor( 496 - (i * BIGCHAR_WIDTH), 343, va("%i", scores.totalScore), color);	
 
-	if ( ++cg.deferredPlayerLoading > 10 ) {
-		CG_LoadDeferredPlayers();
-	}
-
 	//draw skill level
 	skill = CG_GetSkill();
 	CG_DrawPic(scoreboardX + (512 - 36), scoreboardY + (256 - 30), 24, 24, cgs.media.botSkillShaders[skill - 1]);
@@ -770,8 +738,6 @@ qboolean CG_DrawScoreboardObj( void ) {
 	}
 }
 
-//==============================================================================
-
 /*
 ================
 CG_CenterGiantLine
@@ -798,7 +764,7 @@ CG_DrawTourneyScoreboard
 Draw the oversize scoreboard for tournements
 =================
 */
-void CG_DrawOldTourneyScoreboard( void ) {
+void CG_DrawTourneyScoreboard( void ) {
 	const char		*s;
 	vec4_t			color;
 	int				min, tens, ones;

@@ -21,7 +21,7 @@
 #include "../cgame/cg_local.h"
 #endif
 #ifdef Q3_UI
-#include "../q3_ui/ui_local.h"
+#include "../ui/ui_local.h"
 #endif
 
 /*
@@ -93,10 +93,22 @@ typedef struct {
     VarType type;
 } Variable;
 
+Variable* find_variable(const char *name);
+int variable_exists(const char *name);
 void print_variables();
 int get_variable_int(const char *name);
 float get_variable_float(const char *name);
 char* get_variable_char(const char *name);
+void set_variable_value(const char *name, const char *value, VarType type);
+void create_variable(const char *name, const char *value, VarType type);
+
+/*
+###############
+Выражения
+###############
+*/
+
+void NS_ArgumentText(const char *input, char *result, int resultSize);
 
 /*
 ###############

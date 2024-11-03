@@ -3,7 +3,6 @@ cg_main
 ..\cg_syscalls
 cg_atmospheric
 cg_consolecmds
-cg_newdraw
 cg_draw
 cg_drawtools
 cg_effects
@@ -27,6 +26,5 @@ bg_lib
 bg_misc
 q_math
 q_shared
-ns_main_cgame
+ns_main
 ns_func_cgame
-ui_shared
