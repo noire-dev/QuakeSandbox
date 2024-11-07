@@ -101,7 +101,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define DEFAULT_REDTEAM_NAME		"Vim supporters"
 #define DEFAULT_BLUETEAM_NAME		"Emacs supporters"
 
-#define RATSB_HEADER   90
 typedef enum {
 	FOOTSTEP_NORMAL,
 	FOOTSTEP_BOOT,
@@ -359,6 +358,8 @@ typedef struct {
 	team_t			team;
 
 	int				botSkill;		// 0 = not bot, 1-5 = bot
+
+	int				isNPC;		// 0 = not NPC, 1 = NPC
 
 	vec3_t			color1;
 	vec3_t			color2;
@@ -620,7 +621,7 @@ typedef struct {
 	qboolean	scoreBoardShowing;
 	int			scoreFadeTime;
 
-        int		accuracys[WP_NUM_WEAPONS][2];
+    int		accuracys[WP_NUM_WEAPONS][2];
 	int		accRequestTime;
 	qboolean	showAcc;
 	qboolean	accBoardShowing;
@@ -645,13 +646,8 @@ typedef struct {
 	int			centerPrintCharWidth;
 	int			centerPrintY;
 	char		centerPrint[256];
-	char		centerPrintRus[256];
 	int			centerPrintLines;
-	int			centerPrintRuLine;
 	int			centerPrintTimeC;
-
-	// low ammo warning state
-	int			lowAmmoWarning;		// 1 = low, 2 = empty
 
 	// kill timers for carnage reward
 	int			lastKillTime;
@@ -659,7 +655,6 @@ typedef struct {
 	// crosshair client ID
 	int			crosshairClientNum;
 	int			crosshairClientTime;
-	int			androidtarget;
 
 	// powerup active flashing
 	int			powerupActive;
@@ -784,11 +779,7 @@ typedef struct {
 // Other media that can be tied to clients, weapons, or items are
 // stored in the clientInfo_t, itemInfo_t, weaponInfo_t, and powerupInfo_t
 typedef struct {
-	qhandle_t	charsetShader;
-	qhandle_t	charsetShaderRus;
-	qhandle_t	charsetProp;
-	qhandle_t	charsetPropGlow;
-	qhandle_t	charsetPropB;
+	qhandle_t	defaultFont[3];
 	qhandle_t	whiteShader;
 	qhandle_t 	corner;
 
@@ -1051,12 +1042,6 @@ typedef struct {
 
 	qhandle_t	invulnerabilityPowerupModel;
 
-	// scoreboard headers
-	qhandle_t	scoreboardName;
-	qhandle_t	scoreboardPing;
-	qhandle_t	scoreboardScore;
-	qhandle_t	scoreboardTime;
-
 	// objectives screen
 	qhandle_t	objectivesOverlay;
 	qhandle_t	objectivesUpdated;
@@ -1067,6 +1052,9 @@ typedef struct {
 	
 	// postprocess
 	qhandle_t	postProcess;
+
+	// errIcon
+	qhandle_t	errIcon;
 
 	// sp intermission scoreboard
 	sfxHandle_t	scoreShow;
@@ -1424,9 +1412,7 @@ extern	int 	mod_invulinf;
 extern	int 	mod_accelerate;
 extern	int 	mod_slickmove;
 extern	int 	mod_overlay;
-extern	int 	mod_roundmode;
 extern	int 	mod_gravity;
-extern	int 	mod_zround;
 extern	int 	mod_fogModel;
 extern	int 	mod_fogShader;
 extern	int 	mod_fogDistance;
@@ -1504,6 +1490,8 @@ extern	vmCvar_t	sb_texture_view;
 extern	vmCvar_t	sb_texturename;
 extern	vmCvar_t	cg_hide255;
 
+extern	vmCvar_t	ns_haveerror;		//Noire.Script error
+
 extern	vmCvar_t	cg_postprocess;
 extern	vmCvar_t	cg_toolguninfo;
 extern	vmCvar_t	cl_language;
@@ -1542,7 +1530,6 @@ extern	vmCvar_t		cg_shadows;
 extern	vmCvar_t		cg_gibs;
 extern	vmCvar_t		cg_drawTimer;
 extern	vmCvar_t		cg_drawFPS;
-extern	vmCvar_t		cg_drawSnapshot;
 extern	vmCvar_t		cg_draw3dIcons;
 extern	vmCvar_t		cg_drawIcons;
 extern	vmCvar_t		cg_drawCrosshair;
@@ -1587,7 +1574,6 @@ extern	vmCvar_t		cg_thirdPersonRange;
 extern	vmCvar_t		cg_thirdPersonAngle;
 extern	vmCvar_t		cg_thirdPerson;
 extern	vmCvar_t		cg_lagometer;
-extern	vmCvar_t		cg_drawAttacker;
 extern	vmCvar_t		cg_drawSpeed;
 extern	vmCvar_t		cg_synchronousClients;
 extern	vmCvar_t		cg_teamChatTime;
@@ -1646,7 +1632,6 @@ extern	vmCvar_t		cg_noTaunt;
 extern	vmCvar_t		cg_noProjectileTrail;
 extern	vmCvar_t		cg_oldRail;
 extern	vmCvar_t		cg_oldRocket;
-extern	vmCvar_t		cg_letterBoxSize;
 extern	vmCvar_t		cg_lodScale;
 
 extern	vmCvar_t		cg_leiEnhancement;			// LEILEI'S LINE!
@@ -1694,34 +1679,6 @@ extern	vmCvar_t		cg_fragmsgsize;
 extern	vmCvar_t		cg_atmosphericLevel;
 
 extern	vmCvar_t		cg_crosshairPulse;
-extern	vmCvar_t		cg_differentCrosshairs;
-extern	vmCvar_t		cg_ch1;
-extern	vmCvar_t		cg_ch1size;
-extern	vmCvar_t		cg_ch2;
-extern	vmCvar_t		cg_ch2size;
-extern	vmCvar_t		cg_ch3;
-extern	vmCvar_t		cg_ch3size;
-extern	vmCvar_t		cg_ch4;
-extern	vmCvar_t		cg_ch4size;
-extern	vmCvar_t		cg_ch5;
-extern	vmCvar_t		cg_ch5size;
-extern	vmCvar_t		cg_ch6;
-extern	vmCvar_t		cg_ch6size;
-extern	vmCvar_t		cg_ch7;
-extern	vmCvar_t		cg_ch7size;
-extern	vmCvar_t		cg_ch8;
-extern	vmCvar_t		cg_ch8size;
-extern	vmCvar_t		cg_ch9;
-extern	vmCvar_t		cg_ch9size;
-extern	vmCvar_t		cg_ch9slze;
-extern	vmCvar_t		cg_ch10;
-extern	vmCvar_t		cg_ch10size;
-extern	vmCvar_t		cg_ch11;
-extern	vmCvar_t		cg_ch11size;
-extern	vmCvar_t		cg_ch12;
-extern	vmCvar_t		cg_ch12size;
-extern	vmCvar_t		cg_ch13;
-extern	vmCvar_t		cg_ch13size;
 
 extern	vmCvar_t                cg_crosshairColorRed;
 extern	vmCvar_t                cg_crosshairColorGreen;
@@ -1793,12 +1750,7 @@ void CG_FillRect( float x, float y, float width, float height, const float *colo
 void CG_FillRect2( float x, float y, float width, float height, const float *color );
 void CG_DrawRoundedRect(float x, float y, float width, float height, float radius, const float *color);
 void CG_DrawPic( float x, float y, float width, float height, qhandle_t hShader );
-void CG_DrawString( float x, float y, const char *string,
-				   float charWidth, float charHeight, const float *modulate );
-
-
-void CG_DrawStringExt( int x, int y, const char *string, const float *setColor,
-		qboolean forceColor, qboolean shadow, int charWidth, int charHeight, int maxChars );
+void CG_DrawStringExt( int x, int y, const char *string, const float *setColor, qboolean forceColor, qboolean shadow, int charWidth, int charHeight, int maxChars, float offset );
 void CG_DrawBigString( int x, int y, const char *s, float alpha );
 void CG_DrawGiantString( int x, int y, const char *s, float alpha );
 void CG_DrawBigStringColor( int x, int y, const char *s, vec4_t color );
@@ -1813,8 +1765,6 @@ void CG_TileClear( void );
 void CG_ColorForHealth( vec4_t hcolor );
 void CG_GetColorForHealth( int health, int armor, vec4_t hcolor );
 
-void UI_DrawProportionalString( int x, int y, const char* str, int style, vec4_t color );
-void CG_DrawRect( float x, float y, float width, float height, float size, const float *color );
 void CG_DrawSides(float x, float y, float w, float h, float size);
 void CG_DrawTopBottom(float x, float y, float w, float h, float size);
 qboolean CG_InsideBox( vec3_t mins, vec3_t maxs, vec3_t pos );
@@ -1835,7 +1785,6 @@ void CG_DrawFade( void );
 void CG_AddLagometerFrameInfo( void );
 void CG_AddLagometerSnapshotInfo( snapshot_t *snap );
 void CG_CenterPrint( const char *str, int y, int charWidth );
-void CG_CenterPrintRus( const char *str, int y, int charWidth );
 void CG_DrawHead( float x, float y, float w, float h, int clientNum );
 void CG_DrawActive( stereoFrame_t stereoView );
 void CG_DrawFlagModel( float x, float y, float w, float h, int team, qboolean force2D );
@@ -2138,7 +2087,7 @@ void		trap_S_UpdateEntityPosition( int entityNum, const vec3_t origin );
 // given entityNum and position
 void		trap_S_Respatialize( int entityNum, const vec3_t origin, vec3_t axis[3], int inwater );
 sfxHandle_t	trap_S_RegisterSound( const char *sample, qboolean compressed );		// returns buzz if not found
-sfxHandle_t	trap_S_RegisterSound_MiTech( const char *sample, qboolean compressed );		// returns buzz if not found
+sfxHandle_t	trap_S_RegisterSound_SourceTech( const char *sample, qboolean compressed );		// returns buzz if not found
 void		trap_S_StartBackgroundTrack( const char *intro, const char *loop );	// empty name stops music
 void	trap_S_StopBackgroundTrack( void );
 
@@ -2148,7 +2097,7 @@ void		trap_R_LoadWorldMap( const char *mapname );
 // all media should be registered during level startup to prevent
 // hitches during gameplay
 qhandle_t	trap_R_RegisterModel( const char *name );			// returns rgb axis if not found
-qhandle_t	trap_R_RegisterModel_MiTech( const char *name );			// returns rgb axis if not found
+qhandle_t	trap_R_RegisterModel_SourceTech( const char *name );			// returns rgb axis if not found
 qhandle_t	trap_R_RegisterSkin( const char *name );			// returns all white if not found
 qhandle_t	trap_R_RegisterShader( const char *name );			// returns all white if not found
 qhandle_t	trap_R_RegisterShaderNoMip( const char *name );			// returns all white if not found

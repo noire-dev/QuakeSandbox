@@ -84,10 +84,10 @@ static void UI_Advanced_MenuEvent2( void *ptr, int event ) {
 
 	switch ( ((menucommon_s*)ptr)->id ) {
 	case ID_SEARCH:
-		//UI_Advanced_LoadItemsFromFile("advanced_items.cfg");
+
 		break;
 	case ID_VALUE:
-		//trap_Cmd_ExecuteText( EXEC_APPEND, va("set %s \"%s\"\n", s_advanced.list.itemnames[s_advanced.list.curvalue], s_advanced.value.field.buffer) );
+
 		break;
 	}
 }
@@ -112,7 +112,6 @@ char* 			advanced_items[] = {
 "cg_gibmodifier",
 "cg_draw2D",
 "cg_drawIcons",
-"cg_drawAttacker",
 "cg_drawRewards",
 "cg_crosshairX",
 "cg_crosshairY",
@@ -151,7 +150,6 @@ char* 			advanced_items[] = {
 "cg_leiGoreNoise",
 "cg_leiBrassNoise",
 "cg_crosshairPulse",
-"cg_letterBoxSize",
 "cg_chatBeep",
 "cg_teamChatBeep",
 "cg_zoomtime",
@@ -182,7 +180,7 @@ UI_Advanced_ParseInfos
 	int advanced_i = 0;
 	int advanced_j = 0;
 void UI_Advanced_ParseInfos( void ) {
-	for (advanced_i = 0; advanced_i < 77; advanced_i++) {
+	for (advanced_i = 0; advanced_i < 75; advanced_i++) {
 	if(Q_stricmp (s_advanced.filter.field.buffer, "")){
 	if ( !Q_stristr( advanced_items[advanced_i], s_advanced.filter.field.buffer ) ) {
 		continue;
@@ -200,7 +198,7 @@ void UI_Advanced_ParseInfos( void ) {
 UI_Advanced_LoadItemsFromFile
 ===============
 */
-void UI_Advanced_LoadItemsFromFile(char *filename) {
+void UI_Advanced_LoadItemsFromFile() {
 advanced_i = 0;
 advanced_j = 0;
 s_advanced.list.curvalue = 0;
@@ -216,12 +214,10 @@ Advanced_MenuKey
 */
 static sfxHandle_t Advanced_MenuKey( int key ) {
 	if( key == K_MOUSE2 || key == K_ESCAPE ) {
-		//UI_PopMenu();
-		//UI_LoadArenas();
-		//trap_Cmd_ExecuteText( EXEC_APPEND, "game_restart");
+
 	}
 	if( key == K_F5 ) {
-	UI_Advanced_LoadItemsFromFile("advanced_items.cfg");	
+	UI_Advanced_LoadItemsFromFile();	
 	}
 	return Menu_DefaultKey( &s_advanced.menu, key );
 }
@@ -229,7 +225,6 @@ static sfxHandle_t Advanced_MenuKey( int key ) {
 
 static void UI_Advanced_Draw( void ) {
 	int i;
-	vec4_t color_mgui	    = {1.00f, 1.00f, 1.00f, 1.00f};
 	float			x, y, w, h;
 	vec4_t			color1 = {0.85, 0.9, 1.0, 1};
 
@@ -351,7 +346,7 @@ static void UI_Advanced_MenuInit( void ) {
 	s_advanced.list.height				= 32;
 	s_advanced.list.itemnames			= (const char **)s_advanced.advanced_itemslist;
 
-	UI_Advanced_LoadItemsFromFile("advanced_items.cfg");
+	UI_Advanced_LoadItemsFromFile();
 
 	Menu_AddItem( &s_advanced.menu, &s_advanced.banner );
 	Menu_AddItem( &s_advanced.menu, &s_advanced.framel );

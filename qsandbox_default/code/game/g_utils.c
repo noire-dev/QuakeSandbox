@@ -1123,10 +1123,10 @@ void G_KillBox (gentity_t *ent) {
 
 	VectorAdd( ent->client->ps.origin, ent->r.mins, mins );
 	VectorAdd( ent->client->ps.origin, ent->r.maxs, maxs );
-	num = trap_EntitiesInBox( mins, maxs, MiTechEntityList, MAX_GENTITIES );
+	num = trap_EntitiesInBox( mins, maxs, SourceTechEntityList, MAX_GENTITIES );
 
 	for (i=0 ; i<num ; i++) {
-		hit = &g_entities[MiTechEntityList[i]];
+		hit = &g_entities[SourceTechEntityList[i]];
 		if ( !hit->client ) {
 			continue;
 		}
@@ -1773,6 +1773,10 @@ gentity_t *FindEntityForPhysgun( gentity_t *ent, int range ){
 	ent->grabDist = Distance(start, tr.endpos);
 	
 	traceEnt = &g_entities[ tr.entityNum ];		//entity for return
+
+	if(!traceEnt->sandboxObject && !traceEnt->singlebot){
+		return NULL;
+	}
 	
 	VectorSubtract(traceEnt->r.currentOrigin, tr.endpos, ent->grabOffset);
 	
@@ -1799,6 +1803,10 @@ gentity_t *FindEntityForGravitygun( gentity_t *ent, int range ){
 	ent->grabDist = 128;
 	
 	traceEnt = &g_entities[ tr.entityNum ];		//entity for return
+
+	if(!traceEnt->sandboxObject && !traceEnt->singlebot){
+		return NULL;
+	}
 	
 	VectorSubtract(traceEnt->r.currentOrigin, tr.endpos, ent->grabOffset);
 	

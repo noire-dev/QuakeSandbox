@@ -789,7 +789,7 @@ static void DynamicMenu_MenuItemDraw( void* self )
 	}
 
 	txt_y = fy + 0.5*(fh - PROP_HEIGHT * MENU_SCALE * UI_ProportionalSizeScale( style, 0 ));
-	UI_DrawScaledProportionalString( fx, txt_y, t->string, style, MENU_SCALE, color );
+	UI_DrawString( fx, txt_y, t->string, style, color );
 
 
 	// draw the cursor for submenu if needed

@@ -1337,7 +1337,7 @@ void G_ModProp( gentity_t *targ, gentity_t *attacker, char *arg01, char *arg02, 
 		targ->sb_coll = 0;
 		}
 		if(atoi(arg19) == 1){
-		targ->r.contents = CONTENTS_TRIGGER;
+		targ->r.contents = CONTENTS_TRANSLUCENT;
 		targ->sb_coll = 1;
 		}
 	trap_UnlinkEntity( targ );
@@ -1418,49 +1418,36 @@ G_BounceProp
 ================
 */
 
-void G_BounceProp(gentity_t *ent, trace_t *trace) {
-    vec3_t velocity;
-    float dot;
-    int hitTime;
-    float randomOffset[3];
-    int i;
-	float currentSpeed;
-	float speedThreshold;
+void G_BounceProp( gentity_t *ent, trace_t *trace ) {
+	vec3_t	velocity;
+	float	dot;
+	int		hitTime;
+    float 	randomOffset[3];
+	int		i;
 
-    hitTime = level.previousTime + (level.time - level.previousTime) * trace->fraction;
-    BG_EvaluateTrajectoryDelta(&ent->s.pos, hitTime, velocity);
-    dot = DotProduct(velocity, trace->plane.normal);
-    VectorMA(velocity, -2 * dot, trace->plane.normal, ent->s.pos.trDelta);
+	// reflect the velocity on the trace plane
+	hitTime = level.previousTime + ( level.time - level.previousTime ) * trace->fraction;
+	BG_EvaluateTrajectoryDelta( &ent->s.pos, hitTime, velocity );
+	dot = DotProduct( velocity, trace->plane.normal );
+	VectorMA( velocity, -2*dot, trace->plane.normal, ent->s.pos.trDelta );
 
-    VectorScale(ent->s.pos.trDelta, ent->physicsBounce, ent->s.pos.trDelta);
+	VectorScale( ent->s.pos.trDelta, ent->physicsBounce, ent->s.pos.trDelta );
 
     for (i = 0; i < 3; i++) {
-        randomOffset[i] = ((float)rand() / 32767 - 0.5f) * 16.0f;
+        randomOffset[i] = ((float)rand() / 32767 - 0.5f) * 20.0f;
     }
     VectorAdd(ent->s.pos.trDelta, randomOffset, ent->s.pos.trDelta);
-
-    if (trace->plane.normal[2] > 0.2) {
-        vec3_t slideDirection;
-        float slideFactor = 0.5;
-
-        VectorScale(trace->plane.normal, -1, slideDirection);
-        VectorNormalize(slideDirection);
-
-        VectorMA(ent->s.pos.trDelta, slideFactor, slideDirection, ent->s.pos.trDelta);
-    }
-
-    speedThreshold = 40.0f;
-    currentSpeed = VectorLength(ent->s.pos.trDelta);
-    
-    if (trace->plane.normal[2] > 0.2 && currentSpeed < speedThreshold) {
+	// check for stop
+	if ( trace->plane.normal[2] > 0.2 && VectorLength( ent->s.pos.trDelta ) < 40 ) {
         ent->s.apos.trBase[0] = 0;
         ent->s.apos.trBase[2] = 0;
         G_DisablePropPhysics(ent, trace->endpos);
-    }
+		return;
+	}
 
-    VectorAdd(ent->r.currentOrigin, trace->plane.normal, ent->r.currentOrigin);
-    VectorCopy(ent->r.currentOrigin, ent->s.pos.trBase);
-    ent->s.pos.trTime = level.time;
+	VectorAdd( ent->r.currentOrigin, trace->plane.normal, ent->r.currentOrigin);
+	VectorCopy( ent->r.currentOrigin, ent->s.pos.trBase );
+	ent->s.pos.trTime = level.time;
 }
 
 /*

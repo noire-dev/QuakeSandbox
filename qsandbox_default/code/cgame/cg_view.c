@@ -77,7 +77,7 @@ void CG_TestModel_f (void) {
 	}
 
 	Q_strncpyz (cg.testModelName, CG_Argv( 1 ), MAX_QPATH );
-	cg.testModelEntity.hModel = trap_R_RegisterModel_MiTech( cg.testModelName );
+	cg.testModelEntity.hModel = trap_R_RegisterModel_SourceTech( cg.testModelName );
 
 	if ( trap_Argc() == 3 ) {
 		cg.testModelEntity.backlerp = atof( CG_Argv( 2 ) );
@@ -155,7 +155,7 @@ static void CG_AddTestModel (void) {
 	int		i;
 
 	// re-register the model, because the level may have changed
-	cg.testModelEntity.hModel = trap_R_RegisterModel_MiTech( cg.testModelName );
+	cg.testModelEntity.hModel = trap_R_RegisterModel_SourceTech( cg.testModelName );
 	if (! cg.testModelEntity.hModel ) {
 		CG_Printf ("Can't register model\n");
 		return;
@@ -234,7 +234,7 @@ static void CG_ViewFog( void ) {
 		return;
 	}
 
-	cg.viewfog[0].hModel = trap_R_RegisterModel_MiTech( va("models/fog%i", mod_fogModel) );
+	cg.viewfog[0].hModel = trap_R_RegisterModel_SourceTech( va("models/fog%i", mod_fogModel) );
 	cg.viewfog[0].customShader = trap_R_RegisterShader(va("models/fogtex%i", mod_fogShader));
 
 	for(i = 0; i < 16; i++){
@@ -268,7 +268,7 @@ static void CG_ViewSky( void ) {
 		return;
 	}
 
-	cg.viewsky.hModel = trap_R_RegisterModel_MiTech( "models/fog1" );
+	cg.viewsky.hModel = trap_R_RegisterModel_SourceTech( "models/fog1" );
 	cg.viewsky.customShader = trap_R_RegisterShader(va("models/skytex%i", mod_skyShader));
 
 	VectorCopy(cg.refdef.vieworg, cg.viewsky.origin);

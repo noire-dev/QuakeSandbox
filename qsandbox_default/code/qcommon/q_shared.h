@@ -28,8 +28,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #define PRODUCT_NAME			"quakesandbox"
 #define BASEGAME				"milab"
-#define CLIENT_WINDOW_TITLE     	"MiTech: Engine"
-#define CLIENT_WINDOW_MIN_TITLE 	"MiTech: Engine"
+#define CLIENT_WINDOW_TITLE     	"SourceTech: Engine"
+#define CLIENT_WINDOW_MIN_TITLE 	"SourceTech: Engine"
 
 
 #ifdef _MSC_VER
@@ -1391,10 +1391,6 @@ typedef struct highscores_s {
 #define SAY_ALL		0
 #define SAY_TEAM	1
 #define SAY_TELL	2
-
-#define CDKEY_LEN 16
-#define CDCHKSUM_LEN 2
-
 
 #endif	// __Q_SHARED_H
 

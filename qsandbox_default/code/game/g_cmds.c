@@ -34,6 +34,7 @@ void DeathmatchScoreboardMessage( gentity_t *ent ) {
 	int			stringlength;
 	int			i, j;
 	gclient_t	*cl;
+	gentity_t   *clent;
 	int			numSorted, scoreFlags, accuracy, perfect;
 	
 	if(g_scoreboardlock.integer){
@@ -51,14 +52,17 @@ void DeathmatchScoreboardMessage( gentity_t *ent ) {
 		int		ping;
 
 		cl = &level.clients[level.sortedClients[i]];
+		clent = g_entities + cl->ps.clientNum;
+
+		if (clent->singlebot){
+			continue;
+		}
 
 		if ( cl->pers.connected == CON_CONNECTING ) {
 			ping = -1;
 		} else {
-//unlagged - true ping
-			//ping = cl->ps.ping < 999 ? cl->ps.ping : 999;
-			ping = cl->pers.realPing < 999 ? cl->pers.realPing : 999;
-//unlagged - true ping
+			ping = cl->ps.ping < 999 ? cl->ps.ping : 999;
+			ping += 1;
 		}
 
 		if( cl->accuracy_shots ) {
@@ -111,8 +115,8 @@ void DeathmatchScoreboardMessage( gentity_t *ent ) {
 
 void G_SendWeaponProperties(gentity_t *ent) {
 	char string[4096];
-	Com_sprintf(string, sizeof(string), "%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %f %f %f %f %f %i %i %i %i %f %f %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",
-	            mod_sgspread, mod_sgcount, mod_lgrange, mod_mgspread, mod_cgspread, mod_jumpheight, mod_gdelay, mod_mgdelay ,mod_sgdelay, mod_gldelay, mod_rldelay, mod_lgdelay, mod_pgdelay, mod_rgdelay, mod_bfgdelay, mod_ngdelay, mod_pldelay, mod_cgdelay, mod_ftdelay, mod_scoutfirespeed, mod_ammoregenfirespeed, mod_doublerfirespeed, mod_guardfirespeed, mod_hastefirespeed, mod_noplayerclip, mod_ammolimit, mod_invulmove, mod_amdelay, mod_teamred_firespeed, mod_teamblue_firespeed, mod_medkitlimit, mod_medkitinf, mod_teleporterinf, mod_portalinf, mod_kamikazeinf, mod_invulinf, mod_accelerate, mod_slickmove, mod_overlay, mod_roundmode, mod_zround, mod_gravity, g_fogModel.integer, g_fogShader.integer, g_fogDistance.integer, g_fogInterval.integer, g_fogColorR.integer, g_fogColorG.integer, g_fogColorB.integer, g_fogColorA.integer, g_skyShader.integer, g_skyColorR.integer, g_skyColorG.integer, g_skyColorB.integer, g_skyColorA.integer);
+	Com_sprintf(string, sizeof(string), "%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %f %f %f %f %f %i %i %i %i %f %f %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",
+	            mod_sgspread, mod_sgcount, mod_lgrange, mod_mgspread, mod_cgspread, mod_jumpheight, mod_gdelay, mod_mgdelay ,mod_sgdelay, mod_gldelay, mod_rldelay, mod_lgdelay, mod_pgdelay, mod_rgdelay, mod_bfgdelay, mod_ngdelay, mod_pldelay, mod_cgdelay, mod_ftdelay, mod_scoutfirespeed, mod_ammoregenfirespeed, mod_doublerfirespeed, mod_guardfirespeed, mod_hastefirespeed, mod_noplayerclip, mod_ammolimit, mod_invulmove, mod_amdelay, mod_teamred_firespeed, mod_teamblue_firespeed, mod_medkitlimit, mod_medkitinf, mod_teleporterinf, mod_portalinf, mod_kamikazeinf, mod_invulinf, mod_accelerate, mod_slickmove, mod_overlay, mod_gravity, g_fogModel.integer, g_fogShader.integer, g_fogDistance.integer, g_fogInterval.integer, g_fogColorR.integer, g_fogColorG.integer, g_fogColorB.integer, g_fogColorA.integer, g_skyShader.integer, g_skyColorR.integer, g_skyColorG.integer, g_skyColorB.integer, g_skyColorA.integer);
 	trap_SendServerCommand(ent-g_entities, va( "weaponProperties %s", string));
 }
 
@@ -439,7 +443,7 @@ void Cmd_Give_f (gentity_t *ent) {
 	gentity_t		*it_ent;
 	trace_t		trace;
 
-	if(g_gametype.integer != GT_SANDBOX){ return; }
+	if(g_gametype.integer != GT_SANDBOX && !CheatsOk(ent)){ return; }
 	if(!g_allowitems.integer){ return; }
 
 	name = ConcatArgs( 1 );
@@ -1505,6 +1509,10 @@ static void Cmd_Modify_Prop_f( gentity_t *ent ){
 	trap_Trace (&tr, start, NULL, NULL, end, ent->s.number, MASK_SELECT );
 	
 	traceEnt = &g_entities[ tr.entityNum ];		//entity for modding
+
+	if(!traceEnt->sandboxObject && !traceEnt->singlebot){
+		return;
+	}
 	
 	tent = G_TempEntity( tr.endpos, EV_PARTICLES_GRAVITY );
 	tent->s.constantLight = (((rand() % 256 | rand() % 256 << 8 ) | rand() % 256 << 16 ) | ( 255 << 24 ));

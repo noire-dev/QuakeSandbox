@@ -706,7 +706,7 @@ typedef struct {
 	int			secretCount;			// number of target_secret entities in map
 } level_locals_t;
 
-extern int				MiTechEntityList[MAX_GENTITIES];
+extern int				SourceTechEntityList[MAX_GENTITIES];
 
 //
 // g_spawn.c
@@ -731,7 +731,6 @@ void Cmd_FollowCycle_f( gentity_t *ent );  //KK-OAX Changed to match definition
 char *ConcatArgs( int start );  //KK-OAX This declaration moved from g_svccmds.c
 //KK-OAX Added this to make accessible from g_svcmds_ext.c
 void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText );
-void	NextCustomRound_f( void );
 
 // KK-OAX Added this for common file stuff between Admin and Sprees.
 // g_fileops.c
@@ -1263,9 +1262,6 @@ extern	int 		mod_teamred_damage;
 extern	int			mod_accelerate;
 extern	int			mod_slickmove;
 extern	int			mod_overlay;
-extern	int			mod_roundmode;
-extern	int			mod_zround;
-extern	int			mod_zsround;
 extern	int			mod_gravity;
 
 extern	vmCvar_t 	cl_propsmallsizescale;
@@ -1596,20 +1592,17 @@ extern	vmCvar_t	g_tests;
 extern	vmCvar_t	g_currentmap;
 extern	vmCvar_t	g_connectmsg;
 extern	vmCvar_t	g_scoreboardlock;
-extern	vmCvar_t	g_roundmode;
 extern	vmCvar_t	tex_name;
 extern	vmCvar_t	tex_newname;
 extern	vmCvar_t	g_regenarmor;
 extern	vmCvar_t	g_spectatorspeed;
 extern	vmCvar_t	eliminationredrespawn;
 extern	vmCvar_t	eliminationrespawn;
-extern	vmCvar_t	onandroid;
 extern	vmCvar_t	g_lavatowater;
 extern	vmCvar_t	g_overlay;
 extern	vmCvar_t	g_slickmove;
 extern	vmCvar_t	g_accelerate;
 extern	vmCvar_t	g_randomItems;
-extern	vmCvar_t	info_zombie;
 extern 	vmCvar_t	g_mapcycle;
 extern 	vmCvar_t	g_useMapcycle;
 extern	vmCvar_t	g_mapcycleposition;

@@ -546,7 +546,6 @@ typedef struct serverparameters_s {
 
 	int netport;
 
-   int punkbuster;
    int strictAuth;
 
    int lanForceRate;

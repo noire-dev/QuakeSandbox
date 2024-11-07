@@ -9,11 +9,6 @@ longname	"gm_flatgrass"
 type		"ffa"
 }
 {
-map		"gm_bigconstruct"
-longname	"gm_bigconstruct"
-type		"ffa"
-}
-{
 map		"qs_construct"
 longname	"qs_construct 13"
 type		"ffa"
@@ -21,10 +16,5 @@ type		"ffa"
 {
 map		"qs_flatgrass"
 longname	"qs_flatgrass"
-type		"ffa"
-}
-{
-map		"qs_bigconstruct"
-longname	"qs_bigconstruct"
 type		"ffa"
 }

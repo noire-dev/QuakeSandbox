@@ -38,7 +38,7 @@ typedef struct {
 
 gentity_t		g_entities[MAX_GENTITIES];
 gclient_t		g_clients[MAX_CLIENTS];
-int				MiTechEntityList[MAX_GENTITIES];
+int				SourceTechEntityList[MAX_GENTITIES];
 
 vmCvar_t 	cl_propsmallsizescale;
 vmCvar_t 	cl_propheight;
@@ -367,20 +367,16 @@ vmCvar_t	g_tests;
 vmCvar_t	g_currentmap;
 vmCvar_t	g_connectmsg;
 vmCvar_t	g_scoreboardlock;
-vmCvar_t	g_roundmode;
 vmCvar_t	tex_name;
 vmCvar_t	tex_newname;
 vmCvar_t	g_regenarmor;
 vmCvar_t	g_spectatorspeed;
 vmCvar_t	eliminationrespawn;
 vmCvar_t	eliminationredrespawn;
-vmCvar_t	onandroid;
 vmCvar_t	g_overlay;
-vmCvar_t	g_lavatexture;
 vmCvar_t	g_slickmove;
 vmCvar_t	g_accelerate;
 vmCvar_t	g_randomItems;
-vmCvar_t	info_zombie;
 vmCvar_t    g_mapcycle;
 vmCvar_t    g_useMapcycle;
 vmCvar_t    g_mapcycleposition;
@@ -651,10 +647,7 @@ int mod_teamred_damage;
 int	mod_accelerate;
 int	mod_slickmove;
 int	mod_overlay;
-int	mod_roundmode;
 int	mod_gravity;
-int	mod_zround;
-int	mod_zsround;
 
 
 // bk001129 - made static to avoid aliasing
@@ -671,8 +664,8 @@ static cvarTable_t		gameCvarTable[] = {
 	// latched vars
 	{ &g_gametype, "g_gametype", "0", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH, 0, qfalse  },
 
-	{ &g_maxclients, "sv_maxclients", "8", CVAR_SERVERINFO | CVAR_LATCH | CVAR_ARCHIVE, 0, qfalse  },
-	{ &g_maxGameClients, "g_maxGameClients", "0", CVAR_SERVERINFO | CVAR_LATCH | CVAR_ARCHIVE, 0, qfalse  },
+	{ &g_maxclients, "sv_maxclients", "8", CVAR_SERVERINFO | CVAR_LATCH, 0, qfalse  },
+	{ &g_maxGameClients, "g_maxGameClients", "0", CVAR_SERVERINFO | CVAR_LATCH, 0, qfalse  },
 	
 	{ &cl_propsmallsizescale, "cl_propsmallsizescale", "0.60", 0, 0, qtrue  },
 	{ &cl_propheight, "cl_propheight", "21", 0, 0, qtrue  },
@@ -1000,20 +993,16 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_currentmap, "g_currentmap", "nomap", 0, 0, qtrue},
 	{ &g_connectmsg, "g_connectmsg", "1", 0, 0, qtrue},
 	{ &g_scoreboardlock, "g_scoreboardlock", "0", 0, 0, qtrue},
-	{ &g_roundmode, "g_roundmode", "0", 0, 0, qtrue},
 	{ &tex_name, "tex_name", "0", 0, 0, qtrue  },
 	{ &tex_newname, "tex_newname", "0", 0, 0, qtrue  },
 	{ &g_regenarmor, "g_regenarmor", "0", 0, 0, qtrue  },
 	{ &g_spectatorspeed, "g_spectatorspeed", "700", 0, 0, qtrue  },
 	{ &eliminationredrespawn, "eliminationredrespawn", "0", 0, 0, qtrue  },
 	{ &eliminationrespawn, "eliminationrespawn", "0", 0, 0, qtrue  },
-	{ &onandroid, "onandroid", "0", CVAR_ARCHIVE, 0, qtrue  },
-	{ &g_lavatexture, "g_lavatexture", "0", 0, 0, qtrue  },
 	{ &g_overlay, "g_overlay", "0", 0, 0, qtrue  },
 	{ &g_slickmove, "g_slickmove", "0", 0, 0, qtrue  },
 	{ &g_accelerate, "g_accelerate", "1", 0, 0, qtrue  },
 	{ &g_randomItems, "g_randomItems", "0", 0, 0, qtrue  },
-	{ &info_zombie, "info_zombie", "0", 0, 0, qtrue  },
 	{ &g_mapcycle, "g_mapcycle", "mapcycle.cfg", CVAR_ARCHIVE, 0, qtrue},
 	{ &g_useMapcycle, "g_useMapcycle", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue},
 	{ &g_mapcycleposition, "g_mapcycleposition", "0", CVAR_ARCHIVE, 0, qtrue},
@@ -1145,7 +1134,7 @@ static cvarTable_t		gameCvarTable[] = {
 
 	{ &g_smoothClients, "g_smoothClients", "1", 0, 0, qfalse},
 	{ &pmove_fixed, "pmove_fixed", "1", CVAR_SYSTEMINFO | CVAR_ARCHIVE, 0, qfalse},
-	{ &pmove_msec, "pmove_msec", "16", CVAR_SYSTEMINFO | CVAR_ARCHIVE, 0, qfalse},
+	{ &pmove_msec, "pmove_msec", "11", CVAR_SYSTEMINFO | CVAR_ARCHIVE, 0, qfalse},
 
         { &pmove_float, "pmove_float", "1", CVAR_SYSTEMINFO | CVAR_ARCHIVE, 0, qtrue},
 
@@ -1623,8 +1612,6 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
         PlayerStoreInit();
         {
             int voteflags=0;
-			int mod_zround = 0;
-			int	mod_zsround = 0;
             if( allowedVote("map_restart") )
                 voteflags|=VF_map_restart;
 
@@ -2675,17 +2662,13 @@ void CheckExitRules( void ) {
 
 	if ( (g_gametype.integer < GT_CTF || g_ffa_gt>0 ) && g_fraglimit.integer ) {
 		if ( level.teamScores[TEAM_RED] >= g_fraglimit.integer ) {
-			if(info_zombie.integer == 0){
 			trap_SendServerCommand( -1, "print \"Red hit the fraglimit.\n\"" );
-			}
 			LogExit( "Fraglimit hit." );
 			return;
 		}
 
 		if ( level.teamScores[TEAM_BLUE] >= g_fraglimit.integer ) {
-			if(info_zombie.integer == 0){
 			trap_SendServerCommand( -1, "print \"Blue hit the fraglimit.\n\"" );
-			}
 			LogExit( "Fraglimit hit." );
 			return;
 		}
@@ -2711,17 +2694,13 @@ void CheckExitRules( void ) {
 	if ( (g_gametype.integer >= GT_CTF && g_ffa_gt<1) && g_capturelimit.integer ) {
 
 		if ( level.teamScores[TEAM_RED] >= g_capturelimit.integer ) {
-			if(info_zombie.integer == 0){
 			trap_SendServerCommand( -1, "print \"Red hit the capturelimit.\n\"" );
-			}
 			LogExit( "Capturelimit hit." );
 			return;
 		}
 
 		if ( level.teamScores[TEAM_BLUE] >= g_capturelimit.integer ) {
-			if(info_zombie.integer == 0){
 			trap_SendServerCommand( -1, "print \"Blue hit the capturelimit.\n\"" );
-			}
 			LogExit( "Capturelimit hit." );
 			return;
 		}
@@ -3034,7 +3013,6 @@ void CheckElimination(void) {
 			{
 				//Blue team has been eliminated!
 				trap_SendServerCommand( -1, "print \"Blue Team eliminated!\n\"");
-				trap_SendServerCommand( -1, va("print \"Round survived: %i!\n\"",mod_zround));
 				AddTeamScore(level.intermission_origin,TEAM_RED,1);
                                 if(g_gametype.integer == GT_ELIMINATION) {
                                     G_LogPrintf( "ELIMINATION: %i %i %i: %s wins round %i by eleminating the enemy team!\n", level.roundNumber, TEAM_RED, 1, TeamName(TEAM_RED), level.roundNumber );
@@ -3048,7 +3026,6 @@ void CheckElimination(void) {
 			{
 				//Red team eliminated!
 				trap_SendServerCommand( -1, "print \"Red Team eliminated!\n\"");
-				trap_SendServerCommand( -1, va("print \"Round survived: %i!\n\"",mod_zround));
 				AddTeamScore(level.intermission_origin,TEAM_BLUE,1);
                                 if(g_gametype.integer == GT_ELIMINATION) {
                                     G_LogPrintf( "ELIMINATION: %i %i %i: %s wins round %i by eleminating the enemy team!\n", level.roundNumber, TEAM_BLUE, 1, TeamName(TEAM_BLUE), level.roundNumber );
@@ -3847,6 +3824,5 @@ mod_teamred_damage = g_teamred_damage.value;
 mod_accelerate = g_accelerate.value;
 mod_slickmove = g_slickmove.value;
 mod_overlay = g_overlay.value;
-mod_roundmode = g_roundmode.value;
 mod_gravity = g_gravity.value;
 }

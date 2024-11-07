@@ -219,6 +219,7 @@ int set_variable(Variable *var, VarValue value, const char *operation) {
         }
     } else {
         Com_Printf("Noire.Script Error: Unknown operator '%s'.\n", operation);
+        trap_Cvar_Set("ns_haveerror", "1");
         return 0;
     }
 
@@ -247,6 +248,7 @@ int set_variable_int(Variable *var, int value, const char *operation) {
             var->value.i /= value;
     } else {
         Com_Printf("Noire.Script Error: Unknown operator '%s'.\n", operation);
+        trap_Cvar_Set("ns_haveerror", "1");
         return 0;
     }
 
@@ -324,6 +326,7 @@ int add_variable(const char *name, VarValue value, VarType type) {
     }
 
     Com_Printf("Noire.Script Error: Maximum variable limit reached.\n");
+    trap_Cvar_Set("ns_haveerror", "1");
     return 0; // Ошибка: превышено максимальное количество переменных
 }
 
@@ -335,7 +338,6 @@ void create_variable(const char *name, const char *value, VarType type) {
     }
 
     if (variable_exists(name)) {
-        Com_Printf("Noire.Script Error: Something is creating script errors\n");
         return; // Имя переменной не может быть NULL
     }
 
@@ -355,6 +357,7 @@ void create_variable(const char *name, const char *value, VarType type) {
                 break;
             default:
                 Com_Printf("Noire.Script Error: variable have invalid type.\n");
+                trap_Cvar_Set("ns_haveerror", "1");
         }
         variables[var_count].type = type;
         var_count++;
@@ -362,6 +365,7 @@ void create_variable(const char *name, const char *value, VarType type) {
     }
 
     Com_Printf("Noire.Script Error: Maximum variable limit reached.\n");
+    trap_Cvar_Set("ns_haveerror", "1");
     return;
 }
 
@@ -385,7 +389,9 @@ void set_variable_value(const char *name, const char *value, VarType type) {
                 break;
             default:
                 Com_Printf("Noire.Script Error: variable have invalid type.\n");
+                trap_Cvar_Set("ns_haveerror", "1");
         }
+        var->type = type;       // Новый тип
     }
     return;
 }
@@ -519,53 +525,59 @@ NSOperator NS_CharToOp(const char* operator) {
     } else {
         // Возвращаем значение по умолчанию или обрабатываем ошибку
         Com_Printf("Noire.Script Error: Unsupported operator: %s\n", operator);
+        trap_Cvar_Set("ns_haveerror", "1");
         return -1; // Предполагаем, что -1 не является допустимым значением
     }
 }
 
 // Функция для обработки текста с подстановкой значений переменных через $
 void NS_Text(const char *input, char *result, int resultSize) {
-    int resultIndex = 0; // Индекс для результирующей строки
-    char placeholder[MAX_VAR_NAME + 2]; // $ + имя переменной
-    char value[100]; // Буфер для значения
+    int resultIndex = 0; // Index for the resulting string
+    char placeholder[MAX_VAR_NAME + 2]; // Placeholder for variable name
+    char value[100]; // Buffer for the variable value
     Variable* var;
     int i;
     int k;
     int tempIndex = 0;
 
-    // Создаем временный буфер для работы со строкой без внешних скобок
+    // Create a temporary buffer for processing the string without outer parentheses
     char tempInput[1024];
     int start = 0;
     int end = strlen(input) - 1;
 
-    // Проверка на наличие внешних скобок
+    // Check for outer parentheses
     if (input[0] == '(' && input[end] == ')') {
-        start = 1; // Начинаем с первого символа после открывающей скобки
-        end--;     // Заканчиваем перед закрывающей скобкой
+        start = 1; // Start from the first character after the opening parenthesis
+        end--;     // End before the closing parenthesis
     }
 
-    // Копируем строку без внешних скобок в tempInput
+    // Copy the string without outer parentheses to tempInput
     for (i = start; i <= end && tempIndex < sizeof(tempInput) - 1; i++) {
         tempInput[tempIndex++] = input[i];
     }
     tempInput[tempIndex] = '\0';
 
-    // Основная логика обработки переменных
+    // Main logic for processing variables
     for (i = 0; tempInput[i] != '\0' && resultIndex < resultSize - 1; i++) {
         if (tempInput[i] == '$') {
             int j = 0;
-            i++; // Пропускаем символ $
+            i++; // Skip the '$' character
 
-            // Считываем имя переменной
-            while (isalnum(tempInput[i]) || tempInput[i] == '_') {
+            // Read the variable name until the next '$'
+            while (tempInput[i] != '$' && tempInput[i] != '\0' && j < sizeof(placeholder) - 1) {
                 placeholder[j++] = tempInput[i++];
             }
-            placeholder[j] = '\0'; // Завершаем строку имени переменной
+            placeholder[j] = '\0'; // Null-terminate the variable name
 
-            // Находим переменную
+            if (tempInput[i] == '$') {
+                // Found the closing '$'
+                //i++; // Skip the closing '$'
+            }
+
+            // Find the variable
             var = find_variable(placeholder);
             if (var != NULL) {
-                // Используем значение переменной в зависимости от её типа
+                // Use the variable value based on its type
                 if (var->type == TYPE_CHAR) {
                     strcpy(value, var->value.c);
                 } else if (var->type == TYPE_INT) {
@@ -574,68 +586,73 @@ void NS_Text(const char *input, char *result, int resultSize) {
                     Q_snprintf(value, sizeof(value), "%.6f", var->value.f);
                 }
 
-                // Копируем значение переменной в результирующую строку
+                // Copy the variable value to the result string
                 for (k = 0; value[k] != '\0' && resultIndex < resultSize - 1; k++) {
                     result[resultIndex++] = value[k];
                 }
             } else {
-                // Если переменная не найдена, просто добавляем '$' и имя
+                // If the variable is not found, just add '$' and the variable name
                 result[resultIndex++] = '$';
                 for (k = 0; placeholder[k] != '\0' && resultIndex < resultSize - 1; k++) {
                     result[resultIndex++] = placeholder[k];
                 }
+                result[resultIndex++] = '$'; // Add the closing '$'
             }
-            i--; // Уменьшаем i, чтобы не пропустить символ после переменной
         } else {
-            result[resultIndex++] = tempInput[i]; // Копируем обычные символы
+            result[resultIndex++] = tempInput[i]; // Copy regular characters
         }
     }
-    result[resultIndex] = '\0'; // Завершаем результирующую строку
+    result[resultIndex] = '\0'; // Null-terminate the result string
 }
 
 // Функция для обработки текста с подстановкой значений из указателей на переменные через &
 void NS_ArgumentText(const char *input, char *result, int resultSize) {
-    int resultIndex = 0; // Индекс для результирующей строки
-    char placeholder[MAX_VAR_NAME + 2]; // $ + имя переменной
-    char value[100]; // Буфер для значения
+    int resultIndex = 0; // Index for the resulting string
+    char placeholder[MAX_VAR_NAME + 2]; // Placeholder for variable name
+    char value[100]; // Buffer for the variable value
     Variable* var;
     int i;
     int k;
     int tempIndex = 0;
 
-    // Создаем временный буфер для работы со строкой без внешних скобок
+    // Create a temporary buffer for processing the string without outer parentheses
     char tempInput[1024];
     int start = 0;
     int end = strlen(input) - 1;
 
-    // Проверка на наличие внешних скобок
+    // Check for outer parentheses
     if (input[0] == '(' && input[end] == ')') {
-        start = 1; // Начинаем с первого символа после открывающей скобки
-        end--;     // Заканчиваем перед закрывающей скобкой
+        start = 1; // Start from the first character after the opening parenthesis
+        end--;     // End before the closing parenthesis
     }
 
-    // Копируем строку без внешних скобок в tempInput
+    // Copy the string without outer parentheses to tempInput
     for (i = start; i <= end && tempIndex < sizeof(tempInput) - 1; i++) {
         tempInput[tempIndex++] = input[i];
     }
     tempInput[tempIndex] = '\0';
 
-    // Основная логика обработки переменных
+    // Main logic for processing variables
     for (i = 0; tempInput[i] != '\0' && resultIndex < resultSize - 1; i++) {
         if (tempInput[i] == '&') {
             int j = 0;
-            i++; // Пропускаем символ &
+            i++; // Skip the '&' character
 
-            // Считываем имя переменной
-            while (isalnum(tempInput[i]) || tempInput[i] == '_') {
+            // Read the variable name until the next '&'
+            while (tempInput[i] != '&' && tempInput[i] != '\0' && j < sizeof(placeholder) - 1) {
                 placeholder[j++] = tempInput[i++];
             }
-            placeholder[j] = '\0'; // Завершаем строку имени переменной
+            placeholder[j] = '\0'; // Null-terminate the variable name
 
-            // Находим переменную
+            if (tempInput[i] == '&') {
+                // Found the closing '&'
+                i++; // Skip the closing '&'
+            }
+
+            // Find the variable
             var = find_variable(placeholder);
             if (var != NULL) {
-                // Используем значение переменной в зависимости от её типа
+                // Use the variable value based on its type
                 if (var->type == TYPE_CHAR) {
                     strcpy(value, var->value.c);
                 } else if (var->type == TYPE_INT) {
@@ -644,23 +661,23 @@ void NS_ArgumentText(const char *input, char *result, int resultSize) {
                     Q_snprintf(value, sizeof(value), "%.6f", var->value.f);
                 }
 
-                // Копируем значение переменной в результирующую строку
+                // Copy the variable value to the result string
                 for (k = 0; value[k] != '\0' && resultIndex < resultSize - 1; k++) {
                     result[resultIndex++] = value[k];
                 }
             } else {
-                // Если переменная не найдена, просто добавляем '&' и имя
+                // If the variable is not found, just add '&' and the variable name
                 result[resultIndex++] = '&';
                 for (k = 0; placeholder[k] != '\0' && resultIndex < resultSize - 1; k++) {
                     result[resultIndex++] = placeholder[k];
                 }
+                result[resultIndex++] = '&'; // Add the closing '&'
             }
-            i--; // Уменьшаем i, чтобы не пропустить символ после переменной
         } else {
-            result[resultIndex++] = tempInput[i]; // Копируем обычные символы
+            result[resultIndex++] = tempInput[i]; // Copy regular characters
         }
     }
-    result[resultIndex] = '\0'; // Завершаем результирующую строку
+    result[resultIndex] = '\0'; // Null-terminate the result string
 }
 
 /*
@@ -688,6 +705,7 @@ char* removeOuterBrackets(const char* str) {
             return result; // Возвращаем результат
         } else {
             Com_Printf("Noire.Script Error: Buffer size > 1024\n");
+            trap_Cvar_Set("ns_haveerror", "1");
             return NULL; // Если длина строки слишком велика
         }
     }
@@ -795,6 +813,7 @@ int is_function(const char *token) {
         if (strcmp(token, function_list[i]) == 0) {
             if(function_list[i] == NULL){
             Com_Printf("Noire.Script Error: %s - function undefined.\n", token);
+            trap_Cvar_Set("ns_haveerror", "1");
             return 0;  // Не нашли функцию   
             }
             return 1;  // Нашли функцию
@@ -883,6 +902,7 @@ void Interpret(char* script) {
                 } else {
                     // Буфер переполнен
                     Com_Printf("Noire.Script Error: Buffer overflow while processing 'for' loop\n");
+                    trap_Cvar_Set("ns_haveerror", "1");
                     break;
                 }
             }
@@ -935,6 +955,7 @@ void Interpret(char* script) {
                 } else {
                     // Буфер переполнен
                     Com_Printf("Noire.Script Error: Buffer overflow while processing 'while' loop\n");
+                    trap_Cvar_Set("ns_haveerror", "1");
                     break;
                 }
             }
@@ -968,7 +989,6 @@ void Interpret(char* script) {
             char* valueToken;
             float resultValue;
             if (variable_exists(varName)){
-            Com_Printf("Noire.Script Error: Something is creating script errors\n");
             continue; // Пропускаем, если переменная уже существует
             }
 
@@ -1046,6 +1066,7 @@ void CreateScriptThread(const char* code, const char* threadName, int interval) 
     ScriptLoop* script = &threadsLoops[threadsCount]; // Получаем указатель на текущий поток
     if (threadsCount >= MAX_SCRIPTS) {
         Com_Printf("Noire.Script Error: Maximum number of threads reached.\n");
+        trap_Cvar_Set("ns_haveerror", "1");
         return;
     }
 

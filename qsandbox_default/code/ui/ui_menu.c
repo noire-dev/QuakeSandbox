@@ -209,7 +209,7 @@ void Main_MenuEvent (void* ptr, int event) {
 	switch( ((menucommon_s*)ptr)->id ) {
 	case ID_SINGLEPLAYER:
         if(ui_singlemode.integer){
-            trap_Cmd_ExecuteText( EXEC_APPEND, "execscript new_game.as;" );
+            trap_Cmd_ExecuteText( EXEC_APPEND, "ns_openscript_ui new_game.ns;" );
         }
 		UI_StartServerMenu( qtrue );
 		break;
@@ -287,7 +287,7 @@ void Main_MenuEvent (void* ptr, int event) {
 		trap_Cmd_ExecuteText( EXEC_APPEND, "quit;" );
 		break;
 	case ID_MODLIST:
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("mgui %s\n", s_main.modlist.itemnames[s_main.modlist.curvalue]) );
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("nsgui %s.ns\n", s_main.modlist.itemnames[s_main.modlist.curvalue]) );
 		break;
 	}
 }
@@ -327,7 +327,7 @@ static void Main_MenuDraw( void ) {
 
 	if (strlen(s_errorMessage.errorMessage))
 	{
-		UI_DrawProportionalString_AutoWrapped( 320, 192, 600, 20, s_errorMessage.errorMessage, UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, menu_text_color );
+		UI_DrawString( 320, 192, s_errorMessage.errorMessage, UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, menu_text_color );
 	}
 	else
 	{
@@ -348,7 +348,7 @@ static void Main_MenuDraw( void ) {
 	   // standard menu drawing
 	   Menu_Draw( &s_main.menu );
    }
-	UI_DrawString( 600+uis.wideoffset, 450, "Quake Sandbox v6.2", UI_RIGHT|UI_SMALLFONT, color );
+	UI_DrawString( 600+uis.wideoffset, 450, "Quake Sandbox v7.0", UI_RIGHT|UI_SMALLFONT, color );
 	UI_DrawString( 600+uis.wideoffset, 465, "by Noire.dev", UI_RIGHT|UI_SMALLFONT, color );
 }
 
@@ -647,7 +647,7 @@ void UI_MainMenu( void ) {
 	s_main.modlist.type					= 5;
 	s_main.modlist.styles				= 1;
 	s_main.modlist.fontsize				= 1.25;
-	s_main.modlist.string				= "mgui/icons";
+	s_main.modlist.string				= "nsgui/icons";
 	s_main.modlist.generic.flags		= QMF_PULSEIFFOCUS;
 	s_main.modlist.generic.callback		= Main_MenuEvent;
 	s_main.modlist.generic.id			= ID_MODLIST;
@@ -655,7 +655,7 @@ void UI_MainMenu( void ) {
 	s_main.modlist.generic.y			= 30;
 	s_main.modlist.width				= 32;
 	s_main.modlist.height				= 20;
-	s_main.modlist.numitems				= trap_FS_GetFileList( "mgui", "as", s_main.names, 524288 );
+	s_main.modlist.numitems				= trap_FS_GetFileList( "nsgui", "ns", s_main.names, 524288 );
 	s_main.modlist.itemnames			= (const char **)s_main.configlist;
 	s_main.modlist.columns				= 1;
 	s_main.modlist.color				= color_white;
@@ -673,10 +673,8 @@ void UI_MainMenu( void ) {
 
 		// strip extension
 		len = strlen( configname );
-		if (!Q_stricmp(configname +  len - 3,".as"))
+		if (!Q_stricmp(configname +  len - 3,".ns"))
 			configname[len-3] = '\0';
-
-		//Q_strupr(configname);
 
 		configname += len + 1;
 	}

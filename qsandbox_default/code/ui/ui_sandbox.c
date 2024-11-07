@@ -546,11 +546,11 @@ static void SandboxMain_SaveChanges( void ) {
 	trap_Cvar_Set( "sb_classnum_view", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue] );
 	}
 	if(uis.sb_tab == 3){
-	trap_Cmd_ExecuteText( EXEC_INSERT, va("set toolcmd_spawn sl npc %s %s %s %s %s %s %s\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.modif[0].field.buffer, s_sandboxmain.modif[1].field.buffer, s_sandboxmain.modif[2].field.buffer, s_sandboxmain.modif[3].field.buffer, s_sandboxmain.modif[4].field.buffer) );
+	trap_Cvar_Set( "toolcmd_spawn", va("sl npc \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.modif[0].field.buffer, s_sandboxmain.modif[1].field.buffer, s_sandboxmain.modif[2].field.buffer, s_sandboxmain.modif[3].field.buffer, s_sandboxmain.modif[4].field.buffer) );
 	trap_Cvar_Set( "toolgun_modelst", va("props/%s", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 	}
 	if(uis.sb_tab == 6){
-	trap_Cmd_ExecuteText( EXEC_INSERT, va("set toolcmd_spawn ns_openscript_ui spawnlists/%s/%s.ns\n", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
+	trap_Cvar_Set( "toolcmd_spawn", va("ns_openscript_ui spawnlists/%s/%s.ns\n", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue], s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 	}
 	trap_Cvar_SetValue( "sb_private", s_sandboxmain.priv.curvalue );
 	trap_Cvar_Set( "sb_grid", s_sandboxmain.grid.field.buffer );
@@ -577,12 +577,12 @@ static void SandboxMain_SaveChanges( void ) {
 	trap_Cvar_Set( "toolgun_mod18", s_sandboxmain.modif[17].field.buffer );
 	if(uis.sb_tab == 1){
 	if(trap_Cvar_VariableValue("toolgun_tool") == 1){
-	trap_Cvar_Set( "toolgun_mod1", va("%s", s_sandboxmain.texturelist.itemnames[s_sandboxmain.texturelist.curvalue]));
-	Q_strncpyz( s_sandboxmain.modif[0].field.buffer, va("%s", s_sandboxmain.texturelist.itemnames[s_sandboxmain.texturelist.curvalue]), sizeof(s_sandboxmain.modif[0].field.buffer) );
+	trap_Cvar_Set( "toolgun_mod1", s_sandboxmain.texturelist.itemnames[s_sandboxmain.texturelist.curvalue]);
+	Q_strncpyz( s_sandboxmain.modif[0].field.buffer, s_sandboxmain.texturelist.itemnames[s_sandboxmain.texturelist.curvalue], sizeof(s_sandboxmain.modif[0].field.buffer) );
 	}
 	if(trap_Cvar_VariableValue("toolgun_tool") == 3){
-	trap_Cvar_Set( "toolgun_mod1", va("%s", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]));
-	Q_strncpyz( s_sandboxmain.modif[0].field.buffer, va("%s", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]), sizeof(s_sandboxmain.modif[0].field.buffer) );
+	trap_Cvar_Set( "toolgun_mod1", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]);
+	Q_strncpyz( s_sandboxmain.modif[0].field.buffer, s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], sizeof(s_sandboxmain.modif[0].field.buffer) );
 	}
 	}
 	trap_Cmd_ExecuteText( EXEC_INSERT, va(tool_modifypreset.string, MODIF_LIST) );
@@ -623,8 +623,6 @@ static void SandboxMain_SpawnListUpdate( void ) {
 		len = strlen( configname );
 		if (!Q_stricmp(configname +  len - 3,".ns"))
 			configname[len-3] = '\0';
-
-		//Q_strupr(configname);
 
 		configname += len + 1;
 	}
@@ -834,7 +832,7 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		}
 		if(uis.sb_tab == 10){
 		UI_PopMenu();
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("mgui %s; set lastui mgui %s\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("nsgui %s.ns; set lastui nsgui %s.ns\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 		}
 		break;
 	
@@ -935,7 +933,7 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		}
 		if(uis.sb_tab == 10){
 		UI_PopMenu();
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("mgui %s; set lastui mgui %s\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("nsgui %s.ns; set lastui nsgui %s.ns\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
 		}
 		break;
 
@@ -1700,7 +1698,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.type				= 5;
 	s_sandboxmain.list.styles			= 1;
 	s_sandboxmain.list.fontsize			= 1;
-	s_sandboxmain.list.string			= "mgui/icons";
+	s_sandboxmain.list.string			= "nsgui/icons";
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.list.generic.id		= ID_LIST;
@@ -1708,7 +1706,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.y		= 70;
 	s_sandboxmain.list.width			= 39+(2*uis.wideoffset/SMALLCHAR_WIDTH);
 	s_sandboxmain.list.height			= 15+18;
-	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "mgui", "ns", s_sandboxmain.names, 524288 );
+	s_sandboxmain.list.numitems			= trap_FS_GetFileList( "nsgui", "ns", s_sandboxmain.names, 524288 );
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.configlist;
 	s_sandboxmain.list.columns			= 1;
 	s_sandboxmain.list.color			= s_sandboxmain_color1;
@@ -1768,8 +1766,6 @@ if(uis.sb_tab == 1){
 		if (!Q_stricmp(configname +  len - 4,".md3"))
 			configname[len-4] = '\0';
 
-		//Q_strupr(configname);
-
 		configname += len + 1;
 	}
 	
@@ -1791,8 +1787,6 @@ if(uis.sb_tab == 1){
 		len = strlen( configname );
 		if (!Q_stricmp(configname +  len - 4,".png"))
 			configname[len-4] = '\0';
-
-		//Q_strupr(configname);
 
 		configname += len + 1;
 	}
@@ -1842,8 +1836,6 @@ if(uis.sb_tab == 6){
 		if (!Q_stricmp(configname +  len - 4,".cfg"))
 			configname[len-4] = '\0';
 
-		//Q_strupr(configname);
-
 		configname += len + 1;
 	}
 	
@@ -1864,8 +1856,6 @@ if(uis.sb_tab == 6){
 		len = strlen( configname );
 		if (!Q_stricmp(configname +  len - 3,".ns"))
 			configname[len-3] = '\0';
-
-		//Q_strupr(configname);
 
 		configname += len + 1;
 	}
@@ -1889,8 +1879,6 @@ if(uis.sb_tab == 7){
 		if (!Q_stricmp(configname +  len - 3,".ns"))
 			configname[len-3] = '\0';
 
-		//Q_strupr(configname);
-
 		configname += len + 1;
 	}
 }
@@ -1910,8 +1898,6 @@ if(uis.sb_tab == 8){
 		len = strlen( configname );
 		if (!Q_stricmp(configname +  len - 3,".ns"))
 			configname[len-3] = '\0';
-
-		//Q_strupr(configname);
 
 		configname += len + 1;
 	}
@@ -1933,7 +1919,6 @@ if(uis.sb_tab == 10){
 		if (!Q_stricmp(configname +  len - 3,".ns"))
 			configname[len-3] = '\0';
 
-		//Q_strupr(configname);
 
 		configname += len + 1;
 	}

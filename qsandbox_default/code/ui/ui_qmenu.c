@@ -197,7 +197,7 @@ static void BText_Draw( menutext_s *t )
 	else
 		color = t->color;
 
-	UI_DrawBannerString( x, y, t->string, t->style, color );
+	UI_DrawString( x, y, t->string, t->style, color );
 }
 
 /*
@@ -760,9 +760,6 @@ for (column = 0; column < b->columns; column++) {
 			x += (b->width + b->seperation) * (SMALLCHAR_WIDTH);
 		}
 	}
-	
-	UI_DrawRoundedRect(b->generic.right-(16*ui_scrollbtnsize.integer),b->generic.bottom-(16*ui_scrollbtnsize.integer),(16*ui_scrollbtnsize.integer),(16*ui_scrollbtnsize.integer), 100, scrollbuttona);
-	UI_DrawRoundedRect(b->generic.right-(16*ui_scrollbtnsize.integer),b->generic.top,(16*ui_scrollbtnsize.integer),(16*ui_scrollbtnsize.integer), 100, scrollbuttona);
 }
 
 if(b->type == 7){
@@ -793,8 +790,6 @@ if(b->type == 7){
 
 	if ( focus )
 	{
-		// draw cursor
-		//UI_FillRect( b->generic.left, b->generic.top, b->generic.right-b->generic.left+1, b->generic.bottom-b->generic.top+1, listbar_color ); 
 		UI_DrawCharCustom( x, y, 13, UI_CENTER|UI_BLINK|UI_SMALLFONT, color, b->fontsize);
 	}
 
@@ -957,56 +952,6 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 					x -= w / 2;
 				}
 				
-				if (UI_CursorInRect( b->generic.right-(16*ui_scrollbtnsize.integer), b->generic.bottom-(16*ui_scrollbtnsize.integer), (16*ui_scrollbtnsize.integer), (16*ui_scrollbtnsize.integer) ))
-				{
-					if( b->curvalue == b->numitems - 1 ) {
-						return menu_buzz_sound;
-					}
-
-					b->oldvalue = b->curvalue;
-					b->curvalue++;
-
-					if( b->curvalue >= b->top + b->columns * b->height ) {
-						if( b->columns == 1 ) {
-							b->top++;
-						}
-						else {
-							b->top += b->height;
-						}
-					}
-
-					if( b->generic.callback ) {
-						b->generic.callback( b, QM_GOTFOCUS );
-					}
-
-					return menu_move_sound;
-				}
-				
-				if (UI_CursorInRect( b->generic.right-(16*ui_scrollbtnsize.integer), b->generic.top, (16*ui_scrollbtnsize.integer), (16*ui_scrollbtnsize.integer) ))
-				{
-					if( b->curvalue == 0 ) {
-						return menu_buzz_sound;
-					}
-
-					b->oldvalue = b->curvalue;
-					b->curvalue--;
-
-					if( b->curvalue < b->top ) {
-						if( b->columns == 1 ) {
-							b->top--;
-						}
-						else {
-							b->top -= b->height;
-						}
-					}
-
-					if( b->generic.callback ) {
-						b->generic.callback( b, QM_GOTFOCUS );
-					}
-
-					return (menu_move_sound);
-				}
-				
 				if(b->styles <= 1){
 				if (UI_CursorInRect( x, y, w, b->height*(SMALLCHAR_HEIGHT*b->fontsize) ))
 				{
@@ -1158,6 +1103,10 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 		case K_KP_UPARROW:
 		case K_UPARROW:
 		case K_MWHEELUP:
+			if(b->columns == 1){
+				UIObject_Key(b, K_LEFTARROW);
+				return;
+			}
 			if( b->columns == 1 ) {
 				return menu_null_sound;
 			}
@@ -1187,6 +1136,10 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 		case K_KP_DOWNARROW:
 		case K_DOWNARROW:
 		case K_MWHEELDOWN:
+			if(b->columns == 1){
+				UIObject_Key(b, K_RIGHTARROW);
+				return;
+			}
 			if( b->columns == 1 ) {
 				return menu_null_sound;
 			}
@@ -1670,7 +1623,6 @@ static sfxHandle_t Slider_Key( menuslider_s *s, int key )
 	return (sound);
 }
 
-#if 1
 /*
 =================
 Slider_Draw
@@ -1736,76 +1688,6 @@ static void Slider_Draw( menuslider_s *s ) {
 
 	UI_DrawHandlePic( (int)( x + 2*SMALLCHAR_WIDTH + (SLIDER_RANGE-1)*SMALLCHAR_WIDTH* s->range ) - 2, y - 2, 9, 16, button );
 }
-#else
-/*
-=================
-Slider_Draw
-=================
-*/
-static void Slider_Draw( menuslider_s *s )
-{
-	float *color;
-	int	style;
-	int	i;
-	int x;
-	int y;
-	qboolean focus;
-	
-	x =	s->generic.x;
-	y = s->generic.y;
-	focus = (s->generic.parent->cursor == s->generic.menuPosition);
-
-	style = UI_SMALLFONT;
-	if ( s->generic.flags & QMF_GRAYED )
-	{
-		color = text_color_disabled;
-	}
-	else if (focus)
-	{
-		color  = text_color_highlight;
-		style |= UI_PULSE;
-	}
-	else
-	{
-		color = text_color_normal;
-	}
-
-	if ( focus )
-	{
-		// draw cursor
-		//UI_FillRect( s->generic.left, s->generic.top, s->generic.right-s->generic.left+1, s->generic.bottom-s->generic.top+1, listbar_color ); 
-		UI_DrawChar( x, y, 13, UI_CENTER|UI_BLINK|UI_SMALLFONT, color);
-	}
-
-	// draw label
-	UI_DrawString( x - SMALLCHAR_WIDTH, y, s->generic.name, UI_RIGHT|style, color );
-
-	// draw slider
-	UI_DrawChar( x + SMALLCHAR_WIDTH, y, 128, UI_LEFT|style, color);
-	for ( i = 0; i < SLIDER_RANGE; i++ )
-		UI_DrawChar( x + (i+2)*SMALLCHAR_WIDTH, y, 129, UI_LEFT|style, color);
-	UI_DrawChar( x + (i+2)*SMALLCHAR_WIDTH, y, 130, UI_LEFT|style, color);
-
-	// clamp thumb
-	if (s->maxvalue > s->minvalue)
-	{
-		s->range = ( s->curvalue - s->minvalue ) / ( float ) ( s->maxvalue - s->minvalue );
-		if ( s->range < 0)
-			s->range = 0;
-		else if ( s->range > 1)
-			s->range = 1;
-	}
-	else
-		s->range = 0;
-
-	// draw thumb
-	if (style & UI_PULSE) {
-		style &= ~UI_PULSE;
-		style |= UI_BLINK;
-	}
-	UI_DrawChar( (int)( x + 2*SMALLCHAR_WIDTH + (SLIDER_RANGE-1)*SMALLCHAR_WIDTH* s->range ), y, 131, UI_LEFT|style, color);
-}
-#endif
 
 /*
 =================
@@ -2000,56 +1882,6 @@ sfxHandle_t ScrollList_Key( menulist_s *l, int key )
 					x -= w / 2;
 				}
 				
-				if (UI_CursorInRect( l->generic.right-(16*ui_scrollbtnsize.integer), l->generic.bottom-(16*ui_scrollbtnsize.integer), (16*ui_scrollbtnsize.integer), (16*ui_scrollbtnsize.integer) ))
-				{
-					if( l->curvalue == l->numitems - 1 ) {
-						return menu_buzz_sound;
-					}
-
-					l->oldvalue = l->curvalue;
-					l->curvalue++;
-
-					if( l->curvalue >= l->top + l->columns * l->height ) {
-						if( l->columns == 1 ) {
-							l->top++;
-						}
-						else {
-							l->top += l->height;
-						}
-					}
-
-					if( l->generic.callback ) {
-						l->generic.callback( l, QM_GOTFOCUS );
-					}
-
-					return menu_move_sound;
-				}
-				
-				if (UI_CursorInRect( l->generic.right-(16*ui_scrollbtnsize.integer), l->generic.top, (16*ui_scrollbtnsize.integer), (16*ui_scrollbtnsize.integer) ))
-				{
-					if( l->curvalue == 0 ) {
-						return menu_buzz_sound;
-					}
-
-					l->oldvalue = l->curvalue;
-					l->curvalue--;
-
-					if( l->curvalue < l->top ) {
-						if( l->columns == 1 ) {
-							l->top--;
-						}
-						else {
-							l->top -= l->height;
-						}
-					}
-
-					if( l->generic.callback ) {
-						l->generic.callback( l, QM_GOTFOCUS );
-					}
-
-					return (menu_move_sound);
-				}
-				
 				if (UI_CursorInRect( x, y, w, l->height*SMALLCHAR_HEIGHT ))
 				{
 					cursorx = (uis.cursorx - x)/SMALLCHAR_WIDTH;
@@ -2168,6 +2000,10 @@ sfxHandle_t ScrollList_Key( menulist_s *l, int key )
 		case K_KP_UPARROW:
 		case K_UPARROW:
 		case K_MWHEELUP:
+			if(l->columns == 1){
+				ScrollList_Key(l, K_LEFTARROW);
+				return;
+			}
 			if( l->curvalue == 0 ) {
 				return menu_buzz_sound;
 			}
@@ -2193,6 +2029,10 @@ sfxHandle_t ScrollList_Key( menulist_s *l, int key )
 		case K_KP_DOWNARROW:
 		case K_DOWNARROW:
 		case K_MWHEELDOWN:
+			if(l->columns == 1){
+				ScrollList_Key(l, K_RIGHTARROW);
+				return;
+			}
 			if( l->curvalue == l->numitems - 1 ) {
 				return menu_buzz_sound;
 			}
@@ -2336,8 +2176,6 @@ void ScrollList_Draw( menulist_s *l )
 
 	x =	l->generic.x;
 	
-	UI_DrawRoundedRect(l->generic.right-(16*ui_scrollbtnsize.integer),l->generic.bottom-(16*ui_scrollbtnsize.integer),(16*ui_scrollbtnsize.integer),(16*ui_scrollbtnsize.integer), 100, scrollbuttona);
-	UI_DrawRoundedRect(l->generic.right-(16*ui_scrollbtnsize.integer),l->generic.top,(16*ui_scrollbtnsize.integer),(16*ui_scrollbtnsize.integer), 100, scrollbuttona);
 	for( column = 0; column < l->columns; column++ ) {
 		y =	l->generic.y;
 		base = l->top + column * l->height;
@@ -2797,10 +2635,7 @@ sfxHandle_t Menu_DefaultKey( menuframework_s *m, int key )
 			uis.menuscroll = uis.activemenu->uplimitscroll;
 		}
 			break;
-			
-		case K_F10:
-			trap_Cmd_ExecuteText( EXEC_NOW, "toggle cl_rusinput\n");
-			break;
+
 		case K_F11:
 			uis.debug ^= 1;
 			break;
@@ -2880,10 +2715,9 @@ Menu_Cache
 void Menu_Cache( void )
 {
 	int i;
-	uis.charset			= trap_R_RegisterShaderNoMip( "gfx/2d/default_font" );
-	uis.charsetProp		= trap_R_RegisterShaderNoMip( "menu/art/font1_prop.tga" );
-	uis.charsetPropGlow	= trap_R_RegisterShaderNoMip( "menu/art/font1_prop_glo.tga" );
-	uis.charsetPropB	= trap_R_RegisterShaderNoMip( "menu/art/font2_prop.tga" );
+	uis.charset[0]			= trap_R_RegisterShaderNoMip( "gfx/2d/default_font" );
+	uis.charset[1]			= trap_R_RegisterShaderNoMip( "gfx/2d/default_font1" );
+	uis.charset[2]			= trap_R_RegisterShaderNoMip( "gfx/2d/default_font2" );
 	uis.cursor          = trap_R_RegisterShaderNoMip( "menu/art/3_cursor2" );
 	uis.corner          = trap_R_RegisterShaderNoMip( "corner" );
 	uis.rb_on           = trap_R_RegisterShaderNoMip( "menu/art/switch_on" );
@@ -3237,10 +3071,6 @@ void MField_CharEvent( mfield_t *edit, int ch ) {
 	if ( ch == -48 ) {
 		return;
 	}
-	
-	if(trap_Cvar_VariableValue("cl_rusinput")){
-	ch -= 128;
-	}
 
 	if ( !trap_Key_GetOverstrikeMode() ) {	
 		if ((edit->cursor == MAX_EDIT_LINE - 1) || (edit->maxchars && edit->cursor >= edit->maxchars))
@@ -3403,9 +3233,6 @@ sfxHandle_t MenuField_Key( menufield_s* m, int* key )
 			*key = K_TAB;
 			break;
 
-		case K_F10:
-			trap_Cmd_ExecuteText( EXEC_NOW, "toggle cl_rusinput\n");
-			break;
 		case K_TAB:
 		case K_KP_DOWNARROW:
 		case K_DOWNARROW:

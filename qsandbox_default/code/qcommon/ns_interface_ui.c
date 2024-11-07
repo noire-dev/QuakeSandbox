@@ -215,8 +215,6 @@ static void LoadNSGuiList( int it )
 		if (!Q_stricmp(configname +  len - (strlen(s_nsgui.item[it].generic.picn)+1),va(".%s", s_nsgui.item[it].generic.picn)))
 			configname[len-(strlen(s_nsgui.item[it].generic.picn)+1)] = '\0';
 
-		Q_strupr(configname);
-
 		configname += len + 1;
 	}
 }

@@ -1684,10 +1684,10 @@ qboolean G_RadiusDamage ( vec3_t origin, gentity_t *attacker, float damage, floa
 		maxs[i] = origin[i] + radius;
 	}
 
-	numListedEntities = trap_EntitiesInBox( mins, maxs, MiTechEntityList, MAX_GENTITIES );
+	numListedEntities = trap_EntitiesInBox( mins, maxs, SourceTechEntityList, MAX_GENTITIES );
 
 	for ( e = 0 ; e < numListedEntities ; e++ ) {
-		ent = &g_entities[MiTechEntityList[ e ]];
+		ent = &g_entities[SourceTechEntityList[ e ]];
 
 		if (ent == ignore)
 			continue;

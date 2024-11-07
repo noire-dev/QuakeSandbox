@@ -325,22 +325,20 @@ static void CG_ParseWeaponProperties(void) {
 	mod_accelerate     = atoi(CG_Argv(37));
 	mod_slickmove     = atoi(CG_Argv(38));
 	mod_overlay     = atoi(CG_Argv(39));
-	mod_roundmode     = atoi(CG_Argv(40));
-	mod_zround     = atoi(CG_Argv(41));
-	mod_gravity     = atoi(CG_Argv(42));
-	mod_fogModel     = atoi(CG_Argv(43));
-	mod_fogShader     = atoi(CG_Argv(44));
-	mod_fogDistance     = atoi(CG_Argv(45));
-	mod_fogInterval     = atoi(CG_Argv(46));
-	mod_fogColorR     = atoi(CG_Argv(47));
-	mod_fogColorG     = atoi(CG_Argv(48));
-	mod_fogColorB     = atoi(CG_Argv(49));
-	mod_fogColorA     = atoi(CG_Argv(50));
-	mod_skyShader     = atoi(CG_Argv(51));
-	mod_skyColorR     = atoi(CG_Argv(52));
-	mod_skyColorG     = atoi(CG_Argv(53));
-	mod_skyColorB     = atoi(CG_Argv(54));
-	mod_skyColorA     = atoi(CG_Argv(55));
+	mod_gravity     = atoi(CG_Argv(40));
+	mod_fogModel     = atoi(CG_Argv(41));
+	mod_fogShader     = atoi(CG_Argv(42));
+	mod_fogDistance     = atoi(CG_Argv(43));
+	mod_fogInterval     = atoi(CG_Argv(44));
+	mod_fogColorR     = atoi(CG_Argv(45));
+	mod_fogColorG     = atoi(CG_Argv(46));
+	mod_fogColorB     = atoi(CG_Argv(47));
+	mod_fogColorA     = atoi(CG_Argv(48));
+	mod_skyShader     = atoi(CG_Argv(49));
+	mod_skyColorR     = atoi(CG_Argv(50));
+	mod_skyColorG     = atoi(CG_Argv(51));
+	mod_skyColorB     = atoi(CG_Argv(52));
+	mod_skyColorA     = atoi(CG_Argv(53));
 }
 
 static void CG_ParseSweps(void) {
@@ -560,10 +558,10 @@ static void CG_ConfigStringModified( void ) {
 	} else if ( num == CS_INTERMISSION ) {
 		cg.intermissionStarted = atoi( str );
 	} else if ( num >= CS_MODELS && num < CS_MODELS+MAX_MODELS ) {
-		cgs.gameModels[ num-CS_MODELS ] = trap_R_RegisterModel_MiTech( str );
+		cgs.gameModels[ num-CS_MODELS ] = trap_R_RegisterModel_SourceTech( str );
 	} else if ( num >= CS_SOUNDS && num < CS_SOUNDS+MAX_SOUNDS ) {
 		if ( str[0] != '*' ) {	// player specific sounds don't register here
-			cgs.gameSounds[ num-CS_SOUNDS] = trap_S_RegisterSound_MiTech( str, qfalse );
+			cgs.gameSounds[ num-CS_SOUNDS] = trap_S_RegisterSound_SourceTech( str, qfalse );
 		}
 	} else if ( num >= CS_PLAYERS && num < CS_PLAYERS+MAX_CLIENTS ) {
 		CG_NewClientInfo( num - CS_PLAYERS );
@@ -745,17 +743,9 @@ static void CG_ServerCommand( void ) {
 		CG_CenterPrint( CG_Argv(1), SCREEN_HEIGHT * 0.30, BIGCHAR_WIDTH );
 		return;
 	}
-	if ( !strcmp( cmd, "ruscp" ) ) {
-		CG_CenterPrintRus( CG_Argv(1), SCREEN_HEIGHT * 0.30, BIGCHAR_WIDTH );
-		return;
-	}
 	
 	if ( !strcmp( cmd, "clp" ) ) {
 		CG_CenterPrint( CG_Argv(1), SCREEN_HEIGHT * 0.75, SMALLCHAR_WIDTH );
-		return;
-	}
-	if ( !strcmp( cmd, "rusclp" ) ) {
-		CG_CenterPrintRus( CG_Argv(1), SCREEN_HEIGHT * 0.75, SMALLCHAR_WIDTH );
 		return;
 	}
 	

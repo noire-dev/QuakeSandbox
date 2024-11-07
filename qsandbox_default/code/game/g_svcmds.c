@@ -522,16 +522,6 @@ void	ClientKick_f( void ) {
 
 }
 
-void	NextCustomRound_f( void ) {
-	mod_zround += 1;
-if(g_roundmode.integer == 1){
-trap_SendConsoleCommand( EXEC_APPEND, "exec CustomMod/CustomRound.cfg\n");
-trap_SendConsoleCommand( EXEC_APPEND, va("exec CustomMod/rounds/Round%i.cfg\n", mod_zround));
-trap_SendConsoleCommand( EXEC_APPEND, va("exec CustomMod/rounds/%s/Round%i.cfg\n", g_currentmap.string, mod_zround));
-}
-}
-
-
 void EndGame_f ( void ) {
     ExitLevel();
 }
@@ -576,7 +566,6 @@ struct
   { "savemapall", qfalse, G_WriteMapfileAll_f },
   { "loadmap", qfalse, G_LoadMapfile_f },
   { "loadmapall", qfalse, G_LoadMapfileAll_f },
-  { "customroundend", qfalse, NextCustomRound_f },
   
   { "hideobjects", qfalse, G_HideObjects },
   { "showobjects", qfalse, G_ShowObjects },

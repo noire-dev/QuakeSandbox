@@ -2248,7 +2248,7 @@ static void Credits_DrawCreditText( displayCredit_t* dc )
 			ShuffleText(text);
 
 		ColorTransparency(cl->color_title, color, dc->transparency);
-		UI_DrawProportionalString(320, y, text, UI_CENTER|UI_DROPSHADOW, color);
+		UI_DrawString(320, y, text, UI_CENTER|UI_DROPSHADOW, color);
 		line += PROP_HEIGHT;
 	}
 
@@ -2261,7 +2261,7 @@ static void Credits_DrawCreditText( displayCredit_t* dc )
 		if (shuffle)
 			ShuffleText(text);
 
-		UI_DrawProportionalString(320, y + line, text, UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, color);
+		UI_DrawString(320, y + line, text, UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, color);
 		line += PROP_HEIGHT*scale;
 	}
 }
@@ -2937,7 +2937,6 @@ if(s_credits.menu.number == 1){
 		uis.hideCursor = qfalse;
 		//trap_Cmd_ExecuteText( EXEC_APPEND, "music music/aumenu\n");
 		UI_PopMenu();
-		trap_Cmd_ExecuteText( EXEC_NOW, "mgui pages/autoexec\n");
 }
 	return 0;
 }
@@ -2962,7 +2961,6 @@ static void UI_CreditMenu_Draw( void ) {
 		uis.hideCursor = qfalse;
 		//trap_Cmd_ExecuteText( EXEC_APPEND, "music music/aumenu\n");
 		UI_PopMenu();
-		trap_Cmd_ExecuteText( EXEC_NOW, "mgui pages/autoexec\n");
 		}
 	}
 

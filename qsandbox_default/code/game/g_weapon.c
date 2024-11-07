@@ -1009,6 +1009,10 @@ void Weapon_Toolgun( gentity_t *ent ) {
 
 	traceEnt = &g_entities[ tr.entityNum ];
 
+	if(!traceEnt->sandboxObject && !traceEnt->singlebot){
+		return;
+	}
+
 	G_Damage( traceEnt, ent, ent, forward, tr.endpos,
 		1, 0, MOD_TOOLGUN );
 
@@ -1234,10 +1238,10 @@ void KamikazeRadiusDamage( vec3_t origin, gentity_t *attacker, float damage, flo
 		maxs[i] = origin[i] + radius;
 	}
 
-	numListedEntities = trap_EntitiesInBox( mins, maxs, MiTechEntityList, MAX_GENTITIES );
+	numListedEntities = trap_EntitiesInBox( mins, maxs, SourceTechEntityList, MAX_GENTITIES );
 
 	for ( e = 0 ; e < numListedEntities ; e++ ) {
-		ent = &g_entities[MiTechEntityList[ e ]];
+		ent = &g_entities[SourceTechEntityList[ e ]];
 
 		if (!ent->takedamage) {
 			continue;
@@ -1297,10 +1301,10 @@ void KamikazeShockWave( vec3_t origin, gentity_t *attacker, float damage, float 
 		maxs[i] = origin[i] + radius;
 	}
 
-	numListedEntities = trap_EntitiesInBox( mins, maxs, MiTechEntityList, MAX_GENTITIES );
+	numListedEntities = trap_EntitiesInBox( mins, maxs, SourceTechEntityList, MAX_GENTITIES );
 
 	for ( e = 0 ; e < numListedEntities ; e++ ) {
-		ent = &g_entities[MiTechEntityList[ e ]];
+		ent = &g_entities[SourceTechEntityList[ e ]];
 
 		// dont hit things we have already hit
 		if( ent->kamikazeShockTime > level.time ) {

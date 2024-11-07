@@ -119,23 +119,6 @@ void CG_DrawTopBottom(float x, float y, float w, float h, float size) {
 	trap_R_DrawStretchPic( x, y, w, size, 0, 0, 0, 0, cgs.media.whiteShader );
 	trap_R_DrawStretchPic( x, y + h - size, w, size, 0, 0, 0, 0, cgs.media.whiteShader );
 }
-/*
-================
-CG_DrawRect
-
-Coordinates are 640*480 virtual values
-=================
-*/
-void CG_DrawRect( float x, float y, float width, float height, float size, const float *color ) {
-	trap_R_SetColor( color );
-
-	CG_DrawTopBottom(x, y, width, height, size);
-	CG_DrawSides(x, y + size, width, height - size * 2, size);
-
-	trap_R_SetColor( NULL );
-}
-
-
 
 /*
 ================
@@ -149,8 +132,6 @@ void CG_DrawPic( float x, float y, float width, float height, qhandle_t hShader 
 	trap_R_DrawStretchPic( x, y, width, height, 0, 0, 1, 1, hShader );
 }
 
-
-
 /*
 ===============
 CG_DrawChar
@@ -159,10 +140,19 @@ Coordinates and size in 640*480 virtual screen size
 ===============
 */
 void CG_DrawChar( int x, int y, int width, int height, int ch ) {
+	int	q;
 	int row, col;
 	float frow, fcol;
 	float size;
 	float	ax, ay, aw, ah;
+
+	q = 0;
+	if(height > 16){
+	q = 1;	
+	}
+	if(height > 32){
+	q = 2;	
+	}
 
 	ch &= 255;
 
@@ -183,42 +173,8 @@ void CG_DrawChar( int x, int y, int width, int height, int ch ) {
 	fcol = col*0.0625;
 	size = 0.0625;
 
-	trap_R_DrawStretchPic( ax, ay, aw, ah,
-					   fcol, frow, 
-					   fcol + size, frow + size, 
-					   cgs.media.charsetShader );
+	trap_R_DrawStretchPic( ax, ay, aw, ah, fcol, frow, fcol + size, frow + size, cgs.media.defaultFont[q] );
 }
-void CG_DrawCharRus( int x, int y, int width, int height, int ch ) {
-	int row, col;
-	float frow, fcol;
-	float size;
-	float	ax, ay, aw, ah;
-
-	ch &= 255;
-
-	if ( ch == ' ' ) {
-		return;
-	}
-
-	ax = x;
-	ay = y;
-	aw = width;
-	ah = height;
-	CG_AdjustFrom640( &ax, &ay, &aw, &ah );
-
-	row = ch>>4;
-	col = ch&15;
-
-	frow = row*0.0625;
-	fcol = col*0.0625;
-	size = 0.0625;
-
-	trap_R_DrawStretchPic( ax, ay, aw, ah,
-					   fcol, frow, 
-					   fcol + size, frow + size, 
-					   cgs.media.charsetShaderRus );
-}
-
 
 /*
 ==================
@@ -230,217 +186,103 @@ to a fixed color.
 Coordinates are at 640 by 480 virtual resolution
 ==================
 */
-void CG_DrawStringExt( int x, int y, const char *string, const float *setColor,
-		qboolean forceColor, qboolean shadow, int charWidth, int charHeight, int maxChars ) {
-	vec4_t		color;
-	const char	*s;
-	int		xx;
-	int		cnt;
-        char	        ch;
-        int prev_unicode = 0;
+void CG_DrawStringExt(int x, int y, const char *string, const float *setColor,
+                      qboolean forceColor, qboolean shadow, int charWidth, 
+                      int charHeight, int maxChars, float offset) {
+    vec4_t color;
+    const char *s;
+    int xx;
+    int cnt;
+    char ch;
+    int prev_unicode = 0;
 
-	if (maxChars <= 0)
-		maxChars = 32767; // do them all!
+    // Set maxChars to a default if it's non-positive
+    if (maxChars <= 0) {
+        maxChars = 32767; // Render all characters
+    }
 
-	// draw the drop shadow
-	if (shadow) {
-		color[0] = color[1] = color[2] = 0;
-		color[3] = setColor[3];
-		trap_R_SetColor( color );
-		s = string;
-		xx = x;
-		cnt = 0;
-		while ( *s && cnt < maxChars) {
-			if ( Q_IsColorString( s ) ) {
-				s += 2;
-				continue;
-			}
-                        ////////////////////////////////////
-                        ch = *s & 255;
-                        // unicode russian stuff support
-                        //Com_Printf("UI_letter: is %d\n", *s);
-                        if (ch < 0) {
-                           if ((ch == -48) || (ch == -47)) {
-                              prev_unicode = ch;
-                              s++;
-                              cnt++;
-                              continue;
-                           }
-                           if (ch >= -112) {
-                              if ((ch == -111) && (prev_unicode == -47)) {
-                                 ch = ch - 13;
-                              } else {
-                                 ch = ch + 48;
-                              }
-                           } else {
-                              if ((ch == -127) && (prev_unicode == -48)) {
-                                 // ch = ch +
-                              } else {
-                                 ch = ch + 112; // +64 offset of damn unicode
-                              }
-                           }
-                        }
-                        //////////////////////////////////////////
-			CG_DrawChar( xx + 2, y + 2, charWidth, charHeight, ch );
-			cnt++;
-			xx += charWidth;
-			s++;
-		}
-	}
+    // Draw the drop shadow if enabled
+    if (shadow) {
+        color[0] = color[1] = color[2] = 0; // Set shadow color to black
+        color[3] = setColor[3]; // Preserve alpha
+        trap_R_SetColor(color);
 
-	// draw the colored text
-	s = string;
-	xx = x;
-	cnt = 0;
-	trap_R_SetColor( setColor );
-	while ( *s && cnt < maxChars) {
-		if ( Q_IsColorString( s ) ) {
-			if ( !forceColor ) {
-				memcpy( color, g_color_table[ColorIndex(*(s+1))], sizeof( color ) );
-				color[3] = setColor[3];
-				trap_R_SetColor( color );
-			}
-			s += 2;
-			continue;
-		}
-                        ////////////////////////////////////
-                        ch = *s & 255;
-                        // unicode russian stuff support
-                        //Com_Printf("UI_letter: is %d\n", *s);
-                        if (ch < 0) {
-                           if ((ch == -48) || (ch == -47)) {
-                              prev_unicode = ch;
-                              s++;
-                              cnt++;
-                              continue;
-                           }
-                           if (ch >= -112) {
-                              if ((ch == -111) && (prev_unicode == -47)) {
-                                 ch = ch - 13;
-                              } else {
-                                 ch = ch + 48;
-                              }
-                           } else {
-                              if ((ch == -127) && (prev_unicode == -48)) {
-                                 // ch = ch +
-                              } else {
-                                 ch = ch + 112; // +64 offset of damn unicode
-                              }
-                           }
-                        }
-                        //////////////////////////////////////////
-		CG_DrawChar( xx, y, charWidth, charHeight, ch );
-		xx += charWidth;
-		cnt++;
-		s++;
-	}
-	trap_R_SetColor( NULL );
-}
-void CG_DrawStringExtRus( int x, int y, const char *string, const float *setColor,
-		qboolean forceColor, qboolean shadow, int charWidth, int charHeight, int maxChars ) {
-	vec4_t		color;
-	const char	*s;
-	int		xx;
-	int		cnt;
-        char	        ch;
-        int prev_unicode = 0;
+        s = string;
+        xx = x;
+        cnt = 0;
 
-	if (maxChars <= 0)
-		maxChars = 32767; // do them all!
+        while (*s && cnt < maxChars) {
+            if (Q_IsColorString(s)) {
+                s += 2; // Skip color codes
+                continue;
+            }
 
-	// draw the drop shadow
-	if (shadow) {
-		color[0] = color[1] = color[2] = 0;
-		color[3] = setColor[3];
-		trap_R_SetColor( color );
-		s = string;
-		xx = x;
-		cnt = 0;
-		while ( *s && cnt < maxChars) {
-			if ( Q_IsColorString( s ) ) {
-				s += 2;
-				continue;
-			}
-                        ////////////////////////////////////
-                        ch = *s & 255;
-                        // unicode russian stuff support
-                        //Com_Printf("UI_letter: is %d\n", *s);
-                        if (ch < 0) {
-                           if ((ch == -48) || (ch == -47)) {
-                              prev_unicode = ch;
-                              s++;
-                              cnt++;
-                              continue;
-                           }
-                           if (ch >= -112) {
-                              if ((ch == -111) && (prev_unicode == -47)) {
-                                 ch = ch - 13;
-                              } else {
-                                 ch = ch + 48;
-                              }
-                           } else {
-                              if ((ch == -127) && (prev_unicode == -48)) {
-                                 // ch = ch +
-                              } else {
-                                 ch = ch + 112; // +64 offset of damn unicode
-                              }
-                           }
-                        }
-                        //////////////////////////////////////////
-			CG_DrawCharRus( xx + 2, y + 2, charWidth, charHeight, ch );
-			cnt++;
-			xx += charWidth;
-			s++;
-		}
-	}
+            ch = *s & 255; // Handle character encoding
+            if (ch < 0) {
+                // Handle potential Unicode characters
+                if ((ch == -48) || (ch == -47)) {
+                    prev_unicode = ch;
+                    s++;
+                    cnt++;
+                    continue;
+                }
+                if (ch >= -112) {
+                    ch = (ch == -111 && prev_unicode == -47) ? ch - 13 : ch + 48;
+                } else {
+                    ch = (ch == -127 && prev_unicode == -48) ? ch : ch + 112; // Adjust for Unicode offset
+                }
+            }
 
-	// draw the colored text
-	s = string;
-	xx = x;
-	cnt = 0;
-	trap_R_SetColor( setColor );
-	while ( *s && cnt < maxChars) {
-		if ( Q_IsColorString( s ) ) {
-			if ( !forceColor ) {
-				memcpy( color, g_color_table[ColorIndex(*(s+1))], sizeof( color ) );
-				color[3] = setColor[3];
-				trap_R_SetColor( color );
-			}
-			s += 2;
-			continue;
-		}
-                        ////////////////////////////////////
-                        ch = *s & 255;
-                        // unicode russian stuff support
-                        //Com_Printf("UI_letter: is %d\n", *s);
-                        if (ch < 0) {
-                           if ((ch == -48) || (ch == -47)) {
-                              prev_unicode = ch;
-                              s++;
-                              cnt++;
-                              continue;
-                           }
-                           if (ch >= -112) {
-                              if ((ch == -111) && (prev_unicode == -47)) {
-                                 ch = ch - 13;
-                              } else {
-                                 ch = ch + 48;
-                              }
-                           } else {
-                              if ((ch == -127) && (prev_unicode == -48)) {
-                                 // ch = ch +
-                              } else {
-                                 ch = ch + 112; // +64 offset of damn unicode
-                              }
-                           }
-                        }
-                        //////////////////////////////////////////
-		CG_DrawCharRus( xx, y, charWidth, charHeight, ch );
-		xx += charWidth;
-		cnt++;
-		s++;
-	}
-	trap_R_SetColor( NULL );
+            // Draw the shadow character
+            CG_DrawChar(xx + 1, y + 1, charWidth, charHeight, ch);
+            cnt++;
+            xx += charWidth+offset;
+            s++;
+        }
+    }
+
+    // Draw the colored text
+    s = string;
+    xx = x;
+    cnt = 0;
+    trap_R_SetColor(setColor); // Set text color
+
+    while (*s && cnt < maxChars) {
+        if (Q_IsColorString(s)) {
+            if (!forceColor) {
+                memcpy(color, g_color_table[ColorIndex(*(s + 1))], sizeof(color));
+                color[3] = setColor[3]; // Preserve alpha
+                trap_R_SetColor(color);
+            }
+            s += 2; // Skip color codes
+            continue;
+        }
+
+        ch = *s & 255; // Handle character encoding
+        // Handle potential Unicode characters
+        if (ch < 0) {
+            if ((ch == -48) || (ch == -47)) {
+                prev_unicode = ch;
+                s++;
+                cnt++;
+                continue;
+            }
+            if (ch >= -112) {
+                ch = (ch == -111 && prev_unicode == -47) ? ch - 13 : ch + 48;
+            } else {
+                ch = (ch == -127 && prev_unicode == -48) ? ch : ch + 112; // Adjust for Unicode offset
+            }
+        }
+
+        // Draw the character
+        CG_DrawChar(xx, y, charWidth, charHeight, ch);
+        xx += charWidth+offset;
+        cnt++;
+        s++;
+    }
+
+    // Reset color
+    trap_R_SetColor(NULL);
 }
 
 
@@ -449,7 +291,7 @@ void CG_DrawBigString( int x, int y, const char *s, float alpha ) {
 
 	color[0] = color[1] = color[2] = 1.0;
 	color[3] = alpha;
-	CG_DrawStringExt( x, y, s, color, qfalse, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
+	CG_DrawStringExt( x, y, s, color, qfalse, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0, 0 );
 }
 
 void CG_DrawGiantString( int x, int y, const char *s, float alpha ) {
@@ -457,11 +299,11 @@ void CG_DrawGiantString( int x, int y, const char *s, float alpha ) {
 
 	color[0] = color[1] = color[2] = 1.0;
 	color[3] = alpha;
-	CG_DrawStringExt( x, y, s, color, qfalse, qtrue, GIANTCHAR_WIDTH, GIANTCHAR_HEIGHT, 0 );
+	CG_DrawStringExt( x, y, s, color, qfalse, qtrue, GIANTCHAR_WIDTH, GIANTCHAR_HEIGHT, 0, 0 );
 }
 
 void CG_DrawBigStringColor( int x, int y, const char *s, vec4_t color ) {
-	CG_DrawStringExt( x, y, s, color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
+	CG_DrawStringExt( x, y, s, color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0, 0 );
 }
 
 void CG_DrawSmallString( int x, int y, const char *s, float alpha ) {
@@ -469,11 +311,11 @@ void CG_DrawSmallString( int x, int y, const char *s, float alpha ) {
 
 	color[0] = color[1] = color[2] = 1.0;
 	color[3] = alpha;
-	CG_DrawStringExt( x, y, s, color, qfalse, qfalse, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 0 );
+	CG_DrawStringExt( x, y, s, color, qfalse, qfalse, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 0, 0 );
 }
 
 void CG_DrawSmallStringColor( int x, int y, const char *s, vec4_t color ) {
-	CG_DrawStringExt( x, y, s, color, qtrue, qfalse, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 0 );
+	CG_DrawStringExt( x, y, s, color, qtrue, qfalse, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 0, 0 );
 }
 
 /*
@@ -671,418 +513,6 @@ void CG_ColorForHealth( vec4_t hcolor ) {
 	CG_GetColorForHealth( cg.snap->ps.stats[STAT_HEALTH], 
 		cg.snap->ps.stats[STAT_ARMOR], hcolor );
 }
-
-
-
-
-// bk001205 - code below duplicated in q3_ui/ui-atoms.c
-// bk001205 - FIXME: does this belong in ui_shared.c?
-/*
-=================
-UI_DrawProportionalString2
-=================
-*/
-static int	propMap[128][3] = {
-{0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1},
-{0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1},
-
-{0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1},
-{0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1},
-
-{0, 0, PROP_SPACE_WIDTH},		// SPACE
-{11, 122, 7},	// !
-{154, 181, 14},	// "
-{55, 122, 17},	// #
-{79, 122, 18},	// $
-{101, 122, 23},	// %
-{153, 122, 18},	// &
-{9, 93, 7},		// '
-{207, 122, 8},	// (
-{230, 122, 9},	// )
-{177, 122, 18},	// *
-{30, 152, 18},	// +
-{85, 181, 7},	// ,
-{34, 93, 11},	// -
-{110, 181, 6},	// .
-{130, 152, 14},	// /
-
-{22, 64, 17},	// 0
-{41, 64, 12},	// 1
-{58, 64, 17},	// 2
-{78, 64, 18},	// 3
-{98, 64, 19},	// 4
-{120, 64, 18},	// 5
-{141, 64, 18},	// 6
-{204, 64, 16},	// 7
-{162, 64, 17},	// 8
-{182, 64, 18},	// 9
-{59, 181, 7},	// :
-{35,181, 7},	// ;
-{203, 152, 14},	// <
-{56, 93, 14},	// =
-{228, 152, 14},	// >
-{177, 181, 18},	// ?
-
-{28, 122, 22},	// @
-{5, 4, 18},		// A
-{27, 4, 18},	// B
-{48, 4, 18},	// C
-{69, 4, 17},	// D
-{90, 4, 13},	// E
-{106, 4, 13},	// F
-{121, 4, 18},	// G
-{143, 4, 17},	// H
-{164, 4, 8},	// I
-{175, 4, 16},	// J
-{195, 4, 18},	// K
-{216, 4, 12},	// L
-{230, 4, 23},	// M
-{6, 34, 18},	// N
-{27, 34, 18},	// O
-
-{48, 34, 18},	// P
-{68, 34, 18},	// Q
-{90, 34, 17},	// R
-{110, 34, 18},	// S
-{130, 34, 14},	// T
-{146, 34, 18},	// U
-{166, 34, 19},	// V
-{185, 34, 29},	// W
-{215, 34, 18},	// X
-{234, 34, 18},	// Y
-{5, 64, 14},	// Z
-{60, 152, 7},	// [
-{106, 151, 13},	// '\'
-{83, 152, 7},	// ]
-{128, 122, 17},	// ^
-{4, 152, 21},	// _
-
-{134, 181, 5},	// '
-{5, 4, 18},		// A
-{27, 4, 18},	// B
-{48, 4, 18},	// C
-{69, 4, 17},	// D
-{90, 4, 13},	// E
-{106, 4, 13},	// F
-{121, 4, 18},	// G
-{143, 4, 17},	// H
-{164, 4, 8},	// I
-{175, 4, 16},	// J
-{195, 4, 18},	// K
-{216, 4, 12},	// L
-{230, 4, 23},	// M
-{6, 34, 18},	// N
-{27, 34, 18},	// O
-
-{48, 34, 18},	// P
-{68, 34, 18},	// Q
-{90, 34, 17},	// R
-{110, 34, 18},	// S
-{130, 34, 14},	// T
-{146, 34, 18},	// U
-{166, 34, 19},	// V
-{185, 34, 29},	// W
-{215, 34, 18},	// X
-{234, 34, 18},	// Y
-{5, 64, 14},	// Z
-{153, 152, 13},	// {
-{11, 181, 5},	// |
-{180, 152, 13},	// }
-{79, 93, 17},	// ~
-{0, 0, -1}		// DEL
-};
-
-static int propMapB[26][3] = {
-{11, 12, 33},
-{49, 12, 31},
-{85, 12, 31},
-{120, 12, 30},
-{156, 12, 21},
-{183, 12, 21},
-{207, 12, 32},
-
-{13, 55, 30},
-{49, 55, 13},
-{66, 55, 29},
-{101, 55, 31},
-{135, 55, 21},
-{158, 55, 40},
-{204, 55, 32},
-
-{12, 97, 31},
-{48, 97, 31},
-{82, 97, 30},
-{118, 97, 30},
-{153, 97, 30},
-{185, 97, 25},
-{213, 97, 30},
-
-{11, 139, 32},
-{42, 139, 51},
-{93, 139, 32},
-{126, 139, 31},
-{158, 139, 25},
-};
-
-#define PROPB_GAP_WIDTH		4
-#define PROPB_SPACE_WIDTH	12
-#define PROPB_HEIGHT		36
-
-/*
-=================
-UI_DrawBannerString
-=================
-*/
-static void UI_DrawBannerString2( int x, int y, const char* str, vec4_t color )
-{
-	const char* s;
-	unsigned char	ch; // bk001204 : array subscript
-	float	ax;
-	float	ay;
-	float	aw;
-	float	ah;
-	float	frow;
-	float	fcol;
-	float	fwidth;
-	float	fheight;
-
-	// draw the colored text
-	trap_R_SetColor( color );
-	
-	ax = x * cgs.screenXScale + cgs.screenXBias;
-	ay = y * cgs.screenYScale;
-
-	s = str;
-	while ( *s )
-	{
-		ch = *s & 127;
-		if ( ch == ' ' ) {
-			ax += ((float)PROPB_SPACE_WIDTH + (float)PROPB_GAP_WIDTH)* cgs.screenXScale;
-		}
-		else if ( ch >= 'A' && ch <= 'Z' ) {
-			ch -= 'A';
-			fcol = (float)propMapB[ch][0] / 256.0f;
-			frow = (float)propMapB[ch][1] / 256.0f;
-			fwidth = (float)propMapB[ch][2] / 256.0f;
-			fheight = (float)PROPB_HEIGHT / 256.0f;
-			aw = (float)propMapB[ch][2] * cgs.screenXScale;
-			ah = (float)PROPB_HEIGHT * cgs.screenXScale;
-			trap_R_DrawStretchPic( ax, ay, aw, ah, fcol, frow, fcol+fwidth, frow+fheight, cgs.media.charsetPropB );
-			ax += (aw + (float)PROPB_GAP_WIDTH * cgs.screenXScale);
-		}
-		s++;
-	}
-
-	trap_R_SetColor( NULL );
-}
-
-void UI_DrawBannerString( int x, int y, const char* str, int style, vec4_t color ) {
-	const char *	s;
-	int				ch;
-	int				width;
-	vec4_t			drawcolor;
-
-	// find the width of the drawn text
-	s = str;
-	width = 0;
-	while ( *s ) {
-		ch = *s;
-		if ( ch == ' ' ) {
-			width += PROPB_SPACE_WIDTH;
-		}
-		else if ( ch >= 'A' && ch <= 'Z' ) {
-			width += propMapB[ch - 'A'][2] + PROPB_GAP_WIDTH;
-		}
-		s++;
-	}
-	width -= PROPB_GAP_WIDTH;
-
-	switch( style & UI_FORMATMASK ) {
-		case UI_CENTER:
-			x -= width / 2;
-			break;
-
-		case UI_RIGHT:
-			x -= width;
-			break;
-
-		case UI_LEFT:
-		default:
-			break;
-	}
-
-	if ( style & UI_DROPSHADOW ) {
-		drawcolor[0] = drawcolor[1] = drawcolor[2] = 0;
-		drawcolor[3] = color[3];
-		UI_DrawBannerString2( x+2, y+2, str, drawcolor );
-	}
-
-	UI_DrawBannerString2( x, y, str, color );
-}
-
-
-int UI_ProportionalStringWidth( const char* str ) {
-	const char *	s;
-	int				ch;
-	int				charWidth;
-	int				width;
-
-	s = str;
-	width = 0;
-	while ( *s ) {
-		ch = *s & 127;
-		charWidth = propMap[ch][2];
-		if ( charWidth != -1 ) {
-			width += charWidth;
-			width += PROP_GAP_WIDTH;
-		}
-		s++;
-	}
-
-	width -= PROP_GAP_WIDTH;
-	if(ifstrlenru(str)){
-		return width * 0.5;	
-	} else {
-		return width;
-	}
-}
-
-static void UI_DrawProportionalString2( int x, int y, const char* str, vec4_t color, float sizeScale, qhandle_t charset )
-{
-	const char* s;
-	unsigned char	ch; // bk001204 - unsigned
-	float	ax;
-	float	ay;
-	float	aw;
-	float	ah;
-	float	frow;
-	float	fcol;
-	float	fwidth;
-	float	fheight;
-
-	// draw the colored text
-	trap_R_SetColor( color );
-	
-	ax = x * cgs.screenXScale + cgs.screenXBias;
-	ay = y * cgs.screenXScale;
-
-	s = str;
-	while ( *s )
-	{
-		ch = *s & 127;
-		if ( ch == ' ' ) {
-			aw = (float)PROP_SPACE_WIDTH * cgs.screenXScale * sizeScale;
-		} else if ( propMap[ch][2] != -1 ) {
-			fcol = (float)propMap[ch][0] / 256.0f;
-			frow = (float)propMap[ch][1] / 256.0f;
-			fwidth = (float)propMap[ch][2] / 256.0f;
-			fheight = (float)PROP_HEIGHT / 256.0f;
-			aw = (float)propMap[ch][2] * cgs.screenXScale * sizeScale;
-			ah = (float)PROP_HEIGHT * cgs.screenXScale * sizeScale;
-			trap_R_DrawStretchPic( ax, ay, aw, ah, fcol, frow, fcol+fwidth, frow+fheight, charset );
-		} else {
-			aw = 0;
-		}
-
-		ax += (aw + (float)PROP_GAP_WIDTH * cgs.screenXScale * sizeScale);
-		s++;
-	}
-
-	trap_R_SetColor( NULL );
-}
-
-/*
-=================
-UI_ProportionalSizeScale
-=================
-*/
-float UI_ProportionalSizeScale( int style ) {
-	if(  style & UI_SMALLFONT ) {
-		return 0.75;
-	}
-
-	return 1;
-}
-
-
-/*
-=================
-UI_DrawProportionalString
-=================
-*/
-void UI_DrawProportionalString( int x, int y, const char* str, int style, vec4_t color ) {
-	vec4_t	drawcolor;
-	int		width;
-	float	sizeScale;
-
-	sizeScale = UI_ProportionalSizeScale( style );
-
-	switch( style & UI_FORMATMASK ) {
-		case UI_CENTER:
-			width = UI_ProportionalStringWidth( str ) * sizeScale;
-			x -= width / 2;
-			break;
-
-		case UI_RIGHT:
-			width = UI_ProportionalStringWidth( str ) * sizeScale;
-			x -= width;
-			break;
-
-		case UI_LEFT:
-		default:
-			break;
-	}
-
-	if ( style & UI_DROPSHADOW ) {
-		drawcolor[0] = drawcolor[1] = drawcolor[2] = 0;
-		drawcolor[3] = color[3];
-		UI_DrawProportionalString2( x+2, y+2, str, drawcolor, sizeScale, cgs.media.charsetProp );
-	}
-
-	if ( style & UI_INVERSE ) {
-		drawcolor[0] = color[0] * 0.8;
-		drawcolor[1] = color[1] * 0.8;
-		drawcolor[2] = color[2] * 0.8;
-		drawcolor[3] = color[3];
-		UI_DrawProportionalString2( x, y, str, drawcolor, sizeScale, cgs.media.charsetProp );
-		return;
-	}
-
-	if ( style & UI_PULSE ) {
-		drawcolor[0] = color[0] * 0.8;
-		drawcolor[1] = color[1] * 0.8;
-		drawcolor[2] = color[2] * 0.8;
-		drawcolor[3] = color[3];
-		UI_DrawProportionalString2( x, y, str, color, sizeScale, cgs.media.charsetProp );
-
-		drawcolor[0] = color[0];
-		drawcolor[1] = color[1];
-		drawcolor[2] = color[2];
-		drawcolor[3] = 0.5 + 0.5 * sin( cg.time / PULSE_DIVISOR );
-		UI_DrawProportionalString2( x, y, str, drawcolor, sizeScale, cgs.media.charsetPropGlow );
-		return;
-	}
-
-	UI_DrawProportionalString2( x, y, str, color, sizeScale, cgs.media.charsetProp );
-}
-
-
-/*float teamcolormodels[TEAM_NUM_TEAMS][3] = {
-	{ 0.5f, 0.5f, 0.5f },	// free
-	{ 0.5f, 0.075f, 0 },	// red
-	{ 0, 0.075f, 0.5f },	// blue
-	{ 0.075f, 0.5f, 0 },	// green
-	{ 0.5f, 0.5f, 0.05f },	// gold
-	{ 0.075f, 0.5f, 0.5f },	// cyan
-	{ 0.5f, 0.05f, 0.5f },	// magenta
-	{ 0.5f, 0.5f, 0.5f }	// spectator
-};*/
-
-float teamcolormodels[TEAM_NUM_TEAMS][3] = {
-	{ 0.5f, 0.5f, 0.5f },	// free
-	{ 0.5f, 0.075f, 0 },	// red
-	{ 0.5f, 0.05f, 0.5f },	// magenta
-};
 
 qboolean CG_InsideBox( vec3_t mins, vec3_t maxs, vec3_t pos ){
 	if (pos[0] < mins[0] || pos[0] > maxs[0]) return qfalse;

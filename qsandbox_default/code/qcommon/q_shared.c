@@ -987,9 +987,9 @@ char *Q_CleanStr( char *string ) {
 	while ((c = *s) != 0 ) {
 		if ( Q_IsColorString( s ) ) {
 			s++;
-                        hadColor = qtrue;
+        	hadColor = qtrue;
 		}
-		else if ( c >= 0x20 && c <= 0x7E ) {
+		else if ( c ) {
 			*d++ = c;
 		}
 		s++;
@@ -1045,20 +1045,77 @@ does a varargs printf into a temp buffer, so I don't need to have
 varargs versions of all text functions.
 ============
 */
-char	* QDECL va( char *format, ... ) {
-	va_list		argptr;
-	static char string[2][32000]; // in case va is called by nested functions
-	static int	index = 0;
-	char		*buf;
+// Преобразование UTF-8 символов в отрицательный диапазон
+void convert_to_negative(char *str) {
+	size_t i;
+    for (i = 0; str[i] != '\0';) {
+        unsigned char c = (unsigned char)str[i];
+        if (c >= 128) {
+            str[i] = (char)(c - 256); // Преобразование 128-255 в -128 до -1
+        }
+        // Проверка на многобайтовые символы
+        if (c >= 0xC0) { // Начало многобайтового символа
+            if (c >= 0xF0) {
+                i += 4; // 4 байта
+            } else if (c >= 0xE0) {
+                i += 3; // 3 байта
+            } else {
+                i += 2; // 2 байта
+            }
+        } else {
+            i++; // Один байт
+        }
+    }
+}
 
-	buf = string[index & 1];
-	index++;
+// Преобразование обратно в положительный диапазон
+void convert_to_positive(char *str) {
+	size_t i;
+    for (i = 0; str[i] != '\0';) {
+        signed char c = (signed char)str[i];
+        if (c < 0) {
+            str[i] = (char)(c + 256); // Преобразование -128 до -1 обратно в 128-255
+        }
+        // Проверка на многобайтовые символы
+        if ((unsigned char)c >= 0xC0) { // Начало многобайтового символа
+            if (c >= 0xF0) {
+                i += 4; // 4 байта
+            } else if (c >= 0xE0) {
+                i += 3; // 3 байта
+            } else {
+                i += 2; // 2 байта
+            }
+        } else {
+            i++; // Один байт
+        }
+    }
+}
 
-	va_start (argptr, format);
-	Q_vsnprintf (buf, sizeof(*string), format, argptr);
-	va_end (argptr);
+// Ваша функция va
+char *QDECL va(char *format, ...) {
+    va_list argptr;
+    static char string[2][32000]; // В случае, если va будет вызвана из вложенных функций
+    static int index = 0;
+    char *buf;
 
-	return buf;
+    buf = string[index & 1];
+    index++;
+
+    va_start(argptr, format);
+
+    // Преобразуем символы в отрицательный диапазон
+    convert_to_negative(buf);
+    
+    // Обработка формата с преобразованием символов
+    Q_vsnprintf(buf, sizeof(string[0]), format, argptr);
+    
+    // Здесь вы можете использовать buf для дальнейшей обработки
+    // Например, если вам нужно вернуть результат обратно в положительный диапазон
+    convert_to_positive(buf);
+
+    va_end(argptr);
+
+    return buf;
 }
 
 /*

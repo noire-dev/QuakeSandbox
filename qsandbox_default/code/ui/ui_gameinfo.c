@@ -4,11 +4,7 @@
 // gameinfo.c
 //
 
-
-
-
 #include "ui_local.h"
-
 
 //
 // arena and bot info
@@ -30,12 +26,8 @@ static int		ui_numSpecialSinglePlayerArenas;
 static char		dirlist[DIRLIST_SIZE];
 static int		allocPoint, outOfMemory;
 
-
-
-
 #define POOLSIZE	4096 * 8192
 static char		memoryPool[POOLSIZE];
-
 
 /*
 ===============
@@ -87,9 +79,6 @@ void UI_InitMemory( void ) {
 	outOfMemory = qfalse;
 }
 
-
-
-
 /*
 ===============
 UI_StoreMapInfo
@@ -106,7 +95,6 @@ qboolean UI_StoreInfo( char *info, char **infos )
 
 	return qfalse;
 }
-
 
 /*
 ===============
@@ -209,9 +197,6 @@ static void UI_LoadArenasFromFile( char *filename ) {
 	ui_numArenas += UI_ParseInfos( buf, MAX_ARENAS - ui_numArenas, &ui_arenaInfos[ui_numArenas] );
 }
 
-
-
-
 /*
 ===============
 UI_LoadUnscriptedMaps
@@ -243,9 +228,6 @@ static void UI_LoadUnscriptedMaps( void )
 		}
 	}
 }
-
-
-
 
 /*
 ===============
@@ -290,9 +272,6 @@ static void GameInfo_RemoveSingleFromArena( char* info )
 //	trap_Print(va("replacement value: %s\n", newvalue));
 	Info_SetValueForKey(info, "type", newvalue);
 }
-
-
-
 
 /*
 ===============
@@ -479,7 +458,6 @@ const char *UI_GetArenaInfoByNumber( int num ) {
 	return NULL;
 }
 
-
 /*
 ===============
 UI_GetArenaInfoByMap
@@ -497,10 +475,6 @@ const char *UI_GetArenaInfoByMap( const char *map ) {
 	return NULL;
 }
 
-
-
-
-
 /*
 ===============
 UI_GetSpecialArenaInfo
@@ -517,9 +491,6 @@ const char *UI_GetSpecialArenaInfo( const char *tag ) {
 
 	return NULL;
 }
-
-
-
 
 /*
 ===============
@@ -587,7 +558,6 @@ void UI_LoadBots( void ) {
 	trap_Print( va( "%i bots parsed\n", ui_numBots ) );
 }
 
-
 /*
 ===============
 UI_GetBotInfoByNumber
@@ -600,7 +570,6 @@ char *UI_GetBotInfoByNumber( int num ) {
 	}
 	return ui_botInfos[num];
 }
-
 
 /*
 ===============
@@ -621,8 +590,6 @@ char *UI_GetBotInfoByName( const char *name ) {
 	return NULL;
 }
 
-
-
 /*
 ===============
 UI_GetNumBots
@@ -631,9 +598,6 @@ UI_GetNumBots
 int UI_GetNumBots( void ) {
 	return ui_numBots;
 }
-
-
-
 
 /*
 ===============
@@ -654,8 +618,6 @@ int UI_GetBotNumByName( const char *name ) {
 	return -1;
 }
 
-
-
 char *UI_GetBotNameByNumber( int num ) {
 	char *info = UI_GetBotInfoByNumber(num);
 	if (info) {
@@ -663,8 +625,6 @@ char *UI_GetBotNameByNumber( int num ) {
 	}
 	return "Sarge";
 }
-
-
 
 /*
 ===============
@@ -674,409 +634,6 @@ UI_GetNumArenas
 int UI_GetNumArenas( void ) {
 	return ui_numArenas;
 }
-
-
-
-
-
-
-
-//
-// single player game info
-//
-
-/*
-===============
-UI_GetBestScore
-
-Returns the player's best finish on a given level, 0 if the have not played the level
-===============
-*/
-void UI_GetBestScore( int level, int *score, int *skill ) {
-	int		n;
-	int		skillScore;
-	int		bestScore;
-	int		bestScoreSkill;
-	char	arenaKey[16];
-	char	scores[MAX_INFO_VALUE];
-
-	if( !score || !skill ) {
-		return;
-	}
-
-	if( level < 0 || level > ui_numArenas ) {
-		return;
-	}
-
-	bestScore = 0;
-	bestScoreSkill = 0;
-
-	for( n = 1; n <= 5; n++ ) {
-		trap_Cvar_VariableStringBuffer( va( "g_spScores%i", n ), scores, MAX_INFO_VALUE );
-
-		Com_sprintf( arenaKey, sizeof( arenaKey ), "l%i", level );
-		skillScore = atoi( Info_ValueForKey( scores, arenaKey ) );
-
-		if( skillScore < 1 || skillScore > 8 ) {
-			continue;
-		}
-
-		if( !bestScore || skillScore <= bestScore ) {
-			bestScore = skillScore;
-			bestScoreSkill = n;
-		}
-	}
-
-	*score = bestScore;
-	*skill = bestScoreSkill;
-}
-
-
-/*
-===============
-UI_SetBestScore
-
-Set the player's best finish for a level
-===============
-*/
-void UI_SetBestScore( int level, int score ) {
-	int		skill;
-	int		oldScore;
-	char	arenaKey[16];
-	char	scores[MAX_INFO_VALUE];
-
-	// validate score
-	if( score < 1 || score > 8 ) {
-		return;
-	}
-
-	// validate skill
-	skill = (int)trap_Cvar_VariableValue( "g_spSkill" );
-	if( skill < 1 || skill > 5 ) {
-		return;
-	}
-
-	// get scores
-	trap_Cvar_VariableStringBuffer( va( "g_spScores%i", skill ), scores, MAX_INFO_VALUE );
-
-	// see if this is better
-	Com_sprintf( arenaKey, sizeof( arenaKey ), "l%i", level );
-	oldScore = atoi( Info_ValueForKey( scores, arenaKey ) );
-	if( oldScore && oldScore <= score ) {
-		return;
-	}
-
-	// update scores
-	Info_SetValueForKey( scores, arenaKey, va( "%i", score ) );
-	trap_Cvar_Set( va( "g_spScores%i", skill ), scores );
-}
-
-
-/*
-===============
-UI_LogAwardData
-===============
-*/
-void UI_LogAwardData( int award, int data ) {
-	char	key[16];
-	char	awardData[MAX_INFO_VALUE];
-	int		oldValue;
-
-	if( data == 0 ) {
-		return;
-	}
-
-	if( award > AWARD_PERFECT ) {
-		trap_Print( va( S_COLOR_RED "Bad award %i in UI_LogAwardData\n", award ) );
-		return;
-	}
-
-	trap_Cvar_VariableStringBuffer( "g_spAwards", awardData, sizeof(awardData) );
-
-	Com_sprintf( key, sizeof(key), "a%i", award );
-	oldValue = atoi( Info_ValueForKey( awardData, key ) );
-
-	Info_SetValueForKey( awardData, key, va( "%i", oldValue + data ) );
-	trap_Cvar_Set( "g_spAwards", awardData );
-}
-
-
-/*
-===============
-UI_GetAwardLevel
-===============
-*/
-int UI_GetAwardLevel( int award ) {
-	char	key[16];
-	char	awardData[MAX_INFO_VALUE];
-
-	trap_Cvar_VariableStringBuffer( "g_spAwards", awardData, sizeof(awardData) );
-
-	Com_sprintf( key, sizeof(key), "a%i", award );
-	return atoi( Info_ValueForKey( awardData, key ) );
-}
-
-
-/*
-===============
-UI_TierCompleted
-===============
-*/
-int UI_TierCompleted( int levelWon ) {
-	int			level;
-	int			n;
-	int			tier;
-	int			score;
-	int			skill;
-	const char	*info;
-
-	tier = levelWon / ARENAS_PER_TIER;
-	level = tier * ARENAS_PER_TIER;
-
-	if( tier == UI_GetNumSPTiers() ) {
-		info = UI_GetSpecialArenaInfo( "training" );
-		if( levelWon == atoi( Info_ValueForKey( info, "num" ) ) ) {
-			return 0;
-		}
-		info = UI_GetSpecialArenaInfo( "final" );
-		if( !info || levelWon == atoi( Info_ValueForKey( info, "num" ) ) ) {
-			return tier + 1;
-		}
-		return -1;
-	}
-
-	for( n = 0; n < ARENAS_PER_TIER; n++, level++ ) {
-		UI_GetBestScore( level, &score, &skill );
-		if ( score != 1 ) {
-			return -1;
-		}
-	}
-	return tier + 1;
-}
-
-
-/*
-===============
-UI_ShowTierVideo
-===============
-*/
-qboolean UI_ShowTierVideo( int tier ) {
-	char	key[16];
-	char	videos[MAX_INFO_VALUE];
-
-	if( tier <= 0 ) {
-		return qfalse;
-	}
-
-	trap_Cvar_VariableStringBuffer( "g_spVideos", videos, sizeof(videos) );
-
-	Com_sprintf( key, sizeof(key), "tier%i", tier );
-	if( atoi( Info_ValueForKey( videos, key ) ) ) {
-		return qfalse;
-	}
-
-	Info_SetValueForKey( videos, key, va( "%i", 1 ) );
-	trap_Cvar_Set( "g_spVideos", videos );
-
-	return qtrue;
-}
-
-
-/*
-===============
-UI_CanShowTierVideo
-===============
-*/
-qboolean UI_CanShowTierVideo( int tier ) {
-	char	key[16];
-	char	videos[MAX_INFO_VALUE];
-
-	if( !tier ) {
-		return qfalse;
-	}
-
-	if( uis.demoversion && tier != 8 ) {
-		return qfalse;
-	}
-
-	trap_Cvar_VariableStringBuffer( "g_spVideos", videos, sizeof(videos) );
-
-	Com_sprintf( key, sizeof(key), "tier%i", tier );
-	if( atoi( Info_ValueForKey( videos, key ) ) ) {
-		return qtrue;
-	}
-
-	return qfalse;
-}
-
-
-/*
-===============
-UI_GetCurrentGame
-
-Returns the next level the player has not won
-===============
-*/
-int UI_GetCurrentGame( void ) {
-	int		level;
-	int		rank;
-	int		skill;
-	const char *info;
-
-	info = UI_GetSpecialArenaInfo( "training" );
-	if( info ) {
-		level = atoi( Info_ValueForKey( info, "num" ) );
-		UI_GetBestScore( level, &rank, &skill );
-		if ( !rank || rank > 1 ) {
-			return level;
-		}
-	}
-
-	for( level = 0; level < ui_numSinglePlayerArenas; level++ ) {
-		UI_GetBestScore( level, &rank, &skill );
-		if ( !rank || rank > 1 ) {
-			return level;
-		}
-	}
-
-	info = UI_GetSpecialArenaInfo( "final" );
-	if( !info ) {
-		return -1;
-	}
-	return atoi( Info_ValueForKey( info, "num" ) );
-}
-
-
-/*
-===============
-UI_NewGame
-
-Clears the scores and sets the difficutly level
-===============
-*/
-void UI_NewGame( void ) {
-	trap_Cvar_Set( "g_spScores1", "" );
-	trap_Cvar_Set( "g_spScores2", "" );
-	trap_Cvar_Set( "g_spScores3", "" );
-	trap_Cvar_Set( "g_spScores4", "" );
-	trap_Cvar_Set( "g_spScores5", "" );
-	trap_Cvar_Set( "g_spAwards", "" );
-	trap_Cvar_Set( "g_spVideos", "" );
-}
-
-
-
-/*
-===============
-UI_GetNumSPArenas
-===============
-*/
-int UI_GetNumSPArenas( void ) {
-	return ui_numSinglePlayerArenas;
-}
-
-
-/*
-===============
-UI_GetNumSPTiers
-===============
-*/
-int UI_GetNumSPTiers( void ) {
-	return ui_numSinglePlayerArenas / ARENAS_PER_TIER;
-}
-
-
-
-/*
-===============
-UI_SPUnlock_f
-===============
-*/
-void UI_SPUnlock_f( void ) {
-	char	arenaKey[16];
-	char	scores[MAX_INFO_VALUE];
-	int		level;
-	int		tier;
-
-	// get scores for skill 1
-	trap_Cvar_VariableStringBuffer( "g_spScores1", scores, MAX_INFO_VALUE );
-
-	// update scores
-	for( level = 0; level < ui_numSinglePlayerArenas + ui_numSpecialSinglePlayerArenas; level++ ) {
-		Com_sprintf( arenaKey, sizeof( arenaKey ), "l%i", level );
-		Info_SetValueForKey( scores, arenaKey, "1" );
-	}
-	trap_Cvar_Set( "g_spScores1", scores );
-
-	// unlock cinematics
-	for( tier = 1; tier <= 8; tier++ ) {
-		UI_ShowTierVideo( tier );
-	}
-
-	trap_Print( "All levels unlocked at skill level 1\n" );
-
-	UI_SPLevelMenu_ReInit();
-}
-
-
-/*
-===============
-UI_SPUnlockMedals_f
-===============
-*/
-void UI_SPUnlockMedals_f( void ) {
-	int		n;
-	char	key[16];
-	char	awardData[MAX_INFO_VALUE];
-
-	trap_Cvar_VariableStringBuffer( "g_spAwards", awardData, MAX_INFO_VALUE );
-
-	for( n = 0; n < 6; n++ ) {
-		Com_sprintf( key, sizeof(key), "a%i", n );
-		Info_SetValueForKey( awardData, key, "100" );
-	}
-
-	trap_Cvar_Set( "g_spAwards", awardData );
-
-	trap_Print( "All levels unlocked at 100\n" );
-}
-
-
-/*
-===============
-UIE_IsPunkbusterVersion
-===============
-*/
-static qboolean UIE_IsPunkbusterVersion( void ) {
-   vmCvar_t cvar;
-   int cl;
-
-   // get the current setting (defaults to 0 if not found)
-   cl = trap_Cvar_VariableValue("cl_punkbuster");
-
-   // must distinguish between a true value of 0 set by the punkbuster cvar,
-   // and a default value of 0 because the cvar doesn't exist.
-   // We do this by registering the cvar with a non-zero default value,
-   // and seeing if this becomes the value after a reset. If it does then
-   // the cvar hadn't been registered already, and punkbuster isn't on this
-   // system.
-   // This method relies on the fact that cl_punkbuster and associated
-   // default value is set by the system executable before this VM starts
-   trap_Cvar_Register(&cvar, "cl_punkbuster", "-1", 0);
-   trap_Cvar_Reset("cl_punkbuster");
-   trap_Cvar_Update(&cvar);
-   // reset to original value
-   trap_Cvar_SetValue("cl_punkbuster", cl);
-
-   if (cvar.integer < 0) {
-      trap_Print("UIE: Punkbuster not detected\n");
-      return qfalse;
-   }
-
-   return qtrue;
-}
-
-
 
 /*
 ===============
@@ -1088,9 +645,6 @@ void UI_InitGameinfo( void ) {
 	UI_InitMemory();
 	UI_LoadArenas();
 	UI_LoadBots();
-
-   // punkbuster check
-   uis.punkbuster = UIE_IsPunkbusterVersion();
 
 	if( (trap_Cvar_VariableValue( "fs_restrict" )) || (ui_numSpecialSinglePlayerArenas == 0 && ui_numSinglePlayerArenas == 4) ) {
 		uis.demoversion = qtrue;

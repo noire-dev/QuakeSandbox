@@ -95,59 +95,59 @@ static void UI_CinematicsMenu_Event2( void *ptr, int event ) {
 	trap_Cmd_ExecuteText( EXEC_APPEND, va( "exec save0%i.cfg\n", atoi(cinematics[n]) ) );
 	if(atoi(cinematics[n]) == 1){
 	trap_Cvar_Set( "session", 	"0" );
-	trap_Cvar_Set( "session0", 	UI_ArenaScriptAutoChar( "save1_session0" ) );
-	trap_Cvar_Set( "session0_lvl", UI_ArenaScriptAutoChar( "save1_session0_lvl" ) );
-	trap_Cvar_Set( "epsession", 	UI_ArenaScriptAutoChar( "save1_epsession" ) );
-	trap_Cvar_Set( "save_curmap", 	UI_ArenaScriptAutoChar( "save1_curmap" ) );
+	trap_Cvar_Set( "session0", 	UI_Cvar_VariableString( "save1_session0" ) );
+	trap_Cvar_Set( "session0_lvl", UI_Cvar_VariableString( "save1_session0_lvl" ) );
+	trap_Cvar_Set( "epsession", 	UI_Cvar_VariableString( "save1_epsession" ) );
+	trap_Cvar_Set( "save_curmap", 	UI_Cvar_VariableString( "save1_curmap" ) );
 	}
 	if(atoi(cinematics[n]) == 2){
 	trap_Cvar_Set( "session", 	"0" );
-	trap_Cvar_Set( "session0", 	UI_ArenaScriptAutoChar( "save2_session0" ) );
-	trap_Cvar_Set( "session0_lvl", UI_ArenaScriptAutoChar( "save2_session0_lvl" ) );
-	trap_Cvar_Set( "epsession", 	UI_ArenaScriptAutoChar( "save2_epsession" ) );
-	trap_Cvar_Set( "save_curmap", 	UI_ArenaScriptAutoChar( "save2_curmap" ) );
+	trap_Cvar_Set( "session0", 	UI_Cvar_VariableString( "save2_session0" ) );
+	trap_Cvar_Set( "session0_lvl", UI_Cvar_VariableString( "save2_session0_lvl" ) );
+	trap_Cvar_Set( "epsession", 	UI_Cvar_VariableString( "save2_epsession" ) );
+	trap_Cvar_Set( "save_curmap", 	UI_Cvar_VariableString( "save2_curmap" ) );
 	}
 	if(atoi(cinematics[n]) == 3){
 	trap_Cvar_Set( "session", 	"0" );
-	trap_Cvar_Set( "session0", 	UI_ArenaScriptAutoChar( "save3_session0" ) );
-	trap_Cvar_Set( "session0_lvl", UI_ArenaScriptAutoChar( "save3_session0_lvl" ) );
-	trap_Cvar_Set( "epsession", 	UI_ArenaScriptAutoChar( "save3_epsession" ) );
-	trap_Cvar_Set( "save_curmap", 	UI_ArenaScriptAutoChar( "save3_curmap" ) );
+	trap_Cvar_Set( "session0", 	UI_Cvar_VariableString( "save3_session0" ) );
+	trap_Cvar_Set( "session0_lvl", UI_Cvar_VariableString( "save3_session0_lvl" ) );
+	trap_Cvar_Set( "epsession", 	UI_Cvar_VariableString( "save3_epsession" ) );
+	trap_Cvar_Set( "save_curmap", 	UI_Cvar_VariableString( "save3_curmap" ) );
 	}
 	if(atoi(cinematics[n]) == 4){
 	trap_Cvar_Set( "session", 	"0" );
-	trap_Cvar_Set( "session0", 	UI_ArenaScriptAutoChar( "save4_session0" ) );
-	trap_Cvar_Set( "session0_lvl", UI_ArenaScriptAutoChar( "save4_session0_lvl" ) );
-	trap_Cvar_Set( "epsession", 	UI_ArenaScriptAutoChar( "save4_epsession" ) );
-	trap_Cvar_Set( "save_curmap", 	UI_ArenaScriptAutoChar( "save4_curmap" ) );
+	trap_Cvar_Set( "session0", 	UI_Cvar_VariableString( "save4_session0" ) );
+	trap_Cvar_Set( "session0_lvl", UI_Cvar_VariableString( "save4_session0_lvl" ) );
+	trap_Cvar_Set( "epsession", 	UI_Cvar_VariableString( "save4_epsession" ) );
+	trap_Cvar_Set( "save_curmap", 	UI_Cvar_VariableString( "save4_curmap" ) );
 	}
 	if(atoi(cinematics[n]) == 5){
 	trap_Cvar_Set( "session", 	"0" );
-	trap_Cvar_Set( "session0", 	UI_ArenaScriptAutoChar( "save5_session0" ) );
-	trap_Cvar_Set( "session0_lvl", UI_ArenaScriptAutoChar( "save5_session0_lvl" ) );
-	trap_Cvar_Set( "epsession", 	UI_ArenaScriptAutoChar( "save5_epsession" ) );
-	trap_Cvar_Set( "save_curmap", 	UI_ArenaScriptAutoChar( "save5_curmap" ) );
+	trap_Cvar_Set( "session0", 	UI_Cvar_VariableString( "save5_session0" ) );
+	trap_Cvar_Set( "session0_lvl", UI_Cvar_VariableString( "save5_session0_lvl" ) );
+	trap_Cvar_Set( "epsession", 	UI_Cvar_VariableString( "save5_epsession" ) );
+	trap_Cvar_Set( "save_curmap", 	UI_Cvar_VariableString( "save5_curmap" ) );
 	}
 	if(atoi(cinematics[n]) == 6){
 	trap_Cvar_Set( "session", 	"0" );
-	trap_Cvar_Set( "session0", 	UI_ArenaScriptAutoChar( "save6_session0" ) );
-	trap_Cvar_Set( "session0_lvl", UI_ArenaScriptAutoChar( "save6_session0_lvl" ) );
-	trap_Cvar_Set( "epsession", 	UI_ArenaScriptAutoChar( "save6_epsession" ) );
-	trap_Cvar_Set( "save_curmap", 	UI_ArenaScriptAutoChar( "save6_curmap" ) );
+	trap_Cvar_Set( "session0", 	UI_Cvar_VariableString( "save6_session0" ) );
+	trap_Cvar_Set( "session0_lvl", UI_Cvar_VariableString( "save6_session0_lvl" ) );
+	trap_Cvar_Set( "epsession", 	UI_Cvar_VariableString( "save6_epsession" ) );
+	trap_Cvar_Set( "save_curmap", 	UI_Cvar_VariableString( "save6_curmap" ) );
 	}
 	if(atoi(cinematics[n]) == 7){
 	trap_Cvar_Set( "session", 	"0" );
-	trap_Cvar_Set( "session0", 	UI_ArenaScriptAutoChar( "save7_session0" ) );
-	trap_Cvar_Set( "session0_lvl", UI_ArenaScriptAutoChar( "save7_session0_lvl" ) );
-	trap_Cvar_Set( "epsession", 	UI_ArenaScriptAutoChar( "save7_epsession" ) );
-	trap_Cvar_Set( "save_curmap", 	UI_ArenaScriptAutoChar( "save7_curmap" ) );
+	trap_Cvar_Set( "session0", 	UI_Cvar_VariableString( "save7_session0" ) );
+	trap_Cvar_Set( "session0_lvl", UI_Cvar_VariableString( "save7_session0_lvl" ) );
+	trap_Cvar_Set( "epsession", 	UI_Cvar_VariableString( "save7_epsession" ) );
+	trap_Cvar_Set( "save_curmap", 	UI_Cvar_VariableString( "save7_curmap" ) );
 	}
 	if(atoi(cinematics[n]) == 8){
 	trap_Cvar_Set( "session", 	"0" );
-	trap_Cvar_Set( "session0", 	UI_ArenaScriptAutoChar( "save8_session0" ) );
-	trap_Cvar_Set( "session0_lvl", UI_ArenaScriptAutoChar( "save8_session0_lvl" ) );
-	trap_Cvar_Set( "epsession", 	UI_ArenaScriptAutoChar( "save8_epsession" ) );
-	trap_Cvar_Set( "save_curmap", 	UI_ArenaScriptAutoChar( "save8_curmap" ) );
+	trap_Cvar_Set( "session0", 	UI_Cvar_VariableString( "save8_session0" ) );
+	trap_Cvar_Set( "session0_lvl", UI_Cvar_VariableString( "save8_session0_lvl" ) );
+	trap_Cvar_Set( "epsession", 	UI_Cvar_VariableString( "save8_epsession" ) );
+	trap_Cvar_Set( "save_curmap", 	UI_Cvar_VariableString( "save8_curmap" ) );
 	}
 	UI_StartServerMenu( qtrue );
 	StartServer_LoadServer(NULL);

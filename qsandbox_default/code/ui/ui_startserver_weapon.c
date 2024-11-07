@@ -553,7 +553,6 @@ static controlinit_t weapv_plasma[] = {
 };
 
 
-// multiplayer controls (punkbuster)
 static controlinit_t weapv_lightning[] = {
 
 { SRVCTRL_NUMFIELD, 0, ID_SERVER_g_lgammocount, ITEM_ALWAYSON, "Lightning gun ammocount:", &s_scriptdata.server.g_lgammocount, -999999999, 999999999, NULL, 9, 9, NULL },
@@ -570,7 +569,6 @@ static controlinit_t weapv_lightning[] = {
 
 };
 
-// multiplayer controls (punkbuster)
 static controlinit_t weapv_railgun[] = {
 
 { SRVCTRL_NUMFIELD, 0, ID_SERVER_g_rgammocount, ITEM_ALWAYSON, "Railgun ammocount:", &s_scriptdata.server.g_rgammocount, -999999999, 999999999, NULL, 9, 9, NULL },
@@ -583,7 +581,6 @@ static controlinit_t weapv_railgun[] = {
 
 };
 
-// multiplayer controls (punkbuster)
 static controlinit_t weapv_bfg[] = {
 
 { SRVCTRL_NUMFIELD, 0, ID_SERVER_g_bfgammocount, ITEM_ALWAYSON, "BFG ammocount:", &s_scriptdata.server.g_bfgammocount, -999999999, 999999999, NULL, 9, 9, NULL },
@@ -605,7 +602,6 @@ static controlinit_t weapv_bfg[] = {
 
 };
 
-// multiplayer controls (punkbuster)
 static controlinit_t weapv_nailgun[] = {
 
 { SRVCTRL_NUMFIELD, 0, ID_SERVER_g_ngammocount, ITEM_ALWAYSON, "Nailgun ammocount:", &s_scriptdata.server.g_ngammocount, -999999999, 999999999, NULL, 9, 9, NULL },
@@ -628,7 +624,6 @@ static controlinit_t weapv_nailgun[] = {
 
 };
 
-// multiplayer controls (punkbuster)
 static controlinit_t weapv_prox[] = {
 
 { SRVCTRL_NUMFIELD, 0, ID_SERVER_g_plammocount, ITEM_ALWAYSON, "Prox launcher ammocount:", &s_scriptdata.server.g_plammocount, -999999999, 999999999, NULL, 9, 9, NULL },
@@ -646,7 +641,6 @@ static controlinit_t weapv_prox[] = {
 
 };
 
-// multiplayer controls (punkbuster)
 static controlinit_t weapv_chaingun[] = {
 
 { SRVCTRL_NUMFIELD, 0, ID_SERVER_g_cgammocount, ITEM_ALWAYSON, "Chaingun ammocount:", &s_scriptdata.server.g_cgammocount, -999999999, 999999999, NULL, 9, 9, NULL },
@@ -660,7 +654,6 @@ static controlinit_t weapv_chaingun[] = {
 
 };
 
-// multiplayer controls (punkbuster)
 static controlinit_t weapv_flamethrower[] = {
 
 { SRVCTRL_NUMFIELD, 0, ID_SERVER_g_ftammocount, ITEM_ALWAYSON, "Flamethrower ammocount:", &s_scriptdata.server.g_ftammocount, -999999999, 999999999, NULL, 9, 9, NULL },
@@ -682,7 +675,6 @@ static controlinit_t weapv_flamethrower[] = {
 
 };
 
-// multiplayer controls (punkbuster)
 static controlinit_t weapv_darkflare[] = {
 
 { SRVCTRL_NUMFIELD, 0, ID_SERVER_g_amweaponcount, ITEM_ALWAYSON, "Dark flare weaponcount:", &s_scriptdata.server.g_amweaponcount, -999999999, 999999999, NULL, 9, 9, NULL },

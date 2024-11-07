@@ -4248,7 +4248,6 @@ static sfxHandle_t Workshop_MenuKey( int key ) {
 
 static void UI_Workshop_Draw( void ) {
 	int i;
-	vec4_t color_mgui	    = {1.00f, 1.00f, 1.00f, 1.00f};
 	float			x, y, w, h;
 	vec4_t			color1 = {0.85, 0.9, 1.0, 1};
 

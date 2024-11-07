@@ -212,296 +212,6 @@ void UI_LerpColor(vec4_t a, vec4_t b, vec4_t c, float t)
 	}
 }
 
-/*
-=================
-UI_DrawProportionalString2
-=================
-*/
-static int	propMap[128][3] = {
-{0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1},
-{0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1},
-
-{0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1},
-{0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1},
-
-{0, 0, PROP_SPACE_WIDTH},		// SPACE
-{11, 122, 7},	// !
-{154, 181, 14},	// "
-{55, 122, 17},	// #
-{79, 122, 18},	// $
-{101, 122, 23},	// %
-{153, 122, 18},	// &
-{9, 93, 7},		// '
-{207, 122, 8},	// (
-{230, 122, 9},	// )
-{177, 122, 18},	// *
-{30, 152, 18},	// +
-{85, 181, 7},	// ,
-{34, 93, 11},	// -
-{110, 181, 6},	// .
-{130, 152, 14},	// /
-
-{22, 64, 17},	// 0
-{41, 64, 12},	// 1
-{58, 64, 17},	// 2
-{78, 64, 18},	// 3
-{98, 64, 19},	// 4
-{120, 64, 18},	// 5
-{141, 64, 18},	// 6
-{204, 64, 16},	// 7
-{162, 64, 17},	// 8
-{182, 64, 18},	// 9
-{59, 181, 7},	// :
-{35,181, 7},	// ;
-{203, 152, 14},	// <
-{56, 93, 14},	// =
-{228, 152, 14},	// >
-{177, 181, 18},	// ?
-
-{28, 122, 22},	// @
-{5, 4, 18},		// A
-{27, 4, 18},	// B
-{48, 4, 18},	// C
-{69, 4, 17},	// D
-{90, 4, 13},	// E
-{106, 4, 13},	// F
-{121, 4, 18},	// G
-{143, 4, 17},	// H
-{164, 4, 8},	// I
-{175, 4, 16},	// J
-{195, 4, 18},	// K
-{216, 4, 12},	// L
-{230, 4, 23},	// M
-{6, 34, 18},	// N
-{27, 34, 18},	// O
-
-{48, 34, 18},	// P
-{68, 34, 18},	// Q
-{90, 34, 17},	// R
-{110, 34, 18},	// S
-{130, 34, 14},	// T
-{146, 34, 18},	// U
-{166, 34, 19},	// V
-{185, 34, 29},	// W
-{215, 34, 18},	// X
-{234, 34, 18},	// Y
-{5, 64, 14},	// Z
-{60, 152, 7},	// [
-{106, 151, 13},	// '\'
-{83, 152, 7},	// ]
-{128, 122, 17},	// ^
-{4, 152, 21},	// _
-
-{134, 181, 5},	// '
-{5, 4, 18},		// A
-{27, 4, 18},	// B
-{48, 4, 18},	// C
-{69, 4, 17},	// D
-{90, 4, 13},	// E
-{106, 4, 13},	// F
-{121, 4, 18},	// G
-{143, 4, 17},	// H
-{164, 4, 8},	// I
-{175, 4, 16},	// J
-{195, 4, 18},	// K
-{216, 4, 12},	// L
-{230, 4, 23},	// M
-{6, 34, 18},	// N
-{27, 34, 18},	// O
-
-{48, 34, 18},	// P
-{68, 34, 18},	// Q
-{90, 34, 17},	// R
-{110, 34, 18},	// S
-{130, 34, 14},	// T
-{146, 34, 18},	// U
-{166, 34, 19},	// V
-{185, 34, 29},	// W
-{215, 34, 18},	// X
-{234, 34, 18},	// Y
-{5, 64, 14},	// Z
-{153, 152, 13},	// {
-{11, 181, 5},	// |
-{180, 152, 13},	// }
-{79, 93, 17},	// ~
-{0, 0, -1}		// DEL
-};
-
-static int propMapB[26][3] = {
-{11, 12, 33},
-{49, 12, 31},
-{85, 12, 31},
-{120, 12, 30},
-{156, 12, 21},
-{183, 12, 21},
-{207, 12, 32},
-
-{13, 55, 30},
-{49, 55, 13},
-{66, 55, 29},
-{101, 55, 31},
-{135, 55, 21},
-{158, 55, 40},
-{204, 55, 32},
-
-{12, 97, 31},
-{48, 97, 31},
-{82, 97, 30},
-{118, 97, 30},
-{153, 97, 30},
-{185, 97, 25},
-{213, 97, 30},
-
-{11, 139, 32},
-{42, 139, 51},
-{93, 139, 32},
-{126, 139, 31},
-{158, 139, 25},
-};
-
-#define PROPB_GAP_WIDTH		4
-#define PROPB_SPACE_WIDTH	12
-#define PROPB_HEIGHT		36
-
-// bk001205 - code below duplicated in cgame/cg_drawtools.c
-// bk001205 - FIXME: does this belong in ui_shared.c?
-/*
-=================
-UI_DrawBannerString
-=================
-*/
-static void UI_DrawBannerString2( int x, int y, const char* str, vec4_t color )
-{
-	const char* s;
-	char	ch;
-    int prev_unicode = 0;
-	vec4_t	tempcolor;
-	float	ax;
-	float	ay;
-	float	aw;
-	float	ah;
-	float	frow;
-	float	fcol;
-	float	fwidth;
-	float	fheight;
-
-    int charw = 20;
-    int charh = 20;
-
-    float alignstate = 0;
-
-	// draw the colored text
-	trap_R_SetColor( color );
-
-	ax = x * uis.scale + uis.bias;
-	ay = y * uis.scale;
-	ay += uis.menuscroll;
-	aw = charw * uis.scale * 1;
-	ah = charh * uis.scale * 1;
-
-	s = str;
-        while ( *s )
-        {
-           if ((*s == -48) || (*s == -47)) {
-              ax = ax+aw*alignstate;
-           }
-           s++;
-        }
-	s = str;
-	while ( *s )
-	{
-        if ( Q_IsColorString( s ) )
-		{
-		    memcpy( tempcolor, g_color_table[ColorIndex(s[1])], sizeof( tempcolor ) );
-	        tempcolor[3] = color[3];
-	        trap_R_SetColor( tempcolor );
-			s += 2;
-			continue;
-		}
-		if (*s != ' ')
-		{
-            ch = *s & 255;
-            // unicode russian stuff support
-            //Com_Printf("UI_letter: is %d\n", *s);
-            if (ch < 0) {
-               if ((ch == -48) || (ch == -47)) {
-                  prev_unicode = ch;
-                  s++;
-                  continue;
-               }
-               if (ch >= -112) {
-                  if ((ch == -111) && (prev_unicode == -47)) {
-                     ch = ch - 13;
-                  } else {
-                     ch = ch + 48;
-                  }
-               } else {
-                  if ((ch == -127) && (prev_unicode == -48)) {
-                     // ch = ch +
-                  } else {
-                     ch = ch + 112; // +64 offset of damn unicode
-                  }
-               }
-		}
-			frow = (ch>>4)*0.0625;
-			fcol = (ch&15)*0.0625;
-			trap_R_DrawStretchPic( ax, ay, aw, ah, fcol, frow, fcol + 0.0625, frow + 0.0625, uis.charset );
-		}
-
-		ax += aw;
-		s++;
-	}
-
-	trap_R_SetColor( NULL );
-}
-
-void UI_DrawBannerString( int x, int y, const char* str, int style, vec4_t color ) {
-	const char *	s;
-	int				ch;
-	int				width;
-	vec4_t			drawcolor;
-
-	// find the width of the drawn text
-	s = str;
-	width = 0;
-	while ( *s ) {
-		ch = *s;
-		if ( ch == ' ' ) {
-			width += PROPB_SPACE_WIDTH;
-		} else {
-                        if ((ch == -48) || (ch == -47)) {
-                        } else {
-                               width += 20;
-		}
-		}
-		s++;
-	}
-	width -= PROPB_GAP_WIDTH;
-
-	switch( style & UI_FORMATMASK ) {
-		case UI_CENTER:
-			x -= width / 2;
-			break;
-
-		case UI_RIGHT:
-			x -= width;
-			break;
-
-		case UI_LEFT:
-		default:
-			break;
-	}
-
-	if ( style & UI_DROPSHADOW ) {
-		drawcolor[0] = drawcolor[1] = drawcolor[2] = 0;
-		drawcolor[3] = color[3];
-		UI_DrawBannerString2( x+2, y+2, str, drawcolor );
-	}
-
-	UI_DrawBannerString2( x, y, str, color );
-}
-
-
 int UI_ProportionalStringWidth( const char* str ) {
 	const char *	s;
 	int				ch;
@@ -511,14 +221,13 @@ int UI_ProportionalStringWidth( const char* str ) {
 	s = str;
 	width = 0;
 	while ( *s ) {
-                if ( Q_IsColorString( s ) )
+        if ( Q_IsColorString( s ) )
 		{
 			s += 2;
 			continue;
 		}
 		ch = *s & 255;
-		// charWidth = propMap[ch][2];
-                charWidth = 16;
+        charWidth = 16;
 		if ( charWidth != -1 ) {
 			width += charWidth;
 			width += PROP_GAP_WIDTH;
@@ -532,105 +241,6 @@ int UI_ProportionalStringWidth( const char* str ) {
 	} else {
 		return width;
 	}
-}
-
-
-/*
-=================
-UI_DrawProportionalString2
-
-The use of float x,y allows greater positioning precision
-
-We can now "compensate" for alignment issues arising from the
-virtual 640x480 screen resolution
-
-Any function calling with int arguments will still exhibit previous
-behaviour
-=================
-*/
-static void UI_DrawProportionalString2( float x, float y, const char* str, vec4_t color, float sizeScale, qhandle_t charset )
-{
-	const char* s;
-	char	ch;
-    int prev_unicode = 0;
-	vec4_t	tempcolor;
-	float	ax;
-	float	ay;
-	float	aw = 0; // bk001204 - init
-	float	ah;
-	float	frow;
-	float	fcol;
-	float	fwidth;
-	float	fheight;
-
-    int charw = 16;
-    int charh = 16;
-
-    float alignstate = 0;
-
-	// draw the colored text
-	trap_R_SetColor( color );
-
-	ax = x * uis.scale + uis.bias;
-	ay = y * uis.scale;
-	ay += uis.menuscroll;
-	aw = charw * uis.scale * sizeScale;
-	ah = charh * uis.scale * sizeScale;
-
-	s = str;
-	while ( *s )
-	{
-           if ((*s == -48) || (*s == -47)) {
-              ax = ax+aw*alignstate;
-           }
-           s++;
-        }
-        s = str;
-	while ( *s )
-	{
-         if ( Q_IsColorString( s ) )
-		{
-		memcpy( tempcolor, g_color_table[ColorIndex(s[1])], sizeof( tempcolor ) );
-	    tempcolor[3] = color[3];
-	    trap_R_SetColor( tempcolor );
-		s += 2;
-		continue;
-		}
-		if (*s != ' ')
-		{
-            ch = *s & 255;
-            // unicode russian stuff support
-            //Com_Printf("UI_letter: is %d\n", *s);
-            if (ch < 0) {
-               if ((ch == -48) || (ch == -47)) {
-                  prev_unicode = ch;
-                  s++;
-                  continue;
-               }
-               if (ch >= -112) {
-                  if ((ch == -111) && (prev_unicode == -47)) {
-                     ch = ch - 13;
-                  } else {
-                     ch = ch + 48;
-                  }
-               } else {
-                  if ((ch == -127) && (prev_unicode == -48)) {
-                     // ch = ch +
-                  } else {
-                     ch = ch + 112; // +64 offset of damn unicode
-                  }
-               }
-		}
-			frow = (ch>>4)*0.0625;
-			fcol = (ch&15)*0.0625;
-			trap_R_DrawStretchPic( ax, ay, aw, ah, fcol, frow, fcol + 0.0625, frow + 0.0625, uis.charset );
-		}
-
-		ax += aw;
-		s++;
-	}
-
-	trap_R_SetColor( NULL );
 }
 
 /*
@@ -653,151 +263,6 @@ if(customsize == 0){
 	return 1.00;
 }
 
-
-/*
-=================
-UI_DrawScaledProportionalString
-
-The use of float x,y allows greater positioning precision
-
-We can now "compensate" for alignment issues arising from the
-virtual 640x480 screen resolution
-
-Any function calling with int arguments will still exhibit previous
-behaviour
-=================
-*/
-void UI_DrawScaledProportionalString( float x, float y, const char* str, int style, float sizeScale, vec4_t color )
-{
-	vec4_t	drawcolor;
-	int		width;
-
-	sizeScale *= UI_ProportionalSizeScale( style, 0 );
-
-	switch( style & UI_FORMATMASK ) {
-		case UI_CENTER:
-			width = UI_ProportionalStringWidth( str ) * sizeScale;
-			x -= width / 2;
-			break;
-
-		case UI_RIGHT:
-			width = UI_ProportionalStringWidth( str ) * sizeScale;
-			x -= width;
-			break;
-
-		case UI_LEFT:
-		default:
-			break;
-	}
-
-	if ( style & UI_DROPSHADOW ) {
-		drawcolor[0] = drawcolor[1] = drawcolor[2] = 0;
-		drawcolor[3] = color[3];
-		UI_DrawProportionalString2( x+2, y+2, str, drawcolor, sizeScale, uis.charsetProp );
-	}
-
-	if ( style & UI_INVERSE ) {
-		drawcolor[0] = color[0] * 0.7;
-		drawcolor[1] = color[1] * 0.7;
-		drawcolor[2] = color[2] * 0.7;
-		drawcolor[3] = color[3];
-		UI_DrawProportionalString2( x, y, str, drawcolor, sizeScale, uis.charsetProp );
-		return;
-	}
-
-	if ( style & UI_PULSE ) {
-		drawcolor[0] = color[0] * 0.7;
-		drawcolor[1] = color[1] * 0.7;
-		drawcolor[2] = color[2] * 0.7;
-		drawcolor[3] = color[3];
-		UI_DrawProportionalString2( x, y, str, color, sizeScale, uis.charsetProp );
-
-		drawcolor[0] = color[0];
-		drawcolor[1] = color[1];
-		drawcolor[2] = color[2];
-		drawcolor[3] = 0.5 + 0.5 * sin( uis.realtime / PULSE_DIVISOR );
-		UI_DrawProportionalString2( x, y, str, drawcolor, sizeScale, uis.charsetPropGlow );
-		return;
-	}
-
-	UI_DrawProportionalString2( x, y, str, color, sizeScale, uis.charsetProp );
-}
-
-
-/*
-=================
-UI_DrawProportionalString
-=================
-*/
-void UI_DrawProportionalString( int x, int y, const char* str, int style, vec4_t color )
-{
-	UI_DrawScaledProportionalString( x, y, str, style, 1.0, color );
-}
-
-/*
-=================
-UI_DrawProportionalString_Wrapped
-=================
-*/
-void UI_DrawProportionalString_AutoWrapped( int x, int y, int xmax, int ystep, const char* str, int style, vec4_t color ) {
-	int width;
-	char *s1,*s2,*s3;
-	char c_bcp;
-	char buf[1024];
-	float   sizeScale;
-
-	if (!str || str[0]=='\0')
-		return;
-	
-	sizeScale = UI_ProportionalSizeScale( style, 0 );
-	
-	Q_strncpyz(buf, str, sizeof(buf));
-	s1 = s2 = s3 = buf;
-
-	while (1) {
-		do {
-			s3++;
-		} while (*s3!=' ' && *s3!='\0');
-		c_bcp = *s3;
-		*s3 = '\0';
-		width = UI_ProportionalStringWidth(s1) * sizeScale;
-		*s3 = c_bcp;
-		if (width > xmax) {
-			if (s1==s2)
-			{
-				// fuck, don't have a clean cut, we'll overflow
-				s2 = s3;
-			}
-			*s2 = '\0';
-			UI_DrawProportionalString(x, y, s1, style, color);
-			y += ystep;
-			if (c_bcp == '\0')
-      {
-        // that was the last word
-        // we could start a new loop, but that wouldn't be much use
-        // even if the word is too long, we would overflow it (see above)
-        // so just print it now if needed
-        s2++;
-        if (*s2 != '\0') // if we are printing an overflowing line we have s2 == s3
-          UI_DrawProportionalString(x, y, s2, style, color);
-				break; 
-      }
-			s2++;
-			s1 = s2;
-			s3 = s2;
-		}
-		else
-		{
-			s2 = s3;
-			if (c_bcp == '\0') // we reached the end
-			{
-				UI_DrawProportionalString(x, y, s1, style, color);
-				break;
-			}
-		}
-	}
-}
-
 /*
 =================
 UI_DrawString2
@@ -818,6 +283,15 @@ static void UI_DrawString2(int x, int y, const char* str, vec4_t color, int char
 	float fcol;
 	float alignstate = 0;
 	int char_count = 0;
+	int q;
+
+	q = 0;
+	if(charh > 16){
+	q = 1;	
+	}
+	if(charh > 32){
+	q = 2;	
+	}
 
 	// Align states for center and right alignment
 	if (charw < 0) {
@@ -887,7 +361,7 @@ static void UI_DrawString2(int x, int y, const char* str, vec4_t color, int char
 
 			frow = (ch >> 4) * 0.0625;
 			fcol = (ch & 15) * 0.0625;
-			trap_R_DrawStretchPic(ax, ay, aw, ah, fcol, frow, fcol + 0.0625, frow + 0.0625, uis.charset);
+			trap_R_DrawStretchPic(ax, ay, aw, ah, fcol, frow, fcol + 0.0625, frow + 0.0625, uis.charset[q]);
 		}
 
 		ax += aw;
@@ -903,99 +377,6 @@ static void UI_DrawString2(int x, int y, const char* str, vec4_t color, int char
 	}
 
 	trap_R_SetColor(NULL);
-}
-
-int UI_RusString(const char* str)
-{
-	const char* s;
-	char	ch;
-	int forceColor = qfalse; //APSFIXME;
-    int prev_unicode = 0;
-	vec4_t	tempcolor;
-	float	ax;
-	float	ay;
-	float	aw;
-	float	ah;
-	float	frow;
-	float	fcol;
-	int x = 0;
-	int y = 0;
-	vec4_t color;
-	int charw;
-	int charh;
-	int rucount = 0;
-
-    float alignstate = 0;
-	
-    if (charw < 0) {
-       charw = -charw;
-       alignstate = 0.5; //center_align
-    }
-    if (charh < 0) {
-       charh = -charh;
-       alignstate = 1; //right_align
-    }
-	
-	ax = x * uis.scale + uis.bias;
-	ay = y * uis.scale;
-	ay += uis.menuscroll;
-	aw = charw * uis.scale;
-	ah = charh * uis.scale;
-
-	s = str;
-	while ( *s )
-	{
-           if ((*s == -48) || (*s == -47)) {
-              ax = ax+aw*alignstate;
-           }
-           s++;
-        }
-        s = str;
-	while ( *s )
-	{
-		if ( Q_IsColorString( s ) )
-		{
-		memcpy( tempcolor, g_color_table[ColorIndex(s[1])], sizeof( tempcolor ) );
-		tempcolor[3] = color[3];
-		s += 2;
-		}
-
-
-
-		if (*s != ' ')
-		{
-		ch = *s & 255;
-            // unicode russian stuff support
-            //Com_Printf("UI_letter: is %d\n", *s);
-            if (ch < 0) {
-               if ((ch == -48) || (ch == -47)) {
-                  prev_unicode = ch;
-                  s++;
-                  continue;
-               }
-               if (ch >= -112) {
-                  if ((ch == -111) && (prev_unicode == -47)) {
-                     ch = ch - 13;
-                  } else {
-                     ch = ch + 48;
-                  }
-               } else {
-                  if ((ch == -127) && (prev_unicode == -48)) {
-                     // ch = ch +
-                  } else {
-                     ch = ch + 112; // +64 offset of damn unicode
-					 rucount += 1;
-                  }
-               }
-            }
-			frow = (ch>>4)*0.0625;
-			fcol = (ch&15)*0.0625;
-		}
-
-		ax += aw;
-		s++;
-	}
-	return rucount;
 }
 
 /*
@@ -1079,7 +460,7 @@ void UI_DrawString( int x, int y, const char* str, int style, vec4_t color )
 	{
 		dropcolor[0] = dropcolor[1] = dropcolor[2] = 0;
 		dropcolor[3] = drawcolor[3];
-		UI_DrawString2(x+2,y+2,str,dropcolor,charw,charh,512);
+		UI_DrawString2(x+1,y+1,str,dropcolor,charw,charh,512);
 	}
 
 	UI_DrawString2(x,y,str,drawcolor,charw,charh,512);
@@ -1171,7 +552,7 @@ if(csize == 0){
 	{
 		dropcolor[0] = dropcolor[1] = dropcolor[2] = 0;
 		dropcolor[3] = drawcolor[3];
-		UI_DrawString2(x+2,y+2,str,dropcolor,charw,charh,width);
+		UI_DrawString2(x+1,y+1,str,dropcolor,charw,charh,width);
 	}
 
 	UI_DrawString2(x,y,str,drawcolor,charw,charh,width);
@@ -1219,18 +600,6 @@ qboolean UI_IsFullscreen( void ) {
 	return qfalse;
 }
 
-static void NeedCDAction( qboolean result ) {
-	if ( !result ) {
-		trap_Cmd_ExecuteText( EXEC_APPEND, "quit\n" );
-	}
-}
-
-static void NeedCDKeyAction( qboolean result ) {
-	if ( !result ) {
-		trap_Cmd_ExecuteText( EXEC_APPEND, "quit\n" );
-	}
-}
-
 void UI_SetActiveMenu( uiMenuCommand_t menu ) {
 	// this should be the ONLY way the menu system is brought up
 	// enusure minumum menu data is cached
@@ -1257,17 +626,10 @@ void UI_SetActiveMenu( uiMenuCommand_t menu ) {
 		}
 		return;
 	case UIMENU_NEED_CD:
-		UI_ConfirmMenu( "Insert the CD", 0, NeedCDAction );
 		return;
 	case UIMENU_BAD_CD_KEY:
-		UI_ConfirmMenu( "Bad CD Key", 0, NeedCDKeyAction );
 		return;
 	case UIMENU_INGAME:
-		/*
-		//GRank
-		UI_RankingsMenu();
-		return;
-		*/
 		trap_Cvar_Set( "cl_paused", "1" );
 		UI_InGameMenu();
 		return;
@@ -1425,15 +787,11 @@ void UI_Cache_f( void ) {
 	UI_DisplayOptionsMenu_Cache();
 	UI_SoundOptionsMenu_Cache();
 	UI_NetworkOptionsMenu_Cache();
-	UI_SPLevelMenu_Cache();
-	UI_SPSkillMenu_Cache();
-	UI_SPPostgameMenu_Cache();
 	TeamMain_Cache();
 	UI_AddBots_Cache();
 	UI_RemoveBots_Cache();
 	UI_SetupMenu_Cache();
 	UI_BotSelect_Cache();
-	UI_CDKeyMenu_Cache();
 	UI_ModsMenu_Cache();
 }
 
@@ -1470,56 +828,12 @@ char	*UI_ConcatArgs( int start ) {
 	return line;
 }
 
-/*
-==================
-UI_ArenaScriptAutoInt
-Return type int
-==================
-*/
-int UI_ArenaScriptAutoInt( char *name ) {  
-	if(trap_Cvar_VariableValue(name)){
-		return trap_Cvar_VariableValue(name);
-	}
-		return atoi(name);
-}
-
 char *UI_Cvar_VariableString( const char *var_name ) {
 	static char	buffer[MAX_STRING_CHARS];
 
 	trap_Cvar_VariableStringBuffer( var_name, buffer, sizeof( buffer ) );
 
 	return buffer;
-}
-
-/*
-==================
-UI_ArenaScriptAutoChar
-Return type char
-==================
-*/
-char *UI_ArenaScriptAutoChar( const char *name ) {
-char finaltext[256];
-
-	trap_Cvar_VariableStringBuffer(name, finaltext, sizeof( finaltext ));
-	if(strlen(finaltext) != 0){
-		return va("%s", finaltext );
-	} else {
-		return va("%s", name );
-	}
-}
-
-/*
-==================
-UI_ArenaScriptAutoFloat
-Return type char
-==================
-*/
-float UI_ArenaScriptAutoFloat( char *name ) {
-
-	if(trap_Cvar_VariableValue(name)){
-		return trap_Cvar_VariableValue(name);
-	}
-		return atof(name);
 }
 
 /*
@@ -1546,10 +860,6 @@ return qtrue;
 }
 if( Q_stricmp (UI_Argv(0), "ui_advanced") == 0 ){
 UI_AdvancedMenu();
-return qtrue;
-}
-if( Q_stricmp (UI_Argv(0), "ui_cdkey") == 0 ){
-UI_CDKeyMenu_f();
 return qtrue;
 }
 if( Q_stricmp (UI_Argv(0), "ui_savegame") == 0 ){
@@ -1702,8 +1012,8 @@ return qtrue;
 		return qtrue;
 	}
 
-	if ( Q_stricmp (UI_Argv(0), "mgui") == 0 ) {
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("execscript \"mgui/%s\"", UI_ConcatArgs(1)));
+	if ( Q_stricmp (UI_Argv(0), "nsgui") == 0 ) {
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("ns_openscript_ui \"nsgui/%s\"", UI_ConcatArgs(1)));
 		return qtrue;
 	}
 
@@ -1726,35 +1036,17 @@ return qtrue;
 		print_threads();
 		return qtrue;
 	}
-	
-	if ( Q_stricmp (UI_Argv(0), "mgui_api") == 0 ) {
-		trap_Cvar_SetValue( "mgui_api_active", 1 );
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("execscript \"mgui/%s\"", UI_ConcatArgs(1)));
-		return qtrue;
-	}
 
 	if ( Q_stricmp (cmd, "workshop") == 0 ) {
 		UI_WorkshopMenu();
 		return qtrue;
 	}
-	if ( Q_stricmp (cmd, "levelselect") == 0 ) {
-		UI_SPLevelMenu_f();
-		return qtrue;
-	}
+
 	if ( Q_stricmp (cmd, "reloadgame") == 0 ) {
 		MainMenu_ReloadGame();
 		return qtrue;
 	}
-	if ( Q_stricmp (cmd, "secretmenu") == 0 ) {
-		UI_SpecifyLeagueMenu();
-		return qtrue;
-	}
 
-	if ( Q_stricmp (cmd, "postgame") == 0 ) {
-		UI_SPPostgameMenu_f();
-		return qtrue;
-	}
-	
 	if ( Q_stricmp (cmd, "menuback") == 0 ) {
 		UI_PopMenu();
 		return qtrue;
@@ -1772,21 +1064,6 @@ return qtrue;
 	
 	if ( Q_stricmp (cmd, "load_menu") == 0 ) {
 		UI_CinematicsMenu_f(1);
-		return qtrue;
-	}
-
-	if ( Q_stricmp (cmd, "iamacheater") == 0 ) {
-		UI_SPUnlock_f();
-		return qtrue;
-	}
-
-	if ( Q_stricmp (cmd, "iamamonkey") == 0 ) {
-		UI_SPUnlockMedals_f();
-		return qtrue;
-	}
-
-	if ( Q_stricmp (cmd, "uie_kickdupe") == 0 ) {
-		UI_SPKickDupe_f();
 		return qtrue;
 	}
 
@@ -1909,19 +1186,21 @@ void UI_DrawHandlePicFile( float x, float y, float w, float h, const char* file 
 	
 	file_len = strlen(file);
 	
-	hShader = trap_R_RegisterShaderNoMip("mgui_e");
+	hShader = trap_R_RegisterShaderNoMip("nsgui_e");
 	if (Q_stricmp(file + file_len - 4, ".ogg") == 0)
-	hShader = trap_R_RegisterShaderNoMip("mgui_m");
+	hShader = trap_R_RegisterShaderNoMip("nsgui_m");
 	if (Q_stricmp(file + file_len - 4, ".wav") == 0)
-	hShader = trap_R_RegisterShaderNoMip("mgui_m");
+	hShader = trap_R_RegisterShaderNoMip("nsgui_m");
 	if (Q_stricmp(file + file_len - 5, ".opus") == 0)
-	hShader = trap_R_RegisterShaderNoMip("mgui_m");
+	hShader = trap_R_RegisterShaderNoMip("nsgui_m");
 	if (Q_stricmp(file + file_len - 7, ".shader") == 0)
-	hShader = trap_R_RegisterShaderNoMip("mgui_s");
-	if (Q_stricmp(file + file_len - 3, ".as") == 0)
-	hShader = trap_R_RegisterShaderNoMip("mgui_s");
+	hShader = trap_R_RegisterShaderNoMip("nsgui_s");
+	if (Q_stricmp(file + file_len - 8, ".shaderx") == 0)
+	hShader = trap_R_RegisterShaderNoMip("nsgui_s");
+	if (Q_stricmp(file + file_len - 3, ".ns") == 0)
+	hShader = trap_R_RegisterShaderNoMip("nsgui_s");
 	if (Q_stricmp(file + file_len - 4, ".cfg") == 0)
-	hShader = trap_R_RegisterShaderNoMip("mgui_s");
+	hShader = trap_R_RegisterShaderNoMip("nsgui_s");
 
 	if( w < 0 ) {	// flip about vertical
 		w  = -w;

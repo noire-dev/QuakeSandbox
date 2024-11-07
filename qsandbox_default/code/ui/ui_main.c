@@ -130,9 +130,6 @@ vmCvar_t	toolgun_disabledarg4;
 
 vmCvar_t	cl_sprun;
 
-vmCvar_t	mgui_api_active;
-vmCvar_t	mgui_none;
-
 vmCvar_t	sbt_color0_0;
 vmCvar_t	sbt_color0_1;
 vmCvar_t	sbt_color0_2;
@@ -151,8 +148,6 @@ vmCvar_t	sbt_color3_2;
 vmCvar_t	sbt_color3_3;
 vmCvar_t	sbt_wallpaper;
 
-vmCvar_t	ui_scrollbtnsize;
-
 vmCvar_t	ui_3dmap;
 
 vmCvar_t	ui_singlemode;
@@ -164,16 +159,6 @@ vmCvar_t	cl_screenoffset;
 vmCvar_t	ui_loaded;
 vmCvar_t	ui_backcolors;
 vmCvar_t	sensitivitymenu;
-
-vmCvar_t test1;
-vmCvar_t test2;
-vmCvar_t test3;
-vmCvar_t test4;
-vmCvar_t test5;
-vmCvar_t test6;
-vmCvar_t test7;
-vmCvar_t test8;
-vmCvar_t test9;
 
 vmCvar_t	ui_arenasFile;
 vmCvar_t	ui_botsFile;
@@ -232,8 +217,6 @@ vmCvar_t	ui_server30;
 vmCvar_t	ui_server31;
 vmCvar_t	ui_server32;
 
-vmCvar_t	ui_cdkeychecked;
-
 // UIE conventional cvars
 vmCvar_t	uie_animsfx;
 vmCvar_t	uie_mapicons;
@@ -268,12 +251,12 @@ static cvarTable_t		cvarTable[] = {
 	{ &sb_classnum, "sb_classnum", "0", CVAR_ARCHIVE },
 	{ &sb_texturenum, "sb_texturenum", "0", CVAR_ARCHIVE },
 	{ &sb_tab, "sb_tab", "1", 0 },
-	{ &spawn_preset, "spawn_preset", "set toolcmd_spawn sl prop %s %s %i 25 %s 0 %s 1 0 \"none\" -1 0 0 0 0 1 1 1 0 0 1 10000 0 1 100 100 120 1 0 1000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5", 0 },
-	{ &tool_spawnpreset, "tool_spawnpreset", "set toolcmd_spawn sl prop %s none %s 25 %s 0 %s 1 0 \"none\" -1 0 0 0 0 1 1 1 0 0 1 10000 0 1 100 100 120 1 0 1000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5", 0 },
-	{ &tool_modifypreset, "tool_modifypreset", "set toolcmd_modify tm %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s 0", 0 },
-	{ &tool_modifypreset2, "tool_modifypreset2", "set toolcmd_modify2 tm %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s 1", 0 },
-	{ &tool_modifypreset3, "tool_modifypreset3", "set toolcmd_modify3 tm %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s 2", 0 },
-	{ &tool_modifypreset4, "tool_modifypreset4", "set toolcmd_modify4 tm %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s 3", 0 },
+	{ &spawn_preset, "spawn_preset", "", 0 },
+	{ &tool_spawnpreset, "tool_spawnpreset", "", 0 },
+	{ &tool_modifypreset, "tool_modifypreset", "", 0 },
+	{ &tool_modifypreset2, "tool_modifypreset2", "", 0 },
+	{ &tool_modifypreset3, "tool_modifypreset3", "", 0 },
+	{ &tool_modifypreset4, "tool_modifypreset4", "", 0 },
 	
 	{ &toolgun_toolset1, "toolgun_toolset1", "--------:", 0 },
 	{ &toolgun_toolset2, "toolgun_toolset2", "--------:", 0 },
@@ -300,9 +283,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &toolgun_disabledarg4, "toolgun_disabledarg4", "0", 0 },
 
 	{ &cl_sprun, "cl_sprun", "0", 0 },
-
-	{ &mgui_api_active, "mgui_api_active", "0", 0 },
-	{ &mgui_none, "mgui_none", "0", 0 },
 	
 	{ &sbt_color0_0,  "sbt_color0_0", "1", 	 CVAR_ARCHIVE },
 	{ &sbt_color0_1,  "sbt_color0_1", "1", 	 CVAR_ARCHIVE },
@@ -322,8 +302,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &sbt_color3_3,  "sbt_color3_3", "1", 	 CVAR_ARCHIVE },
 	{ &sbt_wallpaper, "sbt_wallpaper", "trans", 	 CVAR_ARCHIVE },
 
-	{ &ui_scrollbtnsize, "ui_scrollbtnsize", "1", 	 CVAR_ARCHIVE },
-
 	{ &ui_3dmap, "ui_3dmap", "", CVAR_ARCHIVE },
 
 	{ &ui_singlemode, "ui_singlemode", "0", CVAR_ARCHIVE },
@@ -335,16 +313,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &cl_screenoffset, "cl_screenoffset", "107", CVAR_ARCHIVE },
 	{ &ui_backcolors, "ui_backcolors", "1", CVAR_ARCHIVE },
 	{ &sensitivitymenu, "sensitivitymenu", "1", CVAR_ARCHIVE },
-
-	{ &test1, "test1", "0", 0 },
-	{ &test2, "test2", "0", 0 },
-	{ &test3, "test3", "0", 0 },
-	{ &test4, "test4", "0", 0 },
-	{ &test5, "test5", "0", 0 },
-	{ &test6, "test6", "0", 0 },
-	{ &test7, "test7", "0", 0 },
-	{ &test8, "test8", "0", 0 },
-	{ &test9, "test9", "0", 0 },
 
 	{ &ui_arenasFile, "g_arenasFile", "", CVAR_INIT|CVAR_ROM },
 	{ &ui_botsFile, "g_botsFile", "", CVAR_INIT|CVAR_ROM },
@@ -402,8 +370,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &ui_server30, "server30", "", CVAR_ARCHIVE },
 	{ &ui_server31, "server31", "", CVAR_ARCHIVE },
 	{ &ui_server32, "server32", "", CVAR_ARCHIVE },
-
-	{ &ui_cdkeychecked, "ui_cdkeychecked", "0", CVAR_ROM },
 
 	{ &uie_map_multisel, "uie_map_multisel", "0", CVAR_ROM|CVAR_ARCHIVE },
 	{ &uie_map_list, "uie_map_list", "0", CVAR_ROM|CVAR_ARCHIVE },

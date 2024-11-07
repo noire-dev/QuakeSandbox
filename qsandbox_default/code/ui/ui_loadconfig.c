@@ -185,8 +185,6 @@ static void LoadConfig_LoadFileNames( void )
 		if (!Q_stricmp(configname +  len - 4,".cfg"))
 			configname[len-4] = '\0';
 
-		Q_strupr(configname);
-
 		if (!showid && LoadConfig_KnownIdConfig(configname))
 		{
 			continue;

@@ -22,27 +22,24 @@
 #define ART_FX_YELLOW		"menu/art/fx_yel"
 
 #define ID_NAME			10
-#define ID_HANDICAP		11
-#define ID_EFFECTS		12
-#define ID_BACK			13
-#define ID_MODEL		14
-#define ID_MODELTYPE	15
-#define ID_EFFECTS2		16
-#define ID_FLASHRED			17
-#define ID_FLASHGREEN			18
-#define ID_FLASHBLUE			19
-#define ID_HEFLASHRED			20
-#define ID_HEFLASHGREEN			21
-#define ID_HEFLASHBLUE			22
-#define ID_TOFLASHRED			23
-#define ID_TOFLASHGREEN			24
-#define ID_TOFLASHBLUE			25
+#define ID_EFFECTS		11
+#define ID_BACK			12
+#define ID_MODEL		13
+#define ID_MODELTYPE	14
+#define ID_EFFECTS2		15
+#define ID_FLASHRED			16
+#define ID_FLASHGREEN			17
+#define ID_FLASHBLUE			18
+#define ID_HEFLASHRED			19
+#define ID_HEFLASHGREEN			20
+#define ID_HEFLASHBLUE			21
+#define ID_TOFLASHRED			22
+#define ID_TOFLASHGREEN			23
+#define ID_TOFLASHBLUE			24
 
 #define MAX_NAMELENGTH	32
 
 #define MENUTEXT_COLUMN 144
-
-#define TEXT_RESCALE 0.75
 
 typedef struct {
 	menuframework_s		menu;
@@ -52,7 +49,6 @@ typedef struct {
 	menubitmap_s		framer;
 
 	menufield_s			name;
-	menulist_s			handicap;
 	menulist_s			effects;
 	menulist_s			effects2;
 
@@ -75,7 +71,6 @@ typedef struct {
 	int					current_fx;
 	modelAnim_t			player;
 
-	awardInfo_t			awards;
 } playersettings_t;
 
 
@@ -83,32 +78,6 @@ static playersettings_t	s_playersettings;
 
 static int gamecodetoui[] = {4,2,3,0,5,1,6};
 static int uitogamecode[] = {4,6,2,3,1,5,7};
-
-static const char *handicap_items[] = {
-	"None",
-	"95",
-	"90",
-	"85",
-	"80",
-	"75",
-	"70",
-	"65",
-	"60",
-	"55",
-	"50",
-	"45",
-	"40",
-	"35",
-	"30",
-	"25",
-	"20",
-	"15",
-	"10",
-	"5",
-	0
-};
-
-
 
 /*
 =================
@@ -193,12 +162,11 @@ static void PlayerSettings_DrawName( void *self ) {
 	}
 
 if(cl_language.integer == 0){
-	UI_DrawScaledProportionalString( basex, y, "Name", style, TEXT_RESCALE, color );
+	UI_DrawString( basex, y, "Name", style, color );
 }
 if(cl_language.integer == 1){
-	UI_DrawScaledProportionalString( basex, y, "Имя", style, TEXT_RESCALE, color );
+	UI_DrawString( basex, y, "Имя", style, color );
 }
-//	UI_DrawProportionalString( basex, y, "Name", style, color );
 
 	// draw the actual name
 	basex += 64;
@@ -238,36 +206,8 @@ if(cl_language.integer == 1){
 	// draw at bottom also using proportional font
 	Q_strncpyz( name, f->field.buffer, sizeof(name) );
 	Q_CleanStr( name );
-	UI_DrawProportionalString( 320, 440, name, UI_CENTER|UI_BIGFONT, text_color_normal );
+	UI_DrawString( 320, 440, name, UI_CENTER|UI_BIGFONT, text_color_normal );
 }
-
-
-/*
-=================
-PlayerSettings_DrawHandicap
-=================
-*/
-/*static void PlayerSettings_DrawHandicap( void *self ) {
-	menulist_s		*item;
-	qboolean		focus;
-	int				style;
-	float			*color;
-
-	item = (menulist_s *)self;
-	focus = (item->generic.parent->cursor == item->generic.menuPosition);
-
-	style = UI_LEFT|UI_SMALLFONT;
-	color = text_color_normal;
-	if( focus ) {
-		style |= UI_PULSE;
-		color = text_color_highlight;
-	}
-
-	UI_DrawScaledProportionalString( item->generic.x, item->generic.y, "Handicap", style, TEXT_RESCALE, color );
-//	UI_DrawProportionalString( item->generic.x, item->generic.y, "Handicap", style, color );
-	UI_DrawProportionalString( item->generic.x + 64, item->generic.y + PROP_HEIGHT, handicap_items[item->curvalue], style, color );
-}*/
-
 
 /*
 =================
@@ -279,7 +219,6 @@ static void PlayerSettings_DrawEffects( void *self ) {
 	qboolean		focus;
 	int				style;
 	float			*color;
-	float			scale;
 	int				textlen;
 
 	item = (menulist_s *)self;
@@ -292,27 +231,25 @@ static void PlayerSettings_DrawEffects( void *self ) {
 		color = text_color_highlight;
 	}
 
-//	UI_DrawProportionalString( item->generic.x, item->generic.y, "Effects", style, color );
-	scale = TEXT_RESCALE;
 	if(cl_language.integer == 0){
 	if (item->generic.id == ID_EFFECTS) {
-		UI_DrawScaledProportionalString( item->generic.x, item->generic.y, "Rail core:", style, scale, color );
+		UI_DrawString( item->generic.x, item->generic.y, "Rail core:", style, color );
 	} else {
-		UI_DrawScaledProportionalString( item->generic.x, item->generic.y, "Rail ring:", style, scale, color );
+		UI_DrawString( item->generic.x, item->generic.y, "Rail ring:", style, color );
 	}
 	}
 	if(cl_language.integer == 1){
 	if (item->generic.id == ID_EFFECTS) {
-		UI_DrawScaledProportionalString( item->generic.x, item->generic.y, "Рэйл луч:", style, scale, color );
+		UI_DrawString( item->generic.x, item->generic.y, "Рэйл луч:", style, color );
 	} else {
-		UI_DrawScaledProportionalString( item->generic.x, item->generic.y, "Рейл кольца:", style, scale, color );
+		UI_DrawString( item->generic.x, item->generic.y, "Рейл кольца:", style, color );
 	}
 	}
 if(cl_language.integer == 0){
-	textlen = UI_ProportionalStringWidth("Rail core:") * UI_ProportionalSizeScale(style, 0) * scale + 14;
+	textlen = UI_ProportionalStringWidth("Rail core:") * UI_ProportionalSizeScale(style, 0) * 14;
 }
 if(cl_language.integer == 1){
-	textlen = UI_ProportionalStringWidth("Рэйл луч:") * UI_ProportionalSizeScale(style, 0) * scale + 14;
+	textlen = UI_ProportionalStringWidth("Рэйл луч:") * UI_ProportionalSizeScale(style, 0) * 14;
 }
 
 	UI_DrawHandlePic( item->generic.x + textlen, item->generic.y + 4, 128, 8, s_playersettings.fxBasePic );
@@ -337,8 +274,6 @@ PlayerSettings_DrawMenu
 */
 static void PlayerSettings_MenuDraw(void)
 {
-	UIE_AwardIcons_DrawValues(&s_playersettings.awards);
-
 	if (uis.firstdraw)
 		PlayerSettings_SetPlayerModelType();
 
@@ -355,9 +290,6 @@ PlayerSettings_SaveChanges
 static void PlayerSettings_SaveChanges( void ) {
 	// name
 	trap_Cvar_Set( "name", s_playersettings.name.field.buffer );
-
-	/*// handicap
-	trap_Cvar_SetValue( "handicap", 100 - s_playersettings.handicap.curvalue * 5 );*/
 
 	// effects color
 	trap_Cvar_SetValue( "color1", uitogamecode[s_playersettings.effects.curvalue] );
@@ -425,29 +357,7 @@ s_playersettings.heflashred.curvalue  = trap_Cvar_VariableValue( "cg_helightred"
 
 	// model/skin
 	UIE_PlayerInfo_InitModel(&s_playersettings.player);
-
-	/*// handicap
-	h = Com_Clamp( 5, 100, trap_Cvar_VariableValue("handicap") );
-	s_playersettings.handicap.curvalue = 20 - h / 5;*/
 }
-
-
-/*
-=================
-PlayerSettings_AwardEvent
-=================
-*/
-static void PlayerSettings_AwardEvent( void* ptr, int notification ) {
-	int		n;
-
-	if (notification != QM_ACTIVATED) {
-		return;
-	}
-
-	UIE_AwardIcons_PlaySound(&s_playersettings.awards, (menucommon_s*)ptr);
-}
-
-
 
 /*
 =================
@@ -460,9 +370,6 @@ static void PlayerSettings_MenuEvent( void* ptr, int event ) {
 	}
 
 	switch( ((menucommon_s*)ptr)->id ) {
-	/*case ID_HANDICAP:
-		trap_Cvar_Set( "handicap", va( "%i", 100 - 25 * s_playersettings.handicap.curvalue ) );
-		break;*/
 
 	case ID_MODEL:
 		PlayerSettings_SaveChanges();
@@ -578,33 +485,6 @@ static void PlayerSettings_MenuInit( void ) {
 	s_playersettings.name.generic.top			= y - 8;
 	s_playersettings.name.generic.right			= MENUTEXT_COLUMN + 250;
 	s_playersettings.name.generic.bottom		= y + 2 * PROP_HEIGHT;
-
-	/*y += 5 * PROP_HEIGHT / 2;
-	s_playersettings.handicap.generic.type		= MTYPE_SPINCONTROL;
-	s_playersettings.handicap.generic.flags		= QMF_NODEFAULTINIT;
-	s_playersettings.handicap.generic.id		= ID_HANDICAP;
-	s_playersettings.handicap.generic.ownerdraw	= PlayerSettings_DrawHandicap;
-	s_playersettings.handicap.generic.x			= MENUTEXT_COLUMN;
-	s_playersettings.handicap.generic.y			= y;
-	s_playersettings.handicap.generic.left		= MENUTEXT_COLUMN - 8;
-	s_playersettings.handicap.generic.top		= y - 8;
-	s_playersettings.handicap.generic.right		= MENUTEXT_COLUMN + 250;
-	s_playersettings.handicap.generic.bottom	= y + 2 * PROP_HEIGHT;
-	s_playersettings.handicap.numitems			= 20;*/
-
-/*	y += 5 * PROP_HEIGHT / 2;
-	s_playersettings.effects.generic.type		= MTYPE_SPINCONTROL;
-	s_playersettings.effects.generic.flags		= QMF_NODEFAULTINIT;
-	s_playersettings.effects.generic.id			= ID_EFFECTS;
-	s_playersettings.effects.generic.ownerdraw	= PlayerSettings_DrawEffects;
-	s_playersettings.effects.generic.x			= MENUTEXT_COLUMN;
-	s_playersettings.effects.generic.y			= y;
-	s_playersettings.effects.generic.left		= MENUTEXT_COLUMN - 8;
-	s_playersettings.effects.generic.top		= y - 8;
-	s_playersettings.effects.generic.right		= MENUTEXT_COLUMN + 250;
-	s_playersettings.effects.generic.bottom		= y + 2* PROP_HEIGHT;
-	s_playersettings.effects.numitems			= 7;
-*/
 
 	y += 5 * PROP_HEIGHT / 2;
 	s_playersettings.effects.generic.type		= MTYPE_SPINCONTROL;
@@ -829,14 +709,7 @@ y = 170;
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.framel );
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.framer );
 
-	// setup and add award values
-	s_playersettings.awards.bCentre = qtrue;
-	s_playersettings.awards.iconOffset = 0;
-	s_playersettings.awards.iconRaise = 24;
-	UIE_AwardIcons_InitControls(&s_playersettings.menu, &s_playersettings.awards, PlayerSettings_AwardEvent);
-
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.name );
-	//Menu_AddItem( &s_playersettings.menu, &s_playersettings.handicap );
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.effects );
  	Menu_AddItem( &s_playersettings.menu, &s_playersettings.effects2 );
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.model );
@@ -874,8 +747,6 @@ void PlayerSettings_Cache( void ) {
 	trap_R_RegisterShaderNoMip( ART_MODEL1 );
 	trap_R_RegisterShaderNoMip( ART_BACK0 );
 	trap_R_RegisterShaderNoMip( ART_BACK1 );
-
-	UIE_AwardIcons_Cache(&s_playersettings.awards);
 
 	s_playersettings.fxBasePic = trap_R_RegisterShaderNoMip( ART_FX_BASE );
 	s_playersettings.fxPic[0] = trap_R_RegisterShaderNoMip( ART_FX_RED );

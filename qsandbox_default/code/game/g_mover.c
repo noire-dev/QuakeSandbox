@@ -307,7 +307,7 @@ qboolean G_MoverPush( gentity_t *pusher, vec3_t move, vec3_t amove, gentity_t **
 	// unlink the pusher so we don't get it in the entityList
 	trap_UnlinkEntity( pusher );
 
-	listedEntities = trap_EntitiesInBox( totalMins, totalMaxs, MiTechEntityList, MAX_GENTITIES );
+	listedEntities = trap_EntitiesInBox( totalMins, totalMaxs, SourceTechEntityList, MAX_GENTITIES );
 
 	// move the pusher to it's final position
 	VectorAdd( pusher->r.currentOrigin, move, pusher->r.currentOrigin );
@@ -316,7 +316,7 @@ qboolean G_MoverPush( gentity_t *pusher, vec3_t move, vec3_t amove, gentity_t **
 
 	// see if any solid entities are inside the final position
 	for ( e = 0 ; e < listedEntities ; e++ ) {
-		check = &g_entities[ MiTechEntityList[ e ] ];
+		check = &g_entities[ SourceTechEntityList[ e ] ];
 
 		if ( check->s.eType == ET_MISSILE ) {
 			// if it is a prox mine

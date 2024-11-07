@@ -1560,12 +1560,7 @@ void PlayerModel_DrawModelName( int flags)
 	// otherwise head model high, body model low
 	if (!Q_stricmp(headmodel, bodymodel))
 	{
-		// single model always drawn bold
-		//UI_DrawProportionalString( PLAYERMODELNAME_X, PLAYERMODELNAME_Y,
-			//UIE_ModelName(bodymodel), UI_CENTER, text_color_normal );
 
-		//UI_DrawProportionalString( PLAYERMODELSKIN_X, PLAYERMODELSKIN_Y,
-			//UIE_ModelSkin(bodymodel), UI_CENTER, text_color_normal );
 	}
 	else
 	{
@@ -1581,11 +1576,6 @@ void PlayerModel_DrawModelName( int flags)
 		else {
 			offset = PROP_HEIGHT/2;
 		}
-
-		//UI_DrawScaledProportionalString( PLAYERMODELNAME_X, PLAYERMODELNAME_Y - offset,
-			//UIE_ModelName(headmodel), style, textScale, text_color_normal );
-		//UI_DrawScaledProportionalString( PLAYERMODELNAME_X, PLAYERMODELNAME_Y + offset,
-			//UIE_ModelSkin(headmodel), style, textScale, text_color_normal );
 			
 		// draw head model/skin
 		textScale = 1.0;
@@ -1600,11 +1590,6 @@ void PlayerModel_DrawModelName( int flags)
 			offset = PROP_HEIGHT/2;
 		}
 
-		//UI_DrawScaledProportionalString( PLAYERLEGSSKIN_X, PLAYERLEGSSKIN_Y - offset,
-			//UIE_ModelName(legsmodel), style, textScale, text_color_normal );
-		//UI_DrawScaledProportionalString( PLAYERLEGSSKIN_X, PLAYERLEGSSKIN_Y + offset,
-			//UIE_ModelSkin(legsmodel), style, textScale, text_color_normal );
-
 		// draw body model/skin
 		textScale = 1.0;
 		style = UI_CENTER;
@@ -1616,11 +1601,6 @@ void PlayerModel_DrawModelName( int flags)
 		else {
 			offset = PROP_HEIGHT/2;
 		}
-
-		//UI_DrawScaledProportionalString( PLAYERMODELSKIN_X, PLAYERMODELSKIN_Y - offset,
-			//UIE_ModelName(bodymodel), style, textScale, text_color_normal );
-		//UI_DrawScaledProportionalString( PLAYERMODELSKIN_X, PLAYERMODELSKIN_Y + offset,
-			//UIE_ModelSkin(bodymodel), style, textScale, text_color_normal );
 	}
 }
 
@@ -1814,9 +1794,6 @@ static void PlayerModel_DrawLargeSpinControl( void* self )
 	UI_DrawString(t->generic.x, t->generic.y, t->itemnames[ t->curvalue ], style, color);
 }
 
-
-
-
 /*
 =================
 PlayerModel_MenuDraw
@@ -1827,7 +1804,6 @@ static void PlayerModel_MenuDraw( void )
 	char* ptr;
 	char buf[2];
 	int y;
-	float scale;
 
 	// draw standard menu
 	Menu_Draw(&s_playermodel.menu);
@@ -1841,24 +1817,25 @@ static void PlayerModel_MenuDraw( void )
 		ptr = "МОДЕЛИ";
 		}
 		y = MODELARRAY_Y;
-		scale = 0.8;
 		while (*ptr)
 		{
 			buf[0] = *ptr++;
-			UI_DrawScaledProportionalString( 24, y, buf, UI_SMALLFONT|UI_CENTER, scale, color_red );
-			y += 19 * scale;
+			UI_DrawString( 24, y, buf, UI_SMALLFONT|UI_CENTER, color_red );
+			if(cl_language.integer == 0){
+			y += 16;
+			}
+			if(cl_language.integer == 1){
+			y += 8;
+			}
 		};
 		if(cl_language.integer == 0){
-		UI_DrawScaledProportionalString( 288, 412, "SKINS", UI_SMALLFONT, scale, color_red );
+		UI_DrawString( 288, 412, "SKINS", UI_SMALLFONT, color_red );
 		}
 		if(cl_language.integer == 1){
-		UI_DrawScaledProportionalString( 288, 412, "СКИНЫ", UI_SMALLFONT, scale, color_red );
+		UI_DrawString( 288, 412, "СКИНЫ", UI_SMALLFONT, color_red );
 		}
 	}
 }
-
-
-
 
 /*
 =================

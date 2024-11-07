@@ -262,14 +262,14 @@ void	G_TouchTriggers( gentity_t *ent ) {
 	VectorSubtract( ent->client->ps.origin, range, mins );
 	VectorAdd( ent->client->ps.origin, range, maxs );
 
-	num = trap_EntitiesInBox( mins, maxs, MiTechEntityList, MAX_GENTITIES );
+	num = trap_EntitiesInBox( mins, maxs, SourceTechEntityList, MAX_GENTITIES );
 
 	// can't use ent->absmin, because that has a one unit pad
 	VectorAdd( ent->client->ps.origin, ent->r.mins, mins );
 	VectorAdd( ent->client->ps.origin, ent->r.maxs, maxs );
 
 	for ( i=0 ; i<num ; i++ ) {
-		hit = &g_entities[MiTechEntityList[i]];
+		hit = &g_entities[SourceTechEntityList[i]];
 
 		if ( !hit->touch && !ent->touch ) {
 			continue;

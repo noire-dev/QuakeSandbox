@@ -181,7 +181,6 @@ cd linux/build/ui
 $cc ../../../code/ui/ui_addbots.c
 $cc ../../../code/ui/ui_advanced.c
 $cc ../../../code/ui/ui_atoms.c
-$cc ../../../code/ui/ui_cdkey.c
 $cc ../../../code/ui/ui_cinematics.c
 $cc ../../../code/ui/ui_confirm.c
 $cc ../../../code/ui/ui_connect.c
@@ -212,13 +211,7 @@ $cc ../../../code/ui/ui_serverinfo.c
 $cc ../../../code/ui/ui_servers2.c
 $cc ../../../code/ui/ui_setup.c
 $cc ../../../code/ui/ui_sound.c
-$cc ../../../code/ui/ui_sparena.c
-$cc ../../../code/ui/ui_specifyleague.c
 $cc ../../../code/ui/ui_specifyserver.c
-$cc ../../../code/ui/ui_splevel.c
-$cc ../../../code/ui/ui_sppostgame.c
-$cc ../../../code/ui/ui_spreset.c
-$cc ../../../code/ui/ui_spskill.c
 $cc ../../../code/ui/ui_startserver_bot.c
 $cc ../../../code/ui/ui_startserver_botsel.c
 $cc ../../../code/ui/ui_startserver_common.c

@@ -15,8 +15,7 @@
 typedef void (*voidfunc_f)(void);
 
 // QSandbox version string
-#define DMOD_VERSION "MiTech"
-
+#define QS_VERSION "SourceTech"
 
 // An additional font size tag for use with
 // proportional strings. The original values are
@@ -70,16 +69,6 @@ extern	vmCvar_t 	cl_bigcharheight;
 extern	vmCvar_t 	cl_giantcharwidth;
 extern	vmCvar_t 	cl_giantcharheight;
 
-extern vmCvar_t test1;
-extern vmCvar_t test2;
-extern vmCvar_t test3;
-extern vmCvar_t test4;
-extern vmCvar_t test5;
-extern vmCvar_t test6;
-extern vmCvar_t test7;
-extern vmCvar_t test8;
-extern vmCvar_t test9;
-
 //QSandbox Sandbox
 extern vmCvar_t	sb_private;
 extern vmCvar_t	sb_texture;
@@ -122,9 +111,6 @@ extern vmCvar_t	toolgun_disabledarg4;
 
 extern vmCvar_t	cl_sprun;
 
-extern vmCvar_t	mgui_api_active;
-extern vmCvar_t	mgui_none;
-
 extern vmCvar_t	sbt_color0_0;
 extern vmCvar_t	sbt_color0_1;
 extern vmCvar_t	sbt_color0_2;
@@ -142,8 +128,6 @@ extern vmCvar_t	sbt_color3_1;
 extern vmCvar_t	sbt_color3_2;
 extern vmCvar_t	sbt_color3_3;
 extern vmCvar_t	sbt_wallpaper;
-
-extern vmCvar_t	ui_scrollbtnsize;
 
 extern vmCvar_t	ui_3dmap;
 
@@ -226,9 +210,6 @@ extern vmCvar_t	ui_server29;
 extern vmCvar_t	ui_server30;
 extern vmCvar_t	ui_server31;
 extern vmCvar_t	ui_server32;
-
-extern vmCvar_t	ui_cdkey;
-extern vmCvar_t	ui_cdkeychecked;
 
 extern vmCvar_t	uie_animsfx;
 extern vmCvar_t	uie_mapicons;
@@ -512,18 +493,6 @@ extern char	*ui_medalPicNames[];
 extern char	*ui_medalSounds[];
 
 //
-// mgui.c
-//
-extern int UI_ArenaScriptAutoInt( char *name );
-extern char *UI_ArenaScriptAutoChar( const char *name );
-extern float UI_ArenaScriptAutoFloat( char *name );
-
-//
-// mgui.c
-//
-extern void MGUI_Load( void );
-
-//
 // ui_advanced.c
 //
 extern void UI_AdvancedMenu( void );
@@ -617,13 +586,6 @@ extern void UI_WorkshopMenu( void );
 extern void UI_WorkshopMenu_Cache( void );
 
 //
-// ui_cdkey.c
-//
-extern void UI_CDKeyMenu( void );
-extern void UI_CDKeyMenu_Cache( void );
-extern void UI_CDKeyMenu_f( void );
-
-//
 // ui_playermodel.c
 //
 #define LOW_MEMORY			(5 * 1024 * 1024)
@@ -642,12 +604,6 @@ extern void PlayerSettings_Cache( void );
 //
 extern void UI_PreferencesMenu( void );
 extern void Preferences_Cache( void );
-
-//
-// ui_specifyleague.c
-//
-extern void UI_SpecifyLeagueMenu( void );
-extern void SpecifyLeague_Cache( void );
 
 //
 // ui_specifyserver.c
@@ -675,8 +631,6 @@ extern void UI_ServerPlayerIcon( const char *modelAndSkin, char *iconName, int i
 extern void UIE_InGame_EnabledItems(void);
 extern void UIE_StartServer_RegisterDisableCvars(qboolean init);
 extern const char* UIE_DefaultIconFromGameType(int gametype);
-
-
 
 //
 // ui_serverinfo.c
@@ -922,10 +876,7 @@ typedef struct {
 	qhandle_t			menuBlack;
 	qhandle_t			menuWallpapers;
 	qhandle_t			menuLoadingIcon;
-	qhandle_t			charset;
-	qhandle_t			charsetProp;
-	qhandle_t			charsetPropGlow;
-	qhandle_t			charsetPropB;
+	qhandle_t			charset[3];
 	qhandle_t			cursor;
 	qhandle_t			corner;
 	qhandle_t			rb_on;
@@ -945,7 +896,6 @@ typedef struct {
 	qboolean			demoversion;
 	qboolean			firstdraw;
 	qboolean			onmap;
-	qboolean       		punkbuster;
 } uiStatic_t;
 
 extern void			UI_Init( void );
@@ -963,11 +913,7 @@ extern void			UI_DrawRect( float x, float y, float width, float height, const fl
 extern void			UI_UpdateScreen( void );
 extern void			UI_SetColor( const float *rgba );
 extern void			UI_LerpColor(vec4_t a, vec4_t b, vec4_t c, float t);
-extern void			UI_DrawBannerString( int x, int y, const char* str, int style, vec4_t color );
 extern float		UI_ProportionalSizeScale( int style, float customsize );
-extern void 		UI_DrawScaledProportionalString( float x, float y, const char* str, int style, float sizeScale, vec4_t color );
-extern void			UI_DrawProportionalString( int x, int y, const char* str, int style, vec4_t color );
-extern void			UI_DrawProportionalString_AutoWrapped( int x, int ystart, int xmax, int ystep, const char* str, int style, vec4_t color );
 extern int			UI_ProportionalStringWidth( const char* str );
 extern void			UI_DrawString( int x, int y, const char* str, int style, vec4_t color );
 extern void			UI_DrawStringCustom( int x, int y, const char* str, int style, vec4_t color, float csize, float width );
@@ -987,55 +933,6 @@ extern void			UI_Refresh( int time );
 extern void			UI_StartDemoLoop( void );
 extern qboolean		m_entersound;
 extern uiStatic_t	uis;
-
-//
-// ui_spLevel.c
-//
-#define ID_AWARD1			1000
-#define ID_AWARD2			1001
-#define ID_AWARD3			1002
-#define ID_AWARD4			1003
-#define ID_AWARD5			1004
-#define ID_AWARD6			1005
-
-typedef struct {
-	menubitmap_s	item[6];
-	int				levels[6];
-	sfxHandle_t		sounds[6];
-
-	qboolean bCentre;
-	int iconOffset;
-	int iconRaise;
-	int iconCentralGap;
-} awardInfo_t;
-
-
-extern void UIE_AwardIcons_Cache(awardInfo_t* a);
-extern void UIE_AwardIcons_InitControls(menuframework_s* m, awardInfo_t* a, callbackFunc callback);
-extern void UIE_AwardIcons_PlaySound(awardInfo_t* a, menucommon_s* ptr);
-extern void UIE_AwardIcons_DrawValues(awardInfo_t* a);
-
-extern void UI_SPLevelMenu_Cache( void );
-extern void UI_SPLevelMenu( void );
-extern void UI_SPLevelMenu_f( void );
-extern void UI_SPLevelMenu_ReInit( void );
-
-//
-// ui_spArena.c
-//
-void UI_SPArena_Start( const char *arenaInfo );
-
-//
-// ui_spPostgame.c
-//
-void UI_SPPostgameMenu_Cache( void );
-void UI_SPPostgameMenu_f( void );
-
-//
-// ui_spSkill.c
-//
-void UI_SPSkillMenu( const char *arenaInfo );
-void UI_SPSkillMenu_Cache( void );
 
 //
 // ui_syscalls.c
@@ -1179,75 +1076,17 @@ extern void UI_SetDefaultCvar(const char* cvar, const char* value);
 //
 // ui_gameinfo.c
 //
-typedef enum {
-	AWARD_ACCURACY,
-	AWARD_IMPRESSIVE,
-	AWARD_EXCELLENT,
-	AWARD_GAUNTLET,
-	AWARD_FRAGS,
-	AWARD_PERFECT
-} awardType_t;
-
 const char *UI_GetArenaInfoByNumber( int num );
 const char *UI_GetArenaInfoByMap( const char *map );
 const char *UI_GetSpecialArenaInfo( const char *tag );
 int UI_GetNumArenas( void );
-int UI_GetNumSPArenas( void );
-int UI_GetNumSPTiers( void );
 
 char *UI_GetBotInfoByNumber( int num );
 char *UI_GetBotInfoByName( const char *name );
 int UI_GetBotNumByName( const char *name );
 int UI_GetNumBots( void );
 
-void UI_GetBestScore( int level, int *score, int *skill );
-void UI_SetBestScore( int level, int score );
-int UI_TierCompleted( int levelWon );
-qboolean UI_ShowTierVideo( int tier );
-qboolean UI_CanShowTierVideo( int tier );
-int  UI_GetCurrentGame( void );
-void UI_NewGame( void );
-void UI_LogAwardData( int award, int data );
-int UI_GetAwardLevel( int award );
-
-void UI_SPUnlock_f( void );
-void UI_SPUnlockMedals_f( void );
-
 void UI_InitGameinfo( void );
-
-//GRank
-
-//
-// ui_rankings.c
-//
-void Rankings_DrawText( void* self );
-void Rankings_DrawName( void* self );
-void Rankings_DrawPassword( void* self );
-void Rankings_Cache( void );
-void UI_RankingsMenu( void );
-
-//
-// ui_login.c
-//
-void Login_Cache( void );
-void UI_LoginMenu( void );
-
-//
-// ui_signup.c
-//
-void Signup_Cache( void );
-void UI_SignupMenu( void );
-
-//
-// ui_rankstatus.c
-//
-void RankStatus_Cache( void );
-void UI_RankStatusMenu( void );
-
-//
-// ui_sppostgame.c
-//
-void UI_SPKickDupe_f( void );
 
 //
 // ui_loadMAP.c

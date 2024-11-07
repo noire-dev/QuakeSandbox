@@ -356,7 +356,6 @@ static void Demos_MenuInit( void ) {
 		len = strlen( demoname );
       s_demos.protocol[i] = Demos_ClipDemoExt(demoname, len, protocol);
 
-		Q_strupr(demoname);
 		s_demos.list.itemnames[i] = demoname;
 
 		demoname += len + 1;

@@ -6,6 +6,9 @@ const char *function_list[MAX_FUNCS] = {
     "deleteThread",
     "getCvar",
     "setCvar",
+    "createVariable",
+    "getVariable",
+    "setVariable",
     NULL
 };
 
@@ -17,6 +20,9 @@ const char *function_arg_types[MAX_FUNCS][MAX_ARGS] = {
     {"char"},                                       // deleteThread
     {"char"},                                       // getCvar
     {"char", "char"},                               // setCvar
+    {"char", "char", "char"},                       // createVariable
+    {"char"},                                       // getVariable
+    {"char", "char", "char"},                       // setVariable
     {NULL}                                          // NULL
 };
 
@@ -89,8 +95,34 @@ void callfunc(Variable *var, const char *name, const char *operation, const char
         NS_setCvar(ns_args[0].c, ns_args[1].c);
     }
 
+    else if (strcmp(name, "createVariable") == 0 && argCount >= 3) {
+        VarType type = (!strcmp(ns_args[2].c, "TYPE_CHAR")) ? TYPE_CHAR :
+                        (!strcmp(ns_args[2].c, "TYPE_INT")) ? TYPE_INT : TYPE_FLOAT;
+        create_variable(ns_args[0].c, ns_args[1].c, type);
+    }
+
+    else if (strcmp(name, "getVariable") == 0 && argCount >= 1) {
+        if(var->type == TYPE_CHAR){
+            strncpy(result.c, get_variable_char(ns_args[0].c), sizeof(result.c));
+        }
+        if(var->type == TYPE_INT){
+            result.i = get_variable_int(ns_args[0].c);
+        }
+        if(var->type == TYPE_FLOAT){
+            result.f = get_variable_float(ns_args[0].c);
+        }
+        hasReturnValue = qtrue;
+    }
+
+    else if (strcmp(name, "setVariable") == 0 && argCount >= 3) {
+        VarType type = (!strcmp(ns_args[2].c, "TYPE_CHAR")) ? TYPE_CHAR :
+                        (!strcmp(ns_args[2].c, "TYPE_INT")) ? TYPE_INT : TYPE_FLOAT;
+        set_variable_value(ns_args[0].c, ns_args[1].c, type);
+    }
+
     else {
         Com_Printf("Noire.Script Error: %s - incorrect number of arguments.\n", name);
+        trap_Cvar_Set("ns_haveerror", "1");
     }
 
     if (hasReturnValue) {

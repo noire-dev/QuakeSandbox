@@ -54,3 +54,10 @@ int     spawn_weapon = 0
 	    //512-WP_NAILGUN
 	    //1024-WP_PROX_LAUNCHER
 	    //2048-WP_CHAINGUN
+
+//#######################
+//Gui variables
+//#######################
+
+float screen_offset = 0
+screen_offset = getCvar ("cl_screenoffset")

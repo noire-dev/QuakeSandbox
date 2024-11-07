@@ -78,9 +78,9 @@ static void UI_DisplayDownloadInfo( const char *downloadName ) {
 	if (width > leftWidth) leftWidth = width;
 	leftWidth += 16;
 
-	UI_DrawProportionalString( 8, 128, dlText, style, color_white );
-	UI_DrawProportionalString( 8, 160, etaText, style, color_white );
-	UI_DrawProportionalString( 8, 224, xferText, style, color_white );
+	UI_DrawString( 8, 128, dlText, style, color_white );
+	UI_DrawString( 8, 160, etaText, style, color_white );
+	UI_DrawString( 8, 224, xferText, style, color_white );
 
 	if (downloadSize > 0) {
 		s = va( "%s (%d%%)", downloadName, downloadCount * 100 / downloadSize );
@@ -88,14 +88,14 @@ static void UI_DisplayDownloadInfo( const char *downloadName ) {
 		s = downloadName;
 	}
 
-	UI_DrawProportionalString( leftWidth, 128, s, style, color_white );
+	UI_DrawString( leftWidth, 128, s, style, color_white );
 
 	UI_ReadableSize( dlSizeBuf,		sizeof dlSizeBuf,		downloadCount );
 	UI_ReadableSize( totalSizeBuf,	sizeof totalSizeBuf,	downloadSize );
 
 	if (downloadCount < 4096 || !downloadTime) {
-		UI_DrawProportionalString( leftWidth, 160, "estimating", style, color_white );
-		UI_DrawProportionalString( leftWidth, 192, 
+		UI_DrawString( leftWidth, 160, "estimating", style, color_white );
+		UI_DrawString( leftWidth, 192, 
 			va("(%s of %s copied)", dlSizeBuf, totalSizeBuf), style, color_white );
 	} else {
 	  // bk010108
@@ -124,24 +124,24 @@ static void UI_DisplayDownloadInfo( const char *downloadName ) {
 			UI_PrintTime ( dlTimeBuf, sizeof dlTimeBuf, n ); // bk010104
 				//(n - (((downloadCount/1024) * n) / (downloadSize/1024))) * 1000);
 
-			UI_DrawProportionalString( leftWidth, 160, 
+			UI_DrawString( leftWidth, 160, 
 				dlTimeBuf, style, color_white );
-			UI_DrawProportionalString( leftWidth, 192, 
+			UI_DrawString( leftWidth, 192, 
 				va("(%s of %s copied)", dlSizeBuf, totalSizeBuf), style, color_white );
 		} else {
-			UI_DrawProportionalString( leftWidth, 160, 
+			UI_DrawString( leftWidth, 160, 
 				"estimating", style, color_white );
 			if (downloadSize) {
-				UI_DrawProportionalString( leftWidth, 192, 
+				UI_DrawString( leftWidth, 192, 
 					va("(%s of %s copied)", dlSizeBuf, totalSizeBuf), style, color_white );
 			} else {
-				UI_DrawProportionalString( leftWidth, 192, 
+				UI_DrawString( leftWidth, 192, 
 					va("(%s copied)", dlSizeBuf), style, color_white );
 			}
 		}
 
 		if (xferRate) {
-			UI_DrawProportionalString( leftWidth, 224, 
+			UI_DrawString( leftWidth, 224, 
 				va("%s/Sec", xferRateBuf), style, color_white );
 		}
 	}
@@ -181,12 +181,7 @@ void UI_DrawConnectScreen( qboolean overlay ) {
 	}
 
 	if( strlen(info) ) {
-		if(cl_language.integer == 0){
 		UI_DrawString( 320, 16, va( "Loading %s", Info_ValueForKey( info, "mapname" ) ), UI_GIANTFONT|UI_CENTER|UI_DROPSHADOW, color_white );
-		}
-		if(cl_language.integer == 1){
-		UI_DrawString( 320, 16, va( "Загрузка %s", Info_ValueForKey( info, "mapname" ) ), UI_GIANTFONT|UI_CENTER|UI_DROPSHADOW, color_white );
-		}
 	}
 
 		if(cl_language.integer == 0){
@@ -198,12 +193,12 @@ void UI_DrawConnectScreen( qboolean overlay ) {
 	//UI_DrawString( 320, 96, "Press Esc to disconnect", UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, menu_text_color );
 
 	// display global MOTD at bottom
-	UI_DrawProportionalString( SCREEN_WIDTH/2, SCREEN_HEIGHT-32, 
+	UI_DrawString( SCREEN_WIDTH/2, SCREEN_HEIGHT-32, 
 		Info_ValueForKey( cstate.updateInfoString, "motd" ), UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, menu_text_color );
 	
 	// print any server info (server full, bad version, etc)
 	if ( cstate.connState < CA_CONNECTED ) {
-		UI_DrawProportionalString_AutoWrapped( 320, 192, 630, 20, cstate.messageString, UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, menu_text_color );
+		UI_DrawString( 320, 192, cstate.messageString, UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, menu_text_color );
 	}
 	if ( lastConnState > cstate.connState ) {
 		lastLoadingText[0] = '\0';
@@ -280,7 +275,7 @@ void UI_DrawConnectScreen( qboolean overlay ) {
 
 	trap_GetClientState( &cstate );
 	if ( cstate.connState < CA_CONNECTED ) {
-		UI_DrawProportionalString_AutoWrapped( 320, 192, 630, 20, cstate.messageString, UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, menu_text_color );
+		UI_DrawString( 320, 192, cstate.messageString, UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, menu_text_color );
 	}
 	}
 }

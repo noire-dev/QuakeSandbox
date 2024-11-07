@@ -165,10 +165,10 @@ qboolean SpotWouldTelefrag( gentity_t *spot ) {
 
 	VectorAdd( spot->s.origin, playerMins, mins );
 	VectorAdd( spot->s.origin, playerMaxs, maxs );
-	num = trap_EntitiesInBox( mins, maxs, MiTechEntityList, MAX_GENTITIES );
+	num = trap_EntitiesInBox( mins, maxs, SourceTechEntityList, MAX_GENTITIES );
 
 	for (i=0 ; i<num ; i++) {
-		hit = &g_entities[MiTechEntityList[i]];
+		hit = &g_entities[SourceTechEntityList[i]];
 		//if ( hit->client && hit->client->ps.stats[STAT_HEALTH] > 0 ) {
 		if ( hit->client) {
 			return qtrue;
@@ -1257,8 +1257,6 @@ static void ClientCleanName(const char *in, char *out, int outSize, int clientNu
         Q_strncpyz(out, va("Nameless%i",clientNum), outSize );
 }
 
-
-
 /*
 ===========
 ClientUserInfoChanged
@@ -1486,9 +1484,9 @@ void ClientUserinfoChanged( int clientNum ) {
 	strcpy(blueTeam, Info_ValueForKey( userinfo, "g_blueteam" ));
 
 	if ( ent->r.svFlags & SVF_BOT ) {
-		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\g_redteam\\%s\\g_blueteam\\%s\\vn\\%i\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\skill\\%s\\tt\\%d\\tl\\%d",
+		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\g_redteam\\%s\\g_blueteam\\%s\\vn\\%i\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\isnpc\\%i\\skill\\%s\\tt\\%d\\tl\\%d",
 			client->pers.netname, team, model, headModel, redTeam, blueTeam, client->vehiclenum, c1, c2,
-			client->pers.maxHealth, client->sess.wins, client->sess.losses,
+			client->pers.maxHealth, client->sess.wins, client->sess.losses, ent->singlebot,
 			Info_ValueForKey( userinfo, "skill" ), teamTask, teamLeader );
 	} else {
 		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\g_redteam\\%s\\g_blueteam\\%s\\hr\\%s\\hg\\%s\\hb\\%s\\tr\\%s\\tg\\%s\\tb\\%s\\pr\\%s\\pg\\%s\\pb\\%s\\pg_r\\%s\\pg_g\\%s\\pg_b\\%s\\si\\%s\\vn\\%i\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\tt\\%d\\tl\\%d\\flashl\\%i",
@@ -1664,7 +1662,7 @@ void ClientBegin( int clientNum ) {
 	int			flags;
     char		userinfo[MAX_INFO_STRING];
 
-        trap_GetUserinfo( clientNum, userinfo, sizeof( userinfo ) );
+    trap_GetUserinfo( clientNum, userinfo, sizeof( userinfo ) );
 
 	ent = g_entities + clientNum;
 
@@ -1826,7 +1824,6 @@ void ClientSpawn(gentity_t *ent) {
 		spawnPoint = ent->botspawn;
 		VectorCopy( spawnPoint->s.origin, spawn_origin );
 		VectorCopy(  spawnPoint->s.angles, spawn_angles );
-		//trap_SendServerCommand( -1, "loaddefered\n" );	//force clients to load the deferred assets
 	} else {
 	if ((client->sess.sessionTeam == TEAM_SPECTATOR)
 			|| ( (client->ps.pm_type == PM_SPECTATOR || client->isEliminated )  && (g_gametype.integer == GT_ELIMINATION || g_gametype.integer == GT_CTF_ELIMINATION) ) ) {
@@ -2069,7 +2066,6 @@ void ClientSpawn(gentity_t *ent) {
 		spawnPoint = ent->botspawn;
 		VectorCopy( spawnPoint->s.origin, spawn_origin );
 		VectorCopy(  spawnPoint->s.angles, spawn_angles );
-		//trap_SendServerCommand( -1, "loaddefered\n" );	//force clients to load the deferred assets
 	} else {
 	if ((client->sess.sessionTeam == TEAM_SPECTATOR)
 			|| ( (client->ps.pm_type == PM_SPECTATOR || client->isEliminated )  && (g_gametype.integer == GT_ELIMINATION || g_gametype.integer == GT_CTF_ELIMINATION) ) ) {
@@ -2353,7 +2349,6 @@ void ClientSpawn(gentity_t *ent) {
 		spawnPoint = ent->botspawn;
 		VectorCopy( spawnPoint->s.origin, spawn_origin );
 		VectorCopy(  spawnPoint->s.angles, spawn_angles );
-		//trap_SendServerCommand( -1, "loaddefered\n" );	//force clients to load the deferred assets
 	} else {
 	if ((client->sess.sessionTeam == TEAM_SPECTATOR)
 			|| ( (client->ps.pm_type == PM_SPECTATOR || client->isEliminated )  && (g_gametype.integer == GT_ELIMINATION || g_gametype.integer == GT_CTF_ELIMINATION) ) ) {

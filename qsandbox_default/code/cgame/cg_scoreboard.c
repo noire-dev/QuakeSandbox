@@ -24,51 +24,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "cg_local.h"
 
 
-#define	SCOREBOARD_X		(0)
+#define	SCOREBOARD_X		(0-cl_screenoffset.value)
 
-#define SB_HEADER			86
-#define SB_TOP				(SB_HEADER+32)
+#define SB_HEADER			18
+#define SB_TOP				(SB_HEADER+12)
 
 // Where the status bar starts, so we don't overwrite it
-#define SB_STATUSBAR		420
+#define SB_STATUSBAR		430
 
-#define SB_NORMAL_HEIGHT	40
 #define SB_INTER_HEIGHT		16 // interleaved height
 
-#define SB_MAXCLIENTS_NORMAL  ((SB_STATUSBAR - SB_TOP) / SB_NORMAL_HEIGHT)
-#define SB_MAXCLIENTS_INTER   ((SB_STATUSBAR - SB_TOP) / SB_INTER_HEIGHT - 1)
-
-// Used when interleaved
-
-
-
-#define SB_LEFT_BOTICON_X	(SCOREBOARD_X+0)
-#define SB_LEFT_HEAD_X		(SCOREBOARD_X+32)
-#define SB_RIGHT_BOTICON_X	(SCOREBOARD_X+64)
-#define SB_RIGHT_HEAD_X		(SCOREBOARD_X+96)
 // Normal
-#define SB_BOTICON_X		(SCOREBOARD_X+32)
-#define SB_HEAD_X			(SCOREBOARD_X+64)
+#define SB_BOTICON_X		(SCOREBOARD_X+4)
+#define SB_HEAD_X			(SCOREBOARD_X+20)
 
-#define SB_SCORELINE_X		112
+#define SB_SCORELINE_X		28-cl_screenoffset.value
 
-#define SB_RATING_WIDTH	    (6 * BIGCHAR_WIDTH) // width 6
-#define SB_SCORE_X			(SB_SCORELINE_X + BIGCHAR_WIDTH) // width 6
-#define SB_RATING_X			(SB_SCORELINE_X + 6 * BIGCHAR_WIDTH) // width 6
-#define SB_PING_X			(SB_SCORELINE_X + 12 * BIGCHAR_WIDTH + 8) // width 5
-#define SB_TIME_X			(SB_SCORELINE_X + 17 * BIGCHAR_WIDTH + 8) // width 5
-#define SB_NAME_X			(SB_SCORELINE_X + 22 * BIGCHAR_WIDTH) // width 15
-
-// The new and improved score board
-//
-// In cases where the number of clients is high, the score board heads are interleaved
-// here's the layout
-
-//
-//	0   32   80  112  144   240  320  400   <-- pixel position
-//  bot head bot head score ping time name
-//
-//  wins/losses are drawn on bot icon now
+#define SB_RATING_WIDTH	    (6 * BIGCHAR_WIDTH)
+#define SB_SCORE_X			(SB_SCORELINE_X + 2 * BIGCHAR_WIDTH)
+#define SB_PING_X			(SB_SCORELINE_X + 8 * BIGCHAR_WIDTH)
+#define SB_TIME_X			(SB_SCORELINE_X + 12 * BIGCHAR_WIDTH)
+#define SB_NAME_X			(SB_SCORELINE_X + 18 * BIGCHAR_WIDTH)
 
 static qboolean localClient; // true if local client has been displayed
 /*
@@ -76,7 +52,7 @@ static qboolean localClient; // true if local client has been displayed
 CG_DrawScoreboard
 =================
 */
-static void CG_DrawClientScore( int y, score_t *score, float *color, float fade, qboolean largeFormat ) {
+static void CG_DrawClientScore( int y, score_t *score, float *color, float fade ) {
 	char	string[1024];
 	clientInfo_t	*ci;
 	int iconx, headx;
@@ -93,68 +69,20 @@ static void CG_DrawClientScore( int y, score_t *score, float *color, float fade,
 
 	// draw the handicap or bot skill marker (unless player has flag)
 	if ( ci->powerups & ( 1 << PW_NEUTRALFLAG ) ) {
-		if( largeFormat ) {
-			CG_DrawFlagModel( iconx, y - ( 32 - BIGCHAR_HEIGHT ) / 2, 32, 32, TEAM_FREE, qfalse );
-		}
-		else {
-			CG_DrawFlagModel( iconx, y, 16, 16, TEAM_FREE, qfalse );
-		}
+		CG_DrawFlagModel( iconx, y, 16, 16, TEAM_FREE, qfalse );
 	} else if ( ci->powerups & ( 1 << PW_REDFLAG ) ) {
-		if( largeFormat ) {
-			CG_DrawFlagModel( iconx, y - ( 32 - BIGCHAR_HEIGHT ) / 2, 32, 32, TEAM_RED, qfalse );
-		}
-		else {
-			CG_DrawFlagModel( iconx, y, 16, 16, TEAM_RED, qfalse );
-		}
+		CG_DrawFlagModel( iconx, y, 16, 16, TEAM_RED, qfalse );
 	} else if ( ci->powerups & ( 1 << PW_BLUEFLAG ) ) {
-		if( largeFormat ) {
-			CG_DrawFlagModel( iconx, y - ( 32 - BIGCHAR_HEIGHT ) / 2, 32, 32, TEAM_BLUE, qfalse );
-		}
-		else {
-			CG_DrawFlagModel( iconx, y, 16, 16, TEAM_BLUE, qfalse );
-		}
+		CG_DrawFlagModel( iconx, y, 16, 16, TEAM_BLUE, qfalse );
 	} else {
-		if ( ci->botSkill > 0 && ci->botSkill <= 14 ) {
-			if ( cg_drawIcons.integer ) {
-				if( largeFormat ) {
-					CG_DrawPic( iconx, y - ( 32 - BIGCHAR_HEIGHT ) / 2, 32, 32, cgs.media.botSkillShaders[ ci->botSkill - 1 ] );
-				}
-				else {
-					CG_DrawPic( iconx, y, 16, 16, cgs.media.botSkillShaders[ ci->botSkill - 1 ] );
-				}
-			}
-		} else if ( ci->handicap < 999 ) {
-			Com_sprintf( string, sizeof( string ), "%i", ci->handicap );
-			if ( cgs.gametype == GT_TOURNAMENT )
-				if ( ci->handicap != 100 ) {
-				CG_DrawSmallStringColor( iconx - 20, y - SMALLCHAR_HEIGHT/2, string, color );
-				}
-			else
-				if ( ci->handicap != 100 ) {
-				CG_DrawSmallStringColor( iconx - 20, y - SMALLCHAR_HEIGHT/2, string, color );
-				}
-		}
-
 		// draw the wins / losses
 		if ( cgs.gametype == GT_TOURNAMENT ) {
 			Com_sprintf( string, sizeof( string ), "%i/%i", ci->wins, ci->losses );
-			if( ci->handicap < 999 && !ci->botSkill ) {
-				CG_DrawSmallStringColor( iconx - 35, y + SMALLCHAR_HEIGHT/2, string, color );
-			}
-			else {
-				CG_DrawSmallStringColor( iconx - 35, y, string, color );
-			}
+			CG_DrawSmallStringColor( iconx - 35, y + SMALLCHAR_HEIGHT/2, string, color );
 		}
 	}
 
-	// draw the face
-	if( largeFormat ) {
-		CG_DrawHead( headx, y - ( ICON_SIZE - BIGCHAR_HEIGHT ) / 2, ICON_SIZE, ICON_SIZE,
-			score->client );
-	}
-	else {
-		CG_DrawHead( headx, y, 16, 16, score->client );
-	}
+	CG_DrawHead( headx, y, 16, 16, score->client );
 	
 	// draw the score line
 	if ( score->ping == -1 ) {
@@ -164,16 +92,8 @@ static void CG_DrawClientScore( int y, score_t *score, float *color, float fade,
 		Com_sprintf(string, sizeof(string),
 			" SPECT %3i %4i %s", score->ping, score->time, ci->name);
 	} else {
-		/*if(cgs.gametype == GT_LMS)
-			Com_sprintf(string, sizeof(string),
-				"%5i %4i %4i %s *%i*", score->score, score->ping, score->time, ci->name, ci->isDead);
-		else*/
-		/*if(ci->isDead)
-			Com_sprintf(string, sizeof(string),
-				"%5i %4i %4i %s *DEAD*", score->score, score->ping, score->time, ci->name);
-		else*/
-			Com_sprintf(string, sizeof(string),
-				"%5i %4i %4i %s", score->score, score->ping, score->time, ci->name);
+		Com_sprintf(string, sizeof(string),
+			"%5i %4i %4i %s", score->score, score->ping, score->time, ci->name);
 	}
 
 	// highlight your position
@@ -191,27 +111,12 @@ static void CG_DrawClientScore( int y, score_t *score, float *color, float fade,
 		} else {
 			rank = cg.snap->ps.persistant[PERS_RANK] & ~RANK_TIED_FLAG;
 		}
-		if ( rank == 0 ) {
-			hcolor[0] = 0;
-			hcolor[1] = 0;
-			hcolor[2] = 0.7f;
-		} else if ( rank == 1 ) {
-			hcolor[0] = 0.7f;
-			hcolor[1] = 0;
-			hcolor[2] = 0;
-		} else if ( rank == 2 ) {
-			hcolor[0] = 0.7f;
-			hcolor[1] = 0.7f;
-			hcolor[2] = 0;
-		} else {
-			hcolor[0] = 0.7f;
-			hcolor[1] = 0.7f;
-			hcolor[2] = 0.7f;
-		}
+		hcolor[0] = cg_crosshairColorRed.value;
+		hcolor[1] = cg_crosshairColorGreen.value;
+		hcolor[2] = cg_crosshairColorBlue.value;
+		hcolor[3] = fade * 0.5;
 
-		hcolor[3] = fade * 0.7;
-		CG_FillRect( SB_SCORELINE_X + BIGCHAR_WIDTH + (SB_RATING_WIDTH / 2), y,
-			640 - SB_SCORELINE_X - BIGCHAR_WIDTH, BIGCHAR_HEIGHT+1, hcolor );
+		CG_FillRect( SB_SCORELINE_X + BIGCHAR_WIDTH + (SB_RATING_WIDTH / 2), y, 640 - SB_SCORELINE_X, BIGCHAR_HEIGHT+1, hcolor );
 	}
 
 	CG_DrawBigString( SB_SCORELINE_X + (SB_RATING_WIDTH / 2), y, string, fade );
@@ -252,7 +157,9 @@ static int CG_TeamScoreboard( int y, team_t team, float fade, int maxClients, in
 			continue;
 		}
 
-		CG_DrawClientScore( y + lineHeight * count, score, color, fade, lineHeight == SB_NORMAL_HEIGHT );
+		if ( score->ping == 0 ){ continue; }	// No draw with 0 ping
+
+		CG_DrawClientScore( y + lineHeight * count, score, color, fade );
 
 		count++;
 	}
@@ -303,64 +210,37 @@ qboolean CG_DrawScoreboard( void ) {
 		fade = *fadeColor;
 	}
 
-
 	// fragged by ... line
 	if ( cg.killerName[0] ) {
 		s = va("Fragged by %s", cg.killerName );
 		w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
 		x = ( SCREEN_WIDTH - w ) / 2;
-		y = 40;
-		CG_DrawBigString( x, y, s, fade );
-	}
-
-	// current rank
-	if ( cgs.gametype < GT_TEAM || cgs.ffa_gt == 1) {
-		if (cg.snap->ps.persistant[PERS_TEAM] != TEAM_SPECTATOR ) {
-			s = va("%s place with %i",
-				CG_PlaceString( cg.snap->ps.persistant[PERS_RANK] + 1 ),
-				cg.snap->ps.persistant[PERS_SCORE] );
-			w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
-			x = ( SCREEN_WIDTH - w ) / 2;
-			y = 60;
-			CG_DrawBigString( x, y, s, fade );
-		}
-	} else {
-		if ( cg.teamScores[0] == cg.teamScores[1] ) {
-			s = va("Teams are tied at %i", cg.teamScores[0] );
-		} else if ( cg.teamScores[0] >= cg.teamScores[1] ) {
-			s = va("Red leads %i to %i",cg.teamScores[0], cg.teamScores[1] );
-		} else {
-			s = va("Blue leads %i to %i",cg.teamScores[1], cg.teamScores[0] );
-		}
-
-		w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
-		x = ( SCREEN_WIDTH - w ) / 2;
-		y = 60;
+		y = 2;
 		CG_DrawBigString( x, y, s, fade );
 	}
 
 	// scoreboard
 	y = SB_HEADER;
 
-	CG_DrawPic( SB_SCORE_X + (SB_RATING_WIDTH / 2), y, 64, 32, cgs.media.scoreboardScore );
-	CG_DrawPic( SB_PING_X - (SB_RATING_WIDTH / 2), y, 64, 32, cgs.media.scoreboardPing );
-	CG_DrawPic( SB_TIME_X - (SB_RATING_WIDTH / 2), y, 64, 32, cgs.media.scoreboardTime );
-	CG_DrawPic( SB_NAME_X - (SB_RATING_WIDTH / 2), y, 64, 32, cgs.media.scoreboardName );
+	if(cl_language.integer == 0){
+	CG_DrawSmallString( SB_SCORE_X + (SB_RATING_WIDTH / 2), y, "Score", fade );
+	CG_DrawSmallString( SB_PING_X + (SB_RATING_WIDTH / 2), y, "Ping", fade );
+	CG_DrawSmallString( SB_TIME_X + (SB_RATING_WIDTH / 2), y, "Time", fade );
+	CG_DrawSmallString( SB_NAME_X + (SB_RATING_WIDTH / 2), y, "Name", fade );
+	}
+	if(cl_language.integer == 1){
+	CG_DrawSmallString( SB_SCORE_X + (SB_RATING_WIDTH / 2), y, "Счет", fade );
+	CG_DrawSmallString( SB_PING_X + (SB_RATING_WIDTH / 2), y, "Пинг", fade );
+	CG_DrawSmallString( SB_TIME_X + (SB_RATING_WIDTH / 2), y, "Время", fade );
+	CG_DrawSmallString( SB_NAME_X + (SB_RATING_WIDTH / 2), y, "Имя", fade );
+	}
 
 	y = SB_TOP;
 
-	// If there are more than SB_MAXCLIENTS_NORMAL, use the interleaved scores
-	if ( cg.numScores > SB_MAXCLIENTS_NORMAL ) {
-		maxClients = SB_MAXCLIENTS_INTER;
-		lineHeight = SB_INTER_HEIGHT;
-		topBorderSize = 8;
-		bottomBorderSize = 16;
-	} else {
-		maxClients = SB_MAXCLIENTS_NORMAL;
-		lineHeight = SB_NORMAL_HEIGHT;
-		topBorderSize = 16;
-		bottomBorderSize = 16;
-	}
+	maxClients = 28;
+	lineHeight = SB_INTER_HEIGHT;
+	topBorderSize = 8;
+	bottomBorderSize = 16;
 
 	localClient = qfalse;
 
@@ -402,7 +282,7 @@ qboolean CG_DrawScoreboard( void ) {
 		// draw local client at the bottom
 		for ( i = 0 ; i < cg.numScores ; i++ ) {
 			if ( cg.scores[i].client == cg.snap->ps.clientNum ) {
-				CG_DrawClientScore( y, &cg.scores[i], fadeColor, fade, lineHeight == SB_NORMAL_HEIGHT );
+				CG_DrawClientScore( y, &cg.scores[i], fadeColor, fade );
 				break;
 			}
 		}
@@ -467,81 +347,81 @@ void CG_DrawSinglePlayerIntermission( void ) {
 	y = 64;
 	index = 1;
 	if (cg.time < cg.intermissionTime + (SCOREB_TIME * index))
-		CG_DrawStringExt( 64, y, "       Carnage :", color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
+		CG_DrawStringExt( 64, y, "       Carnage :", color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0, 0 );
 	else {
 		if (cg.scoreSoundsPlayed == index - 1) {
 			trap_S_StartLocalSound( cgs.media.scoreShow, CHAN_LOCAL_SOUND );
 			cg.scoreSoundsPlayed++;
 		}
-		CG_DrawStringExt( 64, y, va("       Carnage : %i", scores.carnageScore), color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
+		CG_DrawStringExt( 64, y, va("       Carnage : %i", scores.carnageScore), color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0, 0 );
 	}
 
 	//accuracy bonus
 	y += BIGCHAR_HEIGHT;
 	index++;
 	if (cg.time < cg.intermissionTime + (SCOREB_TIME * index))
-		CG_DrawStringExt( 64, y, "Accuracy bonus :", color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
+		CG_DrawStringExt( 64, y, "Accuracy bonus :", color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0, 0 );
 	else {
 		if (cg.scoreSoundsPlayed == index - 1) {
 			trap_S_StartLocalSound( cgs.media.scoreShow, CHAN_LOCAL_SOUND );
 			cg.scoreSoundsPlayed++;
 		}
 
-		CG_DrawStringExt( 64, y, va("Accuracy bonus : %i (%i%%)", scores.accuracyScore, scores.accuracy), color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
+		CG_DrawStringExt( 64, y, va("Accuracy bonus : %i (%i%%)", scores.accuracyScore, scores.accuracy), color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0, 0 );
 	}
 
 	//skill bonus
 	y += BIGCHAR_HEIGHT;
 	index++;
 	if (cg.time < cg.intermissionTime + (SCOREB_TIME * index))
-		CG_DrawStringExt( 64, y, "   Skill bonus :", color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
+		CG_DrawStringExt( 64, y, "   Skill bonus :", color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0, 0 );
 	else {
 		if (cg.scoreSoundsPlayed == index - 1) {
 			trap_S_StartLocalSound( cgs.media.scoreShow, CHAN_LOCAL_SOUND );
 			cg.scoreSoundsPlayed++;
 		}
 
-		CG_DrawStringExt( 64, y, va("   Skill bonus : %i (%1.0f%%)", scores.skillScore, scores.skillModifier * 100), color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
+		CG_DrawStringExt( 64, y, va("   Skill bonus : %i (%1.0f%%)", scores.skillScore, scores.skillModifier * 100), color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0, 0 );
 	}
 
 	//secrets score
 	y += BIGCHAR_HEIGHT;
 	index++;
 	if (cg.time < cg.intermissionTime + (SCOREB_TIME * index))
-		CG_DrawStringExt( 64, y, "       Secrets :", color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
+		CG_DrawStringExt( 64, y, "       Secrets :", color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0, 0 );
 	else {
 		if (cg.scoreSoundsPlayed == index - 1) {
 			trap_S_StartLocalSound( cgs.media.scoreShow, CHAN_LOCAL_SOUND );
 			cg.scoreSoundsPlayed++;
 		}
-		CG_DrawStringExt( 64, y, va("       Secrets : %i (%i/%i)", scores.secretsScore, scores.secretsFound, scores.secretsCount), color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );		
+		CG_DrawStringExt( 64, y, va("       Secrets : %i (%i/%i)", scores.secretsScore, scores.secretsFound, scores.secretsCount), color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0, 0 );		
 	}
 
 	//death penalty
 	y += BIGCHAR_HEIGHT;
 	index++;
 	if (cg.time < cg.intermissionTime + (SCOREB_TIME * index))
-		CG_DrawStringExt( 64, y, "        Deaths :", color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
+		CG_DrawStringExt( 64, y, "        Deaths :", color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0, 0 );
 	else {
 		if (cg.scoreSoundsPlayed == index - 1) {
 			trap_S_StartLocalSound( cgs.media.scoreShow, CHAN_LOCAL_SOUND );
 			cg.scoreSoundsPlayed++;
 		}
-		CG_DrawStringExt( 64, y, va("        Deaths : %i (%ix)", scores.deathsScore, scores.deaths), color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
+		CG_DrawStringExt( 64, y, va("        Deaths : %i (%ix)", scores.deathsScore, scores.deaths), color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0, 0 );
 	}
 
 	//total score
 	y += BIGCHAR_HEIGHT;
 	index++;
 	if (cg.time < cg.intermissionTime + (SCOREB_TIME * index) + SCOREB_TIME_LAST)	//wait slightly longer before showing final score
-		CG_DrawStringExt( 64, y, "         TOTAL :", color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
+		CG_DrawStringExt( 64, y, "         TOTAL :", color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0, 0 );
 	else {
 		if (cg.scoreSoundsPlayed == index - 1) {
 			trap_S_StartLocalSound( cgs.media.finalScoreShow, CHAN_LOCAL_SOUND );
 			cg.scoreSoundsPlayed++;
 		}
 
-		CG_DrawStringExt( 64, y, va("         TOTAL : %i", scores.totalScore), color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
+		CG_DrawStringExt( 64, y, va("         TOTAL : %i", scores.totalScore), color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0, 0 );
 	}
 }
 
@@ -754,7 +634,7 @@ static void CG_CenterGiantLine( float y, const char *string ) {
 
 	x = 0.5 * ( 640 - GIANT_WIDTH * CG_DrawStrlen( string ) );
 
-	CG_DrawStringExt( x, y, string, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+	CG_DrawStringExt( x, y, string, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0, 0 );
 }
 
 /*
@@ -815,15 +695,15 @@ void CG_DrawTourneyScoreboard( void ) {
 		//
 		// teamplay scoreboard
 		//
-		CG_DrawStringExt( 8, y, "Red Team", color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+		CG_DrawStringExt( 8, y, "Red Team", color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0, 0 );
 		s = va("%i", cg.teamScores[0] );
-		CG_DrawStringExt( 632 - GIANT_WIDTH * strlen(s), y, s, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+		CG_DrawStringExt( 632 - GIANT_WIDTH * strlen(s), y, s, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0, 0 );
 
 		y += 64;
 
-		CG_DrawStringExt( 8, y, "Blue Team", color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+		CG_DrawStringExt( 8, y, "Blue Team", color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0, 0 );
 		s = va("%i", cg.teamScores[1] );
-		CG_DrawStringExt( 632 - GIANT_WIDTH * strlen(s), y, s, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+		CG_DrawStringExt( 632 - GIANT_WIDTH * strlen(s), y, s, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0, 0 );
 	} else {
 		//
 		// free for all scoreboard
@@ -837,9 +717,9 @@ void CG_DrawTourneyScoreboard( void ) {
 				continue;
 			}
 
-			CG_DrawStringExt( 8, y, ci->name, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+			CG_DrawStringExt( 8, y, ci->name, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0, 0 );
 			s = va("%i", ci->score );
-			CG_DrawStringExt( 632 - GIANT_WIDTH * strlen(s), y, s, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+			CG_DrawStringExt( 632 - GIANT_WIDTH * strlen(s), y, s, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0, 0 );
 			y += 64;
 		}
 	}

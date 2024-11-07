@@ -8,10 +8,6 @@ CONTROLS MENU
 =======================================================================
 */
 
-
-
-
-
 #include "ui_local.h"
 
 #define ART_BACK0			"menu/art/back_0"
@@ -113,19 +109,18 @@ typedef struct
 #define ID_SANDBOX		48
 #define ID_SANDBOXMODE		49
 #define ID_NEWSANDBOX		50
-#define ID_ACTIONMENU		51
-#define ID_EXITVEHICLE		52
+#define ID_EXITVEHICLE		51
 
 
 // all others
-#define ID_FREELOOK		53
-#define ID_INVERTMOUSE	54
-#define ID_ALWAYSRUN	55
-#define ID_MOUSESPEED	56
-#define ID_JOYENABLE	57
-#define ID_JOYTHRESHOLD	58
-#define ID_SMOOTHMOUSE	59
-#define ID_MOUSESTYLE	60
+#define ID_FREELOOK		52
+#define ID_INVERTMOUSE	53
+#define ID_ALWAYSRUN	54
+#define ID_MOUSESPEED	55
+#define ID_JOYENABLE	56
+#define ID_JOYTHRESHOLD	57
+#define ID_SMOOTHMOUSE	58
+#define ID_MOUSESTYLE	59
 
 
 typedef struct
@@ -202,7 +197,6 @@ typedef struct
 	menuaction_s		sandbox;
 	menuaction_s		sandboxmode;
 	menuaction_s		newsandbox;
-	menuaction_s		actionmenu;
 	menuaction_s		exitvehicle;
 	menuradiobutton_s	joyenable;
 	menuslider_s		joythreshold;
@@ -272,7 +266,6 @@ static bind_t g_bindings[] =
 	{"ui_sandbox", 	"sandbox menu",	ID_SANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr uitoolmode", 	"sandbox tool mode",	ID_SANDBOXMODE,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr lastui", 	"addon menu",	ID_NEWSANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
-	{"mgui touchscreen", 	"action menu",	ID_ACTIONMENU,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"exitvehicle", 	"exit vehicle",	ID_EXITVEHICLE,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{(char*)NULL,		(char*)NULL,		0,				0,				-1,				-1,		-1,	-1},
 };
@@ -330,7 +323,6 @@ static bind_t g_bindingsrus[] =
 	{"ui_sandbox", 	"спавн меню",	ID_SANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr uitoolmode", 	"песочница режим инструмента",	ID_SANDBOXMODE,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr lastui", 	"меню аддонов",	ID_NEWSANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
-	{"mgui touchscreen", 	"меню действий",	ID_ACTIONMENU,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"exitvehicle", 	"выйти из транспорта",	ID_EXITVEHICLE,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{(char*)NULL,		(char*)NULL,		0,				0,				-1,				-1,		-1,	-1},
 };
@@ -423,7 +415,6 @@ static menucommon_s *g_misc_controls[] = {
 	(menucommon_s *)&s_controls.sandbox,
 	(menucommon_s *)&s_controls.sandboxmode,
 	(menucommon_s *)&s_controls.newsandbox,
-	(menucommon_s *)&s_controls.actionmenu,
 	(menucommon_s *)&s_controls.exitvehicle,
 	NULL,
 };
@@ -1731,12 +1722,6 @@ static void Controls_MenuInit( void )
 	s_controls.newsandbox.generic.ownerdraw = Controls_DrawKeyBinding;
 	s_controls.newsandbox.generic.id        = ID_NEWSANDBOX;
 	
-	s_controls.actionmenu.generic.type	   = MTYPE_ACTION;
-	s_controls.actionmenu.generic.flags     = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_GRAYED|QMF_HIDDEN;
-	s_controls.actionmenu.generic.callback  = Controls_ActionEvent;
-	s_controls.actionmenu.generic.ownerdraw = Controls_DrawKeyBinding;
-	s_controls.actionmenu.generic.id        = ID_ACTIONMENU;
-	
 	s_controls.exitvehicle.generic.type	   = MTYPE_ACTION;
 	s_controls.exitvehicle.generic.flags     = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_GRAYED|QMF_HIDDEN;
 	s_controls.exitvehicle.generic.callback  = Controls_ActionEvent;
@@ -1855,7 +1840,6 @@ static void Controls_MenuInit( void )
 	Menu_AddItem( &s_controls.menu, &s_controls.sandbox );
 	Menu_AddItem( &s_controls.menu, &s_controls.sandboxmode );
 	Menu_AddItem( &s_controls.menu, &s_controls.newsandbox );
-	Menu_AddItem( &s_controls.menu, &s_controls.actionmenu );
 	Menu_AddItem( &s_controls.menu, &s_controls.exitvehicle );
 
 	Menu_AddItem( &s_controls.menu, &s_controls.back );

@@ -1961,13 +1961,13 @@ void SP_script_cmd( gentity_t *ent ) {
 
 void use_script_menu (gentity_t *ent, gentity_t *other, gentity_t *activator) {
 	if (ent->spawnflags & 1) {
-	trap_SendConsoleCommand( EXEC_APPEND, va("mgui %s\n", ent->target) );
+	trap_SendConsoleCommand( EXEC_APPEND, va("nsgui %s\n", ent->target) );
 	}
 	if (ent->spawnflags & 2) {
-	trap_SendServerCommand( activator-g_entities, va("clcmd \"mgui %s\"", ent->target ));	
+	trap_SendServerCommand( activator-g_entities, va("clcmd \"nsgui %s\"", ent->target ));	
 	}
 	if (ent->spawnflags & 4) {
-	trap_SendServerCommand( -1, va("clcmd \"mgui %s\"", ent->target ));	
+	trap_SendServerCommand( -1, va("clcmd \"nsgui %s\"", ent->target ));	
 	}
 }
 

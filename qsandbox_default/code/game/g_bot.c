@@ -752,13 +752,6 @@ void Svcmd_AddBot_f( void ) {
 	trap_Argv( 6, waypoint, sizeof(waypoint) );
 
 	G_AddBot( name, skill, team, delay, altname, 0, waypoint, 0, NULL );
-
-	// if this was issued during gameplay and we are playing locally,
-	// go ahead and load the bot's media immediately
-	if ( level.time - level.startTime > 1000 &&
-		trap_Cvar_VariableIntegerValue( "cl_running" ) ) {
-		trap_SendServerCommand( -1, "loaddefered\n" );	// FIXME: spelled wrong, but not changing for demo
-	}
 }
 
 /*

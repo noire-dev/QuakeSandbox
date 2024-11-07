@@ -986,12 +986,7 @@ static void UI_BotSelect_ScrollListDraw( void* ptr )
 					va("%i", index), UI_CENTER|UI_DROPSHADOW, color_white);
 			}
 
-			UI_DrawProportionalString(
-				x + BOTLIST_ICONSIZE + 2,
-				y + (lineheight - charheight)/2,
-				l->itemnames[i],
-				style,
-				color);
+			UI_DrawString( x + BOTLIST_ICONSIZE + 2, y + (lineheight - charheight)/2, l->itemnames[i], style, color);
 
 			y += lineheight;
 		}

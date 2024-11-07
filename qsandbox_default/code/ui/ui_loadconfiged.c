@@ -250,8 +250,6 @@ static void loadMapEd_MenuInit( void ) {
 		if (!Q_stricmp(configname +  len - 4,".add"))
 			configname[len-4] = '\0';
 
-		Q_strupr(configname);
-
 		configname += len + 1;
 	}
 

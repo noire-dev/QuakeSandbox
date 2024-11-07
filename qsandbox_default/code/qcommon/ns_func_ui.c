@@ -41,43 +41,7 @@ void NS_setCvar(const char *cvarName, const char *cvarValue)
     trap_Cvar_Set(cvarName, cvarValue);
 }
 
-void NS_getVariable(VarValue *modify, VarType type, const char *varName)
-{
-    char cvarValue[MAX_VAR_CHAR_BUF];
-    switch(type) {
-        case TYPE_CHAR:
-            strncpy(modify->c, get_variable_char(varName), sizeof(modify->c));
-            break;
-        case TYPE_INT:
-            modify->i = get_variable_int(varName);
-            break;
-        case TYPE_FLOAT:
-            modify->f = get_variable_float(varName);
-            break;
-        default:
-            return;
-    }
-}
-
-void NS_setVariable(VarValue *modify, VarType type, const char *varName)
-{
-    char cvarValue[MAX_VAR_CHAR_BUF];
-    switch(type) {
-        case TYPE_CHAR:
-            strncpy(modify->c, get_variable_char(varName), sizeof(modify->c));
-            break;
-        case TYPE_INT:
-            modify->i = get_variable_int(varName);
-            break;
-        case TYPE_FLOAT:
-            modify->f = get_variable_float(varName);
-            break;
-        default:
-            return;
-    }
-}
-
-void NS_initMGui(const char *cvarName, const char *cvarValue)
+void NS_initNSGui(const char *cvarName, const char *cvarValue)
 {
     int i;
     i = MAX_OBJECTS;

@@ -38,10 +38,8 @@ char* gametype_cvar_base[NUM_GAMETYPES] = {
 const char* idmap_list[] = {
 	"gm_construct",
 	"gm_flatgrass",
-	"gm_bigconstruct",
 	"qs_construct",
 	"qs_flatgrass",
-	"qs_bigconstruct",
 	0
 };
 
@@ -174,7 +172,7 @@ DATA ARCHIVE
 
 // Default values for cvars that we haven't yet created
 
-// On startup we load from mitechui.dat, check for new vars from this list,
+// On startup we load from SourceTechui.dat, check for new vars from this list,
 // and add them into data storage.
 
 
@@ -195,7 +193,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 { "uie_inactivity", "0" },
 { "uie_config_showid", "0" },
 { "uie_pmove_fixed", "1" },
-{ "uie_pmove_msec", "16" },
+{ "uie_pmove_msec", "11" },
 { "uie_smoothclients", "1" },
 { "uie_syncclients", "0" },
 { "uie_allowmaxrate", "0" },
@@ -218,7 +216,6 @@ uie_cvarTable_t uie_cvarTable[] = {
 { "uie_allowprivateclients", "0" },
 { "uie_privateclients", "0" },
 { "uie_privatepassword", "" },
-{ "uie_punkbuster", "0" },
 { "uie_strictAuth", "1" },
 { "uie_lanForceRate", "1" },
 
@@ -227,7 +224,6 @@ uie_cvarTable_t uie_cvarTable[] = {
 { "uie_kill", "1" },
 { "uie_damageModifier", "1" },
 { "uie_selectedmod", "default" },
-{ "uie_roundmode", "0" },
 { "uie_elimination", "0" },
 { "uie_obeliskHealth", "2500" },
 { "uie_obeliskRegenPeriod", "1" },
@@ -622,7 +618,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_sandbox_fraglimit", "0" },
 	{ "uie_sandbox_timelimit", "0" },
 	{ "uie_sandbox_weaponrespawn", "5" },
-	{ "uie_sandbox_viewdistance", "16" },
+	{ "uie_sandbox_viewdistance", "0" },
 	
 	{ "uie_single_fragtype", "0" },
 	{ "uie_single_timetype", "0" },
@@ -655,7 +651,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_single_fraglimit", "0" },
 	{ "uie_single_timelimit", "0" },
 	{ "uie_single_weaponrespawn", "5" },
-	{ "uie_single_viewdistance", "90" },
+	{ "uie_single_viewdistance", "0" },
 
 	{ "uie_ffa_fragtype", "0" },
 	{ "uie_ffa_timetype", "0" },
@@ -688,7 +684,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_ffa_fraglimit", "30" },
 	{ "uie_ffa_timelimit", "20" },
 	{ "uie_ffa_weaponrespawn", "5" },
-	{ "uie_ffa_viewdistance", "90" },
+	{ "uie_ffa_viewdistance", "0" },
 
 	{ "uie_tourney_fragtype", "0" },
 	{ "uie_tourney_timetype", "0" },
@@ -721,7 +717,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_tourney_fraglimit", "0" },
 	{ "uie_tourney_timelimit", "15" },
 	{ "uie_tourney_weaponrespawn", "5" },
-	{ "uie_tourney_viewdistance", "90" },
+	{ "uie_tourney_viewdistance", "0" },
 
 	{ "uie_team_fragtype", "0" },
 	{ "uie_team_timetype", "0" },
@@ -759,7 +755,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_team_fraglimit", "0" },
 	{ "uie_team_timelimit", "20" },
 	{ "uie_team_weaponrespawn", "30" },
-	{ "uie_team_viewdistance", "90" },
+	{ "uie_team_viewdistance", "0" },
 
 	{ "uie_ctf_capturetype", "0" },
 	{ "uie_ctf_timetype", "0" },
@@ -795,7 +791,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_ctf_capturelimit", "0" },
 	{ "uie_ctf_timelimit", "20" },
 	{ "uie_ctf_weaponrespawn", "5" },
-	{ "uie_ctf_viewdistance", "90" },
+	{ "uie_ctf_viewdistance", "0" },
 	
 	{ "uie_oneflag_capturetype", "0" },
 	{ "uie_oneflag_timetype", "0" },
@@ -831,7 +827,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_oneflag_capturelimit", "0" },
 	{ "uie_oneflag_timelimit", "20" },
 	{ "uie_oneflag_weaponrespawn", "5" },
-	{ "uie_oneflag_viewdistance", "90" },
+	{ "uie_oneflag_viewdistance", "0" },
 	
 	{ "uie_overload_capturetype", "0" },
 	{ "uie_overload_timetype", "0" },
@@ -867,7 +863,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_overload_capturelimit", "0" },
 	{ "uie_overload_timelimit", "20" },
 	{ "uie_overload_weaponrespawn", "5" },
-	{ "uie_overload_viewdistance", "90" },
+	{ "uie_overload_viewdistance", "0" },
 	
 	{ "uie_harvester_capturetype", "0" },
 	{ "uie_harvester_timetype", "0" },
@@ -903,7 +899,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_harvester_capturelimit", "0" },
 	{ "uie_harvester_timelimit", "20" },
 	{ "uie_harvester_weaponrespawn", "5" },
-	{ "uie_harvester_viewdistance", "90" },
+	{ "uie_harvester_viewdistance", "0" },
 	
 	{ "uie_elim_capturetype", "0" },
 	{ "uie_elim_timetype", "0" },
@@ -939,7 +935,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_elim_capturelimit", "0" },
 	{ "uie_elim_timelimit", "20" },
 	{ "uie_elim_weaponrespawn", "5" },
-	{ "uie_elim_viewdistance", "90" },
+	{ "uie_elim_viewdistance", "0" },
 	
 	{ "uie_ctfelim_capturetype", "0" },
 	{ "uie_ctfelim_timetype", "0" },
@@ -975,7 +971,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_ctfelim_capturelimit", "0" },
 	{ "uie_ctfelim_timelimit", "20" },
 	{ "uie_ctfelim_weaponrespawn", "5" },
-	{ "uie_ctfelim_viewdistance", "90" },
+	{ "uie_ctfelim_viewdistance", "0" },
 	
 	{ "uie_lms_fragtype", "0" },
 	{ "uie_lms_timetype", "0" },
@@ -1011,7 +1007,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_lms_capturelimit", "0" },
 	{ "uie_lms_timelimit", "20" },
 	{ "uie_lms_weaponrespawn", "5" },
-	{ "uie_lms_viewdistance", "90" },
+	{ "uie_lms_viewdistance", "0" },
 	
 	{ "uie_doubledom_capturetype", "0" },
 	{ "uie_doubledom_timetype", "0" },
@@ -1047,7 +1043,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_doubledom_capturelimit", "0" },
 	{ "uie_doubledom_timelimit", "20" },
 	{ "uie_doubledom_weaponrespawn", "5" },
-	{ "uie_doubledom_viewdistance", "90" },
+	{ "uie_doubledom_viewdistance", "0" },
 	
 	{ "uie_domination_capturetype", "0" },
 	{ "uie_domination_timetype", "0" },
@@ -1083,7 +1079,7 @@ uie_cvarTable_t uie_cvarTable[] = {
 	{ "uie_domination_capturelimit", "0" },
 	{ "uie_domination_timelimit", "20" },
 	{ "uie_domination_weaponrespawn", "5" },
-	{ "uie_domination_viewdistance", "90" },
+	{ "uie_domination_viewdistance", "0" },
 };
 
 
@@ -1127,7 +1123,7 @@ const int uie_cvarImportSize = sizeof(uie_cvarImport)/sizeof(uie_cvarImport[0]);
 
 
 #define MAX_CVAR_DATA (30*1024)
-#define UIE_SKIRMISH_DATAFILE "mitechui.dat"
+#define UIE_SKIRMISH_DATAFILE "SourceTechui.dat"
 
 static qboolean skirmishCvarLoaded = qfalse;
 static char skirmishCvarData[MAX_CVAR_DATA];
@@ -3285,7 +3281,6 @@ static void StartServer_LoadServerScriptData(void)
 		s_scriptdata.server.dedicatedServer = UIE_GetSkirmishCvarIntClamp(0, SRVDED_INTERNET, NULL, "uie_dedicated" );
 		s_scriptdata.server.inactivityTime = UIE_GetSkirmishCvarIntClamp(0, 999, NULL, "uie_inactivity" );
 
-		s_scriptdata.server.punkbuster = UIE_GetSkirmishCvarIntClamp(0, 1, NULL, "uie_punkbuster" );
 		s_scriptdata.server.strictAuth = UIE_GetSkirmishCvarIntClamp(0, 1, NULL, "uie_strictAuth" );
 		s_scriptdata.server.lanForceRate = UIE_GetSkirmishCvarIntClamp(0, 1, NULL, "uie_lanForceRate" );
 	}
@@ -3293,7 +3288,6 @@ static void StartServer_LoadServerScriptData(void)
 		s_scriptdata.server.dedicatedServer = SRVDED_OFF;
 		s_scriptdata.server.inactivityTime = 0;
 
-		s_scriptdata.server.punkbuster = 0;
 		s_scriptdata.server.strictAuth = 0;
 		s_scriptdata.server.lanForceRate = 0;
 	}
@@ -3304,7 +3298,6 @@ s_scriptdata.server.singleskill = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999,
 s_scriptdata.server.kill = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_kill" );
 UIE_GetSkirmishCvar(NULL, "uie_damageModifier",s_scriptdata.server.damageModifier, 32);
 UIE_GetSkirmishCvar(NULL, "uie_selectedmod",s_scriptdata.server.selectedmod, 32);
-s_scriptdata.server.roundmode = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_roundmode" );
 s_scriptdata.server.elimination = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_elimination" );
 s_scriptdata.server.obeliskHealth = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_obeliskHealth" );
 s_scriptdata.server.obeliskRegenPeriod = UIE_GetSkirmishCvarIntClamp(-9999999, 9999999, NULL, "uie_obeliskRegenPeriod" );
@@ -3678,7 +3671,7 @@ UIE_GetSkirmishCvar(NULL, "uie_amknockback",s_scriptdata.server.g_amknockback, 3
 	//s_scriptdata.server.forceRespawn = UIE_GetSkirmishCvarIntClamp(0, 999, s, "ForceRespawn" );
 	s_scriptdata.server.allowWarmup = UIE_GetSkirmishCvarIntClamp(0, 1, s, "doWarmUp" );
 	s_scriptdata.server.warmupTime = UIE_GetSkirmishCvarIntClamp(0, 999, s, "WarmUp" );
-	s_scriptdata.server.viewdistance = UIE_GetSkirmishCvarIntClamp(1, 90, s, "viewdistance" );
+	s_scriptdata.server.viewdistance = UIE_GetSkirmishCvarIntClamp(0, 90, s, "viewdistance" );
 
 	if (gametype >= GT_TEAM && !(gametype == GT_LMS) ) {
 		t = 0;
@@ -3749,7 +3742,6 @@ static void StartServer_SaveServerScriptData(void)
 		UIE_SetSkirmishCvarInt( NULL, "uie_dedicated", s_scriptdata.server.dedicatedServer);
 		UIE_SetSkirmishCvarInt( NULL, "uie_inactivity", s_scriptdata.server.inactivityTime);
 
-		UIE_SetSkirmishCvarInt( NULL, "uie_punkbuster", s_scriptdata.server.punkbuster);
 		UIE_SetSkirmishCvarInt( NULL, "uie_strictAuth", s_scriptdata.server.strictAuth);
 		UIE_SetSkirmishCvarInt( NULL, "uie_lanForceRate", s_scriptdata.server.lanForceRate);
 	}
@@ -3760,7 +3752,6 @@ UIE_SetSkirmishCvarInt( NULL, "uie_singleskill", s_scriptdata.server.singleskill
 UIE_SetSkirmishCvarInt( NULL, "uie_kill", s_scriptdata.server.kill);
 UIE_SetSkirmishCvar( NULL, "uie_damageModifier", s_scriptdata.server.damageModifier);
 UIE_SetSkirmishCvar( NULL, "uie_selectedmod", s_scriptdata.server.selectedmod);
-UIE_SetSkirmishCvarInt( NULL, "uie_roundmode", s_scriptdata.server.roundmode);
 UIE_SetSkirmishCvarInt( NULL, "uie_elimination", s_scriptdata.server.elimination);
 UIE_SetSkirmishCvarInt( NULL, "uie_obeliskHealth", s_scriptdata.server.obeliskHealth);
 UIE_SetSkirmishCvarInt( NULL, "uie_obeliskRegenPeriod", s_scriptdata.server.obeliskRegenPeriod);
