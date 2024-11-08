@@ -22,49 +22,29 @@ static qhandle_t	sliderBar;
 static qhandle_t	sliderButton_0;
 static qhandle_t	sliderButton_1;
 
-// Original colors
-/*
-vec4_t menu_text_color	    = {1.0f, 1.0f, 1.0f, 1.0f};
-vec4_t menu_dim_color       = {0.0f, 0.0f, 0.0f, 0.75f};
-vec4_t color_black	        = {0.00f, 0.00f, 0.00f, 1.00f};
-vec4_t color_white	        = {1.00f, 1.00f, 1.00f, 1.00f};
-vec4_t color_yellow	        = {1.00f, 1.00f, 0.00f, 1.00f};
-vec4_t color_blue	        = {0.00f, 0.00f, 1.00f, 1.00f};
-vec4_t color_lightOrange    = {1.00f, 0.68f, 0.00f, 1.00f };
-vec4_t color_orange	        = {1.00f, 0.43f, 0.00f, 1.00f};
-vec4_t color_red		    = {1.00f, 0.00f, 0.00f, 1.00f};
-vec4_t color_dim		    = {0.00f, 0.00f, 0.00f, 0.25f};
-
-  vec4_t pulse_color          = {1.00f, 1.00f, 1.00f, 1.00f};
-vec4_t text_color_disabled  = {0.50f, 0.50f, 0.50f, 1.00f};	// light gray
-vec4_t text_color_normal	= {1.00f, 0.43f, 0.00f, 1.00f};	// light orange
-vec4_t text_color_highlight = {1.00f, 1.00f, 0.00f, 1.00f};	// bright yellow
-vec4_t listbar_color        = {1.00f, 0.43f, 0.00f, 0.30f};	// transluscent orange
-vec4_t text_color_status    = {1.00f, 1.00f, 1.00f, 1.00f};	// bright white
-
-*/
 // NEW AND IMPLOVED colors
-vec4_t menu_text_color	    = {1.0f, 1.0f, 1.0f, 1.0f};
-vec4_t menu_dim_color       = {0.0f, 0.0f, 0.0f, 0.75f};
-vec4_t color_black	    = {0.00f, 0.00f, 0.00f, 1.00f};
-vec4_t color_white	    = {1.00f, 1.00f, 1.00f, 1.00f};
-vec4_t color_yellow	    = {1.00f, 1.00f, 0.00f, 1.00f};
-vec4_t color_blue	    = {0.00f, 0.00f, 1.00f, 1.00f};
-vec4_t color_lightOrange    = {0.30f, 0.45f, 0.58f, 1.00f };
-vec4_t color_orange	    = {0.30f, 0.45f, 0.58f, 1.00f};
-vec4_t color_red	    = {1.00f, 1.00f, 1.00f, 1.00f};
-vec4_t color_realred		    = {1.00f, 0.00f, 0.00f, 1.00f};
-vec4_t color_dim	    = {0.00f, 0.00f, 0.00f, 0.25f};
-vec4_t color_green	    = {0.00f, 0.99f, 0.00f, 1.00f};
+vec4_t menu_text_color		= {1.0f, 1.0f, 1.0f, 1.0f};
+vec4_t menu_dim_color   	= {0.0f, 0.0f, 0.0f, 0.75f};
+vec4_t color_black	    	= {0.00f, 0.00f, 0.00f, 1.00f};
+vec4_t color_white	    	= {1.00f, 1.00f, 1.00f, 1.00f};
+vec4_t color_yellow	    	= {1.00f, 1.00f, 0.00f, 1.00f};
+vec4_t color_blue	    	= {0.00f, 0.00f, 1.00f, 1.00f};
+vec4_t color_grey	    	= {0.30f, 0.45f, 0.58f, 1.00f};
+vec4_t color_red			= {1.00f, 0.00f, 0.00f, 1.00f};
+vec4_t color_dim	    	= {0.00f, 0.00f, 0.00f, 0.25f};
+vec4_t color_green	    	= {0.00f, 0.99f, 0.00f, 1.00f};
+vec4_t color_emerald    	= {0.50f, 0.85f, 0.00f, 1.00f};
+vec4_t color_bluo    		= {0.53f, 0.62f, 0.82f, 1.00f};
+vec4_t color_lightyellow 	= {1.00f, 0.90f, 0.45f, 1.00f};
+vec4_t color_highlight		= {0.50f, 0.85f, 0.00f, 1.00f};
 
 // current color scheme
 vec4_t pulse_color          = {1.00f, 1.00f, 1.00f, 1.00f};
-vec4_t text_color_disabled  = {0.10f, 0.10f, 0.20f, 1.00f};	// light gray
-vec4_t text_color_normal    = {0.35f, 0.50f, 0.50f, 1.00f};	// light orange
-vec4_t text_color_highlight = {0.99f, 0.90f, 0.50f, 1.00f};	// bright yellow
-vec4_t text_color_highlighty = {0.99f, 0.90f, 0.50f, 1.00f};	// bright yellow
-vec4_t listbar_color        = {0.13f, 0.26f, 0.38f, 0.30f};	// transluscent orange
-vec4_t text_color_status    = {1.00f, 1.00f, 1.00f, 1.00f};	// bright white
+vec4_t text_color_disabled  = {0.10f, 0.10f, 0.20f, 1.00f};
+vec4_t text_color_normal    = {1.00f, 1.00f, 1.00f, 1.00f};
+vec4_t text_color_highlight = {0.50f, 0.85f, 0.00f, 1.00f};
+vec4_t listbar_color        = {0.13f, 0.26f, 0.38f, 0.30f};
+vec4_t text_color_status    = {1.00f, 1.00f, 1.00f, 1.00f};
 
 // action widget
 static void	Action_Init( menuaction_s *a );
@@ -262,15 +242,20 @@ static void PText_Draw( menutext_s *t )
 	
 	if( t->generic.flags & QMF_HIGHLIGHT_IF_FOCUS ) {
 	if( Menu_ItemAtCursor( t->generic.parent ) == t ) {
-		t->color = text_color_highlighty;
+		t->color = text_color_highlight;
 	}
 	else {
 		t->color = color_white;
 	}
 	}
 
+	if( t->generic.flags & QMF_HIGHLIGHT ) {
+		t->color = color_grey;
+	}
+
 	style = t->style;
 	if( t->generic.flags & QMF_PULSEIFFOCUS ) {
+		t->color = color_white;
 		if( Menu_ItemAtCursor( t->generic.parent ) == t ) {
 			style |= UI_PULSE;
 		}

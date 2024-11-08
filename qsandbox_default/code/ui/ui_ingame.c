@@ -304,7 +304,7 @@ void InGame_MenuInit( void ) {
 	if(cl_language.integer == 1){
 	s_ingame.team.string				= "СТАРТ";
 	}
-	s_ingame.team.color					= color_red;
+	s_ingame.team.color					= color_white;
 	s_ingame.team.style					= UI_CENTER|UI_SMALLFONT;
 
 	y += INGAME_MENU_VERTICAL_SPACING;
@@ -320,7 +320,7 @@ void InGame_MenuInit( void ) {
 	if(cl_language.integer == 1){
 	s_ingame.addbots.string				= "ДОБАВИТЬ БОТОВ";
 	}
-	s_ingame.addbots.color				= color_red;
+	s_ingame.addbots.color				= color_white;
 	s_ingame.addbots.style				= UI_CENTER|UI_SMALLFONT;
 	if( !trap_Cvar_VariableValue( "sv_running" ) || !trap_Cvar_VariableValue( "bot_enable" ) ) {
 		s_ingame.addbots.generic.flags |= QMF_GRAYED;
@@ -339,7 +339,7 @@ void InGame_MenuInit( void ) {
 	if(cl_language.integer == 1){
 	s_ingame.removebots.string				= "УДАЛИТЬ БОТОВ";
 	}
-	s_ingame.removebots.color				= color_red;
+	s_ingame.removebots.color				= color_white;
 	s_ingame.removebots.style				= UI_CENTER|UI_SMALLFONT;
 	if( !trap_Cvar_VariableValue( "sv_running" ) || !trap_Cvar_VariableValue( "bot_enable" ) ) {
 		s_ingame.removebots.generic.flags |= QMF_GRAYED;
@@ -358,7 +358,7 @@ void InGame_MenuInit( void ) {
 	if(cl_language.integer == 1){
 	s_ingame.teamorders.string				= "КОМАНДНЫЕ ПРИКАЗЫ";
 	}
-	s_ingame.teamorders.color				= color_red;
+	s_ingame.teamorders.color				= color_white;
 	s_ingame.teamorders.style				= UI_CENTER|UI_SMALLFONT;
 	if( !(gametype >= GT_TEAM) ) {
 		s_ingame.teamorders.generic.flags |= QMF_GRAYED;
@@ -387,7 +387,7 @@ void InGame_MenuInit( void ) {
 	if(cl_language.integer == 1){
 	s_ingame.setup.string				= "НАСТРОЙКИ";
 	}
-	s_ingame.setup.color				= color_red;
+	s_ingame.setup.color				= color_white;
 	s_ingame.setup.style				= UI_CENTER|UI_SMALLFONT;
 
 	y += INGAME_MENU_VERTICAL_SPACING;
@@ -403,7 +403,7 @@ void InGame_MenuInit( void ) {
 	if(cl_language.integer == 1){
 	s_ingame.server.string				= "ИНФОРМАЦИЯ О СЕРВЕРЕ";
 	}
-	s_ingame.server.color				= color_red;
+	s_ingame.server.color				= color_white;
 	s_ingame.server.style				= UI_CENTER|UI_SMALLFONT;
 
 	y += INGAME_MENU_VERTICAL_SPACING;
@@ -422,7 +422,7 @@ void InGame_MenuInit( void ) {
 	if(cl_language.integer == 1){
 	s_ingame.enableditems.string				= "ОТКЛЮЧЕНИЕ ПРЕДМЕТОВ";
 	}
-	s_ingame.enableditems.color				= color_red;
+	s_ingame.enableditems.color				= color_white;
 	s_ingame.enableditems.style				= UI_CENTER|UI_SMALLFONT;
 	if( !trap_Cvar_VariableValue( "sv_running" ) )
 	{
@@ -442,7 +442,7 @@ void InGame_MenuInit( void ) {
 	if(cl_language.integer == 1){
 	s_ingame.restart.string				= "РЕСТАРТ АРЕНЫ";
 	}
-	s_ingame.restart.color				= color_red;
+	s_ingame.restart.color				= color_white;
 	s_ingame.restart.style				= UI_CENTER|UI_SMALLFONT;
 	if( !trap_Cvar_VariableValue( "sv_running" ) ) {
 		s_ingame.restart.generic.flags |= QMF_GRAYED;
@@ -461,7 +461,7 @@ void InGame_MenuInit( void ) {
 	if(cl_language.integer == 1){
 	s_ingame.nextmap.string				= "СЛЕДУЮШАЯ КАРТА";
 	}
-	s_ingame.nextmap.color				= color_red;
+	s_ingame.nextmap.color				= color_white;
 	s_ingame.nextmap.style				= UI_CENTER|UI_SMALLFONT;
 	if( !trap_Cvar_VariableValue( "sv_running" ) ) {
 		s_ingame.nextmap.generic.flags |= QMF_GRAYED;
@@ -479,7 +479,7 @@ void InGame_MenuInit( void ) {
 	if(cl_language.integer == 1){
 	s_ingame.resume.string					= "ПРОДОЛЖИТЬ ИГРУ";
 	}
-	s_ingame.resume.color					= color_red;
+	s_ingame.resume.color					= color_white;
 	s_ingame.resume.style					= UI_CENTER|UI_SMALLFONT;
 
 	y += INGAME_MENU_VERTICAL_SPACING;
@@ -498,7 +498,7 @@ void InGame_MenuInit( void ) {
 	if(cl_language.integer == 1){
 	s_ingame.leave.string				= "ПОКИНУТЬ АРЕНУ";
 	}
-	s_ingame.leave.color				= color_red;
+	s_ingame.leave.color				= color_white;
 	s_ingame.leave.style				= UI_CENTER|UI_SMALLFONT;
 
 	y += INGAME_MENU_VERTICAL_SPACING;
@@ -514,7 +514,7 @@ void InGame_MenuInit( void ) {
 	if(cl_language.integer == 1){
 	s_ingame.quit.string				= "ВЫЙТИ ИЗ ИГРЫ";
 	}
-	s_ingame.quit.color					= color_red;
+	s_ingame.quit.color					= color_white;
 	s_ingame.quit.style					= UI_CENTER|UI_SMALLFONT;
 
 	Menu_AddItem( &s_ingame.menu, &s_ingame.frame );

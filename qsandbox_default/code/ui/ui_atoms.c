@@ -390,7 +390,6 @@ void UI_DrawString( int x, int y, const char* str, int style, vec4_t color )
 	int		charw;
 	int		charh;
 	vec4_t	newcolor;
-	vec4_t	lowlight;
 	float	*drawcolor;
 	vec4_t	dropcolor;
 
@@ -424,11 +423,7 @@ void UI_DrawString( int x, int y, const char* str, int style, vec4_t color )
 
 	if (style & UI_PULSE)
 	{
-		lowlight[0] = 2.0*color[0]; 
-		lowlight[1] = 2.0*color[1];
-		lowlight[2] = 2.0*color[2];
-		lowlight[3] = 2.0*color[3];
-		UI_LerpColor(color,lowlight,newcolor,0.5+0.5*sin(uis.realtime/PULSE_DIVISOR));
+		UI_LerpColor(color,color_highlight,newcolor,0.5+0.5*sin(uis.realtime/PULSE_DIVISOR));
 		drawcolor = newcolor;
 	}	
 	else
@@ -477,7 +472,6 @@ void UI_DrawStringCustom( int x, int y, const char* str, int style, vec4_t color
 	int		charw;
 	int		charh;
 	vec4_t	newcolor;
-	vec4_t	lowlight;
 	float	*drawcolor;
 	vec4_t	dropcolor;
 
@@ -516,11 +510,7 @@ if(csize == 0){
 
 	if (style & UI_PULSE)
 	{
-		lowlight[0] = 2.0*color[0]; 
-		lowlight[1] = 2.0*color[1];
-		lowlight[2] = 2.0*color[2];
-		lowlight[3] = 2.0*color[3];
-		UI_LerpColor(color,lowlight,newcolor,0.5+0.5*sin(uis.realtime/PULSE_DIVISOR));
+		UI_LerpColor(color,color_highlight,newcolor,0.5+0.5*sin(uis.realtime/PULSE_DIVISOR));
 		drawcolor = newcolor;
 	}	
 	else

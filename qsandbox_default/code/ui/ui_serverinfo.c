@@ -120,7 +120,7 @@ static void ServerInfo_MenuDraw( void )
 
 		Q_strcat( key, MAX_INFO_KEY, ":" ); 
 
-		UI_DrawString(SCREEN_WIDTH*0.50 - 8,y,key,UI_RIGHT|UI_TINYFONT,color_red);
+		UI_DrawString(SCREEN_WIDTH*0.50 - 8,y,key,UI_RIGHT|UI_TINYFONT,color_white);
 		UI_DrawString(SCREEN_WIDTH*0.50 + 8,y,value,UI_LEFT|UI_TINYFONT,text_color_normal);
 
 		y += TINYCHAR_HEIGHT;
@@ -220,7 +220,7 @@ void UI_ServerInfoMenu( void )
 		s_serverinfo.add.string  		  = "ДОБАВИТЬ В СПИСОК ЛЮБИМЫХ";
 	}
 	s_serverinfo.add.style  		  = UI_CENTER|UI_SMALLFONT;
-	s_serverinfo.add.color			  =	color_red;
+	s_serverinfo.add.color			  =	color_white;
 	if( trap_Cvar_VariableValue( "sv_running" ) ) {
 		s_serverinfo.add.generic.flags |= QMF_GRAYED;
 	}

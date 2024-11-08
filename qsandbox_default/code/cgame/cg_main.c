@@ -269,8 +269,6 @@ vmCvar_t	cg_pmove_msec;
 vmCvar_t	cg_cameraMode;
 vmCvar_t	cg_cameraEyes_Fwd;
 vmCvar_t	cg_cameraEyes_Up;
-vmCvar_t	cg_cameraOrbit;
-vmCvar_t	cg_cameraOrbitDelay;
 vmCvar_t	cg_timescaleFadeEnd;
 vmCvar_t	cg_timescaleFadeSpeed;
 vmCvar_t	cg_timescale;
@@ -561,8 +559,6 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_enableBreath, "g_enableBreath", "0", CVAR_SERVERINFO},
 	{ &cg_obeliskRespawnDelay, "g_obeliskRespawnDelay", "10", CVAR_SERVERINFO},
 
-	{ &cg_cameraOrbit, "cg_cameraOrbit", "0", CVAR_CHEAT},
-	{ &cg_cameraOrbitDelay, "cg_cameraOrbitDelay", "50", CVAR_ARCHIVE},
 	{ &cg_timescaleFadeEnd, "cg_timescaleFadeEnd", "1", 0},
 	{ &cg_timescaleFadeSpeed, "cg_timescaleFadeSpeed", "0", 0},
 	{ &cg_timescale, "timescale", "1", 0},
@@ -596,10 +592,6 @@ static cvarTable_t cvarTable[] = { // bk001129
 
 	{ &cg_fontScale , "cg_fontScale", "1.5", CVAR_ARCHIVE},
 	{ &cg_fontShadow , "cg_fontShadow", "1", CVAR_ARCHIVE},
-	//unlagged - smooth clients #2
-	// this is done server-side now
-	//	{ &cg_smoothClients, "cg_smoothClients", "0", CVAR_USERINFO | CVAR_ARCHIVE},
-	//unlagged - smooth clients #2
 	{ &cg_cameraMode, "com_cameraMode", "0", CVAR_CHEAT},
 
 	{ &pmove_fixed, "pmove_fixed", "0", CVAR_SYSTEMINFO},

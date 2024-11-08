@@ -864,7 +864,7 @@ static void StartServer_BothItemMenus_SetupItemControls(int y)
 		s_itemcontrols.tabbedText[i].string			= masterControl[i].tabbedTitleru;
 		}
 		s_itemcontrols.tabbedText[i].style			= style;
-		s_itemcontrols.tabbedText[i].color			= color_red;
+		s_itemcontrols.tabbedText[i].color			= color_white;
 	}
 
 	// setup controls for the current tab
@@ -1227,7 +1227,7 @@ static void StartServer_BothItemMenus_MenuInit(qboolean ingame)
 		s_itemcontrols.ingame.title.generic.type     = MTYPE_BTEXT;
 		s_itemcontrols.ingame.title.generic.x		= 320;
 		s_itemcontrols.ingame.title.generic.y		= 4;
-		s_itemcontrols.ingame.title.color			= color_red;
+		s_itemcontrols.ingame.title.color			= color_white;
 		s_itemcontrols.ingame.title.style			= UI_CENTER;
 
 		s_itemcontrols.ingame.cancel.generic.type     = MTYPE_BITMAP;
@@ -1256,7 +1256,7 @@ static void StartServer_BothItemMenus_MenuInit(qboolean ingame)
 		s_itemcontrols.ingame.info.generic.flags	= QMF_INACTIVE;
 		s_itemcontrols.ingame.info.generic.x		= 320;
 		s_itemcontrols.ingame.info.generic.y		= 480 - 64 - 36;
-		s_itemcontrols.ingame.info.color			= color_red;
+		s_itemcontrols.ingame.info.color			= color_white;
 		s_itemcontrols.ingame.info.style			= UI_CENTER|UI_SMALLFONT;
 		if(cl_language.integer == 0){
 		s_itemcontrols.ingame.info.string			= "Requires RESTART or NEXT MAP";

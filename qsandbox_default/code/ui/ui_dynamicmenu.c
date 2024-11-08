@@ -1001,7 +1001,7 @@ void DynamicMenu_MenuInit( qboolean full, qboolean wrap)
 		s_dynamic.item[i].generic.id = i;
 		s_dynamic.item[i].string = s_dynamic.data[i].text;
 		s_dynamic.item[i].style = UI_SMALLFONT|UI_DROPSHADOW;
-		s_dynamic.item[i].color = color_red;
+		s_dynamic.item[i].color = color_white;
 
 		Menu_AddItem(&s_dynamic.menu, &s_dynamic.item[i]);
 	}

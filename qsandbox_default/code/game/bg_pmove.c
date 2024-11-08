@@ -402,11 +402,11 @@ static void PM_SetMovementDir( void ) {
 		if ( pm->cmd.rightmove == 0 && pm->cmd.forwardmove > 0 ) {
 			pm->ps->movementDir = 0;
 		} else if ( pm->cmd.rightmove < 0 ) {
-
+			pm->ps->delta_angles[1] += 128;
 		} else if ( pm->cmd.rightmove == 0 && pm->cmd.forwardmove < 0 ) {
 			pm->ps->movementDir = 4;
 		} else if ( pm->cmd.rightmove > 0 ) {
-
+			pm->ps->delta_angles[1] -= 128;
 		}
 	}
 }
@@ -439,9 +439,6 @@ static qboolean PM_CheckJump( void ) {
 		pm->cmd.upmove = 0;
 		return qfalse;
 	}
-
-
-
 
 	pml.groundPlane = qfalse;		// jumping away
 	pml.walking = qfalse;

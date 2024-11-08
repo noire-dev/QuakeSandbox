@@ -189,7 +189,7 @@ static void UI_SoundOptionsMenu_Init( void ) {
 	soundOptionsInfo.graphics.generic.x			= 140 - uis.wideoffset;
 	soundOptionsInfo.graphics.generic.y			= 240 - 2 * PROP_HEIGHT;
 	soundOptionsInfo.graphics.style				= UI_RIGHT;
-	soundOptionsInfo.graphics.color				= color_red;
+	soundOptionsInfo.graphics.color				= color_white;
 
 	soundOptionsInfo.display.generic.type		= MTYPE_PTEXT;
 	soundOptionsInfo.display.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -198,7 +198,7 @@ static void UI_SoundOptionsMenu_Init( void ) {
 	soundOptionsInfo.display.generic.x			= 140 - uis.wideoffset;
 	soundOptionsInfo.display.generic.y			= 240 - PROP_HEIGHT;
 	soundOptionsInfo.display.style				= UI_RIGHT;
-	soundOptionsInfo.display.color				= color_red;
+	soundOptionsInfo.display.color				= color_white;
 
 	soundOptionsInfo.sound.generic.type			= MTYPE_PTEXT;
 	soundOptionsInfo.sound.generic.flags		= QMF_RIGHT_JUSTIFY;
@@ -207,7 +207,7 @@ static void UI_SoundOptionsMenu_Init( void ) {
 	soundOptionsInfo.sound.generic.x			= 140 - uis.wideoffset;
 	soundOptionsInfo.sound.generic.y			= 240;
 	soundOptionsInfo.sound.style				= UI_RIGHT;
-	soundOptionsInfo.sound.color				= color_red;
+	soundOptionsInfo.sound.color				= color_grey;
 
 	soundOptionsInfo.network.generic.type		= MTYPE_PTEXT;
 	soundOptionsInfo.network.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -216,7 +216,7 @@ static void UI_SoundOptionsMenu_Init( void ) {
 	soundOptionsInfo.network.generic.x			= 140 - uis.wideoffset;
 	soundOptionsInfo.network.generic.y			= 240 + PROP_HEIGHT;
 	soundOptionsInfo.network.style				= UI_RIGHT;
-	soundOptionsInfo.network.color				= color_red;
+	soundOptionsInfo.network.color				= color_white;
 
 	y = 240 - 2.0 * (BIGCHAR_HEIGHT + 2);
 	soundOptionsInfo.sfxvolume.generic.type		= MTYPE_SLIDER;

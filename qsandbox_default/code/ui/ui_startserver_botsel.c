@@ -501,10 +501,10 @@ static void UI_BotSelect_UpdateView( void )
 			Q_CleanStr( botSelectInfo.botnames[i] );
 
 			if( botSelectInfo.index != -1 && StartServer_BotOnSelectionList( botSelectInfo.botnames[i] ) ) {
-				botSelectInfo.botcolor[i] = color_red;
+				botSelectInfo.botcolor[i] = color_white;
 			}
 			else {
-				botSelectInfo.botcolor[i] = color_orange;
+				botSelectInfo.botcolor[i] = color_grey;
 			}
 		}
 		else {
@@ -939,7 +939,7 @@ static void UI_BotSelect_ScrollListDraw( void* ptr )
 			{
 				UI_FillRect(x,y + (lineheight - BOTLIST_ICONSIZE)/2,
 					l->width*charwidth ,BOTLIST_ICONSIZE, listbar_color);
-				if (color != color_red)
+				if (color != color_white)
 					color = text_color_highlight;
 
 				if (hasfocus)
@@ -1029,7 +1029,7 @@ static void UI_BotSelect_BotGridDraw( void* ptr )
 	if (botSelectInfo.botnames[index][0]) {
 		UI_DrawNamedPic(x, y, w, h, botSelectInfo.boticons[index]);
 		if (b->generic.flags & QMF_HIGHLIGHT) {
-			trap_R_SetColor( color_red );
+			trap_R_SetColor( color_white );
 			UI_DrawNamedPic(x, y, w, h, BOTSELECT_SELECTED);
 			trap_R_SetColor( NULL );
 		}

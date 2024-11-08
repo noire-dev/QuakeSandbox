@@ -1881,7 +1881,7 @@ void StartServer_WeaponPage_MenuInit(void)
 		s_weaponcontrols.pageList[i].menutext->generic.y	     = y_base + i*PROP_HEIGHT*scale;
 		s_weaponcontrols.pageList[i].menutext->string			= s_weaponcontrols.pageList[i].title;
 		s_weaponcontrols.pageList[i].menutext->style			= style;
-		s_weaponcontrols.pageList[i].menutext->color			= color_red;
+		s_weaponcontrols.pageList[i].menutext->color			= color_white;
 
 		Menu_AddItem( menuptr, s_weaponcontrols.pageList[i].menutext);
 	}

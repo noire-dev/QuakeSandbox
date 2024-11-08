@@ -2243,7 +2243,7 @@ void StartServer_ServerPage_MenuInit(void)
 		s_servercontrols.pageList[i].menutext->generic.y	     = y_base + i*PROP_HEIGHT*scale;
 		s_servercontrols.pageList[i].menutext->string			= s_servercontrols.pageList[i].title;
 		s_servercontrols.pageList[i].menutext->style			= style;
-		s_servercontrols.pageList[i].menutext->color			= color_red;
+		s_servercontrols.pageList[i].menutext->color			= color_white;
 
 		Menu_AddItem( menuptr, s_servercontrols.pageList[i].menutext);
 	}

@@ -111,10 +111,10 @@ static void UI_saveMapEdMenu_SavenameDraw( void *self ) {
 		color = colorRed;
 	}
 	if(cl_language.integer == 0){
-	UI_DrawString( 320, 192, "Enter filename:", UI_CENTER|UI_SMALLFONT, color_orange );
+	UI_DrawString( 320, 192, "Enter filename:", UI_CENTER|UI_SMALLFONT, color_grey );
 	}
 	if(cl_language.integer == 1){
-	UI_DrawString( 320, 192, "Введите имя файла:", UI_CENTER|UI_SMALLFONT, color_orange );
+	UI_DrawString( 320, 192, "Введите имя файла:", UI_CENTER|UI_SMALLFONT, color_grey );
 	}
 	UI_FillRect( f->generic.x, f->generic.y, f->field.widthInChars*SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, colorBlack );
 	MField_Draw( &f->field, f->generic.x, f->generic.y, style, color );

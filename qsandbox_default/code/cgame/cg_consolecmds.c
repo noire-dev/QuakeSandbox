@@ -375,16 +375,9 @@ void CG_InitConsoleCommands( void ) {
 	trap_AddCommand ("stats");
 	trap_AddCommand ("teamtask");
 	trap_AddCommand ("replacetexture");
-	trap_AddCommand ("if");
 	trap_AddCommand ("picktarget");
 	trap_AddCommand ("usetarget");
-	trap_AddCommand ("op");
-	trap_AddCommand ("cvar");
-	trap_AddCommand ("editline");
-	trap_AddCommand ("clientcmd");
-	trap_AddCommand ("syscmd");
 	trap_AddCommand ("random");
-	trap_AddCommand ("for");
 	trap_AddCommand ("savemap");
 	trap_AddCommand ("savemapall");
 	trap_AddCommand ("loadmap");

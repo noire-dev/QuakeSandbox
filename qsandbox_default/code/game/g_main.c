@@ -664,7 +664,7 @@ static cvarTable_t		gameCvarTable[] = {
 	// latched vars
 	{ &g_gametype, "g_gametype", "0", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH, 0, qfalse  },
 
-	{ &g_maxclients, "sv_maxclients", "8", CVAR_SERVERINFO | CVAR_LATCH, 0, qfalse  },
+	{ &g_maxclients, "sv_maxclients", "99", CVAR_SERVERINFO | CVAR_LATCH, 0, qfalse  },
 	{ &g_maxGameClients, "g_maxGameClients", "0", CVAR_SERVERINFO | CVAR_LATCH, 0, qfalse  },
 	
 	{ &cl_propsmallsizescale, "cl_propsmallsizescale", "0.60", 0, 0, qtrue  },

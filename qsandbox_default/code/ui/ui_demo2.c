@@ -200,7 +200,7 @@ static void Demos_MenuDraw(void)
          s_demos.list.numitems > 0 && s_demos.list.curvalue >= 0) {
       Q_strncpyz(statusbar, va("Protocol %i", s_demos.protocol[s_demos.list.curvalue]), STATUSBAR_SIZE);
 	   UI_DrawString(632 - strlen(statusbar) * SMALLCHAR_WIDTH, 480 - 64 - SMALLCHAR_HEIGHT,
-         statusbar, UI_SMALLFONT, color_orange);
+         statusbar, UI_SMALLFONT, color_grey);
    }
 
    Menu_Draw(&s_demos.menu);

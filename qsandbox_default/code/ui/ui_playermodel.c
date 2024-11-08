@@ -1820,7 +1820,7 @@ static void PlayerModel_MenuDraw( void )
 		while (*ptr)
 		{
 			buf[0] = *ptr++;
-			UI_DrawString( 24, y, buf, UI_SMALLFONT|UI_CENTER, color_red );
+			UI_DrawString( 24, y, buf, UI_SMALLFONT|UI_CENTER, color_white );
 			if(cl_language.integer == 0){
 			y += 16;
 			}
@@ -1829,10 +1829,10 @@ static void PlayerModel_MenuDraw( void )
 			}
 		};
 		if(cl_language.integer == 0){
-		UI_DrawString( 288, 412, "SKINS", UI_SMALLFONT, color_red );
+		UI_DrawString( 288, 412, "SKINS", UI_SMALLFONT, color_white );
 		}
 		if(cl_language.integer == 1){
-		UI_DrawString( 288, 412, "СКИНЫ", UI_SMALLFONT, color_red );
+		UI_DrawString( 288, 412, "СКИНЫ", UI_SMALLFONT, color_white );
 		}
 	}
 }
@@ -2147,7 +2147,7 @@ static void PlayerModel_MenuInit( void )
 		ctrl->string	      = animControlru[i].text;		
 		}
 		ctrl->style		  = UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW;
-		ctrl->color         = color_red;
+		ctrl->color         = color_white;
 	}
 
 	UIE_PlayerInfo_InitRotateModel(&s_playermodel.menu, &s_playermodel.model.spin,

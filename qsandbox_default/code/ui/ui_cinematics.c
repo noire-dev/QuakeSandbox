@@ -194,7 +194,7 @@ static void UI_CinematicsMenu_Init( int load ) {
 	cinematicsMenuInfo.cin_idlogo.generic.y			= y;
 	cinematicsMenuInfo.cin_idlogo.generic.id		= ID_CIN_IDLOGO;
 	cinematicsMenuInfo.cin_idlogo.string			= "SLOT 1";
-	cinematicsMenuInfo.cin_idlogo.color				= color_red;
+	cinematicsMenuInfo.cin_idlogo.color				= color_white;
 	cinematicsMenuInfo.cin_idlogo.style				= UI_CENTER;
 
 	y += VERTICAL_SPACING;
@@ -204,7 +204,7 @@ static void UI_CinematicsMenu_Init( int load ) {
 	cinematicsMenuInfo.cin_intro.generic.y			= y;
 	cinematicsMenuInfo.cin_intro.generic.id			= ID_CIN_INTRO;
 	cinematicsMenuInfo.cin_intro.string				= "SLOT 2";
-	cinematicsMenuInfo.cin_intro.color				= color_red;
+	cinematicsMenuInfo.cin_intro.color				= color_white;
 	cinematicsMenuInfo.cin_intro.style				= UI_CENTER;
 
 	y += VERTICAL_SPACING;
@@ -214,7 +214,7 @@ static void UI_CinematicsMenu_Init( int load ) {
 	cinematicsMenuInfo.cin_tier1.generic.y			= y;
 	cinematicsMenuInfo.cin_tier1.generic.id			= ID_CIN_TIER1; 
 	cinematicsMenuInfo.cin_tier1.string				= "SLOT 3";
-	cinematicsMenuInfo.cin_tier1.color				= color_red;
+	cinematicsMenuInfo.cin_tier1.color				= color_white;
 	cinematicsMenuInfo.cin_tier1.style				= UI_CENTER;
 
 	y += VERTICAL_SPACING;
@@ -224,7 +224,7 @@ static void UI_CinematicsMenu_Init( int load ) {
 	cinematicsMenuInfo.cin_tier2.generic.y			= y;
 	cinematicsMenuInfo.cin_tier2.generic.id			= ID_CIN_TIER2;
 	cinematicsMenuInfo.cin_tier2.string				= "SLOT 4";
-	cinematicsMenuInfo.cin_tier2.color				= color_red;
+	cinematicsMenuInfo.cin_tier2.color				= color_white;
 	cinematicsMenuInfo.cin_tier2.style				= UI_CENTER;
 
 	y += VERTICAL_SPACING;
@@ -234,7 +234,7 @@ static void UI_CinematicsMenu_Init( int load ) {
 	cinematicsMenuInfo.cin_tier3.generic.y			= y;
 	cinematicsMenuInfo.cin_tier3.generic.id			= ID_CIN_TIER3;
 	cinematicsMenuInfo.cin_tier3.string				= "SLOT 5";
-	cinematicsMenuInfo.cin_tier3.color				= color_red;
+	cinematicsMenuInfo.cin_tier3.color				= color_white;
 	cinematicsMenuInfo.cin_tier3.style				= UI_CENTER;
 
 	y += VERTICAL_SPACING;
@@ -244,7 +244,7 @@ static void UI_CinematicsMenu_Init( int load ) {
 	cinematicsMenuInfo.cin_tier4.generic.y			= y;
 	cinematicsMenuInfo.cin_tier4.generic.id			= ID_CIN_TIER4;
 	cinematicsMenuInfo.cin_tier4.string				= "SLOT 6";
-	cinematicsMenuInfo.cin_tier4.color				= color_red;
+	cinematicsMenuInfo.cin_tier4.color				= color_white;
 	cinematicsMenuInfo.cin_tier4.style				= UI_CENTER;
 
 	y += VERTICAL_SPACING;
@@ -254,7 +254,7 @@ static void UI_CinematicsMenu_Init( int load ) {
 	cinematicsMenuInfo.cin_tier5.generic.y			= y;
 	cinematicsMenuInfo.cin_tier5.generic.id			= ID_CIN_TIER5;
 	cinematicsMenuInfo.cin_tier5.string				= "SLOT 7";
-	cinematicsMenuInfo.cin_tier5.color				= color_red;
+	cinematicsMenuInfo.cin_tier5.color				= color_white;
 	cinematicsMenuInfo.cin_tier5.style				= UI_CENTER;
 
 	y += VERTICAL_SPACING;
@@ -264,7 +264,7 @@ static void UI_CinematicsMenu_Init( int load ) {
 	cinematicsMenuInfo.cin_tier6.generic.y			= y;
 	cinematicsMenuInfo.cin_tier6.generic.id			= ID_CIN_TIER6;	
 	cinematicsMenuInfo.cin_tier6.string				= "SLOT 8";
-	cinematicsMenuInfo.cin_tier6.color				= color_red;
+	cinematicsMenuInfo.cin_tier6.color				= color_white;
 	cinematicsMenuInfo.cin_tier6.style				= UI_CENTER;
 	
 	

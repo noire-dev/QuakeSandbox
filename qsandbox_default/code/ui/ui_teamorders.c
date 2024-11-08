@@ -221,7 +221,7 @@ static void UI_TeamOrdersMenu_ListDraw( void *self ) {
 			}
 		}
 		else {
-			color = color_orange;
+			color = color_grey;
 		}
 
 		UI_DrawString( x, y, l->itemnames[i], style, color );

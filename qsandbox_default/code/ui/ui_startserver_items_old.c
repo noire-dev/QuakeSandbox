@@ -924,7 +924,7 @@ static void StartServer_ItemPage_Old_MenuDraw(void)
 		if (!groupInfo[i].title)
 			continue;
 
-		UI_DrawString( groupInfo[i].x, groupInfo[i].y, groupInfo[i].title, style, color_red );
+		UI_DrawString( groupInfo[i].x, groupInfo[i].y, groupInfo[i].title, style, color_white );
 	}
 
 	// draw the controls
@@ -1278,7 +1278,7 @@ void StartServer_ItemPage_MenuInit_OldMenu(qboolean ingame)
 		s_itemcontrols_old.ingame.title.generic.x		= 320;
 		s_itemcontrols_old.ingame.title.generic.y		= 4;
 		s_itemcontrols_old.ingame.title.string			= "DISABLE ITEMS";
-		s_itemcontrols_old.ingame.title.color			= color_red;
+		s_itemcontrols_old.ingame.title.color			= color_white;
 		s_itemcontrols_old.ingame.title.style			= UI_CENTER;
 
 		s_itemcontrols_old.ingame.cancel.generic.type     = MTYPE_BITMAP;
@@ -1308,7 +1308,7 @@ void StartServer_ItemPage_MenuInit_OldMenu(qboolean ingame)
 		s_itemcontrols_old.ingame.info.generic.x		= 320;
 		s_itemcontrols_old.ingame.info.generic.y		= 480 - 64 - 36;
 		s_itemcontrols_old.ingame.info.string			= "Requires RESTART or NEXT MAP";
-		s_itemcontrols_old.ingame.info.color			= color_red;
+		s_itemcontrols_old.ingame.info.color			= color_white;
 		s_itemcontrols_old.ingame.info.style			= UI_CENTER|UI_SMALLFONT;
 
 		Menu_AddItem( menuptr, &s_itemcontrols_old.ingame.title);

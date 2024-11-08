@@ -957,7 +957,7 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		if(uis.sb_tab == 5){
 		trap_Cmd_ExecuteText( EXEC_INSERT, "toggle bot_nochat\n" );
 		} else if(uis.sb_tab == 3){
-		trap_Cmd_ExecuteText( EXEC_INSERT, "op bot_pause = 1\n" );	
+		trap_Cvar_Set("bot_pause", "1");
 		} else {
 		UI_saveMapEdMenu();
 		}
@@ -967,7 +967,7 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		if(uis.sb_tab == 5){
 		trap_Cmd_ExecuteText( EXEC_INSERT, "kick allbots\n" );
 		} else if(uis.sb_tab == 3){
-		trap_Cmd_ExecuteText( EXEC_INSERT, "op bot_pause = 0\n" );	
+		trap_Cvar_Set("bot_pause", "0");	
 		} else {
 		UI_loadMapEdMenu();
 		}
@@ -1022,7 +1022,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.grid.generic.name		= "Grid size:";
 	
 	s_sandboxmain.close.generic.type     	= MTYPE_PTEXT;
-	s_sandboxmain.close.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_sandboxmain.close.generic.flags    	= QMF_CENTER_JUSTIFY;
 	s_sandboxmain.close.generic.id       	= ID_CLOSE;
 	s_sandboxmain.close.generic.callback 	= SandboxMain_MenuEvent;
 	s_sandboxmain.close.generic.x        	= (640 - (110*0.25)) + uis.wideoffset;
@@ -1033,7 +1033,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.close.generic.heightmod	= 1.5;
 	
 	s_sandboxmain.switchtab.generic.type     	= MTYPE_PTEXT;
-	s_sandboxmain.switchtab.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_sandboxmain.switchtab.generic.flags    	= QMF_CENTER_JUSTIFY;
 	s_sandboxmain.switchtab.generic.id       	= ID_SWITCHTAB;
 	s_sandboxmain.switchtab.generic.callback 	= SandboxMain_MenuEvent;
 	s_sandboxmain.switchtab.generic.x        	= 566 + uis.wideoffset;
@@ -1044,7 +1044,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.switchtab.generic.heightmod	= 1.5;
 	
 	s_sandboxmain.tab1.generic.type     	= MTYPE_PTEXT;
-	s_sandboxmain.tab1.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_sandboxmain.tab1.generic.flags    	= QMF_CENTER_JUSTIFY;
 	s_sandboxmain.tab1.generic.id       	= ID_TAB1;
 	s_sandboxmain.tab1.generic.callback 	= SandboxMain_MenuEvent;
 	s_sandboxmain.tab1.generic.x        	= (110*0.5)*1 - uis.wideoffset;
@@ -1055,7 +1055,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab1.generic.heightmod	= 1.5;
 	
 	s_sandboxmain.tab2.generic.type     	= MTYPE_PTEXT;
-	s_sandboxmain.tab2.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_sandboxmain.tab2.generic.flags    	= QMF_CENTER_JUSTIFY;
 	s_sandboxmain.tab2.generic.id       	= ID_TAB2;
 	s_sandboxmain.tab2.generic.callback 	= SandboxMain_MenuEvent;
 	s_sandboxmain.tab2.generic.x        	= (110*0.5)*2 - uis.wideoffset;
@@ -1066,7 +1066,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab2.generic.heightmod	= 1.5;
 	
 	s_sandboxmain.tab3.generic.type     	= MTYPE_PTEXT;
-	s_sandboxmain.tab3.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_sandboxmain.tab3.generic.flags    	= QMF_CENTER_JUSTIFY;
 	s_sandboxmain.tab3.generic.id       	= ID_TAB3;
 	s_sandboxmain.tab3.generic.callback 	= SandboxMain_MenuEvent;
 	s_sandboxmain.tab3.generic.x        	= (110*0.5)*3 - uis.wideoffset;
@@ -1077,7 +1077,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab3.generic.heightmod	= 1.5;
 	
 	s_sandboxmain.tab4.generic.type     	= MTYPE_PTEXT;
-	s_sandboxmain.tab4.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_sandboxmain.tab4.generic.flags    	= QMF_CENTER_JUSTIFY;
 	s_sandboxmain.tab4.generic.id       	= ID_TAB4;
 	s_sandboxmain.tab4.generic.callback 	= SandboxMain_MenuEvent;
 	s_sandboxmain.tab4.generic.x        	= (110*0.5)*4 - uis.wideoffset;
@@ -1088,7 +1088,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab4.generic.heightmod	= 1.5;
 	
 	s_sandboxmain.tab5.generic.type     	= MTYPE_PTEXT;
-	s_sandboxmain.tab5.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_sandboxmain.tab5.generic.flags    	= QMF_CENTER_JUSTIFY;
 	s_sandboxmain.tab5.generic.id       	= ID_TAB5;
 	s_sandboxmain.tab5.generic.callback 	= SandboxMain_MenuEvent;
 	s_sandboxmain.tab5.generic.x        	= (110*0.5)*5 - uis.wideoffset;
@@ -1099,7 +1099,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab5.generic.heightmod	= 1.5;
 	
 	s_sandboxmain.tab6.generic.type     	= MTYPE_PTEXT;
-	s_sandboxmain.tab6.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_sandboxmain.tab6.generic.flags    	= QMF_CENTER_JUSTIFY;
 	s_sandboxmain.tab6.generic.id       	= ID_TAB6;
 	s_sandboxmain.tab6.generic.callback 	= SandboxMain_MenuEvent;
 	s_sandboxmain.tab6.generic.x        	= (110*0.5)*6 - uis.wideoffset;
@@ -1110,7 +1110,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab6.generic.heightmod	= 1.5;
 	
 	s_sandboxmain.tab7.generic.type     	= MTYPE_PTEXT;
-	s_sandboxmain.tab7.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_sandboxmain.tab7.generic.flags    	= QMF_CENTER_JUSTIFY;
 	s_sandboxmain.tab7.generic.id       	= ID_TAB7;
 	s_sandboxmain.tab7.generic.callback 	= SandboxMain_MenuEvent;
 	s_sandboxmain.tab7.generic.x        	= (110*0.5)*7 - uis.wideoffset;
@@ -1121,7 +1121,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab7.generic.heightmod	= 1.5;
 
 	s_sandboxmain.tab8.generic.type     	= MTYPE_PTEXT;
-	s_sandboxmain.tab8.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_sandboxmain.tab8.generic.flags    	= QMF_CENTER_JUSTIFY;
 	s_sandboxmain.tab8.generic.id       	= ID_TAB8;
 	s_sandboxmain.tab8.generic.callback 	= SandboxMain_MenuEvent;
 	s_sandboxmain.tab8.generic.x        	= (110*0.5)*8 - uis.wideoffset;
@@ -1132,7 +1132,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab8.generic.heightmod	= 1.5;
 	
 	s_sandboxmain.tab9.generic.type     	= MTYPE_PTEXT;
-	s_sandboxmain.tab9.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_sandboxmain.tab9.generic.flags    	= QMF_CENTER_JUSTIFY;
 	s_sandboxmain.tab9.generic.id       	= ID_TAB9;
 	s_sandboxmain.tab9.generic.callback 	= SandboxMain_MenuEvent;
 	s_sandboxmain.tab9.generic.x        	= (110*0.5)*9 - uis.wideoffset;
@@ -1143,7 +1143,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab9.generic.heightmod	= 1.5;
 	
 	s_sandboxmain.tab10.generic.type     	= MTYPE_PTEXT;
-	s_sandboxmain.tab10.generic.flags    	= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_sandboxmain.tab10.generic.flags    	= QMF_CENTER_JUSTIFY;
 	s_sandboxmain.tab10.generic.id       	= ID_TAB10;
 	s_sandboxmain.tab10.generic.callback 	= SandboxMain_MenuEvent;
 	s_sandboxmain.tab10.generic.x        	= (110*0.5)*10 - uis.wideoffset;
@@ -1154,7 +1154,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.tab10.generic.heightmod	= 1.5;
 	
 	s_sandboxmain.savemap.generic.type     = MTYPE_PTEXT;
-	s_sandboxmain.savemap.generic.flags    = QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_sandboxmain.savemap.generic.flags    = QMF_CENTER_JUSTIFY;
 	s_sandboxmain.savemap.generic.id       = ID_SAVEMAP;
 	s_sandboxmain.savemap.generic.callback = SandboxMain_MenuEvent;
 	s_sandboxmain.savemap.generic.x        = 440 + uis.wideoffset;
@@ -1163,7 +1163,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.savemap.color            = s_sandboxmain_color1;
 
 	s_sandboxmain.loadmap.generic.type     = MTYPE_PTEXT;
-	s_sandboxmain.loadmap.generic.flags    = QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_sandboxmain.loadmap.generic.flags    = QMF_CENTER_JUSTIFY;
 	s_sandboxmain.loadmap.generic.id       = ID_LOADMAP;
 	s_sandboxmain.loadmap.generic.callback = SandboxMain_MenuEvent;
 	s_sandboxmain.loadmap.generic.x        = 440 + uis.wideoffset;
@@ -1173,7 +1173,7 @@ void SandboxMain_MenuInit( void ) {
 	
 	y = 50;	
 	s_sandboxmain.priv.generic.type			= MTYPE_RADIOBUTTON;
-	s_sandboxmain.priv.generic.flags		= QMF_PULSEIFFOCUS|QMF_SMALLFONT;
+	s_sandboxmain.priv.generic.flags		= QMF_SMALLFONT;
 	s_sandboxmain.priv.generic.callback		= SandboxMain_MenuEvent;
 	s_sandboxmain.priv.generic.id			= ID_PRIV;
 	s_sandboxmain.priv.generic.x			= 480 + uis.wideoffset;
@@ -1182,7 +1182,7 @@ void SandboxMain_MenuInit( void ) {
 	y += 18;
 
 	s_sandboxmain.grid.generic.type			= MTYPE_FIELD;
-	s_sandboxmain.grid.generic.flags		= QMF_PULSEIFFOCUS|QMF_SMALLFONT|QMF_NUMBERSONLY;
+	s_sandboxmain.grid.generic.flags		= QMF_SMALLFONT|QMF_NUMBERSONLY;
 	s_sandboxmain.grid.field.widthInChars	= 4;
 	s_sandboxmain.grid.field.maxchars		= 4;
 	s_sandboxmain.grid.generic.x			= 480 + uis.wideoffset;
@@ -1192,7 +1192,7 @@ void SandboxMain_MenuInit( void ) {
 	
 	for(i = 0; i < PROPERTIES_NUM; i++){
 	s_sandboxmain.modif[i].generic.type			= MTYPE_FIELD;
-	s_sandboxmain.modif[i].generic.flags		= QMF_PULSEIFFOCUS|QMF_SMALLFONT;
+	s_sandboxmain.modif[i].generic.flags		= QMF_SMALLFONT;
 	s_sandboxmain.modif[i].field.widthInChars	= 14;
 	s_sandboxmain.modif[i].field.maxchars		= 64;
 	s_sandboxmain.modif[i].generic.x			= 480 + uis.wideoffset;
@@ -1202,7 +1202,7 @@ void SandboxMain_MenuInit( void ) {
 	}
 	
 	s_sandboxmain.spawnobject.generic.type     = MTYPE_PTEXT;
-	s_sandboxmain.spawnobject.generic.flags    = QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_sandboxmain.spawnobject.generic.flags    = QMF_CENTER_JUSTIFY;
 	s_sandboxmain.spawnobject.generic.id       = ID_SPAWNOBJECT;
 	s_sandboxmain.spawnobject.generic.callback = SandboxMain_MenuEvent;
 	s_sandboxmain.spawnobject.generic.x        = 560 + uis.wideoffset;

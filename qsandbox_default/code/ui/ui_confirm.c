@@ -106,7 +106,7 @@ static void MessageMenu_Draw( void ) {
 	y = 188;
 	for(i=0; s_confirm.lines[i]; i++)
 	{
-		UI_DrawString( 320, y, s_confirm.lines[i], s_confirm.style, color_red );
+		UI_DrawString( 320, y, s_confirm.lines[i], s_confirm.style, color_white );
 		y += 18;
 	}
 
@@ -124,8 +124,8 @@ ConfirmMenu_Draw
 */
 static void ConfirmMenu_Draw( void ) {
 	UI_DrawNamedPic( 142, 118, 359, 256, ART_CONFIRM_FRAME );
-	UI_DrawString( 320, 204, s_confirm.question, s_confirm.style, color_red );
-	UI_DrawString( s_confirm.slashX, 265, "/", UI_LEFT|UI_INVERSE, color_red );
+	UI_DrawString( 320, 204, s_confirm.question, s_confirm.style, color_white );
+	UI_DrawString( s_confirm.slashX, 265, "/", UI_LEFT|UI_INVERSE, color_white );
 
 	Menu_Draw( &s_confirm.menu );
 
@@ -205,7 +205,7 @@ if(cl_language.integer == 1){
 	if(cl_language.integer == 1){
 	s_confirm.yes.string			= "ДА";
 	}
-	s_confirm.yes.color				= color_red;
+	s_confirm.yes.color				= color_white;
 	s_confirm.yes.style				= UI_LEFT;
 
 	s_confirm.no.generic.type		= MTYPE_PTEXT;      
@@ -220,7 +220,7 @@ if(cl_language.integer == 1){
 	if(cl_language.integer == 1){
 	s_confirm.no.string				= "НЕТ";
 	}
-	s_confirm.no.color			    = color_red;
+	s_confirm.no.color			    = color_white;
 	s_confirm.no.style			    = UI_LEFT;
 
 	Menu_AddItem( &s_confirm.menu,	&s_confirm.yes );             
@@ -281,7 +281,7 @@ void UI_Message( const char **lines ) {
 	s_confirm.yes.generic.x			= l1;
 	s_confirm.yes.generic.y			= 280;
 	s_confirm.yes.string			= "OK";
-	s_confirm.yes.color				= color_red;
+	s_confirm.yes.color				= color_white;
 	s_confirm.yes.style				= UI_LEFT;
 
 	Menu_AddItem( &s_confirm.menu,	&s_confirm.yes );

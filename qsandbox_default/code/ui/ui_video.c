@@ -93,9 +93,9 @@ static void DriverInfo_MenuDraw( void )
 
 	Menu_Draw( &s_driverinfo.menu );
 
-	UI_DrawString( 320, 80, "VENDOR", UI_CENTER|UI_SMALLFONT, color_red );
-	UI_DrawString( 320, 152, "PIXELFORMAT", UI_CENTER|UI_SMALLFONT, color_red );
-	UI_DrawString( 320, 192, "EXTENSIONS", UI_CENTER|UI_SMALLFONT, color_red );
+	UI_DrawString( 320, 80, "VENDOR", UI_CENTER|UI_SMALLFONT, color_white );
+	UI_DrawString( 320, 152, "PIXELFORMAT", UI_CENTER|UI_SMALLFONT, color_white );
+	UI_DrawString( 320, 192, "EXTENSIONS", UI_CENTER|UI_SMALLFONT, color_white );
 
 	UI_DrawString( 320, 80+16, uis.glconfig.vendor_string, UI_CENTER|UI_SMALLFONT, text_color_normal );
 	UI_DrawString( 320, 96+16, uis.glconfig.version_string, UI_CENTER|UI_SMALLFONT, text_color_normal );
@@ -1061,7 +1061,7 @@ void GraphicsOptions_MenuInit( void )
 	s_graphicsoptions.graphics.generic.x		= 140 - uis.wideoffset;
 	s_graphicsoptions.graphics.generic.y		= 240 - 2 * PROP_HEIGHT;
 	s_graphicsoptions.graphics.style			= UI_RIGHT;
-	s_graphicsoptions.graphics.color			= color_red;
+	s_graphicsoptions.graphics.color			= color_grey;
 
 	s_graphicsoptions.display.generic.type		= MTYPE_PTEXT;
 	s_graphicsoptions.display.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -1070,7 +1070,7 @@ void GraphicsOptions_MenuInit( void )
 	s_graphicsoptions.display.generic.x			= 140 - uis.wideoffset;
 	s_graphicsoptions.display.generic.y			= 240 - PROP_HEIGHT;
 	s_graphicsoptions.display.style				= UI_RIGHT;
-	s_graphicsoptions.display.color				= color_red;
+	s_graphicsoptions.display.color				= color_white;
 
 	s_graphicsoptions.sound.generic.type		= MTYPE_PTEXT;
 	s_graphicsoptions.sound.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -1079,7 +1079,7 @@ void GraphicsOptions_MenuInit( void )
 	s_graphicsoptions.sound.generic.x			= 140 - uis.wideoffset;
 	s_graphicsoptions.sound.generic.y			= 240;
 	s_graphicsoptions.sound.style				= UI_RIGHT;
-	s_graphicsoptions.sound.color				= color_red;
+	s_graphicsoptions.sound.color				= color_white;
 
 	s_graphicsoptions.network.generic.type		= MTYPE_PTEXT;
 	s_graphicsoptions.network.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -1088,7 +1088,7 @@ void GraphicsOptions_MenuInit( void )
 	s_graphicsoptions.network.generic.x			= 140 - uis.wideoffset;
 	s_graphicsoptions.network.generic.y			= 240 + PROP_HEIGHT;
 	s_graphicsoptions.network.style				= UI_RIGHT;
-	s_graphicsoptions.network.color				= color_red;
+	s_graphicsoptions.network.color				= color_white;
 
 	y = 240 - 7 * (BIGCHAR_HEIGHT + 2);
 	s_graphicsoptions.list.generic.type     = MTYPE_SPINCONTROL;
@@ -1216,7 +1216,7 @@ void GraphicsOptions_MenuInit( void )
 	s_graphicsoptions.driverinfo.generic.x        = 320;
 	s_graphicsoptions.driverinfo.generic.y        = y;
 	s_graphicsoptions.driverinfo.style            = UI_CENTER|UI_SMALLFONT;
-	s_graphicsoptions.driverinfo.color            = color_red;
+	s_graphicsoptions.driverinfo.color            = color_white;
 	y += BIGCHAR_HEIGHT+2;
 
 	s_graphicsoptions.back.generic.type	    = MTYPE_BITMAP;

@@ -44,37 +44,31 @@ GAME OPTIONS MENU
 #define ID_DYNAMICLIGHTS		132
 #define ID_IDENTIFYTARGET		133
 #define ID_SYNCEVERYFRAME		134
-#define ID_FORCEMODEL			135
-#define ID_DRAWTEAMOVERLAY		136
-#define ID_ALLOWDOWNLOAD			137
-#define ID_BACK					138
-#define ID_BOTMENU				139
-
-#define ID_GIBS				140
-#define ID_BLOOD			141
-#define ID_DRAWFPS			143
-#define ID_DRAWTIMER		144
-#define ID_LAGOMETER		145
-#define ID_PREDICTITEMS		146
-#define ID_SMOOTHCLIENTS	147
-#define ID_SHADOWS			148
-#define ID_TEAMCHATHEIGHT	149
-#define ID_TEAMCHATTIME		150
-#define ID_NEWESCAPEMENU	151
-#define ID_FOV				152
-#define ID_ZOOMFOV			153
-#define ID_AMMOWARNING		154
-#define ID_DRAWGUN			155
-
-#define ID_OLDRAIL			156
-#define ID_OLDPLASMA		157
-#define ID_OLDROCKET		158
-#define ID_TRUELIGHTNING	159
-#define ID_COLORRED             160
-#define ID_COLORGREEN           161
-#define ID_COLORBLUE            162
-#define ID_CROSSHAIRHEALTH      163
-#define ID_WEAPONBAR                    164
+#define ID_DRAWTEAMOVERLAY		135
+#define ID_ALLOWDOWNLOAD		136
+#define ID_BACK					137
+#define ID_BOTMENU				138
+#define ID_GIBS					139
+#define ID_BLOOD				140
+#define ID_DRAWFPS				141
+#define ID_DRAWTIMER			142
+#define ID_LAGOMETER			143
+#define ID_PREDICTITEMS			144
+#define ID_SHADOWS				145
+#define ID_TEAMCHATHEIGHT		146
+#define ID_NEWESCAPEMENU		147
+#define ID_FOV					148
+#define ID_ZOOMFOV				149
+#define ID_AMMOWARNING			150
+#define ID_DRAWGUN				151
+#define ID_OLDRAIL				152
+#define ID_OLDPLASMA			153
+#define ID_OLDROCKET			154
+#define ID_TRUELIGHTNING		155
+#define ID_COLORRED             156
+#define ID_COLORGREEN           157
+#define ID_COLORBLUE            158
+#define ID_WEAPONBAR            159
 
 #define	NUM_CROSSHAIRS			10
 
@@ -92,20 +86,18 @@ typedef struct {
     menutext_s			misc;
 
 	menulist_s			crosshair;
-        menuradiobutton_s	crosshairHealth;
-        //Crosshair colors:
-        menuslider_s            crosshairColorRed;
-        menuslider_s            crosshairColorGreen;
-        menuslider_s            crosshairColorBlue;
+    //Crosshair colors:
+    menuslider_s            crosshairColorRed;
+    menuslider_s            crosshairColorGreen;
+    menuslider_s            crosshairColorBlue;
 	menuradiobutton_s	simpleitems;
-        menuradiobutton_s	alwaysweaponbar;
+    menuradiobutton_s	alwaysweaponbar;
 	menuradiobutton_s	brass;
 	menuradiobutton_s	wallmarks;
 	menuradiobutton_s	dynamiclights;
 	menuradiobutton_s	identifytarget;
 	menuradiobutton_s	highqualitysky;
 	menuradiobutton_s	synceveryframe;
-	menuradiobutton_s	forcemodel;
 	menulist_s			drawteamoverlay;
 	menuradiobutton_s	allowdownload;
 	menuradiobutton_s	botmenu;
@@ -117,16 +109,12 @@ typedef struct {
 	menuradiobutton_s	drawlagometer;
 	menuradiobutton_s	drawgun;
 	menuradiobutton_s	predictitems;
-	menuradiobutton_s	smoothclient;
 	menulist_s			shadows;
 	menuradiobutton_s	newESCmenu;
 
 	menufield_s			teamchatheight;
-	menufield_s			teamchattime;
 	menufield_s			fov;
 	menufield_s			zoomfov;
-
-	menuradiobutton_s	drawAmmoWarning;
 
 	menuradiobutton_s	oldrail;
 	menuradiobutton_s	oldplasma;
@@ -185,16 +173,8 @@ static const char *shadow_typesru[] =
 	0
 };
 
-
-
-
-
-
-
-
 static menucommon_s* g_hud_controls[] = {
 	(menucommon_s*) &s_preferences.crosshair,
-	(menucommon_s*) &s_preferences.crosshairHealth,
 	(menucommon_s*) &s_preferences.crosshairColorRed,
 	(menucommon_s*) &s_preferences.crosshairColorGreen,
 	(menucommon_s*) &s_preferences.crosshairColorBlue,
@@ -202,13 +182,11 @@ static menucommon_s* g_hud_controls[] = {
 	(menucommon_s*) &s_preferences.identifytarget,
 	(menucommon_s*) &s_preferences.drawteamoverlay,
 	(menucommon_s*) &s_preferences.teamchatheight,
-	(menucommon_s*) &s_preferences.teamchattime,
 	(menucommon_s*) &s_preferences.drawfps,
 	(menucommon_s*) &s_preferences.synceveryframe,
 	(menucommon_s*) &s_preferences.drawtimer,
 	(menucommon_s*) &s_preferences.drawlagometer,
 	(menucommon_s*) &s_preferences.drawgun,
-	(menucommon_s*) &s_preferences.drawAmmoWarning,
 	NULL
 };
 
@@ -228,7 +206,6 @@ static menucommon_s* g_object_controls[] = {
 	(menucommon_s*) &s_preferences.brass,
 	(menucommon_s*) &s_preferences.dynamiclights,
 	(menucommon_s*) &s_preferences.gibs,
-	(menucommon_s*) &s_preferences.forcemodel,
 	(menucommon_s*) &s_preferences.oldrail,
 	(menucommon_s*) &s_preferences.oldplasma,
 	(menucommon_s*) &s_preferences.oldrocket,
@@ -238,7 +215,6 @@ static menucommon_s* g_object_controls[] = {
 
 static menucommon_s* g_prefmisc_controls[] = {
 	(menucommon_s*) &s_preferences.predictitems,
-	(menucommon_s*) &s_preferences.smoothclient,
 	(menucommon_s*) &s_preferences.allowdownload,
 	(menucommon_s*) &s_preferences.botmenu,
 	(menucommon_s*) &s_preferences.newESCmenu,
@@ -253,16 +229,12 @@ static menucommon_s* g_prefmisc_controls[] = {
 
 #define C_MAX 		4
 
-
-
 static menucommon_s** g_control_list[] = {
 	g_hud_controls,
 	g_render_controls,
 	g_object_controls,
 	g_prefmisc_controls
 };
-
-
 
 static void Preferences_SetMenuItems( void ) {
 	s_preferences.crosshair.curvalue		= (int)trap_Cvar_VariableValue( "cg_drawCrosshair" ) % NUM_CROSSHAIRS;
@@ -277,7 +249,6 @@ static void Preferences_SetMenuItems( void ) {
 	s_preferences.dynamiclights.curvalue	= trap_Cvar_VariableValue( "r_dynamiclight" ) != 0;
 	s_preferences.highqualitysky.curvalue	= trap_Cvar_VariableValue ( "r_fastsky" ) == 0;
 	s_preferences.synceveryframe.curvalue	= trap_Cvar_VariableValue( "r_swapInterval" ) != 0;
-	s_preferences.forcemodel.curvalue		= trap_Cvar_VariableValue( "cg_forcemodel" ) != 0;
 	s_preferences.drawteamoverlay.curvalue	= Com_Clamp( 0, 3, trap_Cvar_VariableValue( "cg_drawTeamOverlay" ) );
 	s_preferences.allowdownload.curvalue	= trap_Cvar_VariableValue( "cl_allowDownload" ) != 0;
 	s_preferences.botmenu.curvalue			= trap_Cvar_VariableValue( "uie_autoclosebotmenu" ) != 0;
@@ -289,10 +260,8 @@ static void Preferences_SetMenuItems( void ) {
 	s_preferences.drawlagometer.curvalue	= trap_Cvar_VariableValue( "cg_lagometer" ) != 0;
 	s_preferences.drawgun.curvalue			= trap_Cvar_VariableValue( "cg_paintballMode" ) != 0;
 	s_preferences.predictitems.curvalue		= trap_Cvar_VariableValue( "cg_predictItems" ) != 0;
-	s_preferences.smoothclient.curvalue		= trap_Cvar_VariableValue( "cg_smoothClients" ) != 0;
 	s_preferences.shadows.curvalue			= Com_Clamp( 0, 3, trap_Cvar_VariableValue( "cg_shadows" ) );
 	s_preferences.newESCmenu.curvalue		= trap_Cvar_VariableValue( "uie_ingame_dynamicmenu" ) != 0;
-	s_preferences.drawAmmoWarning.curvalue		= trap_Cvar_VariableValue( "cg_drawAmmoWarning" ) != 0;
 
 	s_preferences.oldrail.curvalue			= trap_Cvar_VariableValue( "cg_oldRail" ) != 0;
 	s_preferences.oldplasma.curvalue		= trap_Cvar_VariableValue( "cg_oldPlasma" ) != 0;
@@ -300,13 +269,10 @@ static void Preferences_SetMenuItems( void ) {
 	s_preferences.truelightning.curvalue	= trap_Cvar_VariableValue( "cg_truelightning" ) != 0;
 
 
-	trap_Cvar_VariableStringBuffer("cg_teamChatTime", s_preferences.teamchattime.field.buffer, 6);
 	trap_Cvar_VariableStringBuffer("com_maxfps", s_preferences.teamchatheight.field.buffer, 4);
 	trap_Cvar_VariableStringBuffer("cg_fov", s_preferences.fov.field.buffer, 4);
 	trap_Cvar_VariableStringBuffer("cg_zoomfov", s_preferences.zoomfov.field.buffer, 4);
 }
-
-
 
 /*
 =================
@@ -382,8 +348,6 @@ static void Control_Update( void )
 	}
 }
 
-
-
 /*
 =================
 Control_Init
@@ -417,20 +381,12 @@ static void Control_Init( void )
 	Control_Update();
 }
 
-
-
 static void Preferences_InputEvent( void* ptr, int notification ) {
 	if( notification != QM_LOSTFOCUS ) {
 		return;
 	}
 
 	switch( ((menucommon_s*)ptr)->id ) {
-	case ID_TEAMCHATTIME:
-		if (atoi(s_preferences.teamchattime.field.buffer) <= 0) {
-			Q_strncpyz(s_preferences.teamchattime.field.buffer, "5000", 5);
-		}
-		//trap_Cvar_Set( "cg_teamChatTime", s_preferences.teamchattime.field.buffer);
-		break;
 
 	case ID_TEAMCHATHEIGHT:
 		trap_Cmd_ExecuteText( EXEC_APPEND, va("seta com_maxfps %s\n", s_preferences.teamchatheight.field.buffer));
@@ -453,9 +409,6 @@ static void Preferences_InputEvent( void* ptr, int notification ) {
 
 }
 
-
-
-
 static void Preferences_Event( void* ptr, int notification ) {
 	if( notification != QM_ACTIVATED ) {
 		return;
@@ -465,12 +418,6 @@ static void Preferences_Event( void* ptr, int notification ) {
 	case ID_HUD:
 		s_preferences.section = C_HUD;
 		Control_Update();
-		break;
-
-    case ID_CROSSHAIRHEALTH:
-        s_preferences.crosshairColorRed.generic.flags       &= ~QMF_INACTIVE;
-        s_preferences.crosshairColorGreen.generic.flags     &= ~QMF_INACTIVE;
-        s_preferences.crosshairColorBlue.generic.flags      &= ~QMF_INACTIVE;
 		break;
 
 	case ID_RENDER:
@@ -543,10 +490,6 @@ static void Preferences_Event( void* ptr, int notification ) {
 		trap_Cvar_SetValue( "r_swapInterval", s_preferences.synceveryframe.curvalue );
 		break;
 
-	case ID_FORCEMODEL:
-		trap_Cvar_SetValue( "cg_forcemodel", s_preferences.forcemodel.curvalue );
-		break;
-
 	case ID_DRAWTEAMOVERLAY:
 		trap_Cvar_SetValue( "cg_drawTeamOverlay", s_preferences.drawteamoverlay.curvalue );
 		break;
@@ -576,10 +519,6 @@ static void Preferences_Event( void* ptr, int notification ) {
 		trap_Cvar_SetValue( "cg_drawTimer", s_preferences.drawtimer.curvalue );
 		break;
 
-	case ID_AMMOWARNING:
-		trap_Cvar_SetValue( "cg_drawAmmoWarning", s_preferences.drawAmmoWarning.curvalue );
-		break;
-
 	case ID_LAGOMETER:
 		trap_Cvar_SetValue( "cg_lagometer", s_preferences.drawlagometer.curvalue );
 		break;
@@ -590,10 +529,6 @@ static void Preferences_Event( void* ptr, int notification ) {
 
 	case ID_PREDICTITEMS:
 		trap_Cvar_SetValue( "cg_predictItems", s_preferences.predictitems.curvalue );
-		break;
-
-	case ID_SMOOTHCLIENTS:
-		trap_Cvar_SetValue( "cg_smoothClients", s_preferences.smoothclient.curvalue );
 		break;
 
 	case ID_SHADOWS:
@@ -625,9 +560,6 @@ static void Preferences_Event( void* ptr, int notification ) {
 		break;
 	}
 }
-
-
-
 
 /*
 =================
@@ -683,9 +615,6 @@ static void Crosshair_Draw( void *self ) {
 	UI_DrawHandlePic( x + SMALLCHAR_WIDTH, y - 4, 24, 24, s_preferences.crosshairShader[s->curvalue] );
 }
 
-
-
-
 /*
 =================
 Preferences_Statusbar
@@ -718,12 +647,6 @@ if(cl_language.integer == 0){
 		case ID_TEAMCHATHEIGHT:
 			s = "FPS limit - it is recommended to set a supported value";
 			break;
-		case ID_TEAMCHATTIME:
-			s = "Max time in view (milli-seconds)";
-			break;
-		case ID_SMOOTHCLIENTS:
-			s = "Other players movement predicted";
-			break;
 		case ID_PREDICTITEMS:
 			s = "Item pickup predicted";
 			break;
@@ -752,12 +675,6 @@ if(cl_language.integer == 1){
 		case ID_TEAMCHATHEIGHT:
 			s = "Лимит FPS - рекомендуется ставить как у монитора";
 			break;
-		case ID_TEAMCHATTIME:
-			s = "Максимальное время отображения (миллисекунды)";
-			break;
-		case ID_SMOOTHCLIENTS:
-			s = "Игроки на стороне клиента";
-			break;
 		case ID_PREDICTITEMS:
 			s = "Предметы на стороне клиента";
 			break;
@@ -767,9 +684,6 @@ if(cl_language.integer == 1){
 	if (s)
 		UI_DrawString(320, 480 - 64, s, UI_CENTER|UI_SMALLFONT, color_white);
 }
-
-
-
 
 static void Preferences_MenuInit( void )
 {
@@ -815,7 +729,7 @@ static void Preferences_MenuInit( void )
 	s_preferences.hud.generic.x	    = 152 - uis.wideoffset;
 	s_preferences.hud.generic.y	    = 240 - 2 * PROP_HEIGHT;
 	s_preferences.hud.style			= UI_RIGHT;
-	s_preferences.hud.color			= color_red;
+	s_preferences.hud.color			= color_white;
 
 	s_preferences.render.generic.type     = MTYPE_PTEXT;
 	s_preferences.render.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -824,7 +738,7 @@ static void Preferences_MenuInit( void )
 	s_preferences.render.generic.x	    = 152 - uis.wideoffset;
 	s_preferences.render.generic.y	    = 240 - PROP_HEIGHT;
 	s_preferences.render.style			= UI_RIGHT;
-	s_preferences.render.color			= color_red;
+	s_preferences.render.color			= color_white;
 
 	s_preferences.objects.generic.type     = MTYPE_PTEXT;
 	s_preferences.objects.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -833,7 +747,7 @@ static void Preferences_MenuInit( void )
 	s_preferences.objects.generic.x	    = 152 - uis.wideoffset;
 	s_preferences.objects.generic.y	    = 240;
 	s_preferences.objects.style			= UI_RIGHT;
-	s_preferences.objects.color			= color_red;
+	s_preferences.objects.color			= color_white;
 
 	s_preferences.misc.generic.type     = MTYPE_PTEXT;
 	s_preferences.misc.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -842,7 +756,7 @@ static void Preferences_MenuInit( void )
 	s_preferences.misc.generic.x	    = 152 - uis.wideoffset;
 	s_preferences.misc.generic.y	    = 240 + PROP_HEIGHT;
 	s_preferences.misc.style			= UI_RIGHT;
-	s_preferences.misc.color			= color_red;
+	s_preferences.misc.color			= color_white;
 
 	s_preferences.back.generic.type	    = MTYPE_BITMAP;
 	s_preferences.back.generic.name     = ART_BACK0;
@@ -863,11 +777,6 @@ static void Preferences_MenuInit( void )
 	s_preferences.crosshair.generic.callback	= Preferences_Event;
 	s_preferences.crosshair.generic.ownerdraw	= Crosshair_Draw;
 	s_preferences.crosshair.generic.id			= ID_CROSSHAIR;
-
-	s_preferences.crosshairHealth.generic.type        = MTYPE_RADIOBUTTON;
-	s_preferences.crosshairHealth.generic.flags		= QMF_PULSEIFFOCUS|QMF_SMALLFONT|QMF_NODEFAULTINIT|QMF_OWNERDRAW;
-	s_preferences.crosshairHealth.generic.callback    = Preferences_Event;
-	s_preferences.crosshairHealth.generic.id          = ID_CROSSHAIRHEALTH;
 
      s_preferences.crosshairColorRed.generic.type		= MTYPE_SLIDER;
 	s_preferences.crosshairColorRed.generic.flags		= QMF_PULSEIFFOCUS|QMF_SMALLFONT|QMF_NODEFAULTINIT|QMF_OWNERDRAW;
@@ -890,14 +799,7 @@ static void Preferences_MenuInit( void )
 	s_preferences.crosshairColorBlue.minvalue			= 0.0f;
 	s_preferences.crosshairColorBlue.maxvalue			= 255.0f;
 
-
-        if(s_preferences.crosshairHealth.curvalue) {
-            s_preferences.crosshairColorRed.generic.flags       |= QMF_INACTIVE;
-            s_preferences.crosshairColorGreen.generic.flags       |= QMF_INACTIVE;
-            s_preferences.crosshairColorBlue.generic.flags       |= QMF_INACTIVE;
-        }
-
-        //Elimination
+    //Elimination
 	s_preferences.alwaysweaponbar.generic.type        = MTYPE_RADIOBUTTON;
 	s_preferences.alwaysweaponbar.generic.flags		= QMF_PULSEIFFOCUS|QMF_SMALLFONT|QMF_NODEFAULTINIT|QMF_OWNERDRAW;
 	s_preferences.alwaysweaponbar.generic.callback    = Preferences_Event;
@@ -965,11 +867,6 @@ static void Preferences_MenuInit( void )
 	s_preferences.drawlagometer.generic.callback = Preferences_Event;
 	s_preferences.drawlagometer.generic.id       = ID_LAGOMETER;
 
-	s_preferences.drawAmmoWarning.generic.type     = MTYPE_RADIOBUTTON;
-	s_preferences.drawAmmoWarning.generic.flags	   = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
-	s_preferences.drawAmmoWarning.generic.callback = Preferences_Event;
-	s_preferences.drawAmmoWarning.generic.id       = ID_AMMOWARNING;
-
 	s_preferences.drawgun.generic.type     = MTYPE_RADIOBUTTON;
 	s_preferences.drawgun.generic.flags	   = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
 	s_preferences.drawgun.generic.callback = Preferences_Event;
@@ -988,14 +885,6 @@ static void Preferences_MenuInit( void )
 	s_preferences.teamchatheight.generic.flags      = QMF_SMALLFONT|QMF_PULSEIFFOCUS|QMF_NUMBERSONLY;
 	s_preferences.teamchatheight.field.widthInChars = 3;
 	s_preferences.teamchatheight.field.maxchars     = 3;
-
-	s_preferences.teamchattime.generic.type       = MTYPE_FIELD;
-	s_preferences.teamchattime.generic.id		= ID_TEAMCHATTIME;
-	s_preferences.teamchattime.generic.callback	= Preferences_InputEvent;
-	s_preferences.teamchattime.generic.statusbar= Preferences_Statusbar;
-	s_preferences.teamchattime.generic.flags      = QMF_SMALLFONT|QMF_PULSEIFFOCUS|QMF_NUMBERSONLY;
-	s_preferences.teamchattime.field.widthInChars = 5;
-	s_preferences.teamchattime.field.maxchars     = 5;
 
 	s_preferences.fov.generic.type       = MTYPE_FIELD;
 	s_preferences.fov.generic.id		= ID_FOV;
@@ -1018,17 +907,6 @@ static void Preferences_MenuInit( void )
 	s_preferences.predictitems.generic.callback = Preferences_Event;
 	s_preferences.predictitems.generic.statusbar= Preferences_Statusbar;
 	s_preferences.predictitems.generic.id       = ID_PREDICTITEMS;
-
-	s_preferences.smoothclient.generic.type     = MTYPE_RADIOBUTTON;
-	s_preferences.smoothclient.generic.flags	   = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
-	s_preferences.smoothclient.generic.callback = Preferences_Event;
-	s_preferences.smoothclient.generic.statusbar= Preferences_Statusbar;
-	s_preferences.smoothclient.generic.id       = ID_SMOOTHCLIENTS;
-
-	s_preferences.forcemodel.generic.type     = MTYPE_RADIOBUTTON;
-	s_preferences.forcemodel.generic.flags	  = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
-	s_preferences.forcemodel.generic.callback = Preferences_Event;
-	s_preferences.forcemodel.generic.id       = ID_FORCEMODEL;
 
 	s_preferences.oldrail.generic.type     = MTYPE_RADIOBUTTON;
 	s_preferences.oldrail.generic.flags	  = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
@@ -1077,7 +955,6 @@ s_preferences.render.string			= "RENDER";
 s_preferences.objects.string			= "OBJECTS";
 s_preferences.misc.string			= "MISC";
 s_preferences.crosshair.generic.name		= "Crosshair:";
-s_preferences.crosshairHealth.generic.name	      = "Crosshair shows health:";
 s_preferences.crosshairColorRed.generic.name		= "Crosshair red:";
 s_preferences.crosshairColorGreen.generic.name		= "Crosshair green:";
 s_preferences.crosshairColorBlue.generic.name		= "Crosshair blue:";
@@ -1094,16 +971,12 @@ s_preferences.identifytarget.generic.name	  = "Identify Target:";
 s_preferences.drawfps.generic.name	   = "Draw FPS:";
 s_preferences.drawtimer.generic.name	   = "Draw Timer:";
 s_preferences.drawlagometer.generic.name	   = "Draw Lagometer:";
-s_preferences.drawAmmoWarning.generic.name	   = "Draw Ammo Warning:";
 s_preferences.drawgun.generic.name	   = "Secret setting =P:";
 s_preferences.drawteamoverlay.generic.name	   = "Draw Team Overlay:";
 s_preferences.teamchatheight.generic.name       = "FPS Limit:";
-s_preferences.teamchattime.generic.name       = "Team Chat Time:";
 s_preferences.fov.generic.name       = "FOV:";
 s_preferences.zoomfov.generic.name       = "Zoom FOV:";
 s_preferences.predictitems.generic.name	   = "Predict Items:";
-s_preferences.smoothclient.generic.name	   = "Smooth Clients:";
-s_preferences.forcemodel.generic.name	  = "Force Player Models:";
 s_preferences.oldrail.generic.name	  = "Old Railgun effect:";
 s_preferences.oldplasma.generic.name	  = "Old Plasma effect:";
 s_preferences.oldrocket.generic.name	  = "Old Rocket effect:";
@@ -1122,7 +995,6 @@ s_preferences.render.string			= "РЕНДЕР";
 s_preferences.objects.string			= "ОБЪЕКТЫ";
 s_preferences.misc.string			= "ДРУГОЕ";
 s_preferences.crosshair.generic.name		= "Прицел:";
-s_preferences.crosshairHealth.generic.name	      = "Прицел показывает жизни:";
 s_preferences.crosshairColorRed.generic.name		= "Прицел красный:";
 s_preferences.crosshairColorGreen.generic.name		= "Прицел зеленый:";
 s_preferences.crosshairColorBlue.generic.name		= "Прицел синий:";
@@ -1139,16 +1011,12 @@ s_preferences.identifytarget.generic.name	  = "Определить цель:";
 s_preferences.drawfps.generic.name	   = "Отображение FPS:";
 s_preferences.drawtimer.generic.name	   = "Отображение Времени:";
 s_preferences.drawlagometer.generic.name	   = "Отображение Сети:";
-s_preferences.drawAmmoWarning.generic.name	   = "Отображение (мало патрон):";
 s_preferences.drawgun.generic.name	   = "Секретная настройка =P:";
 s_preferences.drawteamoverlay.generic.name	   = "Отображение командной панели:";
 s_preferences.teamchatheight.generic.name       = "Лимит FPS:";
-s_preferences.teamchattime.generic.name       = "Время командного чата:";
 s_preferences.fov.generic.name       = "Поле зрения:";
 s_preferences.zoomfov.generic.name       = "Увеличение:";
 s_preferences.predictitems.generic.name	   = "Предметы клиент:";
-s_preferences.smoothclient.generic.name	   = "Игроки клиент:";
-s_preferences.forcemodel.generic.name	  = "Одна модель игрока:";
 s_preferences.oldrail.generic.name	  = "Старый эффект Рейлгана:";
 s_preferences.oldplasma.generic.name	  = "Старый эффект Плазмы:";
 s_preferences.oldrocket.generic.name	  = "Старый эффект Ракет:";
@@ -1171,7 +1039,6 @@ s_preferences.newESCmenu.generic.name	   = "Новый вид меню:";
 	Menu_AddItem( &s_preferences.menu, &s_preferences.misc);
 
 	Menu_AddItem( &s_preferences.menu, &s_preferences.crosshair );
-    //Menu_AddItem( &s_preferences.menu, &s_preferences.crosshairHealth );
     Menu_AddItem( &s_preferences.menu, &s_preferences.crosshairColorRed );
     Menu_AddItem( &s_preferences.menu, &s_preferences.crosshairColorGreen );
     Menu_AddItem( &s_preferences.menu, &s_preferences.crosshairColorBlue );
@@ -1183,7 +1050,6 @@ s_preferences.newESCmenu.generic.name	   = "Новый вид меню:";
 	Menu_AddItem( &s_preferences.menu, &s_preferences.identifytarget );
 	Menu_AddItem( &s_preferences.menu, &s_preferences.highqualitysky );
 	Menu_AddItem( &s_preferences.menu, &s_preferences.synceveryframe );
-	//Menu_AddItem( &s_preferences.menu, &s_preferences.forcemodel );
 	Menu_AddItem( &s_preferences.menu, &s_preferences.drawteamoverlay );
 	Menu_AddItem( &s_preferences.menu, &s_preferences.allowdownload );
 	Menu_AddItem( &s_preferences.menu, &s_preferences.botmenu);
@@ -1194,12 +1060,9 @@ s_preferences.newESCmenu.generic.name	   = "Новый вид меню:";
 	Menu_AddItem( &s_preferences.menu, &s_preferences.drawtimer);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.drawlagometer);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.predictitems);
-	Menu_AddItem( &s_preferences.menu, &s_preferences.smoothclient);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.shadows);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.newESCmenu);
-	//Menu_AddItem( &s_preferences.menu, &s_preferences.drawAmmoWarning);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.drawgun);
-	//Menu_AddItem( &s_preferences.menu, &s_preferences.teamchattime);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.teamchatheight);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.fov);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.zoomfov);

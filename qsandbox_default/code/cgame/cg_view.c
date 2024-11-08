@@ -876,12 +876,6 @@ static int CG_CalcViewValues( void ) {
 	VectorCopy( ps->origin, cg.refdef.vieworg );
 	VectorCopy( ps->viewangles, cg.refdefViewAngles );
 
-	if (cg_cameraOrbit.integer) {
-		if (cg.time > cg.nextOrbitTime) {
-			cg.nextOrbitTime = cg.time + cg_cameraOrbitDelay.integer;
-			cg_thirdPersonAngle.value += cg_cameraOrbit.value;
-		}
-	}
 	// add error decay
 	if ( cg_errorDecay.value > 0 ) {
 		int		t;

@@ -739,7 +739,7 @@ static void StartServer_BotPage_SetTeamTitle(int swapped)
 	red->string = "Красная команда";
 	blue->string = "Синяя команда";
 	}
-	red->color = color_realred;
+	red->color = color_red;
 	blue->color = color_blue;
 
 	sizeScale = UI_ProportionalSizeScale( red->style, 0 );

@@ -1198,7 +1198,7 @@ static void MapSelect_ScrollListDraw( void* ptr )
 				}
 
 				UI_FillRect(u,y,l->width*charwidth ,lineheight,listbar_color);
-				if (color != color_red)
+				if (color != color_white)
 					color = text_color_highlight;
 
 				if (hasfocus)

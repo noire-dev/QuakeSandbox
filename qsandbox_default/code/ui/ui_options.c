@@ -151,7 +151,7 @@ void Options_MenuInit( void ) {
 	if(cl_language.integer == 1){
 	s_options.graphics.string			= "ГРАФИКА";
 	}
-	s_options.graphics.color			= color_red;
+	s_options.graphics.color			= color_white;
 	s_options.graphics.style			= UI_CENTER;
 
 	y += VERTICAL_SPACING;
@@ -167,7 +167,7 @@ void Options_MenuInit( void ) {
 	if(cl_language.integer == 1){
 	s_options.display.string			= "ЭКРАН";
 	}
-	s_options.display.color				= color_red;
+	s_options.display.color				= color_white;
 	s_options.display.style				= UI_CENTER;
 
 	y += VERTICAL_SPACING;
@@ -183,7 +183,7 @@ void Options_MenuInit( void ) {
 	if(cl_language.integer == 1){
 	s_options.sound.string				= "ЗВУК";
 	}
-	s_options.sound.color				= color_red;
+	s_options.sound.color				= color_white;
 	s_options.sound.style				= UI_CENTER;
 
 	y += VERTICAL_SPACING;
@@ -199,7 +199,7 @@ void Options_MenuInit( void ) {
 	if(cl_language.integer == 1){
 	s_options.network.string			= "СЕТЬ";
 	}
-	s_options.network.color				= color_red;
+	s_options.network.color				= color_white;
 	s_options.network.style				= UI_CENTER;
 
 	s_options.back.generic.type	    = MTYPE_BITMAP;

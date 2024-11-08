@@ -1719,7 +1719,7 @@ void StartServer_MapPage_MenuInit(void)
 		s_mapcontrols.displayMapName[n].generic.right	   =
 			MAPARRAYCOLUMN_X + MAPFRAGS_DX - SMALLCHAR_WIDTH/2;
 		s_mapcontrols.displayMapName[n].style = UI_SMALLFONT;
-		s_mapcontrols.displayMapName[n].color = color_red;
+		s_mapcontrols.displayMapName[n].color = color_white;
 
 		s_mapcontrols.displayFragLimit[n].generic.type       = MTYPE_FIELD;
 		s_mapcontrols.displayFragLimit[n].generic.name       = 0;

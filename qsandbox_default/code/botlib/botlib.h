@@ -50,7 +50,7 @@ struct weaponinfo_s;
 #define LINECOLOR_GREEN			2//0xd0d1d2d3L
 #define LINECOLOR_BLUE			3//0xf3f3f1f1L
 #define LINECOLOR_YELLOW		4//0xdcdddedfL
-#define LINECOLOR_ORANGE		5//0xe0e1e2e3L
+#define LINEcolor_grey		5//0xe0e1e2e3L
 
 //Print types
 #define PRT_MESSAGE				1

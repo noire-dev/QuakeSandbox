@@ -165,7 +165,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	networkOptionsInfo.graphics.string				= "ГРАФИКА";
 	}
 	networkOptionsInfo.graphics.style				= UI_RIGHT;
-	networkOptionsInfo.graphics.color				= color_red;
+	networkOptionsInfo.graphics.color				= color_white;
 
 	networkOptionsInfo.display.generic.type			= MTYPE_PTEXT;
 	networkOptionsInfo.display.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -180,7 +180,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	networkOptionsInfo.display.string				= "ЭКРАН";
 	}
 	networkOptionsInfo.display.style				= UI_RIGHT;
-	networkOptionsInfo.display.color				= color_red;
+	networkOptionsInfo.display.color				= color_white;
 
 	networkOptionsInfo.sound.generic.type			= MTYPE_PTEXT;
 	networkOptionsInfo.sound.generic.flags			= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -195,7 +195,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	networkOptionsInfo.sound.string					= "ЗВУК";
 	}
 	networkOptionsInfo.sound.style					= UI_RIGHT;
-	networkOptionsInfo.sound.color					= color_red;
+	networkOptionsInfo.sound.color					= color_white;
 
 	networkOptionsInfo.network.generic.type			= MTYPE_PTEXT;
 	networkOptionsInfo.network.generic.flags		= QMF_RIGHT_JUSTIFY;
@@ -210,7 +210,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	networkOptionsInfo.network.string				= "СЕТЬ";
 	}
 	networkOptionsInfo.network.style				= UI_RIGHT;
-	networkOptionsInfo.network.color				= color_red;
+	networkOptionsInfo.network.color				= color_grey;
 
 	y = 240 - 1 * (BIGCHAR_HEIGHT+2);
 	networkOptionsInfo.rate.generic.type		= MTYPE_SPINCONTROL;

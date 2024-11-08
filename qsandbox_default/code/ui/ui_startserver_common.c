@@ -246,35 +246,35 @@ void StartServer_CommonControls_Init(
 	common->maptext.generic.x			= 64 - uis.wideoffset;
 	common->maptext.generic.y			= height;
 	common->maptext.generic.flags			= QMF_INACTIVE;
-	common->maptext.color  				= color_red;
+	common->maptext.color  				= color_white;
 	common->maptext.style  				= UI_CENTER|UI_BIGFONT;
 
 	common->bottext.generic.type			= MTYPE_PTEXT;
 	common->bottext.generic.x			= 64 + 128 - uis.wideoffset;
 	common->bottext.generic.y			= height;
 	common->bottext.generic.flags			= QMF_INACTIVE;
-	common->bottext.color  				= color_red;
+	common->bottext.color  				= color_white;
 	common->bottext.style  				= UI_CENTER|UI_BIGFONT;
 
 	common->itemtext.generic.type			= MTYPE_PTEXT;
 	common->itemtext.generic.x			= 64 + 256 - uis.wideoffset;
 	common->itemtext.generic.y			= height;
 	common->itemtext.generic.flags			= QMF_INACTIVE;
-	common->itemtext.color  				= color_red;
+	common->itemtext.color  				= color_white;
 	common->itemtext.style  				= UI_CENTER|UI_BIGFONT;
 
 	common->servertext.generic.type			= MTYPE_PTEXT;
 	common->servertext.generic.x			= 64 + 384 - uis.wideoffset;
 	common->servertext.generic.y			= height;
 	common->servertext.generic.flags			= QMF_INACTIVE;
-	common->servertext.color  				= color_red;
+	common->servertext.color  				= color_white;
 	common->servertext.style  				= UI_CENTER|UI_BIGFONT;
 	
 	common->weapontext.generic.type			= MTYPE_PTEXT;
 	common->weapontext.generic.x			= 64 + 512 - uis.wideoffset;
 	common->weapontext.generic.y			= height;
 	common->weapontext.generic.flags			= QMF_INACTIVE;
-	common->weapontext.color  				= color_red;
+	common->weapontext.color  				= color_white;
 	common->weapontext.style  				= UI_CENTER|UI_BIGFONT;
 	
 	if(cl_language.integer == 0){

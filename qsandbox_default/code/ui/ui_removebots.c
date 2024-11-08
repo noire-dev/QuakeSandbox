@@ -171,7 +171,7 @@ static void UI_RemoveBotsMenu_BotEvent( void* ptr, int event ) {
 		return;
 	}
 
-	removeBotsMenuInfo.bots[removeBotsMenuInfo.selectedBotNum].color = color_orange;
+	removeBotsMenuInfo.bots[removeBotsMenuInfo.selectedBotNum].color = color_grey;
 	removeBotsMenuInfo.selectedBotNum = ((menucommon_s*)ptr)->id - ID_BOTNAME0;
 	removeBotsMenuInfo.bots[removeBotsMenuInfo.selectedBotNum].color = color_white;
 
@@ -333,7 +333,7 @@ static void RemoveBots_MenuDraw(void)
       // write bot skill as float
       x = b->generic.x + b->width - 4 * SMALLCHAR_WIDTH;
       y = b->generic.y + b->height + 2;
-	   UI_DrawString(x, y, va("%4.2f", removeBotsMenuInfo.f_skill), UI_SMALLFONT, color_orange);
+	   UI_DrawString(x, y, va("%4.2f", removeBotsMenuInfo.f_skill), UI_SMALLFONT, color_grey);
 	}
 }
 
@@ -440,7 +440,7 @@ if(cl_language.integer == 1){
 		removeBotsMenuInfo.bots[n].generic.y		= y;
 		removeBotsMenuInfo.bots[n].generic.callback	= UI_RemoveBotsMenu_BotEvent;
 		removeBotsMenuInfo.bots[n].string			= removeBotsMenuInfo.botnames[n];
-		removeBotsMenuInfo.bots[n].color			= color_orange;
+		removeBotsMenuInfo.bots[n].color			= color_grey;
 		removeBotsMenuInfo.bots[n].style			= UI_LEFT|UI_SMALLFONT;
 	}
 
@@ -484,7 +484,7 @@ if(cl_language.integer == 1){
 	removeBotsMenuInfo.icon_hilite.width				= 128;
 	removeBotsMenuInfo.icon_hilite.height				= 128;
 	removeBotsMenuInfo.icon_hilite.focuspic				= ART_SELECT;
-	removeBotsMenuInfo.icon_hilite.focuscolor			= color_red;
+	removeBotsMenuInfo.icon_hilite.focuscolor			= color_white;
 
 	removeBotsMenuInfo.icon.generic.type		= MTYPE_BITMAP;
 	removeBotsMenuInfo.icon.generic.flags		= QMF_LEFT_JUSTIFY|QMF_INACTIVE;

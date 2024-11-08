@@ -210,7 +210,7 @@ static void UI_SetupMenu_Init( void ) {
 	setupMenuInfo.setupplayer.generic.y				= y;
 	setupMenuInfo.setupplayer.generic.id			= ID_CUSTOMIZEPLAYER;
 	setupMenuInfo.setupplayer.generic.callback		= UI_SetupMenu_Event;
-	setupMenuInfo.setupplayer.color					= color_red;
+	setupMenuInfo.setupplayer.color					= color_white;
 	setupMenuInfo.setupplayer.style					= UI_CENTER;
 
 	y += SETUP_MENU_VERTICAL_SPACING;
@@ -220,7 +220,7 @@ static void UI_SetupMenu_Init( void ) {
 	setupMenuInfo.setupmodel.generic.y			= y;
 	setupMenuInfo.setupmodel.generic.id			= ID_CUSTOMIZEMODEL;
 	setupMenuInfo.setupmodel.generic.callback	= UI_SetupMenu_Event;
-	setupMenuInfo.setupmodel.color				= color_red;
+	setupMenuInfo.setupmodel.color				= color_white;
 	setupMenuInfo.setupmodel.style				= UI_CENTER;
 
 	y += SETUP_MENU_VERTICAL_SPACING;
@@ -230,7 +230,7 @@ static void UI_SetupMenu_Init( void ) {
 	setupMenuInfo.setupcontrols.generic.y			= y;
 	setupMenuInfo.setupcontrols.generic.id			= ID_CUSTOMIZECONTROLS;
 	setupMenuInfo.setupcontrols.generic.callback	= UI_SetupMenu_Event;
-	setupMenuInfo.setupcontrols.color				= color_red;
+	setupMenuInfo.setupcontrols.color				= color_white;
 	setupMenuInfo.setupcontrols.style				= UI_CENTER;
 
 	y += SETUP_MENU_VERTICAL_SPACING;
@@ -240,7 +240,7 @@ static void UI_SetupMenu_Init( void ) {
 	setupMenuInfo.setupsystem.generic.y				= y;
 	setupMenuInfo.setupsystem.generic.id			= ID_SYSTEMCONFIG;
 	setupMenuInfo.setupsystem.generic.callback		= UI_SetupMenu_Event; 
-	setupMenuInfo.setupsystem.color					= color_red;
+	setupMenuInfo.setupsystem.color					= color_white;
 	setupMenuInfo.setupsystem.style					= UI_CENTER;
 
 	y += SETUP_MENU_VERTICAL_SPACING;
@@ -250,7 +250,7 @@ static void UI_SetupMenu_Init( void ) {
 	setupMenuInfo.game.generic.y					= y;
 	setupMenuInfo.game.generic.id					= ID_GAME;
 	setupMenuInfo.game.generic.callback				= UI_SetupMenu_Event;
-	setupMenuInfo.game.color						= color_red;
+	setupMenuInfo.game.color						= color_white;
 	setupMenuInfo.game.style						= UI_CENTER;
 	
 	y += SETUP_MENU_VERTICAL_SPACING;
@@ -260,7 +260,7 @@ static void UI_SetupMenu_Init( void ) {
 	setupMenuInfo.advanced.generic.y					= y;
 	setupMenuInfo.advanced.generic.id					= ID_ADVANCED;
 	setupMenuInfo.advanced.generic.callback				= UI_SetupMenu_Event;
-	setupMenuInfo.advanced.color						= color_red;
+	setupMenuInfo.advanced.color						= color_white;
 	setupMenuInfo.advanced.style						= UI_CENTER;
 
 	style = QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -275,7 +275,7 @@ static void UI_SetupMenu_Init( void ) {
 	setupMenuInfo.load.generic.y					= y;
 	setupMenuInfo.load.generic.id					= ID_LOAD;
 	setupMenuInfo.load.generic.callback				= UI_SetupMenu_Event;
-	setupMenuInfo.load.color						= color_red;
+	setupMenuInfo.load.color						= color_white;
 	setupMenuInfo.load.style						= UI_CENTER;
 
 	y += SETUP_MENU_VERTICAL_SPACING;
@@ -285,7 +285,7 @@ static void UI_SetupMenu_Init( void ) {
 	setupMenuInfo.save.generic.y					= y;
 	setupMenuInfo.save.generic.id					= ID_SAVE;
 	setupMenuInfo.save.generic.callback				= UI_SetupMenu_Event;
-	setupMenuInfo.save.color						= color_red;
+	setupMenuInfo.save.color						= color_white;
 	setupMenuInfo.save.style						= UI_CENTER;
 
 	y += SETUP_MENU_VERTICAL_SPACING;
@@ -295,7 +295,7 @@ static void UI_SetupMenu_Init( void ) {
 	setupMenuInfo.defaults.generic.y				= y;
 	setupMenuInfo.defaults.generic.id				= ID_DEFAULTS;
 	setupMenuInfo.defaults.generic.callback			= UI_SetupMenu_Event;
-	setupMenuInfo.defaults.color					= color_red;
+	setupMenuInfo.defaults.color					= color_white;
 	setupMenuInfo.defaults.style					= UI_CENTER;
 	
 	y += SETUP_MENU_VERTICAL_SPACING;
@@ -305,7 +305,7 @@ static void UI_SetupMenu_Init( void ) {
 	setupMenuInfo.language.generic.y					= y;
 	setupMenuInfo.language.generic.id					= ID_LANGUAGE;
 	setupMenuInfo.language.generic.callback				= UI_SetupMenu_Event;
-	setupMenuInfo.language.color						= color_red;
+	setupMenuInfo.language.color						= color_white;
 	setupMenuInfo.language.style						= UI_CENTER;
 
 	setupMenuInfo.back.generic.type					= MTYPE_BITMAP;

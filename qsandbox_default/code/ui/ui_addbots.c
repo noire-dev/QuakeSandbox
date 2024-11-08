@@ -146,7 +146,7 @@ static void UI_AddBotsMenu_BotEvent( void* ptr, int event ) {
 		return;
 	}
 
-	addBotsMenuInfo.bots[addBotsMenuInfo.selectedBotNum].color = color_orange;
+	addBotsMenuInfo.bots[addBotsMenuInfo.selectedBotNum].color = color_grey;
 	addBotsMenuInfo.selectedBotNum = ((menucommon_s*)ptr)->id - ID_BOTNAME0;
 	addBotsMenuInfo.bots[addBotsMenuInfo.selectedBotNum].color = color_white;
 
@@ -171,7 +171,7 @@ static void UI_AddBotsMenu_TeamEvent( void* ptr, int event ) {
 	if (addBotsMenuInfo.team.curvalue == 1)
 		addBotsMenuInfo.icon_hilite.focuscolor			= color_blue;
 	else
-		addBotsMenuInfo.icon_hilite.focuscolor			= color_realred;
+		addBotsMenuInfo.icon_hilite.focuscolor			= color_red;
 }
 
 
@@ -352,7 +352,7 @@ if(cl_language.integer == 1){
       x = b->generic.x + b->width - 4 * SMALLCHAR_WIDTH;
       y = b->generic.y + b->height + 2;
       f_skill = addBotsMenuInfo.skill_slider.curvalue + 1;
-	   UI_DrawString(x, y, va("%4.2f", f_skill), UI_SMALLFONT, color_orange);
+	   UI_DrawString(x, y, va("%4.2f", f_skill), UI_SMALLFONT, color_grey);
 	}
 }
 
@@ -460,7 +460,7 @@ static void UI_AddBotsMenu_Init( void ) {
 		addBotsMenuInfo.bots[n].generic.y			= y;
 		addBotsMenuInfo.bots[n].generic.callback	= UI_AddBotsMenu_BotEvent;
 		addBotsMenuInfo.bots[n].string				= addBotsMenuInfo.botnames[n];
-		addBotsMenuInfo.bots[n].color				= color_orange;
+		addBotsMenuInfo.bots[n].color				= color_grey;
 		addBotsMenuInfo.bots[n].style				= UI_LEFT|UI_SMALLFONT;
 	}
 
@@ -545,7 +545,7 @@ if(cl_language.integer == 1){
 	addBotsMenuInfo.icon_hilite.width				= 128;
 	addBotsMenuInfo.icon_hilite.height				= 128;
 	addBotsMenuInfo.icon_hilite.focuspic			= ART_SELECT;
-	addBotsMenuInfo.icon_hilite.focuscolor			= color_realred;
+	addBotsMenuInfo.icon_hilite.focuscolor			= color_red;
 
 	addBotsMenuInfo.icon.generic.type		= MTYPE_BITMAP;
 	addBotsMenuInfo.icon.generic.flags		= QMF_LEFT_JUSTIFY|QMF_INACTIVE;

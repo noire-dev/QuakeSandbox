@@ -711,12 +711,12 @@ static void Controls_DrawKeyBinding( void *self )
 		else
 		{
 			if(cl_language.integer == 0){
-			UI_DrawString( x - SMALLCHAR_WIDTH, y, g_bindings[a->generic.id].label, UI_RIGHT|UI_SMALLFONT, color_red );
+			UI_DrawString( x - SMALLCHAR_WIDTH, y, g_bindings[a->generic.id].label, UI_RIGHT|UI_SMALLFONT, color_white );
 			}
 			if(cl_language.integer == 1){
-			UI_DrawString( x - SMALLCHAR_WIDTH, y, g_bindingsrus[a->generic.id].label, UI_RIGHT|UI_SMALLFONT, color_red );
+			UI_DrawString( x - SMALLCHAR_WIDTH, y, g_bindingsrus[a->generic.id].label, UI_RIGHT|UI_SMALLFONT, color_white );
 			}
-			UI_DrawString( x + SMALLCHAR_WIDTH, y, name, UI_LEFT|UI_SMALLFONT, color_red );
+			UI_DrawString( x + SMALLCHAR_WIDTH, y, name, UI_LEFT|UI_SMALLFONT, color_white );
 		}
 	}
 }
@@ -1253,7 +1253,7 @@ static void Controls_MenuInit( void )
 	s_controls.looking.string			= "ОБЗОР";
 	}
 	s_controls.looking.style			= UI_RIGHT;
-	s_controls.looking.color			= color_red;
+	s_controls.looking.color			= color_white;
 
 	s_controls.movement.generic.type     = MTYPE_PTEXT;
 	s_controls.movement.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -1268,7 +1268,7 @@ static void Controls_MenuInit( void )
 	s_controls.movement.string			= "ДВИЖЕНИЕ";
 	}
 	s_controls.movement.style			= UI_RIGHT;
-	s_controls.movement.color			= color_red;
+	s_controls.movement.color			= color_white;
 
 	s_controls.weapons.generic.type	    = MTYPE_PTEXT;
 	s_controls.weapons.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -1283,7 +1283,7 @@ static void Controls_MenuInit( void )
 	s_controls.weapons.string			= "СТРЕЛЬБА";
 	}
 	s_controls.weapons.style			= UI_RIGHT;
-	s_controls.weapons.color			= color_red;
+	s_controls.weapons.color			= color_white;
 
 	s_controls.input.generic.type	 = MTYPE_PTEXT;
 	s_controls.input.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -1298,7 +1298,7 @@ static void Controls_MenuInit( void )
 	s_controls.input.string			= "ВВОД";
 	}
 	s_controls.input.style			= UI_RIGHT;
-	s_controls.input.color			= color_red;
+	s_controls.input.color			= color_white;
 
 	s_controls.misc.generic.type	 = MTYPE_PTEXT;
 	s_controls.misc.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -1313,7 +1313,7 @@ static void Controls_MenuInit( void )
 	s_controls.misc.string			= "ДРУГОЕ";
 	}
 	s_controls.misc.style			= UI_RIGHT;
-	s_controls.misc.color			= color_red;
+	s_controls.misc.color			= color_white;
 
 	s_controls.back.generic.type	 = MTYPE_BITMAP;
 	s_controls.back.generic.name     = ART_BACK0;
