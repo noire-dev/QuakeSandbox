@@ -1088,7 +1088,7 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 		case K_KP_UPARROW:
 		case K_UPARROW:
 		case K_MWHEELUP:
-			if(b->columns == 1){
+			if(b->columns <= 1){
 				UIObject_Key(b, K_LEFTARROW);
 				return;
 			}
@@ -1121,7 +1121,7 @@ sfxHandle_t UIObject_Key( menuobject_s* b, int key )
 		case K_KP_DOWNARROW:
 		case K_DOWNARROW:
 		case K_MWHEELDOWN:
-			if(b->columns == 1){
+			if(b->columns <= 1){
 				UIObject_Key(b, K_RIGHTARROW);
 				return;
 			}
@@ -1985,7 +1985,7 @@ sfxHandle_t ScrollList_Key( menulist_s *l, int key )
 		case K_KP_UPARROW:
 		case K_UPARROW:
 		case K_MWHEELUP:
-			if(l->columns == 1){
+			if(l->columns <= 1){
 				ScrollList_Key(l, K_LEFTARROW);
 				return;
 			}
@@ -2014,7 +2014,7 @@ sfxHandle_t ScrollList_Key( menulist_s *l, int key )
 		case K_KP_DOWNARROW:
 		case K_DOWNARROW:
 		case K_MWHEELDOWN:
-			if(l->columns == 1){
+			if(l->columns <= 1){
 				ScrollList_Key(l, K_RIGHTARROW);
 				return;
 			}
@@ -2042,44 +2042,49 @@ sfxHandle_t ScrollList_Key( menulist_s *l, int key )
 
 		case K_KP_LEFTARROW:
 		case K_LEFTARROW:
-			if( l->columns == 1 ) {
-				return menu_null_sound;
-			}
-
-			if( l->curvalue < l->height ) {
+			if( l->curvalue == 0 ) {
 				return menu_buzz_sound;
 			}
 
 			l->oldvalue = l->curvalue;
-			l->curvalue -= l->height;
+			l->curvalue--;
 
 			if( l->curvalue < l->top ) {
-				l->top -= l->height;
+				if( l->columns == 1 ) {
+					l->top--;
+				}
+				else {
+					l->top -= l->columns;
+				}
+			}
+
+			if(l->top < 0 || l->curvalue < 0){
+				l->curvalue = 0;
+				l->top = 0;
 			}
 
 			if( l->generic.callback ) {
 				l->generic.callback( l, QM_GOTFOCUS );
 			}
 
-			return menu_move_sound;
+			return (menu_move_sound);
 
 		case K_KP_RIGHTARROW:
 		case K_RIGHTARROW:
-			if( l->columns == 1 ) {
-				return menu_null_sound;
-			}
-
-			c = l->curvalue + l->height;
-
-			if( c >= l->numitems ) {
+			if( l->curvalue == l->numitems - 1 ) {
 				return menu_buzz_sound;
 			}
 
 			l->oldvalue = l->curvalue;
-			l->curvalue = c;
+			l->curvalue++;
 
-			if( l->curvalue > l->top + l->columns * l->height - 1 ) {
-				l->top += l->height;
+			if( l->curvalue >= l->top + l->columns * l->height ) {
+				if( l->columns == 1 ) {
+					l->top++;
+				}
+				else {
+					l->top += l->columns;
+				}
 			}
 
 			if( l->generic.callback ) {
