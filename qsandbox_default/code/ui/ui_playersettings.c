@@ -246,10 +246,10 @@ static void PlayerSettings_DrawEffects( void *self ) {
 	}
 	}
 if(cl_language.integer == 0){
-	textlen = UI_ProportionalStringWidth("Rail core:") * UI_ProportionalSizeScale(style, 0) * 14;
+	textlen = UI_ProportionalStringWidth("Rail core:") * UI_ProportionalSizeScale(style, 0) * 1.00;
 }
 if(cl_language.integer == 1){
-	textlen = UI_ProportionalStringWidth("Рэйл луч:") * UI_ProportionalSizeScale(style, 0) * 14;
+	textlen = UI_ProportionalStringWidth("Рэйл луч:") * UI_ProportionalSizeScale(style, 0) * 1.25;
 }
 
 	UI_DrawHandlePic( item->generic.x + textlen, item->generic.y + 4, 128, 8, s_playersettings.fxBasePic );

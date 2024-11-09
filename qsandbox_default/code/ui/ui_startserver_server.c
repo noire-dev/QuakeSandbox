@@ -590,7 +590,7 @@ static controlinit_t srv_general[] = {
 		"Max Entities:", &s_scriptdata.server.maxEntities, 512, MAX_GENTITIES, NULL, 9, 9, NULL },
 		
 	{ SRVCTRL_NUMFIELD, 0, ID_SERVER_DRAWDISTANCE, ITEM_ALWAYSON|ITEM_HALFGAP,
-		"Entities load distance:", &s_scriptdata.server.viewdistance, 1, 90, NULL, 3, 3, NULL },
+		"Entities load distance:", &s_scriptdata.server.viewdistance, 0, 90, NULL, 3, 3, NULL },
 		
 	{ SRVCTRL_NUMFIELD, 0, ID_SERVER_SINGLESKILL, ITEM_ALWAYSON,
 		"Singleplayer skill:", &s_scriptdata.server.singleskill, 1, 14, NULL, 9, 9, NULL },
