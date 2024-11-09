@@ -977,28 +977,7 @@ int Q_PrintStrlen( const char *string ) {
 
 
 char *Q_CleanStr( char *string ) {
-	char*	d;
-	char*	s;
-	int		c;
-        qboolean hadColor = qfalse;
-
-	s = string;
-	d = string;
-	while ((c = *s) != 0 ) {
-		if ( Q_IsColorString( s ) ) {
-			s++;
-        	hadColor = qtrue;
-		}
-		else if ( c ) {
-			*d++ = c;
-		}
-		s++;
-	}
-	*d = '\0';
-        if(hadColor)
-            return Q_CleanStr( string );
-        else
-            return string;
+return string;
 }
 
 int Q_CountChar(const char *string, char tocount)
