@@ -1082,7 +1082,7 @@ void SP_func_prop( gentity_t *ent ) {
 			ent->r.contents = CONTENTS_SOLID | CONTENTS_BODY;	
 			}
 			if(ent->sb_coll == 1){
-			ent->r.contents = CONTENTS_TRANSLUCENT;	
+			ent->r.contents = CONTENTS_TRIGGER;	
 			}
 			ent->s.generic2 = ent->sb_generic1;
 			ent->classname = "func_prop";
@@ -1118,7 +1118,7 @@ void SP_func_prop( gentity_t *ent ) {
 	ent->r.contents = CONTENTS_SOLID;	
 	}
 	if(ent->sb_coll == 1){
-	ent->r.contents = CONTENTS_TRANSLUCENT;	
+	ent->r.contents = CONTENTS_TRIGGER;	
 	}
 	ent->s.generic2 = ent->sb_generic1;
 	ent->s.scales[0] = ent->sb_colscale0;
@@ -1191,7 +1191,7 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent->sb_coll = 0;
 	}
 	if(atoi(arg10) == 1){
-	ent->r.contents = CONTENTS_TRANSLUCENT;
+	ent->r.contents = CONTENTS_TRIGGER;
 	ent->sb_coll = 1;
 	}
 	ent->s.loopSound = G_SoundIndex(arg11);
@@ -1337,7 +1337,7 @@ void G_ModProp( gentity_t *targ, gentity_t *attacker, char *arg01, char *arg02, 
 		targ->sb_coll = 0;
 		}
 		if(atoi(arg19) == 1){
-		targ->r.contents = CONTENTS_TRANSLUCENT;
+		targ->r.contents = CONTENTS_TRIGGER;
 		targ->sb_coll = 1;
 		}
 	trap_UnlinkEntity( targ );

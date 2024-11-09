@@ -1510,7 +1510,7 @@ static void Cmd_Modify_Prop_f( gentity_t *ent ){
 	
 	traceEnt = &g_entities[ tr.entityNum ];		//entity for modding
 
-	if(!traceEnt->sandboxObject && !traceEnt->singlebot){
+	if(!traceEnt->sandboxObject && !traceEnt->singlebot && ent->s.eType != ET_ITEM){
 		return;
 	}
 	

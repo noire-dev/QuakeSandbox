@@ -1009,7 +1009,7 @@ void Weapon_Toolgun( gentity_t *ent ) {
 
 	traceEnt = &g_entities[ tr.entityNum ];
 
-	if(!traceEnt->sandboxObject && !traceEnt->singlebot){
+	if(!traceEnt->sandboxObject && !traceEnt->singlebot && ent->s.eType != ET_ITEM){
 		return;
 	}
 
