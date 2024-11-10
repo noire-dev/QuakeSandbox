@@ -164,7 +164,7 @@ field_t fields[] = {
 	{"sb_rotate2", FOFS(sb_rotate2), F_FLOAT},
 	{"physicsBounce", FOFS(physicsBounce), F_FLOAT},
 	{"vehicle", FOFS(vehicle), F_INT},
-	{"sb_generic1", FOFS(sb_generic1), F_INT},
+	{"sb_material", FOFS(sb_material), F_INT},
 	{"sb_phys", FOFS(sb_phys), F_INT},
 	{"sb_coll", FOFS(sb_coll), F_INT},
 	{"locked", FOFS(locked), F_INT},

@@ -553,10 +553,6 @@ vmCvar_t 	g_eliminationred_holdable;
 
 vmCvar_t        g_elimination_lockspectator;
 
-vmCvar_t	g_rockets;
-
-//dmn_clowns suggestions (with my idea of implementing):
-vmCvar_t	g_instantgib;
 vmCvar_t	g_vampire;
 vmCvar_t	g_vampireMaxHealth;
 //Regen
@@ -714,7 +710,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_sginf, "g_sginf", "0", 0, 0, qtrue  },
 	{ &g_sgknockback, "g_sgknockback", "1", 0, 0, qtrue  },
 	//gl set
-	{ &g_gldelay, "g_gldelay", "800", 0, 0, qtrue  },
+	{ &g_gldelay, "g_gldelay", "500", 0, 0, qtrue  },
 	{ &g_glspeed, "g_glspeed", "700", 0, 0, qtrue  },
 	{ &g_gltimeout, "g_gltimeout", "2500", 0, 0, qtrue  },
 	{ &g_glsradius, "g_glsradius", "120", 0, 0, qtrue  },
@@ -1216,12 +1212,6 @@ static cvarTable_t		gameCvarTable[] = {
 
     { &g_awardpushing, "g_awardpushing", "1", CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
 
-
-	//nexuiz style rocket arena
-	{ &g_rockets, "g_rockets", "0", CVAR_SERVERINFO | CVAR_LATCH | CVAR_NORESTART, 0, qfalse },
-
-	//Instantgib and Vampire thingies
-	{ &g_instantgib, "g_instantgib", "0", CVAR_SERVERINFO | CVAR_LATCH, 0, qfalse },
 	{ &g_vampire, "g_vampire", "0.0", CVAR_NORESTART, 0, qtrue },
 	{ &g_regen, "g_regen", "0", CVAR_NORESTART, 0, qtrue },
 	{ &g_vampireMaxHealth, "g_vampire_max_health", "500", CVAR_NORESTART, 0, qtrue },
@@ -1421,15 +1411,14 @@ void G_UpdateCvars( void ) {
 				cv->modificationCount = cv->vmCvar->modificationCount;
 
 				if ( cv->trackChange ) {
-					//trap_SendServerCommand( -1, va("print \"Server: %s changed to %s\n\"",
-						//cv->cvarName, cv->vmCvar->string ) );
+					//trap_SendServerCommand( -1, va("print \"Server: %s changed to %s\n\"", cv->cvarName, cv->vmCvar->string ) );
 				}
 
                                 if ( cv->vmCvar == &g_votecustom )
                                     VoteParseCustomVotes();
 
                                 //Here comes the cvars that must trigger a map_restart
-                                if (cv->vmCvar == &g_instantgib || cv->vmCvar == &g_rockets  ||  cv->vmCvar == &g_elimination_allgametypes) {
+                                if (cv->vmCvar == &g_elimination_allgametypes) {
                                     trap_Cvar_Set("sv_dorestart","1");
                                 }
 

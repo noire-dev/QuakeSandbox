@@ -217,10 +217,7 @@ qboolean CheckGauntletAttack( gentity_t *ent ) {
 	s_quadFactor *= 5;
 	}
 
-	if(g_instantgib.integer)
-		damage = 500; //High damage in instant gib (normally enough to gib)
-	else
-		damage = g_gdamage.integer * s_quadFactor;
+	damage = g_gdamage.integer * s_quadFactor;
 	G_Damage( traceEnt, ent, ent, forward, tr.endpos,
 		damage, 0, MOD_GAUNTLET );
 
@@ -659,8 +656,6 @@ void weapon_railgun_fire (gentity_t *ent) {
 	gentity_t	*unlinkedEntities[MAX_RAIL_HITS];
 
 	damage = g_rgdamage.integer * s_quadFactor;
-	if(g_instantgib.integer)
-		damage = 800;
 
 	VectorMA (muzzle, 8192, forward, end);
 

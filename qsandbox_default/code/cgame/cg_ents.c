@@ -167,7 +167,6 @@ static void CG_General( centity_t *cent ) {
 	refEntity_t			wheelfl;
 	refEntity_t			wheelrr;
 	refEntity_t			wheelrl;
-	int					isVehicle = 0;
 	char 				str[MAX_QPATH];
 	entityState_t		*s1;
 	int					i;
@@ -220,10 +219,6 @@ static void CG_General( centity_t *cent ) {
 	ent.shaderRGBA[3] = 255;
 	
 	Com_sprintf(str, sizeof(str), CG_ConfigString(CS_MODELS + s1->modelindex));
-	
-	if (str != NULL && str[6] == 'v' && str[7] == 'e' && str[8] == 'h' && str[9] == '_') {		//offset to props/<6> check veh_
-		isVehicle = 1;
-	}
 
 	// player model
 	if (s1->number == cg.snap->ps.clientNum) {
@@ -240,7 +235,7 @@ static void CG_General( centity_t *cent ) {
 	if(s1->scales[2] != 0.0){
 	VectorScale( ent.axis[2], s1->scales[2], ent.axis[2] );}
 
-	if(isVehicle){
+	if(s1->torsoAnim == OT_VEHICLE){
     if (s1->generic1 && s1->generic1-1 == cg.predictedPlayerState.clientNum) {  
 		if(VectorLength(cg.predictedPlayerState.velocity) > 5){
         VectorCopy(cg.predictedPlayerState.origin, ent.origin);
@@ -253,9 +248,9 @@ static void CG_General( centity_t *cent ) {
 	// add to refresh list
 	trap_R_AddRefEntityToScene (&ent);
 	
-	if(isVehicle){
+	if(s1->torsoAnim == OT_VEHICLE){
 	
-	trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.carengine[s1->generic3] );
+	trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.carengine[s1->legsAnim] );
 		
 	wheelfr.frame = s1->frame;
 	wheelfr.oldframe = wheelfr.frame;
@@ -928,6 +923,41 @@ void CG_AdjustPositionForMover( const vec3_t in, int moverNum, int fromTime, int
 
 /*
 =============================
+ST_InterpolateEntityPosition
+=============================
+*/
+static void ST_InterpolateEntityPosition( centity_t *cent ) {
+	vec3_t		current, next;
+	float		f;
+
+	// it would be an internal error to find an entity that interpolates without
+	// a snapshot ahead of the current one
+	if ( cg.nextSnap == NULL ) {
+		CG_Error( "CG_InterpoateEntityPosition: cg.nextSnap == NULL" );
+	}
+
+	f = cg.frameInterpolation;
+
+	// this will linearize a sine or parabolic curve, but it is important
+	// to not extrapolate player positions if more recent data is available
+	ST_EvaluateTrajectory( &cent->currentState.pos, cg.snap->serverTime, current, cent->currentState.generic3 );
+	ST_EvaluateTrajectory( &cent->nextState.pos, cg.nextSnap->serverTime, next, cent->currentState.generic3 );
+
+	cent->lerpOrigin[0] = current[0] + f * ( next[0] - current[0] );
+	cent->lerpOrigin[1] = current[1] + f * ( next[1] - current[1] );
+	cent->lerpOrigin[2] = current[2] + f * ( next[2] - current[2] );
+
+	ST_EvaluateTrajectory( &cent->currentState.apos, cg.snap->serverTime, current, cent->currentState.generic3 );
+	ST_EvaluateTrajectory( &cent->nextState.apos, cg.nextSnap->serverTime, next, cent->currentState.generic3 );
+
+	cent->lerpAngles[0] = LerpAngle( current[0], next[0], f );
+	cent->lerpAngles[1] = LerpAngle( current[1], next[1], f );
+	cent->lerpAngles[2] = LerpAngle( current[2], next[2], f );
+
+}
+
+/*
+=============================
 CG_InterpolateEntityPosition
 =============================
 */
@@ -1027,8 +1057,6 @@ static void CG_CalcEntityLerpPositions( centity_t *cent ) {
 	}
 
 	// just use the current frame and evaluate as best we can
-//	BG_EvaluateTrajectory( &cent->currentState.pos, cg.time, cent->lerpOrigin );
-//	BG_EvaluateTrajectory( &cent->currentState.apos, cg.time, cent->lerpAngles );
 	BG_EvaluateTrajectory( &cent->currentState.pos, cg.time + timeshift, cent->lerpOrigin );
 	BG_EvaluateTrajectory( &cent->currentState.apos, cg.time + timeshift, cent->lerpAngles );
 
@@ -1038,6 +1066,101 @@ static void CG_CalcEntityLerpPositions( centity_t *cent ) {
 		vec3_t lastOrigin;
 
 		BG_EvaluateTrajectory( &cent->currentState.pos, cg.time, lastOrigin );
+
+		CG_Trace( &tr, lastOrigin, vec3_origin, vec3_origin, cent->lerpOrigin, cent->currentState.number, MASK_SHOT );
+
+		// don't let the projectile go through the floor
+		if ( tr.fraction < 1.0f ) {
+			cent->lerpOrigin[0] = lastOrigin[0] + tr.fraction * ( cent->lerpOrigin[0] - lastOrigin[0] );
+			cent->lerpOrigin[1] = lastOrigin[1] + tr.fraction * ( cent->lerpOrigin[1] - lastOrigin[1] );
+			cent->lerpOrigin[2] = lastOrigin[2] + tr.fraction * ( cent->lerpOrigin[2] - lastOrigin[2] );
+		}
+	}
+//unlagged - projectile nudge
+
+	// adjust for riding a mover if it wasn't rolled into the predicted
+	// player state
+	if ( cent != &cg.predictedPlayerEntity ) {
+		CG_AdjustPositionForMover( cent->lerpOrigin, cent->currentState.groundEntityNum,
+		cg.snap->serverTime, cg.time, cent->lerpOrigin );
+	}
+}
+
+/*
+===============
+ST_CalcEntityLerpPositions
+
+===============
+*/
+static void ST_CalcEntityLerpPositions( centity_t *cent ) {
+	clientInfo_t	*ci;
+	int				weaphack;
+	int timeshift = 0;
+
+	ci = &cgs.clientinfo[ cent->currentState.clientNum ];
+	
+	if(ci->swepid >= 1){
+	weaphack = ci->swepid;
+	} else {
+	weaphack = cent->currentState.weapon;
+	}
+
+//unlagged - projectile nudge
+	// this will be set to how far forward projectiles will be extrapolated
+//unlagged - projectile nudge
+
+	if ( cent->interpolate && cent->currentState.pos.trType == TR_INTERPOLATE ) {
+		ST_InterpolateEntityPosition( cent );
+		return;
+	}
+
+	// first see if we can interpolate between two snaps for
+	// linear extrapolated clients
+	if ( cent->interpolate && cent->currentState.pos.trType == TR_LINEAR_STOP &&
+											cent->currentState.number < MAX_CLIENTS) {
+		ST_InterpolateEntityPosition( cent );
+		return;
+	}
+
+//unlagged - timenudge extrapolation
+	// interpolating failed (probably no nextSnap), so extrapolate
+	// this can also happen if the teleport bit is flipped, but that
+	// won't be noticeable
+	if ( cent->currentState.number < MAX_CLIENTS &&
+			cent->currentState.clientNum != cg.predictedPlayerState.clientNum ) {
+		cent->currentState.pos.trType = TR_LINEAR_STOP;
+		cent->currentState.pos.trTime = cg.snap->serverTime;
+		cent->currentState.pos.trDuration = 1000 / sv_fps.integer;
+	}
+//unlagged - timenudge extrapolation
+
+//unlagged - projectile nudge
+	// if it's a missile but not a grappling hook
+	if ( cent->currentState.eType == ET_MISSILE && weaphack != WP_GRAPPLING_HOOK ) {
+		// if it's one of ours
+		if ( cent->currentState.otherEntityNum == cg.clientNum ) {
+			// extrapolate one server frame's worth - this will correct for tiny
+			// visual inconsistencies introduced by backward-reconciling all players
+			// one server frame before running projectiles
+			timeshift = 1000 / sv_fps.integer;
+		}
+		// if it's not, and it's not a grenade launcher
+		else if ( cent->currentState.weapon != WP_GRENADE_LAUNCHER ) {
+			// extrapolate based on cg_projectileNudge
+			timeshift = cg_projectileNudge.integer + 1000 / sv_fps.integer;
+		}
+	}
+
+	// just use the current frame and evaluate as best we can
+	ST_EvaluateTrajectory( &cent->currentState.pos, cg.time + timeshift, cent->lerpOrigin, cent->currentState.generic3 );
+	ST_EvaluateTrajectory( &cent->currentState.apos, cg.time + timeshift, cent->lerpAngles, cent->currentState.generic3 );
+
+	// if there's a time shift
+	if ( timeshift != 0 ) {
+		trace_t tr;
+		vec3_t lastOrigin;
+
+		ST_EvaluateTrajectory( &cent->currentState.pos, cg.time, lastOrigin, cent->currentState.generic3 );
 
 		CG_Trace( &tr, lastOrigin, vec3_origin, vec3_origin, cent->lerpOrigin, cent->currentState.number, MASK_SHOT );
 
@@ -1224,7 +1347,11 @@ static void CG_AddCEntity( centity_t *cent ) {
 	}
 
 	// calculate the current origin
-	CG_CalcEntityLerpPositions( cent );
+	if(cent->currentState.torsoAnim){
+		ST_CalcEntityLerpPositions( cent );
+	} else {
+		CG_CalcEntityLerpPositions( cent );
+	}
 
 	// add automatic effects
 	CG_EntityEffects( cent );

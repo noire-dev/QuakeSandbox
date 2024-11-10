@@ -1331,6 +1331,7 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	char		arg20[64];
 	char		arg21[64];
 	char		arg22[64];
+	char		arg23[64];
 	
 	if(g_gametype.integer != GT_SANDBOX){ return; }
 
@@ -1361,6 +1362,7 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	trap_Argv( 20, arg20, sizeof( arg20 ) );
 	trap_Argv( 21, arg21, sizeof( arg21 ) );
 	trap_Argv( 22, arg22, sizeof( arg22 ) );
+	trap_Argv( 23, arg23, sizeof( arg23 ) );
 	
 	//Set Aiming Directions
 	AngleVectors(ent->client->ps.viewangles, forward, right, up);
@@ -1385,7 +1387,7 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	tent->s.eventParm = 24; //eventParm is used to determine the number of particles
 	tent->s.generic1 = 500; //generic1 is used to determine the speed of the particles
 	tent->s.generic2 = 16; //generic2 is used to determine the size of the particles
-	G_BuildPropSL( arg02, arg03, tr.endpos, ent, arg04, arg05, arg06, arg07, arg08, arg09, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22);
+	G_BuildPropSL( arg02, arg03, tr.endpos, ent, arg04, arg05, arg06, arg07, arg08, arg09, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23);
 	
 	return;
 	}

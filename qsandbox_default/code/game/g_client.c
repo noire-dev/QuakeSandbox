@@ -1446,7 +1446,7 @@ void ClientUserinfoChanged( int clientNum ) {
 	teamLeader = client->sess.teamLeader;
 
 	// colors
-        if( g_gametype.integer >= GT_TEAM && g_ffa_gt==0 && g_instantgib.integer) {
+        if( g_gametype.integer >= GT_TEAM && g_ffa_gt==0 ) {
             switch(team) {
                 case TEAM_RED:
                     c1[0] = COLOR_BLUE;

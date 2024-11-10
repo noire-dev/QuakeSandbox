@@ -130,7 +130,7 @@ void TossClientItems( gentity_t *self ) {
 
 if(!self->singlebot){
 if(g_gametype.integer != GT_SINGLE){
-	if (g_instantgib.integer || g_rockets.integer || g_gametype.integer == GT_CTF_ELIMINATION || g_elimination_allgametypes.integer || weapon == WP_GAUNTLET){
+	if (g_gametype.integer == GT_CTF_ELIMINATION || g_elimination_allgametypes.integer || weapon == WP_GAUNTLET){
 	//Nothing!
 	}
 	else
@@ -149,7 +149,7 @@ if(g_gametype.integer == GT_SINGLE){
 }
 }
 if(self->singlebot){
-	if (g_instantgib.integer || g_rockets.integer || g_gametype.integer == GT_CTF_ELIMINATION || g_elimination_allgametypes.integer || weapon == WP_GAUNTLET){
+	if (g_gametype.integer == GT_CTF_ELIMINATION || g_elimination_allgametypes.integer || weapon == WP_GAUNTLET){
 	//Nothing!
 	}
 	else
@@ -1013,7 +1013,7 @@ void VehiclePhys( gentity_t *self ) {
 	VectorSet( self->parent->r.maxs, 15, 15, 32 );
 	VectorSet( self->parent->client->ps.origin, self->r.currentOrigin[0], self->r.currentOrigin[1], self->r.currentOrigin[2] + 40);
 	self->parent->client->vehiclenum = 0;
-	self->s.generic3 = 0;
+	self->s.legsAnim = 0;
 	self->s.generic1 = 0; 		//smooth vehicles
 	self->parent->client->ps.gravity = (g_gravity.value*g_gravityModifier.value);
 	return;
@@ -1037,7 +1037,7 @@ void VehiclePhys( gentity_t *self ) {
 	self->s.apos.trBase[0] = angle45hook(self->parent->client->ps.velocity[2], 0, 900); //900 is car speed
 	}*/
 	if(engine10hook(sqrt(self->parent->client->ps.velocity[0] * self->parent->client->ps.velocity[0] + self->parent->client->ps.velocity[1] * self->parent->client->ps.velocity[1]), 0, 900) <= 10){ //900 is car speed
-	self->s.generic3 = engine10hook(sqrt(self->parent->client->ps.velocity[0] * self->parent->client->ps.velocity[0] + self->parent->client->ps.velocity[1] * self->parent->client->ps.velocity[1]), 0, 900); //900 is car speed
+	self->s.legsAnim = engine10hook(sqrt(self->parent->client->ps.velocity[0] * self->parent->client->ps.velocity[0] + self->parent->client->ps.velocity[1] * self->parent->client->ps.velocity[1]), 0, 900); //900 is car speed
 	}
 	VectorCopy(self->parent->r.currentOrigin, self->r.currentOrigin);
 	self->parent->client->ps.stats[STAT_VEHICLEHP] = self->health; //VEHICLE-SYSTEM: vehicle's hp instead player

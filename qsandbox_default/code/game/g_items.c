@@ -861,7 +861,7 @@ void Touch_Item2 (gentity_t *ent, gentity_t *other, trace_t *trace, qboolean all
 	
 	//instant gib
 	if (g_elimination_items.integer == 0){
-	if ((g_instantgib.integer || g_rockets.integer || g_gametype.integer == GT_CTF_ELIMINATION || g_elimination_allgametypes.integer)
+	if ((g_gametype.integer == GT_CTF_ELIMINATION || g_elimination_allgametypes.integer)
                 && ent->item->giType != IT_TEAM)
 		return;
 	}
@@ -1344,7 +1344,7 @@ void FinishSpawningItem( gentity_t *ent ) {
 
 	// powerups don't spawn in for a while (but not in elimination)
 	if(g_gametype.integer != GT_ELIMINATION && g_gametype.integer != GT_CTF_ELIMINATION && g_gametype.integer != GT_LMS
-                && !g_instantgib.integer && !g_elimination_allgametypes.integer && !g_rockets.integer )
+                && !g_elimination_allgametypes.integer)
 	if ( ent->item->giType == IT_POWERUP ) {
 		float	respawn;
 
@@ -1453,39 +1453,24 @@ ClearRegisteredItems
 void ClearRegisteredItems( void ) {
 	memset( itemRegistered, 0, sizeof( itemRegistered ) );
 
-	if(g_instantgib.integer) {
-            if(g_instantgib.integer & 2)
-                RegisterItem( BG_FindItemForWeapon( WP_GAUNTLET ) );
-            //RegisterItem( BG_FindItemForWeapon( WP_MACHINEGUN ) );
-            RegisterItem( BG_FindItemForWeapon( WP_RAILGUN ) );
-	}
-        else
-	if(g_rockets.integer) {
-		//RegisterItem( BG_FindItemForWeapon( WP_GAUNTLET ) );
-		//RegisterItem( BG_FindItemForWeapon( WP_MACHINEGUN ) );
-		RegisterItem( BG_FindItemForWeapon( WP_ROCKET_LAUNCHER ) );
-	}
-	else
+	// players always start with the base weapon
+	RegisterItem( BG_FindItemForWeapon( WP_MACHINEGUN ) );
+	RegisterItem( BG_FindItemForWeapon( WP_GAUNTLET ) );
+	if(g_gametype.integer == GT_ELIMINATION || g_gametype.integer == GT_CTF_ELIMINATION
+                    || g_gametype.integer == GT_LMS || g_elimination_allgametypes.integer)
 	{
-		// players always start with the base weapon
-		RegisterItem( BG_FindItemForWeapon( WP_MACHINEGUN ) );
-		RegisterItem( BG_FindItemForWeapon( WP_GAUNTLET ) );
-		if(g_gametype.integer == GT_ELIMINATION || g_gametype.integer == GT_CTF_ELIMINATION
-                        || g_gametype.integer == GT_LMS || g_elimination_allgametypes.integer)
-		{
-			RegisterItem( BG_FindItemForWeapon( WP_SHOTGUN ) );
-			RegisterItem( BG_FindItemForWeapon( WP_GRENADE_LAUNCHER ) );
-			RegisterItem( BG_FindItemForWeapon( WP_ROCKET_LAUNCHER ) );
-			RegisterItem( BG_FindItemForWeapon( WP_LIGHTNING ) );
-			RegisterItem( BG_FindItemForWeapon( WP_RAILGUN ) );
-			RegisterItem( BG_FindItemForWeapon( WP_PLASMAGUN ) );
-			RegisterItem( BG_FindItemForWeapon( WP_BFG ) );
-			RegisterItem( BG_FindItemForWeapon( WP_NAILGUN ) );
-			RegisterItem( BG_FindItemForWeapon( WP_PROX_LAUNCHER ) );
-			RegisterItem( BG_FindItemForWeapon( WP_CHAINGUN ) );
-			RegisterItem( BG_FindItemForWeapon( WP_FLAMETHROWER ) );
-			RegisterItem( BG_FindItemForWeapon( WP_ANTIMATTER ) );
-		}
+		RegisterItem( BG_FindItemForWeapon( WP_SHOTGUN ) );
+		RegisterItem( BG_FindItemForWeapon( WP_GRENADE_LAUNCHER ) );
+		RegisterItem( BG_FindItemForWeapon( WP_ROCKET_LAUNCHER ) );
+		RegisterItem( BG_FindItemForWeapon( WP_LIGHTNING ) );
+		RegisterItem( BG_FindItemForWeapon( WP_RAILGUN ) );
+		RegisterItem( BG_FindItemForWeapon( WP_PLASMAGUN ) );
+		RegisterItem( BG_FindItemForWeapon( WP_BFG ) );
+		RegisterItem( BG_FindItemForWeapon( WP_NAILGUN ) );
+		RegisterItem( BG_FindItemForWeapon( WP_PROX_LAUNCHER ) );
+		RegisterItem( BG_FindItemForWeapon( WP_CHAINGUN ) );
+		RegisterItem( BG_FindItemForWeapon( WP_FLAMETHROWER ) );
+		RegisterItem( BG_FindItemForWeapon( WP_ANTIMATTER ) );
 	}
 	if( g_gametype.integer == GT_HARVESTER ) {
 		RegisterItem( BG_FindItem( "Red Cube" ) );
@@ -1586,7 +1571,7 @@ void G_SpawnItem (gentity_t *ent, gitem_t *item) {
 	
 	ent->s.generic1 = ent->spawnflags;	//we want to know spawnflags for muting predicted pickup sounds client-side.
 
-	if((item->giType == IT_TEAM && (g_instantgib.integer || g_rockets.integer) ) || (!g_instantgib.integer && !g_rockets.integer) )
+	if(item->giType == IT_TEAM)
 	{
 		//Don't load pickups in Elimination (or maybe... gives warnings)
 			RegisterItem( item );
@@ -1606,7 +1591,7 @@ void G_SpawnItem (gentity_t *ent, gitem_t *item) {
 	ent->physicsBounce = 0.50;		// items are bouncy
 	if (g_elimination_items.integer == 0) {
 	if (g_gametype.integer == GT_ELIMINATION || g_gametype.integer == GT_LMS ||
-			( item->giType != IT_TEAM && (g_instantgib.integer || g_rockets.integer || g_elimination_allgametypes.integer || g_gametype.integer==GT_CTF_ELIMINATION) ) ) {
+			( item->giType != IT_TEAM && (g_elimination_allgametypes.integer || g_gametype.integer==GT_CTF_ELIMINATION) ) ) {
 		ent->s.eFlags |= EF_NODRAW; //Invisible in elimination
                 ent->r.svFlags |= SVF_NOCLIENT;  //Don't broadcast
         }

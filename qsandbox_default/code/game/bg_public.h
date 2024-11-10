@@ -75,9 +75,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define NP_HARM						9
 
 //object type
-#define OT_BASIC					0
-#define OT_VEHICLE					1
-#define OT_TNT						2
+#define OT_VANILLAQ3				0
+#define OT_BASIC					1
+#define OT_VEHICLE					2
+#define OT_TNT						3
 
 //factions
 #define NPC_PLAYER					0
@@ -946,6 +947,9 @@ void    BG_DefragmentMemory( void );
 
 void	BG_EvaluateTrajectory( const trajectory_t *tr, int atTime, vec3_t result );
 void	BG_EvaluateTrajectoryDelta( const trajectory_t *tr, int atTime, vec3_t result );
+
+void	ST_EvaluateTrajectory( const trajectory_t *tr, int atTime, vec3_t result, int mass );
+void	ST_EvaluateTrajectoryDelta( const trajectory_t *tr, int atTime, vec3_t result, int mass );
 
 void	BG_AddPredictableEventToPlayerstate( int newEvent, int eventParm, playerState_t *ps );
 

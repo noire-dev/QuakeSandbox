@@ -205,6 +205,7 @@ struct gentity_s {
 	int			sandboxObject;
 	
 	int			sb_coltype;
+	int			sb_gravity;
 	float		sb_colscale0;
 	float		sb_colscale1;
 	float		sb_colscale2;
@@ -214,7 +215,7 @@ struct gentity_s {
 	char		*sb_class;
 	char		*sb_model;
 	char		*sb_sound;
-	int			sb_generic1;
+	int			sb_material;
 	int			sb_phys;
 	int			sb_coll;
 	int			sb_ettype;
@@ -1773,10 +1774,6 @@ extern	vmCvar_t	g_eliminationred_holdable;
 //If lockspectator: 0=no limit, 1 = cannot follow enemy, 2 = must follow friend
 extern  vmCvar_t        g_elimination_lockspectator;
 
-extern vmCvar_t		g_rockets;
-
-//new in elimination Beta2
-extern vmCvar_t		g_instantgib;
 extern vmCvar_t		g_vampire;
 extern vmCvar_t		g_vampireMaxHealth;
 //new in elimination Beta3

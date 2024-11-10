@@ -1084,7 +1084,9 @@ void SP_func_prop( gentity_t *ent ) {
 			if(ent->sb_coll == 1){
 			ent->r.contents = CONTENTS_TRIGGER;	
 			}
-			ent->s.generic2 = ent->sb_generic1;
+			ent->s.generic2 = ent->sb_material;
+			ent->s.generic3 = ent->sb_gravity;
+			ent->s.torsoAnim = ent->objectType;
 			ent->classname = "func_prop";
 			ent->r.svFlags &= ~SVF_NOCLIENT;
 			trap_LinkEntity( ent );
@@ -1120,7 +1122,9 @@ void SP_func_prop( gentity_t *ent ) {
 	if(ent->sb_coll == 1){
 	ent->r.contents = CONTENTS_TRIGGER;	
 	}
-	ent->s.generic2 = ent->sb_generic1;
+	ent->s.generic2 = ent->sb_material;
+	ent->s.generic3 = ent->sb_gravity;
+	ent->s.torsoAnim = ent->objectType;
 	ent->s.scales[0] = ent->sb_colscale0;
 	ent->s.scales[1] = ent->sb_colscale1;
 	ent->s.scales[2] = ent->sb_colscale2;
@@ -1138,7 +1142,7 @@ void SP_func_prop( gentity_t *ent ) {
 	trap_LinkEntity( ent );
 }
 
-void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, char *arg04, char *arg05, char *arg06, char *arg07, char *arg08, char *arg09, char *arg10, char *arg11, char *arg12, char *arg13, char *arg14, char *arg15, char *arg16, char *arg17, char *arg18, char *arg19, char *arg20, char *arg21, char *arg22) {
+void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, char *arg04, char *arg05, char *arg06, char *arg07, char *arg08, char *arg09, char *arg10, char *arg11, char *arg12, char *arg13, char *arg14, char *arg15, char *arg16, char *arg17, char *arg18, char *arg19, char *arg20, char *arg21, char *arg22, char *arg23) {
 	gentity_t	*ent;
 	vec3_t		snapped;
 	vec3_t		o;
@@ -1160,6 +1164,7 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent->spawnflags = atoi(arg07);
 	ent->sandboxObject = 1;
 	ent->objectType = OT_BASIC;
+	ent->s.torsoAnim = OT_BASIC;
 	ent->sb_takedamage = 1;
 	ent->sb_takedamage2 = 1;
 	if(atoi(arg12) == -1){
@@ -1177,7 +1182,7 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	}
 	
 	ent->s.generic2 = atoi(arg08);
-	ent->sb_generic1 = atoi(arg08);
+	ent->sb_material = atoi(arg08);
 	
 	if(atoi(arg09) == 0){
 	ent->s.pos.trType = TR_STATIONARY; ent->physicsObject = qfalse; ent->sb_phys = 1;
@@ -1213,7 +1218,10 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent->sb_colscale2 = atof(arg19);
 	
 	ent->objectType = atoi(arg20);
+	ent->s.torsoAnim = atoi(arg20);
 	ent->vehicle = atoi(arg21);
+	ent->sb_gravity = atoi(arg23);
+	ent->s.generic3 = atoi(arg23);
 
 	// check item spawn functions
 	for ( item=bg_itemlist+1 ; item->classname ; item++ ) {
@@ -1292,7 +1300,7 @@ void G_ModProp( gentity_t *targ, gentity_t *attacker, char *arg01, char *arg02, 
 	}
 	if(attacker->tool_id == 1){
 		targ->s.generic2 = atoi(arg01);
-		targ->sb_generic1 = atoi(arg01);
+		targ->sb_material = atoi(arg01);
 	}
 	if(attacker->tool_id == 2){
 		if(!targ->singlebot){
@@ -1427,7 +1435,7 @@ void G_BounceProp( gentity_t *ent, trace_t *trace ) {
 
 	// reflect the velocity on the trace plane
 	hitTime = level.previousTime + ( level.time - level.previousTime ) * trace->fraction;
-	BG_EvaluateTrajectoryDelta( &ent->s.pos, hitTime, velocity );
+	ST_EvaluateTrajectoryDelta( &ent->s.pos, hitTime, velocity, ent->s.generic3 );
 	dot = DotProduct( velocity, trace->plane.normal );
 	VectorMA( velocity, -2*dot, trace->plane.normal, ent->s.pos.trDelta );
 
@@ -1487,7 +1495,7 @@ void G_RunProp(gentity_t *ent) {
     }
 	
 	// Get current position based on the entity's trajectory
-    BG_EvaluateTrajectory(&ent->s.pos, level.time, origin);
+    ST_EvaluateTrajectory(&ent->s.pos, level.time, origin, ent->s.generic3);
 
     // Trace a line from the current origin to the new position
     trap_Trace(&tr, ent->r.currentOrigin, ent->r.mins, ent->r.maxs, origin, ent->s.number, MASK_PLAYERSOLID);
@@ -1503,22 +1511,26 @@ void G_RunProp(gentity_t *ent) {
 	impactForceAll = sqrt(ent->s.pos.trDelta[0] * ent->s.pos.trDelta[0] + ent->s.pos.trDelta[1] * ent->s.pos.trDelta[1] + ent->s.pos.trDelta[2] * ent->s.pos.trDelta[2]);
 	impactForceFixed = sqrt(ent->s.pos.trDelta[0] * ent->s.pos.trDelta[0] + ent->s.pos.trDelta[1] * ent->s.pos.trDelta[1] + g_gravity.integer*g_gravityModifier.value * g_gravity.integer*g_gravityModifier.value);
 	
+	impactForce *= (ent->s.generic3/800);
+	impactForceAll *= (ent->s.generic3/800);
+	impactForceFixed *= (ent->s.generic3/800);
+
 	if(ent->s.pos.trType == TR_GRAVITY || ent->s.pos.trType == TR_GRAVITY_WATER){
 		if(trap_PointContents(tr.endpos, ent->s.number) & MASK_WATER){
 			if(ent->s.pos.trType != TR_GRAVITY_WATER){
-			ent->s.pos.trType = TR_GRAVITY_WATER;
-			G_PropWaterSplash( ent, impactForceFixed);
-			G_EnablePropPhysics(ent);
-			ent->s.pos.trDelta[0] *= 0.50;
-			ent->s.pos.trDelta[1] *= 0.50;
-			if(ent->s.pos.trDelta[2]){
-			ent->s.pos.trDelta[2] = 0;
-			}
+				ent->s.pos.trType = TR_GRAVITY_WATER;
+				G_PropWaterSplash( ent, impactForceFixed);
+				G_EnablePropPhysics(ent);
+				ent->s.pos.trDelta[0] *= 0.50;
+				ent->s.pos.trDelta[1] *= 0.50;
+				if(ent->s.pos.trDelta[2]){
+				ent->s.pos.trDelta[2] = 0;
+				}
 			}
 		} else {
 			if(ent->s.pos.trType != TR_GRAVITY){
-			ent->s.pos.trType = TR_GRAVITY;
-			G_EnablePropPhysics(ent);
+				ent->s.pos.trType = TR_GRAVITY;
+				G_EnablePropPhysics(ent);
 			}
 		}
 	}
@@ -1530,70 +1542,70 @@ void G_RunProp(gentity_t *ent) {
         if (hit->s.number != ent->s.number) {  // Ignore self
             // Optionally apply a force or velocity to the hit entity to simulate the push
 			if (impactForce > PHYS_SENS) {
-			if (!hit->client){
-			G_EnablePropPhysics(hit);
-			}
-			VectorCopy(ent->s.pos.trDelta, impactVector);
-			VectorScale(impactVector, PHYS_PROP_IMPACT, impactVector);	
-			if (!hit->client){
-            VectorAdd(hit->s.pos.trDelta, impactVector, hit->s.pos.trDelta);  // Transfer velocity from the prop to the hit entity
-			} else {
-			if(hit->grabbedEntity != ent && hit->botskill != 9){
-			VectorAdd(hit->client->ps.velocity, impactVector, hit->client->ps.velocity);  // Transfer velocity from the prop to the hit player
-			}
-			}
+				if (!hit->client){
+					G_EnablePropPhysics(hit);
+				}
+				VectorCopy(ent->s.pos.trDelta, impactVector);
+				VectorScale(impactVector, PHYS_PROP_IMPACT, impactVector);	
+				if (!hit->client){
+            		VectorAdd(hit->s.pos.trDelta, impactVector, hit->s.pos.trDelta);  // Transfer velocity from the prop to the hit entity
+				} else {
+					if(hit->grabbedEntity != ent && hit->botskill != 9){
+						VectorAdd(hit->client->ps.velocity, impactVector, hit->client->ps.velocity);  // Transfer velocity from the prop to the hit player
+					}
+				}
 			}
 			if(impactForceAll > PHYS_DAMAGESENS){
-			if(hit->grabbedEntity != ent){
-			G_PropDamage(hit, ent->lastPlayer, (int)(impactForceAll * PHYS_DAMAGE));
-			}
-			G_PropDamage(ent, NULL, (int)(impactForceAll * PHYS_DAMAGE));
-			
-			if(hit->grabbedEntity != ent){
-			if(ent->s.pos.trType != TR_GRAVITY_WATER){
-			if(ent->objectType == OT_BASIC){
-			G_AddEvent( ent, EV_OT1_IMPACT, 0 );
-			G_PropSmoke( ent, impactForceAll*0.20);
-			}
-			if(ent->objectType == OT_VEHICLE){
-			G_AddEvent( ent, EV_CRASH25, 0 );
-			G_PropSmoke( ent, impactForceAll*0.20);
-			}
-			if(ent->objectType == OT_TNT){
-			G_AddEvent( ent, EV_OT1_IMPACT, 0 );
-			G_PropSmoke( ent, impactForceAll*0.20);
-			}
-			}
-			}
+				if(hit->grabbedEntity != ent){
+				G_PropDamage(hit, ent->lastPlayer, (int)(impactForceAll * PHYS_DAMAGE));
+				}
+				G_PropDamage(ent, NULL, (int)(impactForceAll * PHYS_DAMAGE));
+
+				if(hit->grabbedEntity != ent){
+					if(ent->s.pos.trType != TR_GRAVITY_WATER){
+						if(ent->objectType == OT_BASIC){
+							G_AddEvent( ent, EV_OT1_IMPACT, 0 );
+							G_PropSmoke( ent, impactForceAll*0.20);
+						}
+						if(ent->objectType == OT_VEHICLE){
+							G_AddEvent( ent, EV_CRASH25, 0 );
+							G_PropSmoke( ent, impactForceAll*0.20);
+						}
+						if(ent->objectType == OT_TNT){
+							G_AddEvent( ent, EV_OT1_IMPACT, 0 );
+							G_PropSmoke( ent, impactForceAll*0.20);
+						}
+					}
+				}
 			}
         }
     }
 
     // Rotate entity during movement (optional physics feature)
 	if (!ent->isGrabbed){
-	if(ent->s.pos.trType != TR_GRAVITY_WATER){
-    if (ent->s.pos.trDelta[2] != 0) {
-        ent->s.apos.trBase[0] -= ent->s.pos.trDelta[2] * PHYS_ROTATING * 0.20;
-		ent->s.apos.trBase[1] -= ent->s.pos.trDelta[2] * PHYS_ROTATING * 0.20;
-    }
-    if (ent->s.pos.trDelta[1] != 0) {
-        ent->s.apos.trBase[1] -= ent->s.pos.trDelta[1] * PHYS_ROTATING;
-    }
-    if (ent->s.pos.trDelta[0] != 0) {
-        ent->s.apos.trBase[0] += ent->s.pos.trDelta[0] * PHYS_ROTATING;
-    }
-	} else {
-    if (ent->s.pos.trDelta[2] != 0) {
-        ent->s.apos.trBase[0] -= ent->s.pos.trDelta[2] * PHYS_ROTATING * 0.10;
-		ent->s.apos.trBase[1] -= ent->s.pos.trDelta[2] * PHYS_ROTATING * 0.10;
-    }
-    if (ent->s.pos.trDelta[1] != 0) {
-        ent->s.apos.trBase[1] -= ent->s.pos.trDelta[1] * PHYS_ROTATING * 0.50;
-    }
-    if (ent->s.pos.trDelta[0] != 0) {
-        ent->s.apos.trBase[0] += ent->s.pos.trDelta[0] * PHYS_ROTATING * 0.50;
-    }
-	}
+		if(ent->s.pos.trType != TR_GRAVITY_WATER){
+    		if (ent->s.pos.trDelta[2] != 0) {
+    		    ent->s.apos.trBase[0] -= ent->s.pos.trDelta[2] * PHYS_ROTATING * 0.20;
+				ent->s.apos.trBase[1] -= ent->s.pos.trDelta[2] * PHYS_ROTATING * 0.20;
+    		}
+    		if (ent->s.pos.trDelta[1] != 0) {
+    		    ent->s.apos.trBase[1] -= ent->s.pos.trDelta[1] * PHYS_ROTATING;
+    		}
+    		if (ent->s.pos.trDelta[0] != 0) {
+    		    ent->s.apos.trBase[0] += ent->s.pos.trDelta[0] * PHYS_ROTATING;
+    		}
+		} else {
+    		if (ent->s.pos.trDelta[2] != 0) {
+    		    ent->s.apos.trBase[0] -= ent->s.pos.trDelta[2] * PHYS_ROTATING * 0.10;
+				ent->s.apos.trBase[1] -= ent->s.pos.trDelta[2] * PHYS_ROTATING * 0.10;
+    		}
+    		if (ent->s.pos.trDelta[1] != 0) {
+    		    ent->s.apos.trBase[1] -= ent->s.pos.trDelta[1] * PHYS_ROTATING * 0.50;
+    		}
+    		if (ent->s.pos.trDelta[0] != 0) {
+    		    ent->s.apos.trBase[0] += ent->s.pos.trDelta[0] * PHYS_ROTATING * 0.50;
+    		}
+		}
 	}
 
     // Save rotation
