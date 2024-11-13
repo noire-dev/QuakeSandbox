@@ -91,6 +91,10 @@ void UI_ScreenOffset( void ) {
 	} else {
 	uis.onmap = qtrue;	
 	}
+	if(uis.glconfig.vidHeight/480.0f > 0){
+	trap_Cvar_SetValue("con_scale", uis.glconfig.vidHeight/480.0f);
+	}
+	trap_Cvar_Set("cl_conColor", "8 8 8 192");
 }
 
 /*
