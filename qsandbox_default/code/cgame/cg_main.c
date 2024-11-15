@@ -1917,9 +1917,6 @@ static qboolean do_vid_restart = qfalse;
 void CG_FairCvars() {
     qboolean vid_restart_required = qfalse;
     char rendererinfos[128];
-	
-//	trap_Cvar_Set( "r_ambientScale", "1.4" );
-//	trap_Cvar_Set( "r_directedScale", "0.6" );
 
     if(cgs.videoflags & VF_LOCK_CVARS_EXTENDED) {
         //Lock extended cvars.

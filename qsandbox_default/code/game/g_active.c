@@ -460,6 +460,9 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 	while ( client->timeResidual >= 1000 ) {
 		client->timeResidual -= 1000;
 
+
+	ent->s.eFlags &= ~EF_HEARED;		//hear update
+
 	// Infinite Ammo
 	if(g_rlinf.integer==1){ client->ps.ammo[WP_ROCKET_LAUNCHER] = 9999; }
 	if(g_glinf.integer==1){ client->ps.ammo[WP_GRENADE_LAUNCHER] = 9999; }

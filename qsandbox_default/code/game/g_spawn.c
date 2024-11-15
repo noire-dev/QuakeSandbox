@@ -113,7 +113,7 @@ field_t fields[] = {
 	{"target", FOFS(target), F_LSTRING},
 	{"targetname", FOFS(targetname), F_LSTRING},
 	{"message", FOFS(message), F_LSTRING},
-	{"messageru", FOFS(messageru), F_LSTRING},
+	{"botname", FOFS(botname), F_LSTRING},
 	{"team", FOFS(team), F_LSTRING},
 	{"wait", FOFS(wait), F_FLOAT},
 	{"random", FOFS(random), F_FLOAT},

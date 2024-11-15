@@ -277,7 +277,7 @@ EntityIsShooting
 ==================
 */
 qboolean EntityIsShooting(aas_entityinfo_t *entinfo) {
-	if (entinfo->flags & EF_FIRING) {
+	if (entinfo->flags & EF_HEARED) {
 		return qtrue;
 	}
 	return qfalse;
@@ -3042,7 +3042,7 @@ float BotEntityVisible(int viewer, vec3_t eye, vec3_t viewangles, float fov, int
 				//trace through the water
 				contents_mask &= ~(CONTENTS_LAVA|CONTENTS_SLIME|CONTENTS_WATER);
 				BotAI_Trace(&trace, trace.endpos, NULL, NULL, end, passent, contents_mask);
-				waterfactor = 0.5;
+				waterfactor = 0.25;
 			}
 		}
 		//if a full trace or the hitent was hit
@@ -3155,11 +3155,11 @@ int BotFindEnemy(bot_state_t *bs, int curenemy) {
 		if (EntityIsInvisible(&entinfo) && !EntityIsShooting(&entinfo)) {
 			continue;
 		}
-//Neil Torontos unlagged
-//unlagged - misc
+		//Neil Torontos unlagged
+		//unlagged - misc
 		// this has nothing to do with lag compensation, but it's great for testing
 		if ( g_entities[i].flags & FL_NOTARGET ) continue;
-//unlagged - misc
+		//unlagged - misc
 		//if not an easy fragger don't shoot at chatting players
 		if (easyfragger < 0.5 && EntityIsChatting(&entinfo)) continue;
 		//
@@ -5024,18 +5024,6 @@ void BotCheckEvents(bot_state_t *bs, entityState_t *state) {
 				break;
 			}
 			trap_GetConfigstring(CS_SOUNDS + state->eventParm, buf, sizeof(buf));
-			/*
-			if (!strcmp(buf, "sound/teamplay/flagret_red.wav")) {
-				//red flag is returned
-				bs->redflagstatus = 0;
-				bs->flagstatuschanged = qtrue;
-			}
-			else if (!strcmp(buf, "sound/teamplay/flagret_blu.wav")) {
-				//blue flag is returned
-				bs->blueflagstatus = 0;
-				bs->flagstatuschanged = qtrue;
-			}
-			else*/
 			if (!strcmp(buf, "sound/items/kamikazerespawn.wav" )) {
 				//the kamikaze respawned so dont avoid it
 				BotDontAvoid(bs, "Kamikaze");
@@ -5167,7 +5155,6 @@ void BotCheckEvents(bot_state_t *bs, entityState_t *state) {
 		case EV_NOAMMO:
 		case EV_CHANGE_WEAPON:
 		case EV_FIRE_WEAPON:
-			//FIXME: either add to sound queue or mark player as someone making noise
 			break;
 		case EV_USE_ITEM0:
 		case EV_USE_ITEM1:

@@ -1166,12 +1166,27 @@ void G_AddEvent( gentity_t *ent, int event, int eventParm ) {
 	int		bits;
 
 	if ( !event ) {
-                G_Printf( "G_AddEvent: zero event added for entity %i\n", ent->s.number );
+    	G_Printf( "G_AddEvent: zero event added for entity %i\n", ent->s.number );
 		return;
 	}
 
 	// clients need to add the event in playerState_t instead of entityState_t
 	if ( ent->client ) {
+		switch(event) {
+			case EV_FOOTSTEP:
+			case EV_FOOTSTEP_METAL:
+			case EV_FOOTSTEP_FLESH:
+			case EV_FALL_MEDIUM:
+			case EV_FALL_FAR:
+			case EV_JUMP:
+			case EV_TAUNT:
+			case EV_HORN:
+			case EV_NOAMMO:
+			case EV_CHANGE_WEAPON:
+			case EV_FIRE_WEAPON:
+				ent->s.eFlags |= EF_HEARED;
+				break;
+		}
 		bits = ent->client->ps.externalEvent & EV_EVENT_BITS;
 		bits = ( bits + EV_EVENT_BIT1 ) & EV_EVENT_BITS;
 		ent->client->ps.externalEvent = event | bits;

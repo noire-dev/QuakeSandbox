@@ -2130,6 +2130,23 @@ void	trap_Cvar_VariableStringBuffer( const char *var_name, char *buffer, int buf
 
 void BG_AddPredictableEventToPlayerstate( int newEvent, int eventParm, playerState_t *ps ) {
 
+	switch(newEvent) {
+		case EV_FOOTSTEP:
+		case EV_FOOTSTEP_METAL:
+		case EV_FOOTSTEP_FLESH:
+		case EV_FALL_MEDIUM:
+		case EV_FALL_FAR:
+		case EV_JUMP:
+		case EV_TAUNT:
+		case EV_HORN:
+		case EV_NOAMMO:
+		case EV_CHANGE_WEAPON:
+		case EV_FIRE_WEAPON:
+			ps->eFlags |= EF_HEARED;
+			ps->pm_time = 5;
+			break;
+	}
+
 #ifdef _DEBUG
 	{
 		char buf[256];

@@ -114,16 +114,16 @@ if(ucmd->buttons & BUTTON_GESTURE){
 trap_SendServerCommand( activator->s.clientNum, va( "lp \"%i is not enough\"\n", ent->price - activator->client->pers.oldmoney ));
 return;	
 } else {
-trap_SendServerCommand( activator->s.clientNum, va( "lp \"^1%s %i$\"\n", ent->messageru, ent->price ));
+trap_SendServerCommand( activator->s.clientNum, va( "lp \"^1%s %i$\"\n", ent->message, ent->price ));
 return;		
 }
 }
 
 if(activator->client->pers.oldmoney >= ent->price){	
 if(ucmd->buttons & BUTTON_GESTURE){
-trap_SendServerCommand( activator->s.clientNum, va( "lp \"%s purchased\"\n", ent->messageru, ent->price ));
+trap_SendServerCommand( activator->s.clientNum, va( "lp \"%s purchased\"\n", ent->message, ent->price ));
 } else {
-trap_SendServerCommand( activator->s.clientNum, va( "lp \"^2%s %i$\"\n", ent->messageru, ent->price ));
+trap_SendServerCommand( activator->s.clientNum, va( "lp \"^2%s %i$\"\n", ent->message, ent->price ));
 return;		
 }
 }
@@ -134,9 +134,9 @@ return;
 if(ent->price == -1){
 	
 if(ucmd->buttons & BUTTON_GESTURE){
-trap_SendServerCommand( activator->s.clientNum, va( "lp \"%s activated\"\n", ent->messageru));
+trap_SendServerCommand( activator->s.clientNum, va( "lp \"%s activated\"\n", ent->message));
 } else {
-trap_SendServerCommand( activator->s.clientNum, va( "lp \"^2%s\"\n", ent->messageru));
+trap_SendServerCommand( activator->s.clientNum, va( "lp \"^2%s\"\n", ent->message));
 return;
 }
 
@@ -172,16 +172,16 @@ if(ucmd->buttons & BUTTON_GESTURE){
 trap_SendServerCommand( other->s.clientNum, va( "lp \"%i is not enough\"\n", self->price - other->client->pers.oldmoney ));
 return;	
 } else {
-trap_SendServerCommand( other->s.clientNum, va( "lp \"^1%s %i$\"\n", self->messageru, self->price ));
+trap_SendServerCommand( other->s.clientNum, va( "lp \"^1%s %i$\"\n", self->message, self->price ));
 return;		
 }
 }
 
 if(other->client->pers.oldmoney >= self->price){	
 if(ucmd->buttons & BUTTON_GESTURE){
-trap_SendServerCommand( other->s.clientNum, va( "lp \"%s purchased\"\n", self->messageru, self->price ));
+trap_SendServerCommand( other->s.clientNum, va( "lp \"%s purchased\"\n", self->message, self->price ));
 } else {
-trap_SendServerCommand( other->s.clientNum, va( "lp \"^2%s %i$\"\n", self->messageru, self->price ));
+trap_SendServerCommand( other->s.clientNum, va( "lp \"^2%s %i$\"\n", self->message, self->price ));
 return;		
 }
 }
@@ -192,9 +192,9 @@ return;
 if(self->price == -1){
 	
 if(ucmd->buttons & BUTTON_GESTURE){
-trap_SendServerCommand( other->s.clientNum, va( "lp \"%s activated\"\n", self->messageru));
+trap_SendServerCommand( other->s.clientNum, va( "lp \"%s activated\"\n", self->message));
 } else {
-trap_SendServerCommand( other->s.clientNum, va( "lp \"^2%s\"\n", self->messageru));
+trap_SendServerCommand( other->s.clientNum, va( "lp \"^2%s\"\n", self->message));
 return;
 }
 

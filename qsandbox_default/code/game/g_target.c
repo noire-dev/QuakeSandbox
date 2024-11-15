@@ -251,108 +251,36 @@ If "private", only the activator gets the message.  If no checks, all clients ge
 void Use_Target_Print (gentity_t *ent, gentity_t *other, gentity_t *activator) {
 if ( ent->spawnflags & 8 ) {
 	if ( activator->client && ( ent->spawnflags & 4 ) ) {
-		if(cl_language.integer == 0){
 		trap_SendServerCommand( activator-g_entities, va("clp \"%s\"", ent->message ));
-		}
-		if(cl_language.integer == 1){
-			if(strlen(ent->messageru) > 0){
-			trap_SendServerCommand( activator-g_entities, va("rusclp \"%s\"", ent->messageru ));
-			} else {
-			trap_SendServerCommand( activator-g_entities, va("clp \"%s\"", ent->message ));
-			}
-		}
 		return;
 	}
 
 	if ( ent->spawnflags & 3 ) {
 		if ( ent->spawnflags & 1 ) {
-			if(cl_language.integer == 0){
 			G_TeamCommand( TEAM_RED, va("clp \"%s\"", ent->message) );
-			}
-			if(cl_language.integer == 1){
-			if(strlen(ent->messageru) > 0){
-			G_TeamCommand( TEAM_RED, va("rusclp \"%s\"", ent->messageru) );
-			} else {
-			G_TeamCommand( TEAM_RED, va("clp \"%s\"", ent->message) );	
-			}
-			}
 		}
 		if ( ent->spawnflags & 2 ) {
-			if(cl_language.integer == 0){
 			G_TeamCommand( TEAM_BLUE, va("clp \"%s\"", ent->message) );
-			}
-			if(cl_language.integer == 1){
-			if(strlen(ent->messageru) > 0){
-			G_TeamCommand( TEAM_BLUE, va("rusclp \"%s\"", ent->messageru) );
-			} else {
-			G_TeamCommand( TEAM_BLUE, va("clp \"%s\"", ent->message) );	
-			}
-			}
 		}
 		return;
 	}
-if(cl_language.integer == 0){
 	trap_SendServerCommand( -1, va("clp \"%s\"", ent->message ));
-}
-if(cl_language.integer == 1){
-	if(strlen(ent->messageru) > 0){
-	trap_SendServerCommand( -1, va("rusclp \"%s\"", ent->messageru ));
-	} else {
-	trap_SendServerCommand( -1, va("clp \"%s\"", ent->message ));	
-	}
-}
 } else {
 	if ( activator->client && ( ent->spawnflags & 4 ) ) {
-		if(cl_language.integer == 0){
 		trap_SendServerCommand( activator-g_entities, va("cp \"%s\"", ent->message ));
-		}
-		if(cl_language.integer == 1){
-			if(strlen(ent->messageru) > 0){
-			trap_SendServerCommand( activator-g_entities, va("ruscp \"%s\"", ent->messageru ));
-			} else {
-			trap_SendServerCommand( activator-g_entities, va("cp \"%s\"", ent->message ));
-			}
-		}
 		return;
 	}
 
 	if ( ent->spawnflags & 3 ) {
 		if ( ent->spawnflags & 1 ) {
-			if(cl_language.integer == 0){
 			G_TeamCommand( TEAM_RED, va("cp \"%s\"", ent->message) );
-			}
-			if(cl_language.integer == 1){
-			if(strlen(ent->messageru) > 0){
-			G_TeamCommand( TEAM_RED, va("ruscp \"%s\"", ent->messageru) );
-			} else {
-			G_TeamCommand( TEAM_RED, va("cp \"%s\"", ent->message) );	
-			}
-			}
 		}
 		if ( ent->spawnflags & 2 ) {
-			if(cl_language.integer == 0){
 			G_TeamCommand( TEAM_BLUE, va("cp \"%s\"", ent->message) );
-			}
-			if(cl_language.integer == 1){
-			if(strlen(ent->messageru) > 0){
-			G_TeamCommand( TEAM_BLUE, va("ruscp \"%s\"", ent->messageru) );
-			} else {
-			G_TeamCommand( TEAM_BLUE, va("cp \"%s\"", ent->message) );	
-			}
-			}
 		}
 		return;
 	}
-if(cl_language.integer == 0){
 	trap_SendServerCommand( -1, va("cp \"%s\"", ent->message ));
-}
-if(cl_language.integer == 1){
-	if(strlen(ent->messageru) > 0){
-	trap_SendServerCommand( -1, va("ruscp \"%s\"", ent->messageru ));
-	} else {
-	trap_SendServerCommand( -1, va("cp \"%s\"", ent->message ));	
-	}
-}
 }
 }
 
@@ -1289,8 +1217,8 @@ void modify_entity ( gentity_t *self, gentity_t *ent ) {
 		return;
 	}
 	
-	if ( !strcmp( self->key, "messageru" ) ) {
-		ent->messageru = self->value;
+	if ( !strcmp( self->key, "botname" ) ) {
+		ent->botname = self->value;
 		return;
 	}
 	

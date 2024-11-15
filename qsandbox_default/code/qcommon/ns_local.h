@@ -33,7 +33,7 @@
 #define MAX_NSSCRIPT_SIZE   1024*256      //Макс длина скрипта
 #define MAX_TOKEN_LENGTH    1024          //Макс количество символов в токене
 #define MAX_SCRIPTS         128           //Макс количество потоков скриптов
-#define MAX_CYCLE_SIZE      1024*256        //Макс длина буфера кода
+#define MAX_CYCLE_SIZE      1024*256      //Макс длина буфера кода
 #define MAX_VARS            32768         //Макс переменных
 #define MAX_VAR_NAME        32            //Макс имя переменной
 #define MAX_NCVAR_NAME      64            //Макс имя консольной переменной

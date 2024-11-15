@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
-#include "g_local.h"
+#include "../qcommon/ns_local.h"
 
 /*
 ============
@@ -539,4 +539,27 @@ void Svcmd_NS_ThreadList_f( void )
   
 	print_threads();
 
+}
+
+/*
+============
+Svcmd_NS_SendVariable_f
+Opens Noire.Script file
+============
+*/
+void Svcmd_NS_SendVariable_f( void )
+{
+	char   varName[MAX_VAR_NAME];
+	char   varValue[MAX_VAR_CHAR_BUF];
+	char   varType[8];
+  
+	trap_Argv( 1, varName, sizeof( varName ) );
+	trap_Argv( 2, varValue, sizeof( varValue ) );
+	trap_Argv( 3, varType, sizeof( varType ) );
+  
+  	if(!variable_exists(varName)){
+		create_variable(varName, varValue, atoi(varType));
+	}
+
+	set_variable_value(varName, varValue, atoi(varType));
 }

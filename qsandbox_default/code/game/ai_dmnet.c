@@ -729,8 +729,10 @@ int BotGetLongTermGoal(bot_state_t *bs, int tfl, int retreat, bot_goal_t *goal) 
 			//make sure the bot is not gonna drown
 			if (trap_PointContents(bs->eye,bs->entitynum) & (CONTENTS_WATER|CONTENTS_SLIME|CONTENTS_LAVA)) {
 				if (bs->ltgtype == LTG_CAMPORDER) {
+					if(!bs->spbot){
 					BotAI_BotInitialChat(bs, "camp_stop", NULL);
 					trap_BotEnterChat(bs->cs, bs->decisionmaker, CHAT_TELL);
+					}
 					//
 					if (bs->lastgoal_ltgtype == LTG_CAMPORDER) {
 						bs->lastgoal_ltgtype = 0;
@@ -757,8 +759,10 @@ int BotGetLongTermGoal(bot_state_t *bs, int tfl, int retreat, bot_goal_t *goal) 
 				strcat(buf, wp->name);
 				if (wp->next) strcat(buf, " to ");
 			}
+			if(!bs->spbot){
 			BotAI_BotInitialChat(bs, "patrol_start", buf, NULL);
 			trap_BotEnterChat(bs->cs, bs->decisionmaker, CHAT_TELL);
+			}
 
 			trap_EA_Action(bs->client, ACTION_AFFIRMATIVE);
 			bs->teammessage_time = 0;
@@ -809,8 +813,10 @@ int BotGetLongTermGoal(bot_state_t *bs, int tfl, int retreat, bot_goal_t *goal) 
 		}
 		//stop after 5 minutes
 		if (bs->teamgoal_time < FloatTime()) {
+			if(!bs->spbot){
 			BotAI_BotInitialChat(bs, "patrol_stop", NULL);
 			trap_BotEnterChat(bs->cs, bs->decisionmaker, CHAT_TELL);
+			}
 			bs->ltgtype = 0;
 		}
 }

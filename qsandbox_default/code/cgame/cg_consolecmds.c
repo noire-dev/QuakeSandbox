@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // cg_consolecmds.c -- text commands typed in at the local console, or
 // executed by a key binding
 
-#include "cg_local.h"
+#include "../qcommon/ns_local.h"
 
 void CG_PrintClientNumbers( void ) {
     int i;
@@ -247,6 +247,29 @@ void CG_NS_ThreadList_f( void )
 
 /*
 ============
+CG_NS_SendVariable_f
+Opens Noire.Script file
+============
+*/
+void CG_NS_SendVariable_f( void )
+{
+	char   varName[MAX_VAR_NAME];
+	char   varValue[MAX_VAR_CHAR_BUF];
+	char   varType[8];
+  
+	trap_Argv( 1, varName, sizeof( varName ) );
+	trap_Argv( 2, varValue, sizeof( varValue ) );
+	trap_Argv( 3, varType, sizeof( varType ) );
+  
+  	if(!variable_exists(varName)){
+		create_variable(varName, varValue, atoi(varType));
+	}
+
+	set_variable_value(varName, varValue, atoi(varType));
+}
+
+/*
+============
 CG_ReplaceTexture_f
 Replace texture
 ============
@@ -295,6 +318,7 @@ static consoleCommand_t	commands[] = {
   	{ "ns_interpret_cl", CG_NS_Interpret_f },
   	{ "ns_variablelist_cl", CG_NS_VariableList_f },
   	{ "ns_threadlist_cl", CG_NS_ThreadList_f },
+  	{ "ns_sendvariable_cl", CG_NS_SendVariable_f },
 //	{ "camera", CG_Camera_f },
     { "+acc", CG_AccDown_f },
 	{ "-acc", CG_AccUp_f },
@@ -389,14 +413,17 @@ void CG_InitConsoleCommands( void ) {
 	trap_AddCommand ("ns_interpret");
 	trap_AddCommand ("ns_variablelist");
 	trap_AddCommand ("ns_threadlist");
+	trap_AddCommand ("ns_sendvariable");
 
 	trap_AddCommand ("ns_openscript_cl");
 	trap_AddCommand ("ns_interpret_cl");
 	trap_AddCommand ("ns_variablelist_cl");
 	trap_AddCommand ("ns_threadlist_cl");
+	trap_AddCommand ("ns_sendvariable_cl");
 
 	trap_AddCommand ("ns_openscript_ui");
 	trap_AddCommand ("ns_interpret_ui");
 	trap_AddCommand ("ns_variablelist_ui");
 	trap_AddCommand ("ns_threadlist_ui");
+	trap_AddCommand ("ns_sendvariable_ui");
 }

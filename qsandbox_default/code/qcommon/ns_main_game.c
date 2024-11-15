@@ -9,6 +9,7 @@ const char *function_list[MAX_FUNCS] = {
     "createVariable",
     "getVariable",
     "setVariable",
+    "sendVariable",
     NULL
 };
 
@@ -23,6 +24,7 @@ const char *function_arg_types[MAX_FUNCS][MAX_ARGS] = {
     {"char", "char", "char"},                       // createVariable
     {"char"},                                       // getVariable
     {"char", "char", "char"},                       // setVariable
+    {"char", "char"},                               // sendVariable
     {NULL}                                          // NULL
 };
 
@@ -118,6 +120,34 @@ void callfunc(Variable *var, const char *name, const char *operation, const char
         VarType type = (!strcmp(ns_args[2].c, "TYPE_CHAR")) ? TYPE_CHAR :
                         (!strcmp(ns_args[2].c, "TYPE_INT")) ? TYPE_INT : TYPE_FLOAT;
         set_variable_value(ns_args[0].c, ns_args[1].c, type);
+    }
+
+    else if (strcmp(name, "sendVariable") == 0 && argCount >= 2) {   
+        Variable *sendVar = find_variable(ns_args[1].c); 
+
+    if(!strcmp(ns_args[0].c, "client")){
+        if(sendVar->type == TYPE_CHAR){
+        trap_SendConsoleCommand(EXEC_INSERT, va("ns_sendvariable_cl %s %s %i", ns_args[1].c, sendVar->value.c, TYPE_CHAR));
+        }
+        if(sendVar->type == TYPE_INT){
+        trap_SendConsoleCommand(EXEC_INSERT, va("ns_sendvariable_cl %s %i %i", ns_args[1].c, sendVar->value.i, TYPE_INT));
+        }
+        if(sendVar->type == TYPE_FLOAT){
+        trap_SendConsoleCommand(EXEC_INSERT, va("ns_sendvariable_cl %s %f %i", ns_args[1].c, sendVar->value.f, TYPE_FLOAT));
+        }
+    }
+    if(!strcmp(ns_args[0].c, "ui")){
+        if(sendVar->type == TYPE_CHAR){
+        trap_SendConsoleCommand(EXEC_INSERT, va("ns_sendvariable_ui %s %s %i", ns_args[1].c, sendVar->value.c, TYPE_CHAR));
+        }
+        if(sendVar->type == TYPE_INT){
+        trap_SendConsoleCommand(EXEC_INSERT, va("ns_sendvariable_ui %s %i %i", ns_args[1].c, sendVar->value.i, TYPE_INT));
+        }
+        if(sendVar->type == TYPE_FLOAT){
+        trap_SendConsoleCommand(EXEC_INSERT, va("ns_sendvariable_ui %s %f %i", ns_args[1].c, sendVar->value.f, TYPE_FLOAT));
+        }
+    }
+
     }
 
     else {

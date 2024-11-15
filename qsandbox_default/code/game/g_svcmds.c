@@ -579,6 +579,7 @@ struct
   { "ns_interpret", qfalse, Svcmd_NS_Interpret_f },
   { "ns_variablelist", qfalse, Svcmd_NS_VariableList_f },
   { "ns_threadlist", qfalse, Svcmd_NS_ThreadList_f },
+  { "ns_sendvariable", qfalse, Svcmd_NS_SendVariable_f },
 };
 
 /*

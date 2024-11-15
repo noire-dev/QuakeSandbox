@@ -160,7 +160,7 @@ struct gentity_s {
 	vec3_t		pos1, pos2;
 
 	char		*message;
-	char		*messageru;
+	char		*botname;
 	
 	char		*selectedpr;			// set in QuakeEd
 	pspecial_t	playerspecial;	   // The players current special
@@ -2063,3 +2063,4 @@ void Svcmd_NS_OpenScript_f( void );
 void Svcmd_NS_Interpret_f( void );
 void Svcmd_NS_VariableList_f( void );
 void Svcmd_NS_ThreadList_f( void );
+void Svcmd_NS_SendVariable_f( void );

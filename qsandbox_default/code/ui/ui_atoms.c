@@ -1031,6 +1031,14 @@ return qtrue;
 		return qtrue;
 	}
 
+	if ( Q_stricmp (UI_Argv(0), "ns_sendvariable_ui") == 0 ) {
+  		if(!variable_exists(UI_Argv(1))){
+			create_variable(UI_Argv(1), UI_Argv(2), atoi(UI_Argv(3)));
+		}
+
+		set_variable_value(UI_Argv(1), UI_Argv(2), atoi(UI_Argv(3)));
+	}
+
 	if ( Q_stricmp (cmd, "workshop") == 0 ) {
 		UI_WorkshopMenu();
 		return qtrue;

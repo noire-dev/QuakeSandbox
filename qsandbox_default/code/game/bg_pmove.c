@@ -1914,10 +1914,8 @@ PM_Add_SwepAmmo(pm->ps->clientNum, pm->ps->stats[STAT_SWEP], -1);
 
 }
 }
-
-
-// fire weapon
-PM_AddEvent( EV_FIRE_WEAPON );
+	// fire weapon
+	PM_AddEvent( EV_FIRE_WEAPON );
 	switch( pm->ps->stats[STAT_SWEP] ) {
 	default:
 	case WP_GAUNTLET:
@@ -2015,6 +2013,11 @@ PM_Animate
 */
 
 static void PM_Animate( void ) {
+	if( BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE]) == VCLASS_CAR ) {
+		pm->ps->eFlags |= EF_HEARED;
+		pm->ps->pm_time = 5;
+	}
+
 	if ( pm->cmd.buttons & BUTTON_GESTURE ) {
 		if(!pm->ps->stats[STAT_VEHICLE]){ //VEHICLE-SYSTEM: disable gesture for all
 		if(g_gametype.integer != GT_SINGLE){
@@ -2079,6 +2082,7 @@ static void PM_DropTimers( void ) {
 	// drop misc timing counter
 	if ( pm->ps->pm_time ) {
 		if ( pml.msec >= pm->ps->pm_time ) {
+			pm->ps->eFlags &= ~EF_HEARED;		//hear update
 			pm->ps->pm_flags &= ~PMF_ALL_TIMES;
 			pm->ps->pm_time = 0;
 		} else {

@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <!--
- Arena Unlimited entity definition file for NetRadiant
- Version: 0.2
- Updated: 2022-12-12
+ Quake Sandbox entity definition file for NetRadiant
+ Version: 1.0
+ Updated: 2024-11-14
 -->
 <classes>
 <!--
@@ -2537,7 +2537,7 @@ modifies the value of a specific key on a targeted entity.
 -------- SPAWNFLAGS --------
 <flag key="RELOAD" name="Reload" bit="0">If enabled it will reload the entity in order for some settings to be applied.</flag>
 -------- NOTES --------
-The following keys can be modified: angle, clientname, color, count, deathtarget, health, key, light, mapname, message, messageru, overlay, price, playerangle, random, target, target2, targetname, targetname2, targetshadername, teleportertarget, spawnflags, speed, skill, value, wait, armor. The values for color and light can only be set on func_ entities. Light entities cannot be modified in-game.
+The following keys can be modified: angle, clientname, color, count, deathtarget, health, key, light, mapname, message, botname, overlay, price, playerangle, random, target, target2, targetname, targetname2, targetshadername, teleportertarget, spawnflags, speed, skill, value, wait, armor. The values for color and light can only be set on func_ entities. Light entities cannot be modified in-game.
 </point>
 
 <point name="target_music" color="0 .7 .7" box="-8 -8 -8 8 8 8">
@@ -2646,7 +2646,6 @@ To make a jump pad, place this entity at the highest point of the jump and targe
 This will print a message on the center of the screen when triggered. By default, all the clients will see the message.
 -------- KEYS --------
 <string key="message" name="Message">Text string to print on screen.</string>
-<string key="messageru" name="Message Rus">Russian Text - Здесь может быть текст на русском, но вводить нужно на английской раскладке для того чтобы текст был в BSP файле.</string>
 <targetname key="targetname" name="Target Name">The activating trigger points to this.</targetname>
 <targetname key="targetname2" name="Target Name 2">The activating trigger points to this.</targetname>
 <boolean key="notfree" name="Hidden For FFA">When set to 1, entity will not spawn in "Free for all" and "Tournament" modes.</boolean>
@@ -3066,8 +3065,8 @@ Variable size repeatable trigger. It will fire the entities it targets when touc
 -------- KEYS --------
 <real key="wait" name="Repeat Time" value="0.5">Time in seconds until trigger becomes re-triggerable after it's been touched (default 0.5, -1 = trigger once).</real>
 <real key="price" name="Price">Amount of money in points for one activation. Set to -1 to free activation. (default 0).</real>
-<string key="message" name="Message">Activate if (bot name = this).</string>
-<string key="messageru" name="Messageru">Print message on close player.</string>
+<string key="botname" name="Bot name">Activate if (bot name = this).</string>
+<string key="message" name="Message">Print message on close player.</string>
 <real key="random" name="Repeat Time Variance" value="0">Random time variance in seconds added or subtracted from "wait" delay (default 0 - see notes).</real>
 <target key="target" name="Target">This points to the entity to activate.</target>
 <targetname key="targetname" name="Target Name">Activating trigger points to this.</targetname>
@@ -3653,7 +3652,6 @@ Spawns sandbox object.
 <target key="target" name="Target">This points to entities to activate when this entity is triggered.</target>
 <targetname key="targetname" name="Target Name">Activating trigger points to this.</targetname>
 <string key="message" name="Message">Message associated with the entity.</string>
-<string key="messageru" name="Message (RU)">Russian message associated with the entity.</string>
 <string key="team" name="Team">Team associated with the entity.</string>
 <real key="wait" name="Wait Time">Time to wait before action.</real>
 <real key="random" name="Random">Random value for the entity's behavior.</real>

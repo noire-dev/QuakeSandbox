@@ -347,7 +347,7 @@ static void CG_DrawStatusElement( float x, float y, int value, const char *text 
 	colorblk[0]=0.0f;
 	colorblk[1]=0.0f;
 	colorblk[2]=0.0f;
-	colorblk[3]=0.20f;
+	colorblk[3]=0.40f;
 	
 	CG_DrawRoundedRect(x, y, 110, 32, 6, colorblk);
 	CG_DrawStringExt( x+3, y+20, text, colornorm, qfalse, qfalse, 6, 7, 0, 0 );
@@ -368,7 +368,7 @@ static void CG_DrawStatusElementMini( float x, float y, const char *value, const
 	colorblk[0]=0.0f;
 	colorblk[1]=0.0f;
 	colorblk[2]=0.0f;
-	colorblk[3]=0.20f;
+	colorblk[3]=0.40f;
 	
 	CG_DrawRoundedRect(x, y, 100, 20, 6, colorblk);
 	CG_DrawStringExt( x+2, y+10, text, colornorm, qfalse, qfalse, 6, 8, 0, 0 );
@@ -389,7 +389,7 @@ static void CG_DrawStatusElementLong( float x, float y, const char *value, const
 	colorblk[0]=0.0f;
 	colorblk[1]=0.0f;
 	colorblk[2]=0.0f;
-	colorblk[3]=0.20f;
+	colorblk[3]=0.40f;
 	
 	CG_DrawRoundedRect(x, y, 150, 16, 0, colorblk);
 	CG_DrawStringExt( x+2, y+6, text, colornorm, qfalse, qfalse, 6, 8, 0, 0 );
