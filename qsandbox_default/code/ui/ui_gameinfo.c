@@ -26,7 +26,7 @@ static int		ui_numSpecialSinglePlayerArenas;
 static char		dirlist[DIRLIST_SIZE];
 static int		allocPoint, outOfMemory;
 
-#define POOLSIZE	4096 * 8192
+#define POOLSIZE ( 1024 * 1024 ) * 32       //QVM_MEMORY note: use 16 for 32bit
 static char		memoryPool[POOLSIZE];
 
 /*

@@ -27,7 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "bg_public.h"
 #include "g_local.h"
 
-#define  POOLSIZE ( 1024 * 1024 ) * 256       //QVM_MEMORY
+#define  POOLSIZE ( 1024 * 1024 ) * 256       //QVM_MEMORY note: use 16 for 32bit
 
 #define  FREEMEMCOOKIE  ((int)0xDEADBE3F)  // Any unlikely to be used value
 #define  ROUNDBITS    (unsigned int)31          // Round to 32 bytes
