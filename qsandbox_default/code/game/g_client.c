@@ -1281,7 +1281,6 @@ void ClientUserinfoChanged( int clientNum ) {
 	qboolean    revertName = qfalse;
 	gclient_t	*client;
 	char	c1[MAX_INFO_STRING];
-	char	c2[MAX_INFO_STRING];
 	char	heligred[MAX_INFO_STRING];
 	char	heliggreen[MAX_INFO_STRING];
 	char	heligblue[MAX_INFO_STRING];
@@ -1450,22 +1449,17 @@ void ClientUserinfoChanged( int clientNum ) {
             switch(team) {
                 case TEAM_RED:
                     c1[0] = COLOR_BLUE;
-                    c2[0] = COLOR_BLUE;
                     c1[1] = 0;
-                    c2[1] = 0;
                     break;
                 case TEAM_BLUE:
                     c1[0] = COLOR_RED;
-                    c2[0] = COLOR_RED;
                     c1[1] = 0;
-                    c2[1] = 0;
                     break;
                 default:
                     break;
             }
         } else {
             strcpy(c1, Info_ValueForKey( userinfo, "color1" ));
-            strcpy(c2, Info_ValueForKey( userinfo, "color2" ));
         }
 
 	strcpy(pligred, Info_ValueForKey( userinfo, "cg_plightred" ));
@@ -1484,13 +1478,13 @@ void ClientUserinfoChanged( int clientNum ) {
 	strcpy(blueTeam, Info_ValueForKey( userinfo, "g_blueteam" ));
 
 	if ( ent->r.svFlags & SVF_BOT ) {
-		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\g_redteam\\%s\\g_blueteam\\%s\\vn\\%i\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\isnpc\\%i\\skill\\%s\\tt\\%d\\tl\\%d",
-			client->pers.netname, team, model, headModel, redTeam, blueTeam, client->vehiclenum, c1, c2,
+		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\g_redteam\\%s\\g_blueteam\\%s\\si\\%s\\vn\\%i\\c1\\%s\\hc\\%i\\w\\%i\\l\\%i\\isnpc\\%i\\skill\\%s\\tt\\%d\\tl\\%d",
+			client->pers.netname, team, model, headModel, redTeam, blueTeam, swep_id, client->vehiclenum, c1,
 			client->pers.maxHealth, client->sess.wins, client->sess.losses, ent->singlebot,
 			Info_ValueForKey( userinfo, "skill" ), teamTask, teamLeader );
 	} else {
-		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\g_redteam\\%s\\g_blueteam\\%s\\hr\\%s\\hg\\%s\\hb\\%s\\tr\\%s\\tg\\%s\\tb\\%s\\pr\\%s\\pg\\%s\\pb\\%s\\pg_r\\%s\\pg_g\\%s\\pg_b\\%s\\si\\%s\\vn\\%i\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\tt\\%d\\tl\\%d\\flashl\\%i",
-			client->pers.netname, client->sess.sessionTeam, model, headModel, redTeam, blueTeam, heligred, heliggreen, heligblue, toligred, toliggreen, toligblue, pligred, pliggreen, pligblue, pgred, pggreen, pgblue, swep_id, client->vehiclenum, c1, c2,
+		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\g_redteam\\%s\\g_blueteam\\%s\\hr\\%s\\hg\\%s\\hb\\%s\\tr\\%s\\tg\\%s\\tb\\%s\\pr\\%s\\pg\\%s\\pb\\%s\\pg_r\\%s\\pg_g\\%s\\pg_b\\%s\\si\\%s\\vn\\%i\\c1\\%s\\hc\\%i\\w\\%i\\l\\%i\\tt\\%d\\tl\\%d\\flashl\\%i",
+			client->pers.netname, client->sess.sessionTeam, model, headModel, redTeam, blueTeam, heligred, heliggreen, heligblue, toligred, toliggreen, toligblue, pligred, pliggreen, pligblue, pgred, pggreen, pgblue, swep_id, client->vehiclenum, c1,
 			client->pers.maxHealth, client->sess.wins, client->sess.losses, teamTask, teamLeader, ent->flashon);
 	}
 
@@ -1716,7 +1710,7 @@ void ClientBegin( int clientNum ) {
 		}
 	}
 
-        motd ( ent );
+    motd ( ent );
 	// set info that persisted after mapchange
 	if (!IsBot(ent)) {
 		G_UpdateClientWithSessionData(ent);
@@ -1913,7 +1907,7 @@ void ClientSpawn(gentity_t *ent) {
 //	client->areabits = savedAreaBits;
 	client->accuracy_hits = accuracy_hits;
 	client->accuracy_shots = accuracy_shots;
-        for( i = 0 ; i < WP_NUM_WEAPONS ; i++ ){
+    for( i = 0 ; i < WP_NUM_WEAPONS ; i++ ){
 		client->accuracy[i][0] = accuracy[i][0];
 		client->accuracy[i][1] = accuracy[i][1];
 	}
@@ -1963,14 +1957,6 @@ void ClientSpawn(gentity_t *ent) {
 
 	client->ps.clientNum = index;
 
-	SetUnlimitedWeapons(ent);
-	SetSandboxWeapons(ent);
-	if ( ent->botspawn ) {
-		SetupCustomBot( ent );
-	} else {
-		SetCustomWeapons( ent );
-	}
-
 	G_SetOrigin( ent, spawn_origin );
 	VectorCopy( spawn_origin, client->ps.origin );
 
@@ -2009,20 +1995,6 @@ void ClientSpawn(gentity_t *ent) {
 	} else {
 		// fire the targets of the spawn point
 		G_UseTargets( spawnPoint, ent );
-
-		// select the highest weapon number available, after any
-		// spawn given items have fired
-		client->ps.weapon = 1;
-		ent->swep_id = 1;
-		ent->client->ps.stats[STAT_SWEP] = 1;
-		for ( i = WP_NUM_WEAPONS - 1 ; i > 0 ; i-- ) {
-			if ( client->ps.stats[STAT_WEAPONS] & ( 1 << i ) && i != WP_GRAPPLING_HOOK ) {
-				client->ps.weapon = i;
-				ent->swep_id = i;
-				ent->client->ps.stats[STAT_SWEP] = i;
-				break;
-			}
-		}
 	}
 
 	// run a client frame to drop exactly to the floor,
@@ -2045,10 +2017,23 @@ void ClientSpawn(gentity_t *ent) {
 	// clear entity state values
 	BG_PlayerStateToEntityState( &client->ps, &ent->s, qtrue );
 
-        if(g_spawnprotect.integer)
-            client->spawnprotected = qtrue;
+    if(g_spawnprotect.integer)
+        client->spawnprotected = qtrue;
 
-        RespawnTimeMessage(ent,0);
+    RespawnTimeMessage(ent,0);
+
+	for(i = 1 ; i < WEAPONS_NUM; i++){
+		ent->swep_list[i] = 0;
+		ent->swep_ammo[i] = 0;
+	}
+	SetUnlimitedWeapons(ent);
+	SetSandboxWeapons(ent);
+	if ( ent->botspawn ) {
+		SetupCustomBot( ent );
+	} else {
+		SetCustomWeapons( ent );
+	}
+
 		client->ps.weapon = WP_MACHINEGUN;
 		ent->swep_id = WP_MACHINEGUN;
 		ent->client->ps.stats[STAT_SWEP] = WP_MACHINEGUN;
@@ -2155,7 +2140,7 @@ void ClientSpawn(gentity_t *ent) {
 //	client->areabits = savedAreaBits;
 	client->accuracy_hits = accuracy_hits;
 	client->accuracy_shots = accuracy_shots;
-        for( i = 0 ; i < WP_NUM_WEAPONS ; i++ ){
+    for( i = 0 ; i < WP_NUM_WEAPONS ; i++ ){
 		client->accuracy[i][0] = accuracy[i][0];
 		client->accuracy[i][1] = accuracy[i][1];
 	}
@@ -2206,14 +2191,6 @@ void ClientSpawn(gentity_t *ent) {
 
 	client->ps.clientNum = index;
 
-	SetUnlimitedWeapons(ent);
-	SetSandboxWeapons(ent);
-	if ( ent->botspawn ) {
-		SetupCustomBot( ent );
-	} else {
-		SetCustomWeapons( ent );
-	}
-
 	G_SetOrigin( ent, spawn_origin );
 	VectorCopy( spawn_origin, client->ps.origin );
 
@@ -2252,20 +2229,6 @@ void ClientSpawn(gentity_t *ent) {
 	} else {
 		// fire the targets of the spawn point
 		G_UseTargets( spawnPoint, ent );
-
-		// select the highest weapon number available, after any
-		// spawn given items have fired
-		client->ps.weapon = 1;
-		ent->swep_id = 1;
-		ent->client->ps.stats[STAT_SWEP] = 1;
-		for ( i = WP_NUM_WEAPONS - 1 ; i > 0 ; i-- ) {
-			if ( client->ps.stats[STAT_WEAPONS] & ( 1 << i ) && i != WP_GRAPPLING_HOOK ) {
-				client->ps.weapon = i;
-				ent->swep_id = i;
-				ent->client->ps.stats[STAT_SWEP] = i;
-				break;
-			}
-		}
 	}
 
 	// run a client frame to drop exactly to the floor,
@@ -2288,10 +2251,23 @@ void ClientSpawn(gentity_t *ent) {
 	// clear entity state values
 	BG_PlayerStateToEntityState( &client->ps, &ent->s, qtrue );
 
-        if(g_spawnprotect.integer)
-            client->spawnprotected = qtrue;
+    if(g_spawnprotect.integer)
+        client->spawnprotected = qtrue;
 
-        RespawnTimeMessage(ent,0);
+    RespawnTimeMessage(ent,0);
+
+	for(i = 1 ; i < WEAPONS_NUM; i++){
+		ent->swep_list[i] = 0;
+		ent->swep_ammo[i] = 0;
+	}
+	SetUnlimitedWeapons(ent);
+	SetSandboxWeapons(ent);
+	if ( ent->botspawn ) {
+		SetupCustomBot( ent );
+	} else {
+		SetCustomWeapons( ent );
+	}
+
 		client->ps.weapon = WP_MACHINEGUN;
 		ent->swep_id = WP_MACHINEGUN;
 		ent->client->ps.stats[STAT_SWEP] = WP_MACHINEGUN;
@@ -2438,7 +2414,7 @@ void ClientSpawn(gentity_t *ent) {
 //	client->areabits = savedAreaBits;
 	client->accuracy_hits = accuracy_hits;
 	client->accuracy_shots = accuracy_shots;
-        for( i = 0 ; i < WP_NUM_WEAPONS ; i++ ){
+    for( i = 0 ; i < WP_NUM_WEAPONS ; i++ ){
 		client->accuracy[i][0] = accuracy[i][0];
 		client->accuracy[i][1] = accuracy[i][1];
 	}
@@ -2489,14 +2465,6 @@ void ClientSpawn(gentity_t *ent) {
 
 	client->ps.clientNum = index;
 
-	SetUnlimitedWeapons(ent);
-	SetSandboxWeapons(ent);
-	if ( ent->botspawn ) {
-		SetupCustomBot( ent );
-	} else {
-		SetCustomWeapons( ent );
-	}
-
 	G_SetOrigin( ent, spawn_origin );
 	VectorCopy( spawn_origin, client->ps.origin );
 
@@ -2544,20 +2512,6 @@ void ClientSpawn(gentity_t *ent) {
 	} else {
 		// fire the targets of the spawn point
 		G_UseTargets( spawnPoint, ent );
-
-		// select the highest weapon number available, after any
-		// spawn given items have fired
-		client->ps.weapon = 1;
-		ent->swep_id = 1;
-		ent->client->ps.stats[STAT_SWEP] = 1;
-		for ( i = WP_NUM_WEAPONS - 1 ; i > 0 ; i-- ) {
-			if ( client->ps.stats[STAT_WEAPONS] & ( 1 << i ) && i != WP_GRAPPLING_HOOK ) {
-				client->ps.weapon = i;
-				ent->swep_id = i;
-				ent->client->ps.stats[STAT_SWEP] = i;
-				break;
-			}
-		}
 	}
 
 	// run a client frame to drop exactly to the floor,
@@ -2580,12 +2534,23 @@ void ClientSpawn(gentity_t *ent) {
 	// clear entity state values
 	BG_PlayerStateToEntityState( &client->ps, &ent->s, qtrue );
 
-        if(g_spawnprotect.integer)
-            client->spawnprotected = qtrue;
+    if(g_spawnprotect.integer)
+        client->spawnprotected = qtrue;
 
-        RespawnTimeMessage(ent,0);
+    RespawnTimeMessage(ent,0);
+
+	for(i = 1 ; i < WEAPONS_NUM; i++){
+		ent->swep_list[i] = 0;
+		ent->swep_ammo[i] = 0;
+	}
+	SetUnlimitedWeapons(ent);
+	SetSandboxWeapons(ent);
+	if ( ent->botspawn ) {
+		SetupCustomBot( ent );
+	} else {
+		SetCustomWeapons( ent );
+	}
 }
-
 
 /*
 ===========
@@ -2731,56 +2696,22 @@ void SetupCustomBot( gentity_t *bot ) {
 	if ( !bot->singlebot || !(bot->botspawn) )
 		return;
 
-	//give bot unlimited ammo. 999 ammo is considered unlimited here, because -1 leads to odd weapon choices for bots.
-	bot->client->ps.ammo[WP_GAUNTLET] = -1;
-	bot->client->ps.ammo[WP_MACHINEGUN] = 9999;
-	bot->client->ps.ammo[WP_SHOTGUN] = 9999;
-	bot->client->ps.ammo[WP_GRENADE_LAUNCHER] = 9999;
-	bot->client->ps.ammo[WP_ROCKET_LAUNCHER] = 9999;
-	bot->client->ps.ammo[WP_LIGHTNING] = 9999;
-	bot->client->ps.ammo[WP_RAILGUN] = 9999;
-	bot->client->ps.ammo[WP_PLASMAGUN] = 9999;
-	bot->client->ps.ammo[WP_BFG] = 9999;
-	bot->client->ps.ammo[WP_NAILGUN] = 9999;
-	bot->client->ps.ammo[WP_PROX_LAUNCHER] = 9999;
-	bot->client->ps.ammo[WP_CHAINGUN] = 9999;
-	
-
 	//give bot weapons
-	if ( bot->botspawn->spawnflags & 1 )
-		bot->client->ps.stats[STAT_WEAPONS] = ( 1 << WP_GAUNTLET );
-	if ( bot->botspawn->spawnflags & 2 )
-		bot->client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_MACHINEGUN );
-	if ( bot->botspawn->spawnflags & 4 )
-		bot->client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SHOTGUN );
-	if ( bot->botspawn->spawnflags & 8 )
-		bot->client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRENADE_LAUNCHER );
-	if ( bot->botspawn->spawnflags & 16 )
-		bot->client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ROCKET_LAUNCHER );
-	if ( bot->botspawn->spawnflags & 32 )
-		bot->client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_LIGHTNING );
-	if ( bot->botspawn->spawnflags & 64 )
-		bot->client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_RAILGUN );
-	if ( bot->botspawn->spawnflags & 128 )
-		bot->client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PLASMAGUN );
-	if ( bot->botspawn->spawnflags & 256 )
-		bot->client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_BFG );
-	if ( bot->botspawn->spawnflags & 512 )
-		bot->client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_NAILGUN );
-	if ( bot->botspawn->spawnflags & 1024 )
-		bot->client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PROX_LAUNCHER );
-	if ( bot->botspawn->spawnflags & 2048 )
-		bot->client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_CHAINGUN );
+	if (bot->botspawn->mtype <= 1) {
+	    Set_Weapon(bot, WP_GAUNTLET, 1);
+	}
+    Set_Weapon(bot, bot->botspawn->mtype, 1);
+	if (bot->swep_ammo[bot->botspawn->mtype] != -1){
+	Set_Ammo(bot, bot->botspawn->mtype, 9999);
+	}
 
-	//G_Printf("bot health: %i\n", bot->botspawn->health);
-	//set bot's health (it doesn't degrade automatically)
 	bot->health = bot->client->ps.stats[STAT_HEALTH] = bot->client->ps.stats[STAT_MAX_HEALTH] = bot->botspawn->health;
 
 	//set walking behavior
-	if (bot->botspawn->spawnflags & 4096 || bot->botspawn->spawnflags & 8192)
+	if (bot->botspawn->spawnflags & 1 || bot->botspawn->spawnflags & 2)
 		bot->client->ps.pm_flags |= PMF_FORCE_WALK;
 
-	if (bot->botspawn->spawnflags & 4096 && !(bot->botspawn->spawnflags & 8192))
+	if (bot->botspawn->spawnflags & 1 && !(bot->botspawn->spawnflags & 2))
 		bot->client->ps.pm_flags |= PMF_ATTACK_RUN;
 
 	//use targets of target_botspawn
@@ -2816,6 +2747,7 @@ void SetSandboxWeapons( gentity_t *ent ) {
 }
 
 void SetCustomWeapons( gentity_t *ent ) {
+	int i;
 	Set_Ammo(ent, WP_GAUNTLET, -1);
 	Set_Ammo(ent, WP_GRAPPLING_HOOK, -1);
 	Set_Ammo(ent, WP_TOOLGUN, -1);
@@ -3034,6 +2966,24 @@ void SetCustomWeapons( gentity_t *ent ) {
 			ent->health = ent->client->ps.stats[STAT_HEALTH] = 65000;
 		}
 		ent->helpme = 0;
+	}
+	//Set spawnweapon
+	if(g_gametype.integer == GT_SANDBOX){
+		ent->client->ps.weapon = WP_PHYSGUN;
+		ent->swep_id = WP_PHYSGUN;
+		ent->client->ps.stats[STAT_SWEP] = WP_PHYSGUN;
+	} else {
+		for ( i = WEAPONS_NUM; i > 0; i-- ) {
+			if(ent->swep_list[i] == 1 ){
+				ent->client->ps.weapon = i;
+				ent->swep_id = i;
+				ent->client->ps.stats[STAT_SWEP] = i;
+				return;
+			}
+		}
+		ent->client->ps.weapon = 1;
+		ent->swep_id = 1;
+		ent->client->ps.stats[STAT_SWEP] = 1;
 	}
 }
 

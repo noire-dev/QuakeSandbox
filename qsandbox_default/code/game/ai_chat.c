@@ -497,7 +497,6 @@ if(!NpcFactionProp(bs, NP_CHAT, 0)){
 	if (bs->lastchat_time > FloatTime() - TIME_BETWEENCHATTING) return qfalse;
 	//don't chat in teamplay
 	if (TeamPlayIsOn()) {
-	    trap_EA_Command(bs->client, "vtaunt");
 	    return qfalse;
 	}
 	// don't chat in tournament mode
@@ -534,9 +533,6 @@ if(!NpcFactionProp(bs, NP_CHAT, 0)){
 	// teamplay
 	if (TeamPlayIsOn()) 
 	{
-		if (BotIsFirstInRankings(bs)) {
-			trap_EA_Command(bs->client, "vtaunt");
-		}
 		return qtrue;
 	}
 	// don't chat in tournament mode
@@ -619,7 +615,6 @@ if(!NpcFactionProp(bs, NP_CHAT, 0)){
 	{
 		//teamplay
 		if (TeamPlayIsOn()) {
-			trap_EA_Command(bs->client, "vtaunt");
 			return qtrue;
 		}
 		//
@@ -725,7 +720,6 @@ if(!NpcFactionProp(bs, NP_CHAT, 0)){
 	{
 		//don't chat in teamplay
 		if (TeamPlayIsOn()) {
-			trap_EA_Command(bs->client, "vtaunt");
 			return qfalse;			// don't wait
 		}
 		//
@@ -966,7 +960,6 @@ if(!NpcFactionProp(bs, NP_CHAT, 0)){
 		EasyClientName(bs->lastkilledplayer, name, sizeof(name));
 	}
 	if (TeamPlayIsOn()) {
-		trap_EA_Command(bs->client, "vtaunt");
 		return qfalse;			// don't wait
 	}
 	//

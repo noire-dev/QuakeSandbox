@@ -362,7 +362,6 @@ typedef struct {
 	int				isNPC;		// 0 = not NPC, 1 = NPC
 
 	vec3_t			color1;
-	vec3_t			color2;
 
 	int			helred;
 	int			helgreen;
@@ -621,14 +620,7 @@ typedef struct {
 	qboolean	scoreBoardShowing;
 	int			scoreFadeTime;
 
-    int		accuracys[WP_NUM_WEAPONS][2];
-	int		accRequestTime;
-	qboolean	showAcc;
-	qboolean	accBoardShowing;
-	int		accFadeTime;
-
-
-	char		killerName[MAX_NAME_LENGTH];
+	char			killerName[MAX_NAME_LENGTH];
 	char			spectatorList[MAX_STRING_CHARS];		// list of names
 	int				spectatorLen;												// length of list
 	float			spectatorWidth;											// width in device units
@@ -1624,7 +1616,6 @@ extern  vmCvar_t		cg_smallFont;
 extern  vmCvar_t		cg_bigFont;
 extern	vmCvar_t		cg_noTaunt;
 extern	vmCvar_t		cg_noProjectileTrail;
-extern	vmCvar_t		cg_oldRail;
 extern	vmCvar_t		cg_oldRocket;
 extern	vmCvar_t		cg_lodScale;
 
@@ -1877,11 +1868,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 void CG_AddRealWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent, int team, clientInfo_t *ci );
 void CG_DrawWeaponSelect( void );
 
-void CG_DrawWeaponBar0(int count, int bits);
-void CG_DrawWeaponBarNew(int count, int bits, int swepnum);
-void CG_DrawWeaponBarNew2(int count, int bits, int swepnum);
-
-void CG_OutOfAmmoChange( void );	// should this be in pmove?
+void CG_DrawWeaponBarNew2(int count, int swepnum);
 
 //
 // cg_marks.c

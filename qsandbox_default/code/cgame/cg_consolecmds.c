@@ -122,30 +122,6 @@ static void CG_ScoresUp_f( void ) {
 	}
 }
 
-static void CG_AccDown_f( void ) {
-
-	if ( cg.accRequestTime + 2000 < cg.time ) {
-
-		cg.accRequestTime = cg.time;
-		trap_SendClientCommand( "acc" );
-
-		if ( !cg.showAcc ) {
-			cg.showAcc = qtrue;
-		}
-
-	} else {
-		cg.showAcc = qtrue;
-	}
-}
-
-
-static void CG_AccUp_f( void ) {
-        if ( cg.showAcc ) {
-                cg.showAcc = qfalse;
-                cg.accFadeTime = cg.time;
-        }
-}
-
 static void CG_TellTarget_f( void ) {
 	int		clientNum;
 	char	command[128];
@@ -319,9 +295,6 @@ static consoleCommand_t	commands[] = {
   	{ "ns_variablelist_cl", CG_NS_VariableList_f },
   	{ "ns_threadlist_cl", CG_NS_ThreadList_f },
   	{ "ns_sendvariable_cl", CG_NS_SendVariable_f },
-//	{ "camera", CG_Camera_f },
-    { "+acc", CG_AccDown_f },
-	{ "-acc", CG_AccUp_f },
     { "clients", CG_PrintClientNumbers }
 };
 
@@ -378,7 +351,6 @@ void CG_InitConsoleCommands( void ) {
 	trap_AddCommand ("echoo");
 	trap_AddCommand ("vsay_team");
 	trap_AddCommand ("vtell");
-	trap_AddCommand ("vtaunt");
 	trap_AddCommand ("vosay");
 	trap_AddCommand ("vosay_team");
 	trap_AddCommand ("votell");

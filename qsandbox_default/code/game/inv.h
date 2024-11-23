@@ -73,17 +73,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define INVENTORY_REDCUBE			48
 #define INVENTORY_BLUECUBE			49
 //Elimination mod: Domination inventory
-#define INVENTORY_POINTWHITE			50
+#define INVENTORY_POINTWHITE		50
 #define INVENTORY_POINTRED			51
 #define INVENTORY_POINTBLUE			52
+
+#define INVENTORY_GENERAL    		53
 
 //enemy stuff
 #define ENEMY_HORIZONTAL_DIST		200
 #define ENEMY_HEIGHT				201
 #define NUM_VISIBLE_ENEMIES			202
 #define NUM_VISIBLE_TEAMMATES		203
-
-// if running the mission pack
 
 //item numbers (make sure they are in sync with bg_itemlist in bg_misc.c)
 #define MODELINDEX_ARMORSHARD		1
@@ -127,7 +127,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define MODELINDEX_BLUEFLAG			35
 
 // mission pack only defines
-
 #define MODELINDEX_KAMIKAZE			36
 #define MODELINDEX_PORTAL			37
 #define MODELINDEX_INVULNERABILITY	38
@@ -149,21 +148,41 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define MODELINDEX_PROXLAUNCHER		50
 #define MODELINDEX_CHAINGUN			51
 
+//QS Items
+#define MODELINDEX_FLAMETHROWER		52
+#define MODELINDEX_FLAME			53
+#define MODELINDEX_ARMORVEST		54
+#define MODELINDEX_ARMORFULL		55
+#define MODELINDEX_ANTIMATTER		56
+
+//EntityPlus
+#define MODELINDEX_BACKPACK		    57
+#define MODELINDEX_HKEYRED	        58
+#define MODELINDEX_HKEYGREEN	    59
+#define MODELINDEX_HKEYBLUE	        60
+#define MODELINDEX_HKEYYELLOW	    61
+#define MODELINDEX_HKEYMASTER	    62
+#define MODELINDEX_HKEYGOLD	        63
+#define MODELINDEX_HKEYSILVER	    64
+#define MODELINDEX_HKEYIRON	        65
+
 //Elimination mod: Double Domination and Standard Domination
+#define MODELINDEX_POINTABLUE		66
+#define MODELINDEX_POINTBBLUE		67
+#define MODELINDEX_POINTARED		68
+#define MODELINDEX_POINTBRED		69
+#define MODELINDEX_POINTAWHITE		70
+#define MODELINDEX_POINTBWHITE		71
+#define MODELINDEX_POINTWHITE		72
+#define MODELINDEX_POINTRED			73
+#define MODELINDEX_POINTBLUE		74
 
-#define MODELINDEX_POINTABLUE			52
-#define MODELINDEX_POINTBBLUE			53
-#define MODELINDEX_POINTARED			54
-#define MODELINDEX_POINTBRED			55
-#define MODELINDEX_POINTAWHITE			56
-#define MODELINDEX_POINTBWHITE			57
-#define MODELINDEX_POINTWHITE			58
-#define MODELINDEX_POINTRED			59
-#define MODELINDEX_POINTBLUE			60
+//QS Sandbox Items
+#define MODELINDEX_TOOLGUN		    75
+#define MODELINDEX_PHYSGUN		    76
+#define MODELINDEX_GRAVITYGUN		77
 
 
-
-//
 #define WEAPONINDEX_GAUNTLET			1
 #define WEAPONINDEX_MACHINEGUN			2
 #define WEAPONINDEX_SHOTGUN				3

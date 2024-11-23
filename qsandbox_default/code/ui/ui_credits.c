@@ -8,10 +8,6 @@ CREDITS
 =======================================================================
 */
 
-
-
-
-
 #include "ui_local.h"
 
 /*
@@ -30,13 +26,10 @@ CREDITS
 
 #define ARRAY_SIZEOF(x) ( sizeof(x)/sizeof(x[0]) )
 
-
-
 #define MAX_TARGA_FILESIZE (128*1024)
 #define TARGA_BUFSIZE 32768
 #define MAX_TARGA_WIDTH 64
 #define MAX_TARGA_HEIGHT 64
-
 
 #define MAX_RENDEREDPIXELS 4090
 
@@ -55,7 +48,6 @@ CREDITS
 #define EXPLODE_TIME 		2000
 #define HOLD_TIME			1500
 
-
 #define CREDIT_BORDER		10
 #define CREDIT_BAR			3
 #define CREDIT_DURATION		4000
@@ -69,8 +61,6 @@ CREDITS
 #define MAX_CREDITS_ONSCREEN 2
 #define MAX_CREDIT_LINES 4
 
-
-
 static vec4_t color_credit_background = { 0.25f, 0.25f, 0.25f, 0.5f };
 static vec4_t color_credit_bar = { 0.66f, 0.66f, 0.66f, 1.0f };
 static vec4_t color_credit_title = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -78,13 +68,8 @@ static vec4_t color_credit_text = { 1.0f, 1.0f, 0.0f, 1.0f };
 
 static const float boxSize = 256.0;
 
-
 // local functions
 static void Credits_InitCreditSequence( qboolean nextSequence);
-
-
-//--------------------------------------------------------------------
-
 
 enum {
 	TGA_NONE,
@@ -101,7 +86,6 @@ enum {
 	TGA_EXPLODE,
 	TGA_BLANK
 };
-
 
 // used as index into effectData[]
 enum {
@@ -123,8 +107,6 @@ enum {
 	COUNT_EFFECTS
 };
 
-
-
 // parameters stored for each effect
 typedef struct {
 	int type;	// EFFECT_* flag
@@ -134,11 +116,9 @@ typedef struct {
 	int param;	// extra data
 } effectParams_t;
 
-
 //
 // the effects data table
 //
-
 typedef void (*effectHandler)(effectParams_t*);
 
 typedef struct {
@@ -148,7 +128,6 @@ typedef struct {
 	const char* name;
 	effectHandler effectFunc;
 } effectInfo_t;
-
 
 // declare handler functions
 static void Credits_Effect_RushX(effectParams_t* ep);
@@ -164,7 +143,6 @@ static void Credits_Effect_Bobble(effectParams_t* ep);
 static void Credits_Effect_FlipX(effectParams_t* ep);
 static void Credits_Effect_FlipY(effectParams_t* ep);
 static void Credits_Effect_FlipZ(effectParams_t* ep);
-
 
 // All effects *must* be invariant on completion. This means
 // that the xyz co-ordinates are unchanged after one period.
@@ -188,10 +166,6 @@ static effectInfo_t effectData[] = {
 
 static const int effectDataCount = ARRAY_SIZEOF(effectData);
 
-
-
-
-
 // stores image data for a composite targa image
 typedef struct {
 	int weight;
@@ -211,13 +185,6 @@ static imageSource_t uieImageList[] = {
 	{ 100, "menu/default/logo1.tga", 1.0, 0, NULL, 0.9, 0 }
 };
 
-
-
-
-//--------------------------------------------------------------------
-
-
-
 // possible modes in which the credits may be displayed
 // (some activate only after first or second pass complete)
 #define CREDIT_NORMAL			0x0000
@@ -225,8 +192,6 @@ static imageSource_t uieImageList[] = {
 #define CREDIT_REVERSETEXT 		0x0004
 #define CREDIT_HIGHREVERSETEXT 	0x0008
 #define CREDIT_SHUFFLETEXT		0x0010
-
-
 
 // possible ways of interpreting the data in creditEntry_t
 // CMODE_MODEL is currently not implemented
@@ -247,47 +212,27 @@ typedef struct {
 	const char* text[MAX_CREDIT_LINES];
 } creditEntry_t;
 
-
-
-
-
-
 static creditEntry_t uie_credits[] = {
 //	{ CMODE_TEXT, "", { "", 0, 0, 0 } },
 	{ CMODE_TEXT, "Quake Sandbox", {"Noire.dev", 0, 0, 0  } },
 	{ CMODE_TEXT, "Game", {"Noire.dev", "Vovan_Vm", "teapxt", 0} },
+	{ CMODE_TEXT, "Additional Mods", {"CannerZ45 (CZ45)", 0, 0, 0} },
 	{ CMODE_QUOTE, 0, {0, 0, 0, 0} }
 };
 
-
-
-//--------------------------------------------------------------------
-
-
 // Replacement images for special dates
 // these have a high priority for being shown
-
-
 typedef struct {
 	int day;	// 1-31
 	int month;	// 0-11
 	imageSource_t image;
 } dateImageList_t;
 
-
-
 static dateImageList_t uie_dateImages[] = {
 	{ 31, 11, { 0, "menu/uie_art/imagenewyear.tga", 1.0, 0, NULL, 1.0, 0 }},
 	{ 16, 7, { 0, "menu/uie_art/imagesecret.tga", 1.0, 0, NULL, 1.0, 0 }},
 	{ 22, 2, { 0, "menu/uie_art/imagesecret.tga", 1.0, 0, NULL, 1.0, 0 }}
 };
-
-
-
-
-//--------------------------------------------------------------------
-
-
 
 // a group of credits, associated with one background image
 typedef struct {
@@ -306,8 +251,6 @@ typedef struct {
 	float* color_text;
 } creditList_t;
 
-
-
 static creditList_t endCredits[] = {
 	{ CREDIT_NORMAL|CREDIT_SILLYTITLE|CREDIT_REVERSETEXT,
 		uie_credits, ARRAY_SIZEOF(uie_credits),
@@ -316,13 +259,7 @@ static creditList_t endCredits[] = {
 		color_credit_title, color_credit_text }
 };
 
-
 static const int numEndCredits = ARRAY_SIZEOF(endCredits);
-
-
-
-//--------------------------------------------------------------------
-
 
 // replacement title messages
 // only used with a body of text
@@ -365,8 +302,6 @@ static char* sillyTitles[] = {
 
 static const int sillyTitlesCount = ARRAY_SIZEOF(sillyTitles);
 
-
-
 // messages that make "sense" on their own
 static char* sillyMessages[] = {
 	"Server for Sale",
@@ -397,19 +332,11 @@ static char* sillyMessages[] = {
 
 static const int sillyMessagesCount = ARRAY_SIZEOF(sillyMessages);
 
-
-
-//--------------------------------------------------------------------
-
-
 // list of random quotes
-
 typedef struct {
 	int weight;
 	creditEntry_t quote;
 } quoteData_t;
-
-
 
 static quoteData_t quoteList[] = {
 	{ 10, { CMODE_HARDTEXT, NULL, {"\"Truth and Beauty are", "less common than semicolons\"", 0, 0 } } },
@@ -424,17 +351,9 @@ static quoteData_t quoteList[] = {
     { 10, { CMODE_HARDTEXT, NULL, {"\"LART: Luser Attitude Readjustment Tool.", "Rubber ducks are popular.\"", 0, 0 } } },
     { 10, { CMODE_HARDTEXT, NULL, {"\"You can have performance.", "Or you can have readability.", "Don't ever count on having both at once.\"", 0 } } },
     { 10, { CMODE_HARDTEXT, NULL, {"\"Incoming message\"", "from the exception handler", 0, 0 } } }
-//	{ 10, { CMODE_HARDTEXT, NULL, {"\"\"", 0, 0, 0 } } },
-//	{ 10, { CMODE_HARDTEXT, NULL, {"\"\"", 0, 0, 0 } } }
-//	{ 10, { CMODE_HARDTEXT, NULL, {0, 0, 0, 0 } } }
 };
 
-
-
 static const int quoteListSize = ARRAY_SIZEOF(quoteList);
-
-//--------------------------------------------------------------------
-
 
 // credit display info
 typedef struct {
@@ -458,9 +377,6 @@ typedef struct {
 	int height;
 } displayCredit_t;
 
-
-
-
 // TGA image data
 typedef struct {
 	// targa image data
@@ -473,12 +389,6 @@ typedef struct {
 
 	float scale;	// normalization factor for screen
 } imageTarga_t;
-
-
-
-//--------------------------------------------------------------------
-
-
 
 //
 // the menu
@@ -536,13 +446,6 @@ typedef struct {
 
 static creditsmenu_t	s_credits;
 
-
-
-//--------------------------------------------------------------------
-
-
-
-
 /*
 =================
 ShuffleText
@@ -573,8 +476,6 @@ static void ShuffleText(char* text)
 	}
 }
 
-
-
 /*
 =================
 ReverseText
@@ -596,7 +497,6 @@ static void ReverseText(char* text)
 	}
 }
 
-
 /*
 =================
 AngleAdd
@@ -616,8 +516,6 @@ static float AngleAdd(float a1, float a2)
 	return a;
 }
 
-
-
 /*
 =================
 AngleMA
@@ -629,8 +527,6 @@ static void AngleMA(vec3_t aa, float scale, vec3_t ab, vec3_t ac)
 	ac[1] = AngleAdd(aa[1], scale * ab[1]);
 	ac[2] = AngleAdd(aa[2], scale * ab[2]);
 }
-
-
 
 /*
 =================
@@ -644,8 +540,6 @@ static void AnglesAdd(vec3_t a1, vec3_t a2, vec3_t dest)
 	dest[2] = AngleAdd(a1[2], a2[2]);
 }
 
-
-
 /*
 =================
 LerpAngles
@@ -657,8 +551,6 @@ static void LerpAngles(vec3_t from, vec3_t to, vec3_t dest, float frac)
 	dest[1] = LerpAngle(from[1], to[1], frac);
 	dest[2] = LerpAngle(from[2], to[2], frac);
 }
-
-
 
 /*
 =================
@@ -672,9 +564,6 @@ static void ColorTransparency(vec4_t in, vec4_t out, float t)
 	out[2] = in[2];
 	out[3] = in[3] * t;
 }
-
-
-
 
 /*
 =================
@@ -696,9 +585,6 @@ static float TimeFrac(int t, int step)
 
 	return f;
 }
-
-
-
 
 /*
 =================
@@ -732,11 +618,6 @@ static void Credits_SetRandomRotate(vec3_t v)
 		}
 	} while (nulled > 1);
 }
-
-
-
-
-
 
 /*
 ===============
@@ -772,10 +653,6 @@ static void Credits_ImplementRush(effectParams_t* ep, int index)
 	}
 }
 
-
-
-
-
 /*
 ===============
 Credits_Effect_RushZ
@@ -785,9 +662,6 @@ static void Credits_Effect_RushZ(effectParams_t* ep)
 {
 	Credits_ImplementRush(ep, 0);
 }
-
-
-
 
 /*
 ===============
@@ -799,9 +673,6 @@ static void Credits_Effect_RushY(effectParams_t* ep)
 	Credits_ImplementRush(ep, 2);
 }
 
-
-
-
 /*
 ===============
 Credits_Effect_RushX
@@ -811,8 +682,6 @@ static void Credits_Effect_RushX(effectParams_t* ep)
 {
 	Credits_ImplementRush(ep, 1);
 }
-
-
 
 /*
 ===============
@@ -846,8 +715,6 @@ static void Credits_Effect_PulseXY(effectParams_t* ep)
 		s_credits.scr_pos[i][2] *= scale;
 	}
 }
-
-
 
 /*
 ===============
@@ -885,8 +752,6 @@ static void Credits_Effect_PulseXYZ(effectParams_t* ep)
 	}
 }
 
-
-
 /*
 ===============
 Credits_Effect_Ripple1
@@ -917,8 +782,6 @@ static void Credits_Effect_Ripple1(effectParams_t* ep)
 		s_credits.scr_pos[i][0] += amp * sin(0.1 * M_PI * phase);
 	}
 }
-
-
 
 /*
 ===============
@@ -951,10 +814,6 @@ static void Credits_Effect_Ripple2(effectParams_t* ep)
 	}
 }
 
-
-
-
-
 /*
 ===============
 Credits_Effect_JitterAll
@@ -984,8 +843,6 @@ static void Credits_Effect_JitterAll(effectParams_t* ep)
 		s_credits.scr_pos[i][2] += amp * (0.5 - random());
 	}
 }
-
-
 
 /*
 ===============
@@ -1019,8 +876,6 @@ static void Credits_Effect_JitterSome(effectParams_t* ep)
 	}
 }
 
-
-
 /*
 ===============
 Credits_Effect_Bobble
@@ -1051,9 +906,6 @@ static void Credits_Effect_Bobble(effectParams_t* ep)
 		s_credits.scr_pos[i][2] += amp * (0.5 - random());
 	}
 }
-
-
-
 
 /*
 ===============
@@ -1101,9 +953,6 @@ static void Credits_ImplementFlip(effectParams_t* ep, int axis1, int axis2)
 	}
 }
 
-
-
-
 /*
 ===============
 Credits_Effect_FlipX
@@ -1112,47 +961,7 @@ Credits_Effect_FlipX
 static void Credits_Effect_FlipX(effectParams_t* ep)
 {
 	Credits_ImplementFlip(ep, 0, 1);
-
-/*	int i;
-	float frac;
-	float phase;
-	float x, z;
-	float c, s;
-
-	if (!ep)
-		return;
-
-	frac = TimeFrac(ep->endtime, ep->duration);
-
-	if (frac < 0.2) {
-		phase = frac*frac/0.2;
-	}
-	else if (frac > 0.8) {
-		phase = 1.0 - (1.0 - frac)*(1.0 - frac)/0.2;
-	}
-	else {
-		phase = frac;
-	}
-
-	c = cos(2 * M_PI * phase);
-	s = sin(2 * M_PI * phase);
-
-	for (i = 0; i < s_credits.numPoints; i++) {
-		z = s_credits.scr_pos[i][0];
-		x = s_credits.scr_pos[i][1];
-		if (ep->param) {
-			s_credits.scr_pos[i][0] = z*c - x*s;
-			s_credits.scr_pos[i][1] = x*c + z*s;
-		}
-		else {
-			s_credits.scr_pos[i][0] = z*c + x*s;
-			s_credits.scr_pos[i][1] = x*c - z*s;
-		}
-
-	}*/
 }
-
-
 
 /*
 ===============
@@ -1162,48 +971,7 @@ Credits_Effect_FlipY
 static void Credits_Effect_FlipY(effectParams_t* ep)
 {
 	Credits_ImplementFlip(ep, 0, 2);
-
-/*	int i;
-	float frac;
-	float phase;
-	float y, z;
-	float c, s;
-
-	if (!ep)
-		return;
-
-	frac = TimeFrac(ep->endtime, ep->duration);
-
-	if (frac < 0.2) {
-		phase = frac*frac/0.2;
-	}
-	else if (frac > 0.8) {
-		phase = 1.0 - (1.0 - frac)*(1.0 - frac)/0.2;
-	}
-	else {
-		phase = frac;
-	}
-
-	c = cos(2 * M_PI * phase);
-	s = sin(2 * M_PI * phase);
-
-	for (i = 0; i < s_credits.numPoints; i++) {
-		z = s_credits.scr_pos[i][0];
-		y = s_credits.scr_pos[i][2];
-		if (ep->param) {
-			s_credits.scr_pos[i][0] = z*c - y*s;
-			s_credits.scr_pos[i][2] = y*c + z*s;
-		}
-		else {
-			s_credits.scr_pos[i][0] = z*c + y*s;
-			s_credits.scr_pos[i][2] = y*c - z*s;
-		}
-	}*/
 }
-
-
-
-
 
 /*
 ===============
@@ -1213,50 +981,7 @@ Credits_Effect_FlipZ
 static void Credits_Effect_FlipZ(effectParams_t* ep)
 {
 	Credits_ImplementFlip(ep, 1, 2);
-/*	int i;
-	float frac;
-	float phase;
-	float x, y;
-	float c, s;
-
-	if (!ep)
-		return;
-
-	frac = TimeFrac(ep->endtime, ep->duration);
-
-	if (frac < 0.2) {
-		phase = frac*frac/0.2;
-	}
-	else if (frac > 0.8) {
-		phase = 1.0 - (1.0 - frac)*(1.0 - frac)/0.2;
-	}
-	else {
-		phase = frac;
-	}
-
-	c = cos(2 * M_PI * phase);
-	s = sin(2 * M_PI * phase);
-
-	for (i = 0; i < s_credits.numPoints; i++) {
-		x = s_credits.scr_pos[i][1];
-		y = s_credits.scr_pos[i][2];
-		if (ep->param) {
-			s_credits.scr_pos[i][1] = x*c - y*s;
-			s_credits.scr_pos[i][2] = y*c + x*s;
-		}
-		else {
-			s_credits.scr_pos[i][1] = x*c + y*s;
-			s_credits.scr_pos[i][2] = y*c - x*s;
-		}
-
-	}*/
 }
-
-
-
-/*----------------------------------------------------*/
-
-
 
 /*
 ===============
@@ -1319,12 +1044,6 @@ static void Credits_SetNewEffect(int index, int type)
 	}
 }
 
-
-
-
-
-
-
 /*
 ===============
 Credits_CheckNextEffect
@@ -1340,10 +1059,6 @@ static void Credits_CheckNextEffect(void)
 		}
 	}
 }
-
-
-
-
 
 /*
 ===============
@@ -1469,8 +1184,6 @@ static void Credits_SetNextImageAnimation(int anim)
 	s_credits.imageFinishTime = uis.realtime + time;
 }
 
-
-
 /*
 ===============
 Credits_ApplyPixelTransforms
@@ -1549,10 +1262,6 @@ static void Credits_ApplyPixelTransforms(void)
 
 	}
 }
-
-
-
-
 
 /*
 ===============
@@ -1643,9 +1352,6 @@ static void Credits_RenderView(void)
 	VectorScale(refdef.vieworg, -boxSize/2, refdef.vieworg);
 	trap_R_RenderScene(&refdef);
 }
-
-
-
 
 /*
 ===============
@@ -1741,9 +1447,6 @@ static void Credits_DrawTargaImage( void )
 	Credits_RenderView();
 }
 
-
-
-
 /*
 ===============
 Credits_DoReverseText
@@ -1760,8 +1463,6 @@ static qboolean Credits_DoReverseText( void )
 		return qtrue;
 	return qfalse;
 }
-
-
 
 /*
 ===============
@@ -1781,8 +1482,6 @@ static qboolean Credits_DoShuffleText( displayCredit_t* dc )
 	return qfalse;
 }
 
-
-
 /*
 ===============
 Credits_DoSillyTitle
@@ -1797,9 +1496,6 @@ static qboolean Credits_DoSillyTitle( void )
 		return qtrue;
 	return qfalse;
 }
-
-
-
 
 /*
 ===============
@@ -1849,10 +1545,6 @@ static int Credits_ChooseNextItem( int range, int history[], int* pPos )
 	return sel;
 }
 
-
-
-
-
 /*
 ===============
 Credits_ChooseSillyTitleString
@@ -1871,8 +1563,6 @@ static const char* Credits_ChooseSillyTitleString( creditEntry_t* ce )
 		return sillyMessages[index];
 	}
 }
-
-
 
 /*
 ===============
@@ -1895,11 +1585,6 @@ static float Credits_GetCreditTransparency( displayCredit_t* dc )
 
 	return 1.0;
 }
-
-
-
-
-
 
 /*
 ===============
@@ -1988,9 +1673,6 @@ static void Credits_PrepareNextCredit( displayCredit_t* dc, int string )
 	dc->transparency = Credits_GetCreditTransparency(dc);
 }
 
-
-
-
 /*
 ===============
 Credits_FindNextCredit
@@ -2041,8 +1723,6 @@ static int Credits_FindNextCredit( int start, qboolean skipDual )
 	return next;
 }
 
-
-
 /*
 ===============
 Credits_NextFreeCreditSlot
@@ -2070,9 +1750,6 @@ static int Credits_NextFreeCreditSlot( int start )
 	return -1;
 }
 
-
-
-
 /*
 ===============
 Credits_StartDualCredits
@@ -2099,8 +1776,6 @@ static void Credits_StartDualCredits( creditList_t* cl, int firstcredit , int st
 	Credits_PrepareNextCredit(&s_credits.credit[nextFree], next);
 }
 
-
-
 /*
 ===============
 Credits_StopDualCredits
@@ -2125,9 +1800,6 @@ static void Credits_StopDualCredits( displayCredit_t* activeDC )
 		}
 	}
 }
-
-
-
 
 /*
 ===============
@@ -2189,10 +1861,6 @@ static qboolean Credits_UpdateCredits( void )
 
 	return qtrue;
 }
-
-
-
-
 
 /*
 ===============
@@ -2266,9 +1934,6 @@ static void Credits_DrawCreditText( displayCredit_t* dc )
 	}
 }
 
-
-
-
 /*
 ===============
 Credits_DrawCredits
@@ -2291,7 +1956,6 @@ static void Credits_DrawCredits( void )
 	}
 }
 
-
 /*
 ===============
 Credits_IntAtOffset
@@ -2307,10 +1971,6 @@ static int Credits_IntAtOffset(byte* image, int offset)
 
 	return value;
 }
-
-
-
-
 
 /*
 ===============
@@ -2360,8 +2020,6 @@ static void Credits_CreateRenderList(const imageTarga_t* image)
 		Com_Printf("Credits image: contains %i drawn pixels (limit %i), will render incomplete\n", count, MAX_RENDEREDPIXELS);
 	}
 }
-
-
 
 /*
 ===============
@@ -2485,8 +2143,6 @@ static void Credits_ScaleTargaImageData(imageTarga_t* image, byte* colourData, i
 	image->height = height;
 }
 
-
-
 /*
 ===============
 Credits_ProcessTargaImage
@@ -2586,9 +2242,6 @@ static qboolean Credits_ProcessTargaImage(const char* imageFile, imageTarga_t* i
 	return qtrue;
 }
 
-
-
-
 /*
 ===============
 Credits_ColourMergeMix
@@ -2612,9 +2265,6 @@ static byte Credits_ColorMergeMix(byte c1, byte c2, byte m1, byte m2)
 	return (byte)col;
 }
 
-
-
-
 /*
 ===============
 Credits_ColourMergeAdd
@@ -2637,8 +2287,6 @@ static byte Credits_ColorMergeAdd(byte s, byte d, byte ms, byte md)
 
 	return (byte)col;
 }
-
-
 
 /*
 ===============
@@ -2694,8 +2342,6 @@ static qboolean Credits_MergeSecondTargaImage(imageTarga_t* dest, const char* im
 	return qtrue;
 }
 
-
-
 /*
 =================
 Credits_ProcessBackgroundImage
@@ -2706,9 +2352,6 @@ static void Credits_ProcessBackgroundImage( imageTarga_t* dest, const imageSourc
 	if (Credits_ProcessTargaImage(is->baseImage, dest, is->baseResample))
 		Credits_MergeSecondTargaImage(dest, is->overlayImage, is->baseWeight, is->overlayWeight, is->overlayResample);
 }
-
-
-
 
 /*
 =================
@@ -2757,9 +2400,6 @@ static const imageSource_t* Credits_SelectDateImage( const creditList_t* cl )
 
 	return is;
 }
-
-
-
 
 /*
 =================
@@ -2816,9 +2456,6 @@ static void Credits_ChooseBackgroundImage( void )
 		Credits_ProcessBackgroundImage(&s_credits.tga, is);
 }
 
-
-
-
 /*
 =================
 Credits_InitCreditSequence
@@ -2872,10 +2509,6 @@ static void Credits_InitCreditSequence( qboolean nextGroup )
 	}
 }
 
-
-
-
-
 /*
 =================
 Credits_Init
@@ -2884,7 +2517,6 @@ Credits_Init
 static void Credits_Init( int num )
 {
 	int i;
-	float p;
 
 	for (i = 0; i < MAX_RECENT_MEMORY; i++) {
 		s_credits.recentMessage[i] = -1;
@@ -2904,22 +2536,7 @@ static void Credits_Init( int num )
 	if(num == 1){
 	Credits_SetNextImageAnimation(TGA_TOIMAGE);
 	}
-
-	p = random();
-
-	/*if (p < 0.1) {
-		trap_Cmd_ExecuteText( EXEC_APPEND, "music music/aumenu01\n");
-	}
-	else if (p < 0.2) {
-		trap_Cmd_ExecuteText( EXEC_APPEND, "music music/aumenu03\n");
-	}
-	else {
-		trap_Cmd_ExecuteText( EXEC_APPEND, "music music/aumenu02\n");
-	}*/
 }
-
-
-
 
 /*
 =================
@@ -2940,7 +2557,6 @@ if(s_credits.menu.number == 1){
 }
 	return 0;
 }
-
 
 /*
 ===============
@@ -2977,10 +2593,6 @@ static void UI_CreditMenu_Draw( void ) {
 		UI_DrawString( 0-uis.wideoffset, y, va("NumPoints: %i", s_credits.numPoints), UI_SMALLFONT, color_white );
 	}
 }
-
-
-
-
 
 /*
 ===============

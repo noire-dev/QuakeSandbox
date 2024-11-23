@@ -125,9 +125,19 @@ void G_SendSwepWeapons(gentity_t *ent) {
     int i;
     int len;
 
-    for (i = MAX_WEAPONS; i < WEAPONS_NUM; i++) {
+    for (i = 1; i < WEAPONS_NUM; i++) {
+		if(ent->swep_list[i] > 0){
+			if(ent->swep_ammo[i] > 0 || ent->swep_ammo[i] == -1){
+				ent->swep_list[i] = 1;	//we have weapon and ammo
+			} else {
+				ent->swep_list[i] = 2;	//we have weapon only
+			}
+		}
         if (ent->swep_list[i] == 1) {
             Q_strcat(string, sizeof(string), va("%i ", i));
+        }
+	    if (ent->swep_list[i] == 2) {
+            Q_strcat(string, sizeof(string), va("%i ", i * -1));	//use -id for send 2
         }
     }
     len = strlen(string);
@@ -137,39 +147,6 @@ void G_SendSwepWeapons(gentity_t *ent) {
 
     trap_SendServerCommand(ent - g_entities, va("sweps %s", string));
 }
-
-
-
-
-
-/*
-==================
-AccMessage
-
-==================
-*/
-void AccMessage( gentity_t *ent ) {
-	char		entry[1024];
-
-	Com_sprintf (entry, sizeof(entry),
-				" %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i ",
-                                   ent->client->accuracy[WP_MACHINEGUN][0], ent->client->accuracy[WP_MACHINEGUN][1],
-                                  ent->client->accuracy[WP_SHOTGUN][0], ent->client->accuracy[WP_SHOTGUN][1],
-                                  ent->client->accuracy[WP_GRENADE_LAUNCHER][0], ent->client->accuracy[WP_GRENADE_LAUNCHER][1],
-                                  ent->client->accuracy[WP_ROCKET_LAUNCHER][0], ent->client->accuracy[WP_ROCKET_LAUNCHER][1],
-                                  ent->client->accuracy[WP_LIGHTNING][0], ent->client->accuracy[WP_LIGHTNING][1],
-                                  ent->client->accuracy[WP_RAILGUN][0], ent->client->accuracy[WP_RAILGUN][1],
-                                  ent->client->accuracy[WP_PLASMAGUN][0], ent->client->accuracy[WP_PLASMAGUN][1],
-                                  ent->client->accuracy[WP_BFG][0], ent->client->accuracy[WP_BFG][1],
-                                   0,0, //Hook
-                                    ent->client->accuracy[WP_NAILGUN][0], ent->client->accuracy[WP_NAILGUN][1],
-                                    0,0,
-                                    ent->client->accuracy[WP_CHAINGUN][0], ent->client->accuracy[WP_CHAINGUN][1]
-                                 );
-
-	trap_SendServerCommand( ent-g_entities, va("accs%s", entry ));
-}
-
 
 /*
 ==================
@@ -321,18 +298,6 @@ void Cmd_Score_f( gentity_t *ent ) {
 	DeathmatchScoreboardMessage( ent );
 }
 
-
-/*
-==================
- Cmd_Acc_f
- Request current scoreboard information
-==================
-*/
-void Cmd_Acc_f( gentity_t *ent ) {
-    AccMessage( ent );
-}
-
-
 /*
 ==================
 CheatsOk
@@ -462,19 +427,18 @@ void Cmd_Give_f (gentity_t *ent) {
 
 	if (give_all || Q_strequal(name, "weapons"))
 	{
-		ent->client->ps.stats[STAT_WEAPONS] = (1 << WP_NUM_WEAPONS) - 1 - ( 1 << WP_NONE );
-			for(i = 1 ; i < WEAPONS_NUM-15 ; i++){
-				ent->swep_list[i+15] = 1; 
-				ent->swep_ammo[i+15] = 9999; 
-			}
+		for(i = 1; i < WEAPONS_NUM; i++){
+			ent->swep_list[i] = 1; 
+			ent->swep_ammo[i] = 9999; 
+		}
 		if (!give_all)
 			return;
 	}
 
 	if (give_all || Q_strequal(name, "ammo"))
 	{
-		for ( i = 0 ; i < MAX_WEAPONS ; i++ ) {
-			ent->client->ps.ammo[i] = 9999;
+		for ( i = 1; i < WEAPONS_NUM; i++ ) {
+			ent->swep_ammo[i] = 9999;
 		}
 		SetUnlimitedWeapons(ent);
 		if (!give_all)
@@ -786,22 +750,7 @@ void ThrowWeapon( gentity_t *ent ) {
 
 	client = ent->client;
 
-if(weapon == WP_GAUNTLET){ return; }
-
-if(weapon <= 15){
-	amount = client->ps.ammo[weapon];
-	if(amount == 0){ return; }
-	client->ps.ammo[weapon] = 0;
-	Set_Weapon( ent, weapon, 0);
-	client->ps.weapon = WP_GAUNTLET;
-	client->ps.generic2 = WP_GAUNTLET;
-	trap_SendServerCommand( ent - g_entities, va("clcmd \"%s\"", "weapon 1" ));
-	ent->swep_id = WP_GAUNTLET;
-	xr_item = BG_FindSwep( weapon );
-	if(!xr_item->classname){ return; }
-	xr_drop = Throw_Item( ent, xr_item, 0 );
-	xr_drop->count = amount;
-} else {
+	if(weapon == WP_GAUNTLET){ return; }
 	amount = ent->swep_ammo[weapon];
 	if(amount == 0){ return; }
 	ent->swep_ammo[weapon] = 0;
@@ -814,8 +763,6 @@ if(weapon <= 15){
 	if(!xr_item->classname){ return; }
 	xr_drop = Throw_Item( ent, xr_item, 0 );
 	xr_drop->count = amount;
-}
-
 }
 
 void Cmd_DropWeapon_f( gentity_t *ent ) {
@@ -1419,7 +1366,7 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	tent->skill = atof(arg04);
 	tent->health = atoi(arg05);
 	CopyAlloc(tent->message, arg06);	
-	tent->spawnflags = atoi(arg08);
+	tent->mtype = atoi(arg08);
 	if(!Q_stricmp (arg07, "0") ){
 	CopyAlloc(tent->target, arg02);	
 	} else {
@@ -1430,9 +1377,6 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	}
 	if(tent->skill <= 0){
 	tent->skill = 1;
-	}
-	if(tent->spawnflags <= 0){
-	tent->spawnflags = 1;
 	}
 	if(!Q_stricmp (tent->message, "0") || !tent->message ){
 	CopyAlloc(tent->message, tent->clientname);
@@ -2699,28 +2643,6 @@ if(!g_allowsettings.integer){ return; }
 	}
 }
 
-/*
-=================
-Cmd_Stats_f
-=================
-*/
-void Cmd_Stats_f( gentity_t *ent ) {
-/*
-	int max, n, i;
-
-	max = trap_AAS_PointReachabilityAreaIndex( NULL );
-
-	n = 0;
-	for ( i = 0; i < max; i++ ) {
-		if ( ent->client->areabits[i >> 3] & (1 << (i & 7)) )
-			n++;
-	}
-
-	//trap_SendServerCommand( ent-g_entities, va("print \"visited %d of %d areas\n\"", n, max));
-	trap_SendServerCommand( ent-g_entities, va("print \"%d%% level coverage\n\"", n * 100 / max));
-*/
-}
-
 void Cmd_GetMappage_f( gentity_t *ent ) {
         t_mappage page;
         char string[(MAX_MAPNAME+1)*MAPS_PER_PAGE+1];
@@ -2749,7 +2671,6 @@ commands_t cmds[ ] =
   { "say", CMD_MESSAGE|CMD_INTERMISSION, Cmd_Say_f },
   { "say_team", CMD_MESSAGE|CMD_INTERMISSION, Cmd_Say_f },
   { "score", CMD_INTERMISSION, Cmd_Score_f },
-  { "acc", CMD_INTERMISSION, Cmd_Acc_f},
 
   // cheats
   { "give", CMD_LIVING, Cmd_Give_f },
@@ -2773,7 +2694,6 @@ commands_t cmds[ ] =
   { "where", 0, Cmd_Where_f },
 
   // game commands
-
   { "follow", CMD_NOTEAM, Cmd_Follow_f },
   { "follownext", CMD_NOTEAM, Cmd_FollowCycle_f },
   { "followprev", CMD_NOTEAM, Cmd_FollowCycle_f },

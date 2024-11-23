@@ -418,11 +418,7 @@ static void CG_DrawStatusBar( void ) {
 	
 	ci = &cgs.clientinfo[ cent->currentState.clientNum ];
 	
-	if(ci->swepid >= 1){
 	weaphack = ci->swepid;
-	} else {
-	weaphack = cent->currentState.weapon;
-	}
 
 	if ( cg.showScores || !cg_draw2D.integer ){
 		return;
@@ -448,15 +444,11 @@ static void CG_DrawStatusBar( void ) {
 	//
 	if(!ps->stats[STAT_VEHICLE]){
 	if ( weaphack ) { //VEHICLE-SYSTEM: vehicle's speedmeter for all
-		if(ps->stats[STAT_SWEP] <= 15){
-		value = ps->ammo[cent->currentState.weapon];
-		} else {
 		value = ps->stats[STAT_SWEPAMMO];
-		if(value <= 0 && value != -1){
+		if(value <= 0 && value != -1){	// QS weapon predict
 		cg.swep_listcl[ps->stats[STAT_SWEP]] = 2;
 		} else {
 		cg.swep_listcl[ps->stats[STAT_SWEP]] = 1;	
-		}
 		}
 		if ( value > -1 ) {
 		if(cl_language.integer == 0){
@@ -469,15 +461,11 @@ static void CG_DrawStatusBar( void ) {
 	}
 	} else {
 		if ( weaphack ) {
-			if(ps->stats[STAT_SWEP] <= 15){
-			value = ps->ammo[cent->currentState.weapon];
-			} else {
 			value = ps->stats[STAT_SWEPAMMO];
-			if(value <= 0 && value != -1){
+			if(value <= 0 && value != -1){	// QS weapon predict
 			cg.swep_listcl[ps->stats[STAT_SWEP]] = 2;
 			} else {
 			cg.swep_listcl[ps->stats[STAT_SWEP]] = 1;	
-			}
 			}
 			if ( value > -1 ) {
 			if(cl_language.integer == 0){
@@ -2786,7 +2774,6 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 		return;
 	}
 
-
 	if (cg_newConsole.integer && !cg.showScores) {
 		float consoleSizeY = CG_ConsoleAdjustSizeY(cg_consoleSizeY.value);
 		float consoleSizeX = CG_ConsoleAdjustSizeX(cg_consoleSizeX.value);
@@ -2958,15 +2945,15 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 
     CG_FadeLevelStart();
 
-// draw fade-in/out
+	// draw fade-in/out
 	CG_DrawFade();
 	
-// don't draw center string if scoreboard is up
-if(cgs.gametype != GT_SINGLE){
-	cg.scoreBoardShowing = CG_DrawScoreboard();
-} else {
-	cg.scoreBoardShowing = CG_DrawScoreboardObj();
-}
+	// don't draw center string if scoreboard is up
+	if(cgs.gametype != GT_SINGLE){
+		cg.scoreBoardShowing = CG_DrawScoreboard();
+	} else {
+		cg.scoreBoardShowing = CG_DrawScoreboardObj();
+	}
 
 	if ( cg.snap->ps.pm_type == PM_INTERMISSION ) {
 		CG_DrawIntermission();

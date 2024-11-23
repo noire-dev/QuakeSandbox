@@ -26,16 +26,15 @@
 #define ID_BACK			12
 #define ID_MODEL		13
 #define ID_MODELTYPE	14
-#define ID_EFFECTS2		15
-#define ID_FLASHRED			16
-#define ID_FLASHGREEN			17
-#define ID_FLASHBLUE			18
-#define ID_HEFLASHRED			19
-#define ID_HEFLASHGREEN			20
-#define ID_HEFLASHBLUE			21
-#define ID_TOFLASHRED			22
-#define ID_TOFLASHGREEN			23
-#define ID_TOFLASHBLUE			24
+#define ID_FLASHRED				15
+#define ID_FLASHGREEN			16
+#define ID_FLASHBLUE			17
+#define ID_HEFLASHRED			18
+#define ID_HEFLASHGREEN			19
+#define ID_HEFLASHBLUE			20
+#define ID_TOFLASHRED			21
+#define ID_TOFLASHGREEN			22
+#define ID_TOFLASHBLUE			23
 
 #define MAX_NAMELENGTH	32
 
@@ -50,7 +49,6 @@ typedef struct {
 
 	menufield_s			name;
 	menulist_s			effects;
-	menulist_s			effects2;
 
 	menuslider_s  		flashred;
 	menuslider_s  		flashgreen;
@@ -293,7 +291,6 @@ static void PlayerSettings_SaveChanges( void ) {
 
 	// effects color
 	trap_Cvar_SetValue( "color1", uitogamecode[s_playersettings.effects.curvalue] );
-	trap_Cvar_SetValue( "color2", uitogamecode[s_playersettings.effects2.curvalue] );
 }
 
 
@@ -329,13 +326,6 @@ static void PlayerSettings_SetMenuItems( void ) {
 		c = 6;
 	}
 	s_playersettings.effects.curvalue = gamecodetoui[c];
-
-	// effects color 2
-	c = trap_Cvar_VariableValue( "color2" ) - 1;
-	if( c < 0 || c > 6 ) {
-		c = 6;
-	}
-	s_playersettings.effects2.curvalue = gamecodetoui[c];
 
 s_playersettings.heflashred.curvalue  = trap_Cvar_VariableValue( "cg_helightred");
 	
@@ -498,20 +488,6 @@ static void PlayerSettings_MenuInit( void ) {
 	s_playersettings.effects.generic.right		= MENUTEXT_COLUMN + 250;
 	s_playersettings.effects.generic.bottom		= y + PROP_HEIGHT;
 	s_playersettings.effects.numitems			= 7;
-
-	y += 3 * PROP_HEIGHT/2;
-	s_playersettings.effects2.generic.type		= MTYPE_SPINCONTROL;
-	s_playersettings.effects2.generic.flags		= QMF_NODEFAULTINIT;
-	s_playersettings.effects2.generic.id			= ID_EFFECTS2;
-	s_playersettings.effects2.generic.ownerdraw	= PlayerSettings_DrawEffects;
-	s_playersettings.effects2.generic.x			= MENUTEXT_COLUMN;
-	s_playersettings.effects2.generic.y			= y;
-	s_playersettings.effects2.generic.left		= MENUTEXT_COLUMN - 8;
-	s_playersettings.effects2.generic.top		= y - 4;
-	s_playersettings.effects2.generic.right		= MENUTEXT_COLUMN + 250;
-	s_playersettings.effects2.generic.bottom		= y + PROP_HEIGHT;
-	s_playersettings.effects2.numitems			= 7;
-
 
 	s_playersettings.model.generic.type			= MTYPE_BITMAP;
 	s_playersettings.model.generic.name			= ART_MODEL0;
@@ -711,7 +687,6 @@ y = 170;
 
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.name );
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.effects );
- 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.effects2 );
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.model );
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.back );
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.flashred );

@@ -45,16 +45,16 @@ int     spawn_weapon = 0
 	    //0-WP_NONE
 	    //1-WP_GAUNTLET
 	    //2-WP_MACHINEGUN
-	    //4-WP_SHOTGUN
-	    //8-WP_GRENADE_LAUNCHER
-	    //16-WP_ROCKET_LAUNCHER
-	    //32-WP_LIGHTNING
-	    //64-WP_RAILGUN
-	    //128-WP_PLASMAGUN
-	    //256-WP_BFG
-	    //512-WP_NAILGUN
-	    //1024-WP_PROX_LAUNCHER
-	    //2048-WP_CHAINGUN
+	    //3-WP_SHOTGUN
+	    //4-WP_GRENADE_LAUNCHER
+	    //5-WP_ROCKET_LAUNCHER
+	    //6-WP_LIGHTNING
+	    //7-WP_RAILGUN
+	    //8-WP_PLASMAGUN
+	    //9-WP_BFG
+	    //10-WP_NAILGUN
+	    //11-WP_PROX_LAUNCHER
+	    //12-WP_CHAINGUN
 
 //#######################
 //Gui variables

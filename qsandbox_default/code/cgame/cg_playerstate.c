@@ -145,8 +145,8 @@ void CG_Respawn( void ) {
 	// select the weapon the server says we are using
 	cg.weaponSelect = cg.snap->ps.weapon;
 	
-	for(i = 1 ; i < WEAPONS_NUM-15 ; i++){
-		cg.swep_listcl[i+15] = 0; 
+	for(i = 1; i < WEAPONS_NUM; i++){	// QS weapon predict
+		cg.swep_listcl[i] = 0; 
 	}
 }
 

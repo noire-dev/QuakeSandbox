@@ -87,10 +87,9 @@ void Use_target_remove_powerups( gentity_t *ent, gentity_t *other, gentity_t *ac
 	if ( ent->spawnflags & 4 ) {
 		activator->client->ps.weapon = WP_NONE;
 
-		activator->client->ps.stats[STAT_WEAPONS] = 0;
-
-		for ( i = WP_MACHINEGUN; i < WP_NUM_WEAPONS; i++ ) {
-			activator->client->ps.ammo[i] = 0;
+		for ( i = WP_MACHINEGUN; i < WEAPONS_NUM; i++ ) {
+			activator->swep_list[i] = 0;
+			activator->swep_ammo[i] = 0;
 		}
 	}
 
@@ -186,7 +185,7 @@ if(ent->type == 3){
 activator->client->ps.stats[STAT_PERSISTANT_POWERUP] += ent->count;
 }
 if(ent->type == 4){
-activator->client->ps.stats[STAT_WEAPONS] += ent->count;
+
 }
 if(ent->type == 5){
 activator->client->ps.stats[STAT_ARMOR] += ent->count;
@@ -217,7 +216,7 @@ if(ent->type == 3){
 activator->client->ps.stats[STAT_PERSISTANT_POWERUP] = ent->count;
 }
 if(ent->type == 4){
-activator->client->ps.stats[STAT_WEAPONS] = ent->count;
+
 }
 if(ent->type == 5){
 activator->client->ps.stats[STAT_ARMOR] = ent->count;
@@ -678,7 +677,7 @@ void target_mapchange_use (gentity_t *self, gentity_t *other, gentity_t *activat
 	self->nextthink = level.time + FADEOUT_TIME;
 	
 	//store session data to persist health/armor/weapons/ammo and variables to next level (only in SP mode)
-	G_UpdateClientSessionDataForMapChange( activator->client );
+	G_UpdateClientSessionDataForMapChange( activator );
 	G_UpdateGlobalSessionDataForMapChange();
 	
 	G_FadeOut( FADEOUT_TIME / 1000, -1 );

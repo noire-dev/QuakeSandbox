@@ -315,6 +315,8 @@ struct gentity_s {
 	vec3_t		grabOldOrigin;		//physgun old origin for prop
 	int			grabNewPhys;		//for freeze prop for prop
 	gentity_t 	*lastPlayer;		//for damage and killfeed
+	int			backpackContentsList[WEAPONS_NUM];
+	int			backpackContentsAmmo[WEAPONS_NUM];
 };
 
 
@@ -375,7 +377,7 @@ typedef struct {
 	//note that these stats are only stored and retrieved when changing maps through target_mapchange
 	int			sessionHealth;
 	int			sessionArmor;
-	int			sessionWeapons;		// weapons in possession
+	int			sessionWeapons;
 	int			sessionWeapon;		// weapon currently held
 	int			sessionAmmoMG;
 	int			sessionAmmoSG;

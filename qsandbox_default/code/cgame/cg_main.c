@@ -276,7 +276,6 @@ vmCvar_t	cg_smallFont;
 vmCvar_t	cg_bigFont;
 vmCvar_t	cg_noTaunt;
 vmCvar_t	cg_noProjectileTrail;
-vmCvar_t	cg_oldRail;
 vmCvar_t	cg_oldRocket;
 vmCvar_t	cg_lodScale;
 vmCvar_t	cg_leiEnhancement;
@@ -601,7 +600,6 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
 	{ &cg_smallFont, "ui_smallFont", "0.25", CVAR_ARCHIVE},
 	{ &cg_bigFont, "ui_bigFont", "0.4", CVAR_ARCHIVE},
-	{ &cg_oldRail, "cg_oldRail", "0", CVAR_ARCHIVE},
 	{ &cg_oldRocket, "cg_oldRocket", "0", CVAR_ARCHIVE},
 	{ &cg_leiEnhancement, "cg_leiEnhancement", "1", CVAR_ARCHIVE},				// LEILEI default off (in case of whiner)
 	{ &cg_leiGoreNoise, "cg_leiGoreNoise", "1", CVAR_ARCHIVE},					// LEILEI

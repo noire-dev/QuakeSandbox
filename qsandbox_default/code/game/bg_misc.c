@@ -1632,7 +1632,7 @@ qboolean BG_CanItemBeGrabbed( int gametype, const entityState_t *ent, const play
 		// oatmeal begin
 		if(ps->stats[STAT_NO_PICKUP]==1){ return qfalse; }
 		// oatmeal end
-		if ( ps->ammo[ item->giTag ] >= mod_ammolimit ) {
+		if ( ps->stats[STAT_SWEPAMMO] >= mod_ammolimit ) {
 			return qfalse;		// can't hold any more
 		}
 		return qtrue;

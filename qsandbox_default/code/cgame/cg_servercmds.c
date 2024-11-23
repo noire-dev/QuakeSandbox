@@ -87,20 +87,6 @@ static void CG_ParseScores( void ) {
 	}
 }
 
-static void CG_ParseAccuracy( void ) {
-	int		i;
-
-	for ( i = WP_MACHINEGUN ; i < WP_NUM_WEAPONS ; i++ ) {
-		cg.accuracys[i-WP_MACHINEGUN][0] = atoi( CG_Argv( (i-WP_MACHINEGUN)*2 + 1 ) );
-		cg.accuracys[i-WP_MACHINEGUN][1] = atoi( CG_Argv( (i-WP_MACHINEGUN)*2 + 2 ) );
-                #if DEBUG
-		CG_Printf("W: %i   shots: %i   Hits: %i\n", i,cg.accuracys[i][0], cg.accuracys[i][1]);
-                #endif
-	}
-
-}
-
-
 /*
 =================
 CG_ParseElimination
@@ -343,21 +329,19 @@ static void CG_ParseWeaponProperties(void) {
 
 static void CG_ParseSweps(void) {
     int i;
-    int j;
     int weaponIndex;
     int numArgs = trap_Argc();
-	
-	for(j = 1 ; j < WEAPONS_NUM ; j++){
-		if(cg.swep_listcl[j] != 2){
-		cg.swep_listcl[j] = 0;
-		}
-	}
 
-    for (i = 1; i < numArgs; i++) {
+    for (i = 0-WEAPONS_NUM; i < numArgs; i++) {
         weaponIndex = atoi(CG_Argv(i));
 
-        if (weaponIndex >= 0 && weaponIndex < WEAPONS_NUM) {
+        if (weaponIndex >= 0-WEAPONS_NUM && weaponIndex < WEAPONS_NUM) {
+			if(weaponIndex > 0){
             cg.swep_listcl[weaponIndex] = 1;
+			}
+			if(weaponIndex < 0){
+			cg.swep_listcl[weaponIndex * -1] = 2;
+			}
         }
     }
 }
@@ -759,50 +743,6 @@ static void CG_ServerCommand( void ) {
 		return;
 	}
 
-	if ( !strcmp( cmd, "cmusic" ) ) {
-		trap_SendConsoleCommand(va( "music %s \n", CG_Argv(1)) );
-		return;
-	}
-
-	if ( !strcmp( cmd, "csound" ) ) {
-		trap_SendConsoleCommand(va( "play %s \n", CG_Argv(1)) );
-		return;
-	}
-
-	if ( !strcmp( cmd, "cmodel" ) ) {
-		trap_SendConsoleCommand(va( "set model %s \n", CG_Argv(1)) );
-		trap_SendConsoleCommand(va( "set headmodel %s \n", CG_Argv(1)) );
-		trap_SendConsoleCommand(va( "set team_model %s \n", CG_Argv(1)) );
-		trap_SendConsoleCommand(va( "set team_headmodel %s \n", CG_Argv(1)) );
-		return;
-	}
-
-	if ( !strcmp( cmd, "ctorso" ) ) {
-		trap_SendConsoleCommand(va( "play %s \n", CG_Argv(1)) );
-		trap_SendConsoleCommand(va( "set ui_msmodel %s \n", CG_Argv(1)) );
-		return;
-	}
-
-	if ( !strcmp( cmd, "ctorsoskin" ) ) {
-		trap_SendConsoleCommand(va( "set ui_msskin %s \n", CG_Argv(1)) );
-		return;
-	}
-
-	if ( !strcmp( cmd, "chead" ) ) {
-		trap_SendConsoleCommand(va( "set headmodel %s \n", CG_Argv(1)) );
-		return;
-	}
-
-	if ( !strcmp( cmd, "cheadskin" ) ) {
-		trap_SendConsoleCommand(va( "set headmodel %s \n", CG_Argv(1)) );
-		return;
-	}
-
-	if ( !strcmp( cmd, "clegs" ) ) {
-		trap_SendConsoleCommand(va( "set legsskin %s \n", CG_Argv(1)) );
-		return;
-	}
-
 	if ( !strcmp( cmd, "cs" ) ) {
 		CG_ConfigStringModified();
 		return;
@@ -886,13 +826,6 @@ static void CG_ServerCommand( void ) {
 		CG_ParseScores();
 		return;
 	}
-
-
-    if ( !strcmp( cmd, "accs" ) ) {
-        CG_ParseAccuracy();
-        return;
-    }
-
 
 	if ( !strcmp( cmd, "ddtaken" ) ) {
 		CG_ParseDDtimetaken();

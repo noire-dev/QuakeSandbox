@@ -1573,7 +1573,7 @@ static void PM_BeginWeaponChange( int weapon ) {
 	}
 	}
 	pm->ps->generic2 = pm->cmd.weapon;
-	if ( weapon <= WP_NONE || weapon >= WP_NUM_WEAPONS ) {
+	if ( weapon > WP_NONE || weapon < WEAPONS_NUM ) {
 	item = BG_FindSwep(weapon);
 	#ifdef QAGAME
 	if(G_CheckSwep(pm->ps->clientNum, weapon, 0)){
@@ -1597,27 +1597,7 @@ static void PM_BeginWeaponChange( int weapon ) {
 	#endif
 	return;
 	}
-
-	if ( !( pm->ps->stats[STAT_WEAPONS] & ( 1 << weapon ) ) ) {
-		return;
-	}
-
-	if ( pm->ps->weaponstate == WEAPON_DROPPING ) {
-		return;
-	}
-
-        if(pm->pmove_flags & DF_INSTANT_WEAPON_CHANGE)
-        {
-                pm->ps->weaponstate = WEAPON_DROPPING;
-        } else
-        {
-            PM_AddEvent( EV_CHANGE_WEAPON );
-            pm->ps->weaponstate = WEAPON_DROPPING;
-            pm->ps->weaponTime += 200;
-            PM_StartTorsoAnim( TORSO_DROP );
-        }
 }
-
 
 /*
 ===============
@@ -1634,7 +1614,7 @@ static void PM_FinishWeaponChange( void ) {
 	return;	
 	}
 	}
-	if ( weapon < WP_NONE || weapon >= WP_NUM_WEAPONS ) {
+	if ( weapon > WP_NONE || weapon < WEAPONS_NUM ) {
 	item = BG_FindSwep(weapon);
 	#ifdef QAGAME
 	if(G_CheckSwep(pm->ps->clientNum, weapon, 1)){
@@ -1642,8 +1622,8 @@ static void PM_FinishWeaponChange( void ) {
 	pm->ps->weaponstate = WEAPON_RAISING;
         if(! (pm->pmove_flags & DF_INSTANT_WEAPON_CHANGE))
         {
-                pm->ps->weaponTime += 500;
-                PM_StartTorsoAnim( TORSO_RAISE );
+            pm->ps->weaponTime += 500;
+            PM_StartTorsoAnim( TORSO_RAISE );
         }
 	} else {
 	return;
@@ -1651,23 +1631,7 @@ static void PM_FinishWeaponChange( void ) {
 	#endif
 	return;
 	}
-
-	if ( !( pm->ps->stats[STAT_WEAPONS] & ( 1 << weapon ) ) ) {
-		weapon = WP_NONE;
-	}
-
-	pm->ps->weapon = weapon;
-	#ifdef QAGAME
-	G_DefaultSwep(pm->ps->clientNum, weapon);
-	#endif
-	pm->ps->weaponstate = WEAPON_RAISING;
-        if(! (pm->pmove_flags & DF_INSTANT_WEAPON_CHANGE))
-        {
-                pm->ps->weaponTime += 500;
-                PM_StartTorsoAnim( TORSO_RAISE );
-        }
 }
-
 
 /*
 ==============
@@ -1868,51 +1832,28 @@ static void PM_Weapon( void ) {
 
 	pm->ps->weaponstate = WEAPON_FIRING;
 
-if( pm->ps->stats[STAT_SWEP] <= 15 ){
-	// check for out of ammo
-		if ( ! pm->ps->ammo[ pm->ps->weapon ] ) {
-			PM_AddEvent( EV_NOAMMO );
-			pm->ps->weaponTime += 500;
-			return;
-		}
-	} else {
-#ifdef 	QAGAME
-		if(!G_CheckSwepAmmo(pm->ps->clientNum, pm->ps->stats[STAT_SWEP])){
-			PM_AddEvent( EV_NOAMMO );
-			pm->ps->weaponTime += 500;
+#ifdef QAGAME
+	if(!G_CheckSwepAmmo(pm->ps->clientNum, pm->ps->stats[STAT_SWEP])){
+		PM_AddEvent( EV_NOAMMO );
+		pm->ps->weaponTime += 500;
 		return;
-		}
+	}
 #else
-		if(!pm->ps->stats[STAT_SWEPAMMO]){
-			PM_AddEvent( EV_NOAMMO );
-			pm->ps->weaponTime += 500;
+	if(!pm->ps->stats[STAT_SWEPAMMO]){
+		PM_AddEvent( EV_NOAMMO );
+		pm->ps->weaponTime += 500;
 		return;
-		}
+	}
 #endif
-}
 
-if ( !(pm->ps->ammo[ pm->ps->weapon ] == -1 || pm->ps->ammo[ pm->ps->weapon ] >=9999)) {
-
-
-if( pm->ps->stats[STAT_SWEP] >= 16 ){
-
-} else {
-if(pm->ps->ammo[ pm->ps->weapon ] >= 1 ){ pm->ps->ammo[ pm->ps->weapon ]-= 1; }
-}
-
-}
-if( !(pm->ps->stats[STAT_SWEPAMMO] == -1 || pm->ps->stats[STAT_SWEPAMMO] >=9999) ){ 
-if( pm->ps->stats[STAT_SWEP] >= 16 ){
-if(pm->s->generic3 >= 1 ){ pm->s->generic3 -= 1; }
+if( !(pm->ps->stats[STAT_SWEPAMMO] == -1 || pm->ps->stats[STAT_SWEPAMMO] >= 9999) ){ 
+if(pm->s->generic3 > 0 ){ pm->s->generic3 -= 1; }
 if(pm->ps->stats[STAT_SWEPAMMO] >= 1 ){ pm->ps->stats[STAT_SWEPAMMO] -= 1; }
 #ifdef 	QAGAME
-if(G_CheckSwepAmmo(pm->ps->clientNum, pm->ps->stats[STAT_SWEP]) >= 1 ){ 
+if(G_CheckSwepAmmo(pm->ps->clientNum, pm->ps->stats[STAT_SWEP]) > 0 ){ 
 PM_Add_SwepAmmo(pm->ps->clientNum, pm->ps->stats[STAT_SWEP], -1); 
 }
 #endif
-} else {
-
-}
 }
 	// fire weapon
 	PM_AddEvent( EV_FIRE_WEAPON );
@@ -2283,7 +2224,7 @@ void PmoveSingle (pmove_t *pmove) {
 
 	// set the firing flag for continuous beam weapons
 	if ( !(pm->ps->pm_flags & PMF_RESPAWNED) && pm->ps->pm_type != PM_INTERMISSION && pm->ps->pm_type != PM_CUTSCENE
-		&& ( pm->cmd.buttons & BUTTON_ATTACK ) && (pm->ps->ammo[ pm->ps->weapon ] || pm->ps->stats[STAT_SWEPAMMO]) ) {
+		&& ( pm->cmd.buttons & BUTTON_ATTACK ) && pm->ps->stats[STAT_SWEPAMMO] ) {
 		pm->ps->eFlags |= EF_FIRING;
 	} else {
 		pm->ps->eFlags &= ~EF_FIRING;

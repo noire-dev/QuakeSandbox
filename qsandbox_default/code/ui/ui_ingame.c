@@ -658,7 +658,13 @@ enum {
 enum {
 	IGS_RECORD,
 	IGS_STOPRECORD,
-	IGS_KILL
+	IGS_KILL,
+	IGS_THIRDPERSON,
+	IGS_FLASHLIGHT,
+	IGS_EXITVEHICLE,
+	IGS_DROPWEAPON,
+	IGS_DROPHOLDABLE,
+	IGS_HUD
 };
 
 // save options
@@ -868,6 +874,25 @@ static void IG_Actions_Event( int index )
 	case IGS_KILL:
 		trap_Cmd_ExecuteText( EXEC_APPEND, "kill \n");
 		break;
+	case IGS_THIRDPERSON:
+		trap_Cmd_ExecuteText( EXEC_APPEND, "toggle cg_thirdperson \n");
+		break;
+	case IGS_FLASHLIGHT:
+		trap_Cmd_ExecuteText( EXEC_APPEND, "flashlight \n");
+		break;
+	case IGS_EXITVEHICLE:
+		trap_Cmd_ExecuteText( EXEC_APPEND, "exitvehicle \n");
+		break;
+	case IGS_DROPWEAPON:
+		trap_Cmd_ExecuteText( EXEC_APPEND, "dropweapon \n");
+		break;
+	case IGS_DROPHOLDABLE:
+		trap_Cmd_ExecuteText( EXEC_APPEND, "dropholdable \n");
+		break;
+	case IGS_HUD:
+		trap_Cmd_ExecuteText( EXEC_APPEND, "toggle cg_draw2D \n");
+		break;
+
 	default:
 		Com_Printf("IG_Actions_Event: unknown id (%i)", id);
 		return;
@@ -1428,11 +1453,23 @@ static void IG_Actions_SubMenu( void )
 	DynamicMenu_AddItem("Demo record", IGS_RECORD, 0, IG_Actions_Event);
 	DynamicMenu_AddItem("Stop record", IGS_STOPRECORD, 0, IG_Actions_Event);
 	DynamicMenu_AddItem("I am stuck", IGS_KILL, 0, IG_Actions_Event);
+	DynamicMenu_AddItem("Third person", IGS_THIRDPERSON, 0, IG_Actions_Event);
+	DynamicMenu_AddItem("Flashlight", IGS_FLASHLIGHT, 0, IG_Actions_Event);
+	DynamicMenu_AddItem("Exit vehicle", IGS_EXITVEHICLE, 0, IG_Actions_Event);
+	DynamicMenu_AddItem("Drop weapon", IGS_DROPWEAPON, 0, IG_Actions_Event);
+	DynamicMenu_AddItem("Drop holdable", IGS_DROPHOLDABLE, 0, IG_Actions_Event);
+	DynamicMenu_AddItem("Toggle HUD", IGS_HUD, 0, IG_Actions_Event);
 	}
 	if(cl_language.integer == 1){
 	DynamicMenu_AddItem("Начать запись", IGS_RECORD, 0, IG_Actions_Event);
 	DynamicMenu_AddItem("Остановка записи", IGS_STOPRECORD, 0, IG_Actions_Event);
 	DynamicMenu_AddItem("Я застрял", IGS_KILL, 0, IG_Actions_Event);
+	DynamicMenu_AddItem("Третье лицо", IGS_THIRDPERSON, 0, IG_Actions_Event);
+	DynamicMenu_AddItem("Фонарик", IGS_FLASHLIGHT, 0, IG_Actions_Event);
+	DynamicMenu_AddItem("Выход из машины", IGS_EXITVEHICLE, 0, IG_Actions_Event);
+	DynamicMenu_AddItem("Кинуть оружие", IGS_DROPWEAPON, 0, IG_Actions_Event);
+	DynamicMenu_AddItem("Кинуть предмет", IGS_DROPHOLDABLE, 0, IG_Actions_Event);
+	DynamicMenu_AddItem("Скрыть HUD", IGS_HUD, 0, IG_Actions_Event);
 	}
 
 	DynamicMenu_FinishSubMenuInit();

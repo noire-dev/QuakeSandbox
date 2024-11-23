@@ -61,14 +61,13 @@ GAME OPTIONS MENU
 #define ID_ZOOMFOV				149
 #define ID_AMMOWARNING			150
 #define ID_DRAWGUN				151
-#define ID_OLDRAIL				152
-#define ID_OLDPLASMA			153
-#define ID_OLDROCKET			154
-#define ID_TRUELIGHTNING		155
-#define ID_COLORRED             156
-#define ID_COLORGREEN           157
-#define ID_COLORBLUE            158
-#define ID_WEAPONBAR            159
+#define ID_OLDPLASMA			152
+#define ID_OLDROCKET			153
+#define ID_TRUELIGHTNING		154
+#define ID_COLORRED             155
+#define ID_COLORGREEN           156
+#define ID_COLORBLUE            157
+#define ID_WEAPONBAR            158
 
 #define	NUM_CROSSHAIRS			10
 
@@ -116,7 +115,6 @@ typedef struct {
 	menufield_s			fov;
 	menufield_s			zoomfov;
 
-	menuradiobutton_s	oldrail;
 	menuradiobutton_s	oldplasma;
 	menuradiobutton_s	oldrocket;
 	menuradiobutton_s	truelightning;
@@ -206,7 +204,6 @@ static menucommon_s* g_object_controls[] = {
 	(menucommon_s*) &s_preferences.brass,
 	(menucommon_s*) &s_preferences.dynamiclights,
 	(menucommon_s*) &s_preferences.gibs,
-	(menucommon_s*) &s_preferences.oldrail,
 	(menucommon_s*) &s_preferences.oldplasma,
 	(menucommon_s*) &s_preferences.oldrocket,
 	(menucommon_s*) &s_preferences.truelightning,
@@ -263,7 +260,6 @@ static void Preferences_SetMenuItems( void ) {
 	s_preferences.shadows.curvalue			= Com_Clamp( 0, 3, trap_Cvar_VariableValue( "cg_shadows" ) );
 	s_preferences.newESCmenu.curvalue		= trap_Cvar_VariableValue( "uie_ingame_dynamicmenu" ) != 0;
 
-	s_preferences.oldrail.curvalue			= trap_Cvar_VariableValue( "cg_oldRail" ) != 0;
 	s_preferences.oldplasma.curvalue		= trap_Cvar_VariableValue( "cg_oldPlasma" ) != 0;
 	s_preferences.oldrocket.curvalue		= trap_Cvar_VariableValue( "cg_oldRocket" ) != 0;
 	s_preferences.truelightning.curvalue	= trap_Cvar_VariableValue( "cg_truelightning" ) != 0;
@@ -537,10 +533,6 @@ static void Preferences_Event( void* ptr, int notification ) {
 
 	case ID_NEWESCAPEMENU:
 		trap_Cvar_SetValue( "uie_ingame_dynamicmenu", s_preferences.newESCmenu.curvalue );
-		break;
-
-	case ID_OLDRAIL:
-		trap_Cvar_SetValue( "cg_oldRail", s_preferences.oldrail.curvalue );
 		break;
 
 	case ID_OLDPLASMA:
@@ -908,11 +900,6 @@ static void Preferences_MenuInit( void )
 	s_preferences.predictitems.generic.statusbar= Preferences_Statusbar;
 	s_preferences.predictitems.generic.id       = ID_PREDICTITEMS;
 
-	s_preferences.oldrail.generic.type     = MTYPE_RADIOBUTTON;
-	s_preferences.oldrail.generic.flags	  = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
-	s_preferences.oldrail.generic.callback = Preferences_Event;
-	s_preferences.oldrail.generic.id       = ID_OLDRAIL;
-
 	s_preferences.oldplasma.generic.type     = MTYPE_RADIOBUTTON;
 	s_preferences.oldplasma.generic.flags	  = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
 	s_preferences.oldplasma.generic.callback = Preferences_Event;
@@ -977,7 +964,6 @@ s_preferences.teamchatheight.generic.name       = "FPS Limit:";
 s_preferences.fov.generic.name       = "FOV:";
 s_preferences.zoomfov.generic.name       = "Zoom FOV:";
 s_preferences.predictitems.generic.name	   = "Predict Items:";
-s_preferences.oldrail.generic.name	  = "Old Railgun effect:";
 s_preferences.oldplasma.generic.name	  = "Old Plasma effect:";
 s_preferences.oldrocket.generic.name	  = "Old Rocket effect:";
 s_preferences.truelightning.generic.name	  = "True lightning:";
@@ -1017,7 +1003,6 @@ s_preferences.teamchatheight.generic.name       = "Лимит FPS:";
 s_preferences.fov.generic.name       = "Поле зрения:";
 s_preferences.zoomfov.generic.name       = "Увеличение:";
 s_preferences.predictitems.generic.name	   = "Предметы клиент:";
-s_preferences.oldrail.generic.name	  = "Старый эффект Рейлгана:";
 s_preferences.oldplasma.generic.name	  = "Старый эффект Плазмы:";
 s_preferences.oldrocket.generic.name	  = "Старый эффект Ракет:";
 s_preferences.truelightning.generic.name	  = "Правильный эффект молнии:";
@@ -1067,7 +1052,6 @@ s_preferences.newESCmenu.generic.name	   = "Новый вид меню:";
 	Menu_AddItem( &s_preferences.menu, &s_preferences.fov);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.zoomfov);
 
-	Menu_AddItem( &s_preferences.menu, &s_preferences.oldrail);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.oldplasma);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.oldrocket);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.truelightning);

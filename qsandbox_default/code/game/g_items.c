@@ -243,156 +243,45 @@ int Pickup_Holdable( gentity_t *ent, gentity_t *other ) {
 }
 
 int Pickup_Backpack( gentity_t *ent, gentity_t *other) {
-	//ent is the backpack
-	//other is the player picking the backpack up
-	//function doesn't return a respawn time because backpacks never respawn
-	
-	//machinegun
-	if ( ent->count & (1 << WP_MACHINEGUN) )
-		other->client->ps.stats[STAT_WEAPONS] |= (1 << WP_MACHINEGUN);
-	
-	//after dying, player spawns with 'free' 100 MG ammo, so we're taking 100 bullets from the backpack and give the remainder to the player
-	if ( ent->backpackContents[WP_MACHINEGUN] > 100 )
-		other->client->ps.ammo[WP_MACHINEGUN] += (ent->backpackContents[WP_MACHINEGUN] - 100);
-	if (other->client->ps.ammo[WP_MACHINEGUN] > 9999)
-		other->client->ps.ammo[WP_MACHINEGUN] = 9999;
-	
-	//shotgun
-	if ( ent->count & (1 << WP_SHOTGUN) )
-		other->client->ps.stats[STAT_WEAPONS] |= (1 << WP_SHOTGUN);
-	other->client->ps.ammo[WP_SHOTGUN] += ent->backpackContents[WP_SHOTGUN];
-	if (other->client->ps.ammo[WP_SHOTGUN] > 9999)
-		other->client->ps.ammo[WP_SHOTGUN] = 9999;
+	int i;
 
-	//grenade launcher
-	if ( ent->count & (1 << WP_GRENADE_LAUNCHER) )
-		other->client->ps.stats[STAT_WEAPONS] |= (1 << WP_GRENADE_LAUNCHER);
-	other->client->ps.ammo[WP_GRENADE_LAUNCHER] += ent->backpackContents[WP_GRENADE_LAUNCHER];
-	if (other->client->ps.ammo[WP_GRENADE_LAUNCHER] > 9999)
-		other->client->ps.ammo[WP_GRENADE_LAUNCHER] = 9999;
-
-	//rocket launcher
-	if ( ent->count & (1 << WP_ROCKET_LAUNCHER) )
-		other->client->ps.stats[STAT_WEAPONS] |= (1 << WP_ROCKET_LAUNCHER);
-	other->client->ps.ammo[WP_ROCKET_LAUNCHER] += ent->backpackContents[WP_ROCKET_LAUNCHER];
-	if (other->client->ps.ammo[WP_ROCKET_LAUNCHER] > 9999)
-		other->client->ps.ammo[WP_ROCKET_LAUNCHER] = 9999;
-
-	//lightning gun
-	if ( ent->count & (1 << WP_LIGHTNING) )
-		other->client->ps.stats[STAT_WEAPONS] |= (1 << WP_LIGHTNING);
-	other->client->ps.ammo[WP_LIGHTNING] += ent->backpackContents[WP_LIGHTNING];
-	if (other->client->ps.ammo[WP_LIGHTNING] > 9999)
-		other->client->ps.ammo[WP_LIGHTNING] = 9999;
-	
-	//railgun
-	if ( ent->count & (1 << WP_RAILGUN) )
-		other->client->ps.stats[STAT_WEAPONS] |= (1 << WP_RAILGUN);
-	other->client->ps.ammo[WP_RAILGUN] += ent->backpackContents[WP_RAILGUN];
-	if (other->client->ps.ammo[WP_RAILGUN] > 9999)
-		other->client->ps.ammo[WP_RAILGUN] = 9999;
-
-	//plasma gun
-	if ( ent->count & (1 << WP_PLASMAGUN) )
-		other->client->ps.stats[STAT_WEAPONS] |= (1 << WP_PLASMAGUN);
-	other->client->ps.ammo[WP_PLASMAGUN] += ent->backpackContents[WP_PLASMAGUN];
-	if (other->client->ps.ammo[WP_PLASMAGUN] > 9999)
-		other->client->ps.ammo[WP_PLASMAGUN] = 9999;
-
-	//bfg
-		if ( ent->count & (1 << WP_BFG) )
-		other->client->ps.stats[STAT_WEAPONS] |= (1 << WP_BFG);
-	other->client->ps.ammo[WP_BFG] += ent->backpackContents[WP_BFG];
-	if (other->client->ps.ammo[WP_BFG] > 9999)
-		other->client->ps.ammo[WP_BFG] = 9999;
-	
-	//nailgun
-		if ( ent->count & (1 << WP_NAILGUN) )
-		other->client->ps.stats[STAT_WEAPONS] |= (1 << WP_NAILGUN);
-	other->client->ps.ammo[WP_NAILGUN] += ent->backpackContents[WP_NAILGUN];
-	if (other->client->ps.ammo[WP_NAILGUN] > 9999)
-		other->client->ps.ammo[WP_NAILGUN] = 9999;
-	
-	//prox
-		if ( ent->count & (1 << WP_PROX_LAUNCHER) )
-		other->client->ps.stats[STAT_WEAPONS] |= (1 << WP_PROX_LAUNCHER);
-	other->client->ps.ammo[WP_PROX_LAUNCHER] += ent->backpackContents[WP_PROX_LAUNCHER];
-	if (other->client->ps.ammo[WP_PROX_LAUNCHER] > 9999)
-		other->client->ps.ammo[WP_PROX_LAUNCHER] = 9999;
-	
-	//chaingun
-		if ( ent->count & (1 << WP_CHAINGUN) )
-		other->client->ps.stats[STAT_WEAPONS] |= (1 << WP_CHAINGUN);
-	other->client->ps.ammo[WP_CHAINGUN] += ent->backpackContents[WP_CHAINGUN];
-	if (other->client->ps.ammo[WP_CHAINGUN] > 9999)
-		other->client->ps.ammo[WP_CHAINGUN] = 9999;
-	
-	//flamethrower
-		if ( ent->count & (1 << WP_FLAMETHROWER) )
-		other->client->ps.stats[STAT_WEAPONS] |= (1 << WP_FLAMETHROWER);
-	other->client->ps.ammo[WP_FLAMETHROWER] += ent->backpackContents[WP_FLAMETHROWER];
-	if (other->client->ps.ammo[WP_FLAMETHROWER] > 9999)
-		other->client->ps.ammo[WP_FLAMETHROWER] = 9999;
-	
-	//dark flare
-		if ( ent->count & (1 << WP_ANTIMATTER) )
-		other->client->ps.stats[STAT_WEAPONS] |= (1 << WP_ANTIMATTER);
-	other->client->ps.ammo[WP_ANTIMATTER] += ent->backpackContents[WP_ANTIMATTER];
-	if (other->client->ps.ammo[WP_ANTIMATTER] > 9999)
-		other->client->ps.ammo[WP_ANTIMATTER] = 9999;
+	//weapons
+	for(i = 1; i < WEAPONS_NUM; i++){
+		other->swep_list[i] = ent->backpackContentsList[i];
+		other->swep_ammo[i] = ent->backpackContentsAmmo[i];
+	}
 
 	//holdables
-	other->client->ps.stats[STAT_HOLDABLE_ITEM] = ent->backpackContents[0];
+	other->client->ps.stats[STAT_HOLDABLE_ITEM] = ent->backpackContentsList[0];
 
 	return -1;
 }
 
 void Set_Weapon (gentity_t *ent, int weapon, int status)
 {
-if(weapon <= 15){
-	if(status == 1){
-	ent->client->ps.stats[STAT_WEAPONS] |= ( 1 << weapon );
-	} else {
-	ent->client->ps.stats[STAT_WEAPONS] &= ~( 1 << weapon );
-	}
-} else {
 	if(status == 1){
 	ent->swep_list[weapon] = 1;
 	} else {
 	ent->swep_list[weapon] = 0;
 	}
 }
-}
 
 void Add_Ammo (gentity_t *ent, int weapon, int count)
 {
-if(weapon <= 15){
-	ent->client->ps.ammo[weapon] += count;
-	if ( ent->client->ps.ammo[weapon] > mod_ammolimit && count != 9999 ) {
-		ent->client->ps.ammo[weapon] = mod_ammolimit;
-	}
-} else {
 	ent->swep_ammo[weapon] += count;
 	if ( ent->swep_ammo[weapon] > mod_ammolimit && count != 9999 ) {
 		ent->swep_ammo[weapon] = mod_ammolimit;
 	}
 }
-}
 
 void Set_Ammo (gentity_t *ent, int weapon, int count)
 {
-if(weapon <= 15){
-	ent->client->ps.ammo[weapon] = count;
-} else {
 	ent->swep_ammo[weapon] = count;
-}
 }
 
 int Pickup_Ammo (gentity_t *ent, gentity_t *other)
 {
 	int		quantity;
-
-
 
 	if ( ent->count ) {
 		quantity = ent->count;
@@ -553,23 +442,6 @@ int Pickup_Weapon (gentity_t *ent, gentity_t *other) {
 	}
     //end
 		}
-	if(ent->item->giTag <= 15){
-		// dropped items and teamplay weapons always have full ammo
-		if ( ! (ent->flags & FL_DROPPED_ITEM) && g_gametype.integer != GT_TEAM ) {
-			// respawning rules
-			// drop the quantity if the already have over the minimum
-			if ( other->client->ps.ammo[ ent->item->giTag ] < quantity ) {
-				quantity = quantity - other->client->ps.ammo[ ent->item->giTag ];
-			} else {
-				if(g_maxweaponpickup.integer == 1){
-				quantity /= 2;
-				}
-				if(g_maxweaponpickup.integer != 1){
-					quantity = g_maxweaponpickup.integer;		// only add a single shot
-				}
-			}
-		}
-	} else {
 		// dropped items and teamplay weapons always have full ammo
 		if ( ! (ent->flags & FL_DROPPED_ITEM) && g_gametype.integer != GT_TEAM ) {
 			// respawning rules
@@ -585,7 +457,6 @@ int Pickup_Weapon (gentity_t *ent, gentity_t *other) {
 				}
 			}
 		}
-	}
 		
 	}
 
@@ -1117,6 +988,7 @@ gentity_t *LaunchBackpack( gitem_t *item, gentity_t *self, vec3_t velocity ) {
 	gentity_t	*dropped;
 	vec3_t		origin;
 	int			weapons = 0;
+	int			i;
 
 	VectorCopy(self->s.pos.trBase, origin);
 
@@ -1154,81 +1026,13 @@ gentity_t *LaunchBackpack( gitem_t *item, gentity_t *self, vec3_t velocity ) {
 	//set contents of backpack
 	
 	//holdables
-	dropped->backpackContents[0] = self->client->ps.stats[STAT_HOLDABLE_ITEM];
+	dropped->backpackContentsList[0] = self->client->ps.stats[STAT_HOLDABLE_ITEM];
 	
-	//machinegun 
-	if ( self->client->ps.stats[STAT_WEAPONS] & (1 << WP_MACHINEGUN ) )
-		weapons |= (1 << WP_MACHINEGUN);
-	dropped->backpackContents[WP_MACHINEGUN] = self->client->ps.ammo[WP_MACHINEGUN];
-	
-	//shotgun
-	if ( self->client->ps.stats[STAT_WEAPONS] & (1 << WP_SHOTGUN ) )
-		weapons |= (1 << WP_SHOTGUN);
-	dropped->backpackContents[WP_SHOTGUN] = self->client->ps.ammo[WP_SHOTGUN];
-
-	//grenade launcher
-	if ( self->client->ps.stats[STAT_WEAPONS] & (1 << WP_GRENADE_LAUNCHER ) )
-		weapons |= (1 << WP_GRENADE_LAUNCHER);
-	dropped->backpackContents[WP_GRENADE_LAUNCHER] = self->client->ps.ammo[WP_GRENADE_LAUNCHER];
-
-	//rocket launcher
-	if ( self->client->ps.stats[STAT_WEAPONS] & (1 << WP_ROCKET_LAUNCHER ) )
-		weapons |= (1 << WP_ROCKET_LAUNCHER);
-	dropped->backpackContents[WP_ROCKET_LAUNCHER] = self->client->ps.ammo[WP_ROCKET_LAUNCHER];
-
-	//lightning gun
-	if ( self->client->ps.stats[STAT_WEAPONS] & (1 << WP_LIGHTNING ) )
-		weapons |= (1 << WP_LIGHTNING);
-	dropped->backpackContents[WP_LIGHTNING] = self->client->ps.ammo[WP_LIGHTNING];
-
-	//railgun
-	if ( self->client->ps.stats[STAT_WEAPONS] & (1 << WP_RAILGUN ) )
-		weapons |= (1 << WP_RAILGUN);
-	dropped->backpackContents[WP_RAILGUN] = self->client->ps.ammo[WP_RAILGUN];
-
-	//plasmagun
-	if ( self->client->ps.stats[STAT_WEAPONS] & (1 << WP_PLASMAGUN ) )
-		weapons |= (1 << WP_PLASMAGUN);
-	dropped->backpackContents[WP_PLASMAGUN] = self->client->ps.ammo[WP_PLASMAGUN];
-
-	//bfg
-	if ( self->client->ps.stats[STAT_WEAPONS] & (1 << WP_BFG ) )
-		weapons |= (1 << WP_BFG);
-	dropped->backpackContents[WP_BFG] = self->client->ps.ammo[WP_BFG];
-	
-	//grapple
-	if ( self->client->ps.stats[STAT_WEAPONS] & (1 << WP_GRAPPLING_HOOK ) )
-		weapons |= (1 << WP_GRAPPLING_HOOK);
-	dropped->backpackContents[WP_GRAPPLING_HOOK] = self->client->ps.ammo[WP_GRAPPLING_HOOK];
-	
-	//nailgun
-	if ( self->client->ps.stats[STAT_WEAPONS] & (1 << WP_NAILGUN ) )
-		weapons |= (1 << WP_NAILGUN);
-	dropped->backpackContents[WP_NAILGUN] = self->client->ps.ammo[WP_NAILGUN];
-	
-	//proxlauncher
-	if ( self->client->ps.stats[STAT_WEAPONS] & (1 << WP_PROX_LAUNCHER ) )
-		weapons |= (1 << WP_PROX_LAUNCHER);
-	dropped->backpackContents[WP_PROX_LAUNCHER] = self->client->ps.ammo[WP_PROX_LAUNCHER];
-	
-	//chaingun
-	if ( self->client->ps.stats[STAT_WEAPONS] & (1 << WP_CHAINGUN ) )
-		weapons |= (1 << WP_CHAINGUN);
-	dropped->backpackContents[WP_CHAINGUN] = self->client->ps.ammo[WP_CHAINGUN];
-	
-	//flamethrower
-	if ( self->client->ps.stats[STAT_WEAPONS] & (1 << WP_FLAMETHROWER ) )
-		weapons |= (1 << WP_FLAMETHROWER);
-	dropped->backpackContents[WP_FLAMETHROWER] = self->client->ps.ammo[WP_FLAMETHROWER];
-	
-	//antimatter
-	if ( self->client->ps.stats[STAT_WEAPONS] & (1 << WP_ANTIMATTER ) )
-		weapons |= (1 << WP_ANTIMATTER);
-	dropped->backpackContents[WP_ANTIMATTER] = self->client->ps.ammo[WP_ANTIMATTER];
-
-	
-	//store weapons in the count attribute of the backpack
-	dropped->count = weapons;
+	//weapons
+	for(i = 1; i < WEAPONS_NUM; i++){
+		dropped->backpackContentsList[i] = self->swep_list[i];
+		dropped->backpackContentsAmmo[i] = self->swep_ammo[i];
+	}
 
 	return dropped;
 }

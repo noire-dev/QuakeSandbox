@@ -104,23 +104,22 @@ typedef struct
 #define ID_DWEAPON		43
 #define ID_DHOLDABLE		44
 #define ID_ACC		45
-#define ID_VTAUNT		46
-#define ID_CLRUN		47
-#define ID_SANDBOX		48
-#define ID_SANDBOXMODE		49
-#define ID_NEWSANDBOX		50
-#define ID_EXITVEHICLE		51
+#define ID_CLRUN		46
+#define ID_SANDBOX		47
+#define ID_SANDBOXMODE		48
+#define ID_NEWSANDBOX		49
+#define ID_EXITVEHICLE		50
 
 
 // all others
-#define ID_FREELOOK		52
-#define ID_INVERTMOUSE	53
-#define ID_ALWAYSRUN	54
-#define ID_MOUSESPEED	55
-#define ID_JOYENABLE	56
-#define ID_JOYTHRESHOLD	57
-#define ID_SMOOTHMOUSE	58
-#define ID_MOUSESTYLE	59
+#define ID_FREELOOK		51
+#define ID_INVERTMOUSE	52
+#define ID_ALWAYSRUN	53
+#define ID_MOUSESPEED	54
+#define ID_JOYENABLE	55
+#define ID_JOYTHRESHOLD	56
+#define ID_SMOOTHMOUSE	57
+#define ID_MOUSESTYLE	58
 
 
 typedef struct
@@ -192,7 +191,6 @@ typedef struct
 	menuaction_s		dweapon;
 	menuaction_s		dholdable;
 	menuaction_s		acc;
-	menuaction_s		vtaunt;
 	menuaction_s		clrun;
 	menuaction_s		sandbox;
 	menuaction_s		sandboxmode;
@@ -261,7 +259,6 @@ static bind_t g_bindings[] =
 	{"dropweapon", 	"drop weapon",	ID_DWEAPON,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"dropholdable", 	"drop holdable",	ID_DHOLDABLE,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"+acc", 	"accuracy",	ID_ACC,		ANIM_CHAT,		-1,				-1,		-1, -1},
-	{"vtaunt", 	"voice taunt",	ID_VTAUNT,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"toggle cl_run", 	"run/walk toggle",	ID_CLRUN,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"ui_sandbox", 	"sandbox menu",	ID_SANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr uitoolmode", 	"sandbox tool mode",	ID_SANDBOXMODE,		ANIM_CHAT,		-1,				-1,		-1, -1},
@@ -318,7 +315,6 @@ static bind_t g_bindingsrus[] =
 	{"dropweapon", 	"выбросить оружие",	ID_DWEAPON,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"dropholdable", 	"выбросить предмет",	ID_DHOLDABLE,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"+acc", 	"точность",	ID_ACC,		ANIM_CHAT,		-1,				-1,		-1, -1},
-	{"vtaunt", 	"фраза",	ID_VTAUNT,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"toggle cl_run", 	"бег/ходьба переключение",	ID_CLRUN,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"ui_sandbox", 	"спавн меню",	ID_SANDBOX,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"vstr uitoolmode", 	"песочница режим инструмента",	ID_SANDBOXMODE,		ANIM_CHAT,		-1,				-1,		-1, -1},
@@ -410,7 +406,6 @@ static menucommon_s *g_misc_controls[] = {
 	(menucommon_s *)&s_controls.dweapon,
 	(menucommon_s *)&s_controls.dholdable,
 	(menucommon_s *)&s_controls.acc,
-	(menucommon_s *)&s_controls.vtaunt,
 	(menucommon_s *)&s_controls.clrun,
 	(menucommon_s *)&s_controls.sandbox,
 	(menucommon_s *)&s_controls.sandboxmode,
@@ -1692,12 +1687,6 @@ static void Controls_MenuInit( void )
 	s_controls.acc.generic.ownerdraw = Controls_DrawKeyBinding;
 	s_controls.acc.generic.id        = ID_ACC;
 	
-	s_controls.vtaunt.generic.type	   = MTYPE_ACTION;
-	s_controls.vtaunt.generic.flags     = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_GRAYED|QMF_HIDDEN;
-	s_controls.vtaunt.generic.callback  = Controls_ActionEvent;
-	s_controls.vtaunt.generic.ownerdraw = Controls_DrawKeyBinding;
-	s_controls.vtaunt.generic.id        = ID_VTAUNT;
-	
 	s_controls.clrun.generic.type	   = MTYPE_ACTION;
 	s_controls.clrun.generic.flags     = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_GRAYED|QMF_HIDDEN;
 	s_controls.clrun.generic.callback  = Controls_ActionEvent;
@@ -1835,7 +1824,6 @@ static void Controls_MenuInit( void )
 	Menu_AddItem( &s_controls.menu, &s_controls.dweapon );
 	Menu_AddItem( &s_controls.menu, &s_controls.dholdable );
 	Menu_AddItem( &s_controls.menu, &s_controls.acc );
-	Menu_AddItem( &s_controls.menu, &s_controls.vtaunt );
 	Menu_AddItem( &s_controls.menu, &s_controls.clrun );
 	Menu_AddItem( &s_controls.menu, &s_controls.sandbox );
 	Menu_AddItem( &s_controls.menu, &s_controls.sandboxmode );

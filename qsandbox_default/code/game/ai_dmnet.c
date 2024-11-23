@@ -193,10 +193,10 @@ int BotNearbyGoal(bot_state_t *bs, int tfl, bot_goal_t *ltg, float range) {
 	//check if the bot should go for air
 	if (BotGoForAir(bs, tfl, ltg, range)) return qtrue;
 
-if(bs->spbot){
-if(!NpcFactionProp(bs, NP_GOAL, 0)){
-        return qfalse; // spbot no items
-}}
+	if(bs->spbot){
+	if(!NpcFactionProp(bs, NP_GOAL, 0)){
+       return qfalse; // spbot no items
+	}}
 	// if the bot is carrying a flag or cubes
 	if (BotCTFCarryingFlag(bs) || Bot1FCTFCarryingFlag(bs) || BotHarvesterCarryingCubes(bs)) {
 		//if the bot is just a few secs away from the base 
@@ -208,16 +208,6 @@ if(!NpcFactionProp(bs, NP_GOAL, 0)){
 	}
 	//
 	ret = trap_BotChooseNBGItem(bs->gs, bs->origin, bs->inventory, tfl, ltg, range);
-	/*
-	if (ret)
-	{
-		char buf[128];
-		//get the goal at the top of the stack
-		trap_BotGetTopGoal(bs->gs, &goal);
-		trap_BotGoalName(goal.number, buf, sizeof(buf));
-		BotAI_Print(PRT_MESSAGE, "%1.1f: new nearby goal %s\n", FloatTime(), buf);
-	}
-    */
 	return ret;
 }
 
@@ -1364,40 +1354,6 @@ int AINode_Respawn(bot_state_t *bs) {
 
 /*
 ==================
-BotSelectActivateWeapon
-==================
-*/
-int BotSelectActivateWeapon(bot_state_t *bs) {
-	//
-	if (bs->inventory[INVENTORY_MACHINEGUN] > 0 && bs->inventory[INVENTORY_BULLETS] > 0)
-		return WEAPONINDEX_MACHINEGUN;
-	else if (bs->inventory[INVENTORY_SHOTGUN] > 0 && bs->inventory[INVENTORY_SHELLS] > 0)
-		return WEAPONINDEX_SHOTGUN;
-	else if (bs->inventory[INVENTORY_PLASMAGUN] > 0 && bs->inventory[INVENTORY_CELLS] > 0)
-		return WEAPONINDEX_PLASMAGUN;
-	else if (bs->inventory[INVENTORY_LIGHTNING] > 0 && bs->inventory[INVENTORY_LIGHTNINGAMMO] > 0)
-		return WEAPONINDEX_LIGHTNING;
-	else if (bs->inventory[INVENTORY_CHAINGUN] > 0 && bs->inventory[INVENTORY_BELT] > 0)
-		return WEAPONINDEX_CHAINGUN;
-	else if (bs->inventory[INVENTORY_NAILGUN] > 0 && bs->inventory[INVENTORY_NAILS] > 0)
-		return WEAPONINDEX_NAILGUN;
-	else if (bs->inventory[INVENTORY_PROXLAUNCHER] > 0 && bs->inventory[INVENTORY_MINES] > 0)
-		return WEAPONINDEX_PROXLAUNCHER;
-	else if (bs->inventory[INVENTORY_GRENADELAUNCHER] > 0 && bs->inventory[INVENTORY_GRENADES] > 0)
-		return WEAPONINDEX_GRENADE_LAUNCHER;
-	else if (bs->inventory[INVENTORY_RAILGUN] > 0 && bs->inventory[INVENTORY_SLUGS] > 0)
-		return WEAPONINDEX_RAILGUN;
-	else if (bs->inventory[INVENTORY_ROCKETLAUNCHER] > 0 && bs->inventory[INVENTORY_ROCKETS] > 0)
-		return WEAPONINDEX_ROCKET_LAUNCHER;
-	else if (bs->inventory[INVENTORY_BFG10K] > 0 && bs->inventory[INVENTORY_BFGAMMO] > 0)
-		return WEAPONINDEX_BFG;
-	else {
-		return -1;
-	}
-}
-
-/*
-==================
 BotClearPath
 
  try to deactivate obstacles like proximity mines on the bot's path
@@ -1421,66 +1377,9 @@ void BotClearPath(bot_state_t *bs, bot_moveresult_t *moveresult) {
 			VectorSubtract(target, bs->eye, dir);
 			vectoangles(dir, moveresult->ideal_viewangles);
 			//
-			moveresult->weapon = BotSelectActivateWeapon(bs);
+			moveresult->weapon = BotSelectQSWeapon(bs);
 			if (moveresult->weapon == -1) {
 				// FIXME: run away!
-				moveresult->weapon = 0;
-			}
-			if (moveresult->weapon) {
-				//
-				moveresult->flags |= MOVERESULT_MOVEMENTWEAPON | MOVERESULT_MOVEMENTVIEW;
-				// if holding the right weapon
-				if (bs->cur_ps.weapon == moveresult->weapon) {
-					// if the bot is pretty close with it's aim
-					if (InFieldOfVision(bs->viewangles, 20, moveresult->ideal_viewangles)) {
-						//
-						BotAI_Trace(&bsptrace, bs->eye, NULL, NULL, target, bs->entitynum, MASK_SHOT);
-						// if the mine is visible from the current position
-						if (bsptrace.fraction >= 1.0 || bsptrace.ent == state.number) {
-							// shoot at the mine
-							trap_EA_Attack(bs->client);
-						}
-					}
-				}
-			}
-		}
-	}
-	if (moveresult->flags & MOVERESULT_BLOCKEDBYAVOIDSPOT) {
-		bs->blockedbyavoidspot_time = FloatTime() + 5;
-	}
-	// if blocked by an avoid spot and the view angles and weapon are used for movement
-	if (bs->blockedbyavoidspot_time > FloatTime() &&
-		!(moveresult->flags & (MOVERESULT_MOVEMENTVIEW | MOVERESULT_MOVEMENTWEAPON)) ) {
-		bestdist = 300;
-		bestmine = -1;
-		for (i = 0; i < bs->numproxmines; i++) {
-			BotAI_GetEntityState(bs->proxmines[i], &state);
-			VectorSubtract(state.pos.trBase, bs->origin, dir);
-			dist = VectorLength(dir);
-			if (dist < bestdist) {
-				bestdist = dist;
-				bestmine = i;
-			}
-		}
-		if (bestmine != -1) {
-			//
-			// state->generic1 == TEAM_RED || state->generic1 == TEAM_BLUE
-			//
-			// deactivate prox mines in the bot's path by shooting
-			// rockets or plasma cells etc. at them
-			BotAI_GetEntityState(bs->proxmines[bestmine], &state);
-			VectorCopy(state.pos.trBase, target);
-			target[2] += 2;
-			VectorSubtract(target, bs->eye, dir);
-			vectoangles(dir, moveresult->ideal_viewangles);
-			// if the bot has a weapon that does splash damage
-			if (bs->inventory[INVENTORY_PLASMAGUN] > 0 && bs->inventory[INVENTORY_CELLS] > 0)
-				moveresult->weapon = WEAPONINDEX_PLASMAGUN;
-			else if (bs->inventory[INVENTORY_ROCKETLAUNCHER] > 0 && bs->inventory[INVENTORY_ROCKETS] > 0)
-				moveresult->weapon = WEAPONINDEX_ROCKET_LAUNCHER;
-			else if (bs->inventory[INVENTORY_BFG10K] > 0 && bs->inventory[INVENTORY_BFGAMMO] > 0)
-				moveresult->weapon = WEAPONINDEX_BFG;
-			else {
 				moveresult->weapon = 0;
 			}
 			if (moveresult->weapon) {
@@ -1662,7 +1561,7 @@ int AINode_Seek_ActivateEntity(bot_state_t *bs) {
 		if (!(moveresult.flags & MOVERESULT_MOVEMENTWEAPON)) {
 			moveresult.flags |= MOVERESULT_MOVEMENTWEAPON;
 			//
-			bs->activatestack->weapon = BotSelectActivateWeapon(bs);
+			bs->activatestack->weapon = BotSelectQSWeapon(bs);
 			if (bs->activatestack->weapon == -1) {
 				//FIXME: find a decent weapon first
 				bs->activatestack->weapon = 0;

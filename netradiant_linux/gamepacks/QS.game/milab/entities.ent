@@ -2301,26 +2301,15 @@ Spawns a bot into the game at the location of the target_botspawn entity.
 <real key="skill" name="skill">sets the relative skill level of the bot (default = 0).</real>
 <integer key="message" name="message">sets the name for bot in game and activate (default = clientname).</integer>
 <integer key="type" name="type">sets the faction for bot (default = 1).</integer>
+<integer key="mtype" name="Weapon">sets the weapon for bot (default = 0).</integer>
 <target key="target" name="target">this points to a info_waypoint entity to which the bot should patrol after spawning.</target>
 <targetname key="targetname" name="targetname">activating entity points to this.</targetname>
 <targetname key="targetname2" name="targetname2">activating entity points to this.</targetname>
 <target key="deathtarget" name="deathtarget">this points to entities to activate when a bot spawned by the target_botspawn dies.</target>
 <target key="loottarget" name="loottarget">this points to any item or holdable entity. The item will be dropped by the bot when it dies.</target>
 -------- SPAWNFLAGS --------
-<flag key="WP_GAUNTLET" name="WP_GAUNTLET" bit="0">The bot spawns into the game with a Gauntlet.</flag>
-<flag key="WP_MACHINEGUN" name="WP_MACHINEGUN" bit="1">The bot spawns into the game with a Machinegun.</flag>
-<flag key="WP_SHOTGUN" name="WP_SHOTGUN" bit="2">The bot spawns into the game with a Shotgun.</flag>
-<flag key="WP_GRENADE_LAUNCHER" name="WP_GRENADE_LAUNCHER" bit="3">The bot spawns into the game with a Grenade Launcher.</flag>
-<flag key="WP_ROCKET_LAUNCHER" name="WP_ROCKET_LAUNCHER" bit="4">The bot spawns into the game with a Rocket Launcher.</flag>
-<flag key="WP_LIGHTNING" name="WP_LIGHTNING" bit="5">The bot spawns into the game with a Lightninggun.</flag>
-<flag key="WP_RAILGUN" name="WP_RAILGUN" bit="6">The bot spawns into the game with a Railgun.</flag>
-<flag key="WP_PLASMAGUN" name="WP_PLASMAGUN" bit="7">The bot spawns into the game with a Plasmagun.</flag>
-<flag key="WP_BFG" name="WP_BFG" bit="8">The bot spawns into the game with a BFG.</flag>
-<flag key="WP_NAILGUN" name="WP_NAILGUN" bit="9">The bot spawns into the game with a Nailgun.</flag>
-<flag key="WP_PROX_LAUNCHER" name="WP_PROX_LAUNCHER" bit="10">The bot spawns into the game with a Prox Launcher.</flag>
-<flag key="WP_CHAINGUN" name="WP_CHAINGUN" bit="11">The bot spawns into the game with a Chaingun.</flag>
-<flag key="PATROL_WALK" name="PATROL_WALK" bit="12">The bot will walk (instead of run) while patrolling along info_waypoint entities.</flag>
-<flag key="ALWAYS_WALK" name="ALWAYS_WALK" bit="13">The bot will always walk (instead of run).</flag>
+<flag key="PATROL_WALK" name="PATROL_WALK" bit="0">The bot will walk (instead of run) while patrolling along info_waypoint entities.</flag>
+<flag key="ALWAYS_WALK" name="ALWAYS_WALK" bit="1">The bot will always walk (instead of run).</flag>
 -------- NOTES --------
 By default bots spawn without any weapons. Use spawnflags to customize the set of weapons the bot will spawn with. Bots will always have unlimited ammo for all weapons. The choice of weapon is still up to the bot. This means that spawning a bot with a MG and GL doesn't guarantee the bot will use the GL.Setting the skill key works like a modifier on top of the current skill level. So a skill value of 1 means the bot is one skill level tougher than the current skill setting. A skill value of -2 means the bot is two skill levels lower than the current setting. A bot's relative skill level never drops below 1 but may rise above 5. Floating point values (like 1.3) are allowed.Note that the Radiant level editor will not display targetting paths for the deathtarget key.When bot PATROL_WALK and ALWAYS_WALK are set, the bot will always walk and ignore the PATROL_WALK spawnflag. 
 </point>
@@ -2845,7 +2834,7 @@ By default the target_unlink entity works as a toggle, so entities linked to the
 <point name="target_stats" color="0 .7 .7" box="-8 -8 -8 8 8 8">
 Changes the player's stats.
 -------- KEYS --------
-<integer key="type" name="Type">1-STAT_HEALTH 2-STAT_HOLDABLE_ITEM 3-STAT_PERSISTANT_POWERUP 4-STAT_WEAPONS 5-STAT_ARMOR 6-STAT_MAX_HEALTH 7-STAT_NO_PICKUP 8-UNUSED 9-STAT_MONEY.</integer>
+<integer key="type" name="Type">1-STAT_HEALTH 2-STAT_HOLDABLE_ITEM 3-STAT_PERSISTANT_POWERUP 4-UNUSED 5-STAT_ARMOR 6-STAT_MAX_HEALTH 7-STAT_NO_PICKUP 8-UNUSED 9-STAT_MONEY.</integer>
 <integer key="count" name="Count">Value to assign.</integer>
 -------- SPAWNFLAGS --------
 <flag key="ADDITION" name="Add to stat" bit="0">Target_stats entity adds "count" value to "type" statistic.</flag>

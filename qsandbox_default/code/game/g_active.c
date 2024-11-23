@@ -433,6 +433,19 @@ qboolean ClientInactivityTimer( gclient_t *client ) {
 	return qtrue;
 }
 
+void MakeUnlimitedAmmo(gentity_t *ent) {
+	Set_Ammo(ent, WP_MACHINEGUN, 9999);
+	Set_Ammo(ent, WP_SHOTGUN, 9999);
+	Set_Ammo(ent, WP_GRENADE_LAUNCHER, 9999);
+	Set_Ammo(ent, WP_ROCKET_LAUNCHER, 9999);	
+	Set_Ammo(ent, WP_LIGHTNING, 9999);
+	Set_Ammo(ent, WP_RAILGUN, 9999);
+	Set_Ammo(ent, WP_PLASMAGUN, 9999);
+	Set_Ammo(ent, WP_BFG, 9999);
+	Set_Ammo(ent, WP_NAILGUN, 9999);
+	Set_Ammo(ent, WP_PROX_LAUNCHER, 9999);
+	Set_Ammo(ent, WP_CHAINGUN, 9999);
+}
 /*
 ==================
 ClientTimerActions
@@ -464,129 +477,57 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 	ent->s.eFlags &= ~EF_HEARED;		//hear update
 
 	// Infinite Ammo
-	if(g_rlinf.integer==1){ client->ps.ammo[WP_ROCKET_LAUNCHER] = 9999; }
-	if(g_glinf.integer==1){ client->ps.ammo[WP_GRENADE_LAUNCHER] = 9999; }
-	if(g_pginf.integer==1){ client->ps.ammo[WP_PLASMAGUN] = 9999; }
-	if(g_mginf.integer==1){ client->ps.ammo[WP_MACHINEGUN] = 9999; }
-	if(g_sginf.integer==1){ client->ps.ammo[WP_SHOTGUN] = 9999; }
-	if(g_bfginf.integer==1){ client->ps.ammo[WP_BFG] = 9999; }
-	if(g_rginf.integer==1){ client->ps.ammo[WP_RAILGUN] = 9999; }
-	if(g_cginf.integer==1){ client->ps.ammo[WP_CHAINGUN] = 9999; }
-	if(g_lginf.integer==1){ client->ps.ammo[WP_LIGHTNING] = 9999; }
-	if(g_nginf.integer==1){ client->ps.ammo[WP_NAILGUN] = 9999; }
-	if(g_plinf.integer==1){ client->ps.ammo[WP_PROX_LAUNCHER] = 9999; }
-	if(g_ftinf.integer==1){ client->ps.ammo[WP_FLAMETHROWER] = 9999; }
-	if(g_aminf.integer==1){ client->ps.ammo[WP_ANTIMATTER] = 9999; }
+	if(g_rlinf.integer==1){ Set_Ammo(ent, WP_ROCKET_LAUNCHER, 9999); }
+	if(g_glinf.integer==1){ Set_Ammo(ent, WP_GRENADE_LAUNCHER, 9999); }
+	if(g_pginf.integer==1){ Set_Ammo(ent, WP_PLASMAGUN, 9999); }
+	if(g_mginf.integer==1){ Set_Ammo(ent, WP_MACHINEGUN, 9999); }
+	if(g_sginf.integer==1){ Set_Ammo(ent, WP_SHOTGUN, 9999); }
+	if(g_bfginf.integer==1){ Set_Ammo(ent, WP_BFG, 9999); }
+	if(g_rginf.integer==1){ Set_Ammo(ent, WP_RAILGUN, 9999); }
+	if(g_cginf.integer==1){ Set_Ammo(ent, WP_CHAINGUN, 9999); }
+	if(g_lginf.integer==1){ Set_Ammo(ent, WP_LIGHTNING, 9999); }
+	if(g_nginf.integer==1){ Set_Ammo(ent, WP_NAILGUN, 9999); }
+	if(g_plinf.integer==1){ Set_Ammo(ent, WP_PROX_LAUNCHER, 9999); }
+	if(g_ftinf.integer==1){ Set_Ammo(ent, WP_FLAMETHROWER, 9999); }
+	if(g_aminf.integer==1){ Set_Ammo(ent, WP_ANTIMATTER, 9999); }
 
 	// guard inf ammo
 	if( bg_itemlist[client->ps.stats[STAT_PERSISTANT_POWERUP]].giTag == PW_GUARD ) {
 	if (g_guard_infammo.integer == 1){
-	{ client->ps.ammo[WP_ROCKET_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_GRENADE_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_PLASMAGUN] = 9999; }
-	{ client->ps.ammo[WP_MACHINEGUN] = 9999; }
-	{ client->ps.ammo[WP_SHOTGUN] = 9999; }
-	{ client->ps.ammo[WP_BFG] = 9999; }
-	{ client->ps.ammo[WP_RAILGUN] = 9999; }
-	{ client->ps.ammo[WP_CHAINGUN] = 9999; }
-	{ client->ps.ammo[WP_LIGHTNING] = 9999; }
-	{ client->ps.ammo[WP_NAILGUN] = 9999; }
-	{ client->ps.ammo[WP_PROX_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_FLAMETHROWER] = 9999; }
-	{ client->ps.ammo[WP_ANTIMATTER] = 9999; }
+		MakeUnlimitedAmmo(ent);
 	}
 	}
 
 	// scout inf ammo
 	if( bg_itemlist[client->ps.stats[STAT_PERSISTANT_POWERUP]].giTag == PW_SCOUT ) {
 	if (g_scout_infammo.integer == 1){
-	{ client->ps.ammo[WP_ROCKET_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_GRENADE_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_PLASMAGUN] = 9999; }
-	{ client->ps.ammo[WP_MACHINEGUN] = 9999; }
-	{ client->ps.ammo[WP_SHOTGUN] = 9999; }
-	{ client->ps.ammo[WP_BFG] = 9999; }
-	{ client->ps.ammo[WP_RAILGUN] = 9999; }
-	{ client->ps.ammo[WP_CHAINGUN] = 9999; }
-	{ client->ps.ammo[WP_LIGHTNING] = 9999; }
-	{ client->ps.ammo[WP_NAILGUN] = 9999; }
-	{ client->ps.ammo[WP_PROX_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_FLAMETHROWER] = 9999; }
-	{ client->ps.ammo[WP_ANTIMATTER] = 9999; }
+		MakeUnlimitedAmmo(ent);
 	}
 	}
 
 	// doubler inf ammo
 	if( bg_itemlist[client->ps.stats[STAT_PERSISTANT_POWERUP]].giTag == PW_DOUBLER ) {
 	if (g_doubler_infammo.integer == 1){
-	{ client->ps.ammo[WP_ROCKET_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_GRENADE_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_PLASMAGUN] = 9999; }
-	{ client->ps.ammo[WP_MACHINEGUN] = 9999; }
-	{ client->ps.ammo[WP_SHOTGUN] = 9999; }
-	{ client->ps.ammo[WP_BFG] = 9999; }
-	{ client->ps.ammo[WP_RAILGUN] = 9999; }
-	{ client->ps.ammo[WP_CHAINGUN] = 9999; }
-	{ client->ps.ammo[WP_LIGHTNING] = 9999; }
-	{ client->ps.ammo[WP_NAILGUN] = 9999; }
-	{ client->ps.ammo[WP_PROX_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_FLAMETHROWER] = 9999; }
-	{ client->ps.ammo[WP_ANTIMATTER] = 9999; }
+		MakeUnlimitedAmmo(ent);
 	}
 	}
 
 	//team red infammo
 	if(client->sess.sessionTeam == TEAM_RED){
 	if (g_teamred_infammo.integer == 1){
-	{ client->ps.ammo[WP_ROCKET_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_GRENADE_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_PLASMAGUN] = 9999; }
-	{ client->ps.ammo[WP_MACHINEGUN] = 9999; }
-	{ client->ps.ammo[WP_SHOTGUN] = 9999; }
-	{ client->ps.ammo[WP_BFG] = 9999; }
-	{ client->ps.ammo[WP_RAILGUN] = 9999; }
-	{ client->ps.ammo[WP_CHAINGUN] = 9999; }
-	{ client->ps.ammo[WP_LIGHTNING] = 9999; }
-	{ client->ps.ammo[WP_NAILGUN] = 9999; }
-	{ client->ps.ammo[WP_PROX_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_FLAMETHROWER] = 9999; }
-	{ client->ps.ammo[WP_ANTIMATTER] = 9999; }
+		MakeUnlimitedAmmo(ent);
 	}
 	}
 
 	//team blue infammo
 	if(client->sess.sessionTeam == TEAM_BLUE){
 	if (g_teamblue_infammo.integer == 1){
-	{ client->ps.ammo[WP_ROCKET_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_GRENADE_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_PLASMAGUN] = 9999; }
-	{ client->ps.ammo[WP_MACHINEGUN] = 9999; }
-	{ client->ps.ammo[WP_SHOTGUN] = 9999; }
-	{ client->ps.ammo[WP_BFG] = 9999; }
-	{ client->ps.ammo[WP_RAILGUN] = 9999; }
-	{ client->ps.ammo[WP_CHAINGUN] = 9999; }
-	{ client->ps.ammo[WP_LIGHTNING] = 9999; }
-	{ client->ps.ammo[WP_NAILGUN] = 9999; }
-	{ client->ps.ammo[WP_PROX_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_FLAMETHROWER] = 9999; }
-	{ client->ps.ammo[WP_ANTIMATTER] = 9999; }
+		MakeUnlimitedAmmo(ent);
 	}
 	}
 
 	if(ent->botskill == 6){
-	{ client->ps.ammo[WP_ROCKET_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_GRENADE_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_PLASMAGUN] = 9999; }
-	{ client->ps.ammo[WP_MACHINEGUN] = 9999; }
-	{ client->ps.ammo[WP_SHOTGUN] = 9999; }
-	{ client->ps.ammo[WP_BFG] = 9999; }
-	{ client->ps.ammo[WP_RAILGUN] = 9999; }
-	{ client->ps.ammo[WP_CHAINGUN] = 9999; }
-	{ client->ps.ammo[WP_LIGHTNING] = 9999; }
-	{ client->ps.ammo[WP_NAILGUN] = 9999; }
-	{ client->ps.ammo[WP_PROX_LAUNCHER] = 9999; }
-	{ client->ps.ammo[WP_FLAMETHROWER] = 9999; }
-	{ client->ps.ammo[WP_ANTIMATTER] = 9999; }
+		MakeUnlimitedAmmo(ent);
 	}
 
 		//Stop in elimination!!!
@@ -686,15 +627,15 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 			  t = 1;
 		  }
 
-		  if ( client->ps.ammo[w] >= max ) {
+		  if ( ent->swep_ammo[w] >= max ) {
 			  client->ammoTimes[w] = 0;
 		  }
 		  if ( client->ammoTimes[w] >= t ) {
 			  while ( client->ammoTimes[w] >= t )
 				  client->ammoTimes[w] -= t;
-			  client->ps.ammo[w] += inc;
-			  if ( client->ps.ammo[w] > max ) {
-				  client->ps.ammo[w] = max;
+			  ent->swep_ammo[w] += inc;
+			  if ( ent->swep_ammo[w] > max ) {
+				  ent->swep_ammo[w] = max;
 			  }
 		  }
     }

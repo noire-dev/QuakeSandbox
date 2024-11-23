@@ -289,6 +289,8 @@ typedef struct bot_state_s
 	bot_waypoint_t *patrolpoints;					//patrol points
 	bot_waypoint_t *curpatrolpoint;					//current patrol point the bot is going for
 	int patrolflags;								//patrol flags
+	int			swep_list[WEAPONS_NUM];				//QS weapon system
+	int			swep_ammo[WEAPONS_NUM];				//QS ammo system
 } bot_state_t;
 
 //resets the whole bot state
@@ -309,3 +311,4 @@ int		BotAI_GetClientState( int clientNum, playerState_t *state );
 int		BotAI_GetEntityState( int entityNum, entityState_t *state );
 int		BotAI_GetSnapshotEntity( int clientNum, int sequence, entityState_t *state );
 int		BotTeamLeader(bot_state_t *bs);
+int		BotSelectQSWeapon(bot_state_t *bs);

@@ -1757,7 +1757,6 @@ int BotAIStartFrame(int time) {
 			state.legsAnim = ent->s.legsAnim;
 			state.torsoAnim = ent->s.torsoAnim;
 			state.weapon = ent->s.weapon;
-			//
 			trap_BotLibUpdateEntity(i, &state);
 		}
 

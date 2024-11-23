@@ -46,7 +46,7 @@ void G_WriteClientSessionData( gclient_t *client ) {
 	const char	*var2;
 	const char	*var3;
 
-	s = va("%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i", 
+	s = va("%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i", 
 		client->sess.sessionTeam,
 		client->sess.spectatorNum,
 		client->sess.spectatorState,
@@ -56,7 +56,6 @@ void G_WriteClientSessionData( gclient_t *client ) {
 		client->sess.teamLeader,
 		client->sess.sessionHealth,
 		client->sess.sessionArmor,
-		client->sess.sessionWeapons,
 		client->sess.sessionWeapon,
 		client->sess.sessionAmmoMG,
 		client->sess.sessionAmmoSG,
@@ -97,7 +96,7 @@ void G_SaveClientSessionData( gclient_t *client ) {
 	const char	*s;
 	const char	*var;
 
-	s = va("%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i", 
+	s = va("%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i", 
 		client->sess.sessionTeam,
 		client->sess.spectatorNum,
 		client->sess.spectatorState,
@@ -107,7 +106,6 @@ void G_SaveClientSessionData( gclient_t *client ) {
 		client->sess.teamLeader,
 		client->sess.sessionHealth,
 		client->sess.sessionArmor,
-		client->sess.sessionWeapons,
 		client->sess.sessionWeapon,
 		client->sess.sessionAmmoMG,
 		client->sess.sessionAmmoSG,
@@ -157,7 +155,7 @@ void G_ReadSessionData( gclient_t *client ) {
 	var = va( "session%i", (int)(client - level.clients) );
 	trap_Cvar_VariableStringBuffer( var, s, sizeof(s) );
 
-	sscanf( s, "%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",
+	sscanf( s, "%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",
 		&sessionTeam,                 // bk010221 - format
 		&client->sess.spectatorNum,
 		&spectatorState,              // bk010221 - format
@@ -167,7 +165,6 @@ void G_ReadSessionData( gclient_t *client ) {
 		&teamLeader,                   // bk010221 - format
 		&client->sess.sessionHealth,
 		&client->sess.sessionArmor,
-		&client->sess.sessionWeapons,
 		&client->sess.sessionWeapon,
 		&client->sess.sessionAmmoMG,
 		&client->sess.sessionAmmoSG,
@@ -293,50 +290,37 @@ G_UpdateClientSessionDataForMapChange
 Updates session data for a client prior to a map change that's forced by a target_mapchange entity
 ==================
 */
-void G_UpdateClientSessionDataForMapChange( gclient_t *client ) {
+void G_UpdateClientSessionDataForMapChange( gentity_t *ent ) {
 	clientSession_t	*sess;
 	char *mapname;
 	int secretFound, secretCount;
 
-	sess = &client->sess;
+	sess = &ent->client->sess;
 
-	sess->sessionHealth = client->ps.stats[STAT_HEALTH];
-	sess->sessionArmor = client->ps.stats[STAT_ARMOR];
-	if ( client->ps.stats[STAT_WEAPONS] )
-		sess->sessionWeapons = client->ps.stats[STAT_WEAPONS];
-	else
-		sess->sessionWeapons = -1;		//-1 means no weapons
-	sess->sessionWeapon = client->ps.weapon;
-	if ( client->ps.ammo[WP_MACHINEGUN] )
-		sess->sessionAmmoMG = client->ps.ammo[WP_MACHINEGUN];
-	else
-		sess->sessionAmmoMG = -1;		//-1 means no ammo for machinegun, to overrule the spawning with 100 ammo
-	sess->sessionAmmoSG = client->ps.ammo[WP_SHOTGUN];
-	sess->sessionAmmoGL = client->ps.ammo[WP_GRENADE_LAUNCHER];
-	sess->sessionAmmoRL = client->ps.ammo[WP_ROCKET_LAUNCHER];
-	sess->sessionAmmoLG = client->ps.ammo[WP_LIGHTNING];
-	sess->sessionAmmoRG = client->ps.ammo[WP_RAILGUN];
-	sess->sessionAmmoPG = client->ps.ammo[WP_PLASMAGUN];
-	sess->sessionAmmoBFG = client->ps.ammo[WP_BFG];
-	sess->sessionAmmoGH = client->ps.ammo[WP_GRAPPLING_HOOK];
-	sess->sessionAmmoNG = client->ps.ammo[WP_NAILGUN];
-	sess->sessionAmmoPL = client->ps.ammo[WP_PROX_LAUNCHER];
-	sess->sessionAmmoCG = client->ps.ammo[WP_CHAINGUN];
-	sess->sessionAmmoFT = client->ps.ammo[WP_FLAMETHROWER];
-	sess->sessionHoldable = client->ps.stats[STAT_HOLDABLE_ITEM];
-	sess->carnageScore = client->ps.persistant[PERS_SCORE];
-	sess->deaths = client->ps.persistant[PERS_KILLED];
+	sess->sessionHealth = ent->client->ps.stats[STAT_HEALTH];
+	sess->sessionArmor = ent->client->ps.stats[STAT_ARMOR];
+	sess->sessionWeapon = ent->client->ps.weapon;
 
-	secretFound = (client->ps.persistant[PERS_SECRETS] & 0x7F);
-	secretCount = ((client->ps.persistant[PERS_SECRETS] >> 7) & 0x7F) + level.secretCount;
+	if(ent->swep_list[WP_MACHINEGUN] > 0){
+		sess->sessionAmmoMG = ent->swep_ammo[WP_MACHINEGUN];
+	} else {
+		sess->sessionAmmoMG = -999;
+	}
+
+	sess->sessionHoldable = ent->client->ps.stats[STAT_HOLDABLE_ITEM];
+	sess->carnageScore = ent->client->ps.persistant[PERS_SCORE];
+	sess->deaths = ent->client->ps.persistant[PERS_KILLED];
+
+	secretFound = (ent->client->ps.persistant[PERS_SECRETS] & 0x7F);
+	secretCount = ((ent->client->ps.persistant[PERS_SECRETS] >> 7) & 0x7F) + level.secretCount;
 	sess->secrets = secretFound + (secretCount << 7);
 
-	sess->accuracyShots = client->accuracy_shots;
-	sess->accuracyHits = client->accuracy_hits;
+	sess->accuracyShots = ent->client->accuracy_shots;
+	sess->accuracyHits = ent->client->accuracy_hits;
 
 	strcpy(sess->scoreLevelName, G_GetScoringMapName());
 	
-	G_SaveClientSessionData(client);
+	G_SaveClientSessionData(ent->client);
 }
 
 void G_SaveClientSessionDataSave( gclient_t *client ) {
@@ -371,21 +355,9 @@ void G_ClearSessionDataForMapChange( gclient_t *client ) {
 
 	sess->sessionHealth = 0;
 	sess->sessionArmor = 0;
-	sess->sessionWeapons = 0;
 	sess->sessionWeapon = 0;
 	sess->sessionAmmoMG = 0;
 	sess->sessionAmmoSG = 0;
-	sess->sessionAmmoGL = 0;
-	sess->sessionAmmoRL = 0;
-	sess->sessionAmmoLG = 0;
-	sess->sessionAmmoRG = 0;
-	sess->sessionAmmoPG = 0;
-	sess->sessionAmmoBFG = 0;
-	sess->sessionAmmoGH = 0;
-	sess->sessionAmmoNG = 0;
-	sess->sessionAmmoPL = 0;
-	sess->sessionAmmoCG = 0;
-	sess->sessionAmmoFT = 0;
 	sess->sessionHoldable = 0;
 	sess->carnageScore = 0;
 	sess->deaths = 0;
@@ -407,32 +379,15 @@ Updates a client entity with the data that's stored in that client's session dat
 */
 void G_UpdateClientWithSessionData( gentity_t *ent) {
 
-	//give weapons
-	if ( ent->client->sess.sessionWeapons > 0 )
-		ent->client->ps.stats[STAT_WEAPONS] = ent->client->sess.sessionWeapons;
-	else if ( ent->client->sess.sessionWeapons < 0 )
-	{
-		ent->client->ps.stats[STAT_WEAPONS] = 0;
-		ent->client->ps.weapon = 0;
+	if ( ent->client->sess.sessionHealth <= 0 ) {
+		return;
 	}
 
-	//give ammo
-	if ( ent->client->sess.sessionAmmoMG == -1 ) 
-		ent->client->ps.ammo[WP_MACHINEGUN] = 0;
-	else if ( ent->client->sess.sessionAmmoMG )	//if MG ammo is 0, do nothing because player spawns with 100 ammo
-		ent->client->ps.ammo[WP_MACHINEGUN] = ent->client->sess.sessionAmmoMG;
-	if ( ent->client->sess.sessionAmmoSG ) ent->client->ps.ammo[WP_SHOTGUN] = ent->client->sess.sessionAmmoSG;
-	if ( ent->client->sess.sessionAmmoGL ) ent->client->ps.ammo[WP_GRENADE_LAUNCHER] = ent->client->sess.sessionAmmoGL;
-	if ( ent->client->sess.sessionAmmoRL ) ent->client->ps.ammo[WP_ROCKET_LAUNCHER] = ent->client->sess.sessionAmmoRL;
-	if ( ent->client->sess.sessionAmmoLG ) ent->client->ps.ammo[WP_LIGHTNING] = ent->client->sess.sessionAmmoLG;
-	if ( ent->client->sess.sessionAmmoRG ) ent->client->ps.ammo[WP_RAILGUN] = ent->client->sess.sessionAmmoRG;
-	if ( ent->client->sess.sessionAmmoPG ) ent->client->ps.ammo[WP_PLASMAGUN] = ent->client->sess.sessionAmmoPG;
-	if ( ent->client->sess.sessionAmmoBFG ) ent->client->ps.ammo[WP_BFG] = ent->client->sess.sessionAmmoBFG;
-	if ( ent->client->sess.sessionAmmoGH ) ent->client->ps.ammo[WP_GRAPPLING_HOOK] = ent->client->sess.sessionAmmoGH;
-	if ( ent->client->sess.sessionAmmoNG ) ent->client->ps.ammo[WP_NAILGUN] = ent->client->sess.sessionAmmoNG;
-	if ( ent->client->sess.sessionAmmoPL ) ent->client->ps.ammo[WP_PROX_LAUNCHER] = ent->client->sess.sessionAmmoPL;
-	if ( ent->client->sess.sessionAmmoCG ) ent->client->ps.ammo[WP_CHAINGUN] = ent->client->sess.sessionAmmoCG;
-	if ( ent->client->sess.sessionAmmoFT ) ent->client->ps.ammo[WP_FLAMETHROWER] = ent->client->sess.sessionAmmoFT;
+	//give weapons and ammo
+	if(ent->client->sess.sessionAmmoMG != 999){
+		ent->swep_list[WP_MACHINEGUN] = 1;
+		ent->swep_ammo[WP_MACHINEGUN] = ent->client->sess.sessionAmmoMG;
+	}
 	if ( ent->client->sess.posX ) ent->client->ps.origin[0] = ent->client->sess.posX;
 	if ( ent->client->sess.posY ) ent->client->ps.origin[1] = ent->client->sess.posY;
 	if ( ent->client->sess.posZ ) ent->client->ps.origin[2] = ent->client->sess.posZ;

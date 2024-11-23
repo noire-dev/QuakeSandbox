@@ -253,74 +253,10 @@ void CG_RailTrail (clientInfo_t *ci, vec3_t start, vec3_t end) {
 
 	AxisClear( re->axis );
  
-	if (cg_oldRail.integer)
-	{
-		// nudge down a bit so it isn't exactly in center
-		re->origin[2] -= 8;
-		re->oldorigin[2] -= 8;
-		return;
-	}
-
-	VectorCopy (start, move);
-	VectorSubtract (end, start, vec);
-	len = VectorNormalize (vec);
-	PerpendicularVector(temp, vec);
-	for (i = 0 ; i < 36; i++)
-	{
-		RotatePointAroundVector(axis[i], vec, temp, i * 10);//banshee 2.4 was 10
-	}
-
-	VectorMA(move, 20, vec, move);
-	VectorCopy(move, next_move);
-	VectorScale (vec, SPACING, vec);
-
-	skip = -1;
- 
-	j = 18;
-	for (i = 0; i < len; i += SPACING)
-	{
-		if (i != skip)
-		{
-			skip = i + SPACING;
-			le = CG_AllocLocalEntity();
-			re = &le->refEntity;
-			le->leFlags = LEF_PUFF_DONT_SCALE;
-			le->leType = LE_MOVE_SCALE_FADE;
-			le->startTime = cg.time;
-			le->endTime = cg.time + (i>>1) + 600;
-			le->lifeRate = 1.0 / (le->endTime - le->startTime);
-
-			re->shaderTime = cg.time / 1000.0f;
-			re->reType = RT_SPRITE;
-			re->radius = 1.1f;
-			re->customShader = cgs.media.railRingsShader;
-
-			re->shaderRGBA[0] = ci->color2[0] * 255;
-			re->shaderRGBA[1] = ci->color2[1] * 255;
-			re->shaderRGBA[2] = ci->color2[2] * 255;
-			re->shaderRGBA[3] = 255;
-
-			le->color[0] = ci->color2[0] * 0.75;
-			le->color[1] = ci->color2[1] * 0.75;
-			le->color[2] = ci->color2[2] * 0.75;
-			le->color[3] = 1.0f;
-
-			le->pos.trType = TR_LINEAR;
-			le->pos.trTime = cg.time;
-
-			VectorCopy( move, move2);
-			VectorMA(move2, RADIUS , axis[j], move2);
-			VectorCopy(move2, le->pos.trBase);
-
-			le->pos.trDelta[0] = axis[j][0]*6;
-			le->pos.trDelta[1] = axis[j][1]*6;
-			le->pos.trDelta[2] = axis[j][2]*6;
-		}
-
-		VectorAdd (move, vec, move);
-
-		j = (j + ROTATION) % 36;
-	}
+	// nudge down a bit so it isn't exactly in center
+	re->origin[2] -= 8;
+	re->oldorigin[2] -= 8;
+	return;
 }
 
 /*
@@ -1542,11 +1478,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	if ( cg.snap->ps.pm_type == PM_CUTSCENE ) {
 		weaponNum = 1;
 	} else {
-		if(ci->swepid <= 15){
-		weaponNum = cent->currentState.weapon;
-		} else {
 		weaponNum = ci->swepid;
-		}
 	}
 
 	if(ci->flashlight == 1){
@@ -1832,15 +1764,16 @@ CG_DrawWeaponSelect
 */
 void CG_DrawWeaponSelect( void ) {
 	int		i;
-	int		bits;
 	int		count;
 	float		*color;
 	vec4_t		realColor; 
 	int			swepnum; 
 	//clientInfo_t	*ci; 
-	
-	//ci = &cgs.clientinfo[cg.snap->ps.clientNum];
-	//swepnum = ci->swepid;
+
+	if ( cg_draw2D.integer == 0 ) {
+		return;
+	}
+
 	swepnum = cg.snap->ps.generic2;
 	// don't display if dead
 	if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 ) {
@@ -1869,37 +1802,19 @@ void CG_DrawWeaponSelect( void ) {
 	}
 	trap_R_SetColor( color );
 
-	// showing weapon select clears pickup item display, but not the blend blob
-	//cg.itemPickupTime = 0;
-
-	// count the number of weapons owned
-	bits = cg.snap->ps.stats[ STAT_WEAPONS ];
 	count = 0;
-	for ( i = 1 ; i < MAX_WEAPONS ; i++ ) {
-		if ( bits & ( 1 << i ) ) {
-			count++;
-		}
-	}
-	
-	for ( i = MAX_WEAPONS ; i < WEAPONS_NUM ; i++ ) {
+	for ( i = 1; i < WEAPONS_NUM; i++ ) {
 		if(cg.swep_listcl[i] >= 1){
 			count++;
 		}
 	}
 	
-	//CG_DrawWeaponBarNew(WEAPONS_NUM,bits,swepnum);		//FOR MANY WEAPONS WEAPONS_HYPER
-	CG_DrawWeaponBarNew2(count,bits,swepnum); //FOR VANILLA WEAPONS WEAPONS_HYPER
+	CG_DrawWeaponBarNew2(count,swepnum); //FOR VANILLA WEAPONS WEAPONS_HYPER
 	trap_R_SetColor(NULL);
 	if( cg_weaponBarActiveWidth.integer != count * 20 ) {
 		char weapons[256] = "";
-		trap_Cvar_Set("cg_weaponBarActiveWidth", va("%d", count * 20)); // Weapon bar width, counting from the center
-		for ( i = 0 ; i < MAX_WEAPONS ; i++ ) { //Q3 WEAPON SYSTEM
-			if ( bits & ( 1 << i ) ) {
-				strcat( weapons, va("%d/", i) );
-			}
-		}
-		
-		for ( i = MAX_WEAPONS ; i < WEAPONS_NUM ; i++ ) { //NEW WEAPON SYSTEM
+		trap_Cvar_Set("cg_weaponBarActiveWidth", va("%d", count * 20)); // Weapon bar width, counting from the center		
+		for ( i = 1; i < WEAPONS_NUM; i++ ) { //NEW WEAPON SYSTEM
 			if(cg.swep_listcl[i] >= 1){
 				strcat( weapons, va("%d/", i) );
 			}
@@ -1912,77 +1827,11 @@ void CG_DrawWeaponSelect( void ) {
 
 /*
 ===============
-CG_DrawWeaponBar0
-===============
-*/
-
-void CG_DrawWeaponBar0(int count, int bits){
-
-	int y = 4;
-	int x = 320 - count * 20;
-	int i;
-	
-	for ( i = 0 ; i < MAX_WEAPONS ; i++ ) {
-                //Sago: Do mad change of grapple placement:
-                if(i==10)
-                    continue;
-                if(i==0)
-                    i=10;
-		if ( !( bits & ( 1 << i ) ) ) {
-                    if(i==10)
-                        i=0;
-			continue;
-		}
-
-		CG_RegisterWeapon( i );
-		// draw weapon icon
-		CG_DrawPic( x, y, 32, 32, cg_weapons[i].weaponIcon );
-
-		// draw selection marker
-		if ( i == cg.weaponSelect ) {
-			CG_DrawPic( x-4, y-4, 40, 40, cgs.media.selectShader );
-		}
-
-		// no ammo cross on top
-		if ( !cg.snap->ps.ammo[ i ] ) {
-			  CG_DrawPic( x, y, 32, 32, cgs.media.noammoShader );
-		}
-
-		x += 40;
-                //Sago: Undo mad change of weapons
-                if(i==10)
-                        i=0;
-	}
-}
-
-/*
-===============
-CG_DrawWeaponBarNew
-===============
-*/
-
-void CG_DrawWeaponBarNew(int count, int bits, int swepnum){
-
-	int y = (480 - 32) - 35;
-	int x = 640+cl_screenoffset.integer-32;
-
-		CG_RegisterWeapon( swepnum );
-		// draw weapon icon
-		CG_DrawPic( x, y, 32, 32, cg_weapons[swepnum].weaponIcon );
-
-		// no ammo cross on top
-		if ( !cg.snap->ps.ammo[ swepnum ] && swepnum <= 15 ) {
-			  CG_DrawPic( x, y, 32, 32, cgs.media.noammoShader );
-		}
-}
-
-/*
-===============
 CG_DrawWeaponBarNew2
 ===============
 */
 
-void CG_DrawWeaponBarNew2(int count, int bits, int swepnum){
+void CG_DrawWeaponBarNew2(int count, int swepnum){
 	float scale = 0.80;
 	int y = 4;
 	int x = 320 - count * (20*scale);
@@ -1990,11 +1839,8 @@ void CG_DrawWeaponBarNew2(int count, int bits, int swepnum){
 	
 	trap_GetGlconfig( &cgs.glconfig );
 	
-	for ( i = 1 ; i <= WEAPONS_NUM ; i++ ) {
-        if ( !(cg.snap->ps.stats[STAT_WEAPONS] & ( 1 << i )) && i <= 15 ) {
-            continue;
-        }
-		if(!cg.swep_listcl[i] && i >= 16 ){
+	for ( i = 1; i <= WEAPONS_NUM; i++ ) {
+		if(!cg.swep_listcl[i]){
 		    continue;	
 		}
 		CG_RegisterWeapon( i );
@@ -2008,32 +1854,12 @@ void CG_DrawWeaponBarNew2(int count, int bits, int swepnum){
 		}
 
 		// no ammo cross on top
-		if ( !cg.snap->ps.ammo[ i ] && i <= 15 ) {
-			  CG_DrawPic( x, y, 32*scale, 32*scale, cgs.media.noammoShader );
-		}
-		if( cg.swep_listcl[i] == 2 && i >= 16 ){
+		if( cg.swep_listcl[i] == 2 ){
 			CG_DrawPic( x, y, 32*scale, 32*scale, cgs.media.noammoShader );
 		}
 
 		x += 40*scale;
 	}
-}
-
-
-/*
-===============
-CG_WeaponSelectable
-===============
-*/
-static qboolean CG_WeaponSelectable( int i ) {
-	if ( !cg.snap->ps.ammo[i] && cg.snap->ps.ammo[i] != 1 ) {
-		return qfalse;
-	}
-	if ( !(cg.snap->ps.stats[ STAT_WEAPONS ] & ( 1 << i )) ) {
-		return qfalse;
-	}
-
-	return qtrue;
 }
 
 /*
@@ -2067,19 +1893,13 @@ void CG_NextWeapon_f( void ) {
 	cg.weaponSelectTime = cg.time;
 	original = cg.weaponSelect;
 
-	for ( i = 0 ; i < WEAPONS_NUM ; i++ ) {
+	for ( i = 1; i < WEAPONS_NUM; i++ ) {
 	cg.weaponSelect++;
 	if ( cg.weaponSelect > WEAPONS_NUM ) {
 		cg.weaponSelect = 1;
 	}
-    if(cg.weaponSelect <= 15){
-		if ( CG_WeaponSelectable( cg.weaponSelect ) ) {
-			break;
-		}
-    } else {
 	if(cg.swep_listcl[cg.weaponSelect] == 1){
 		break;
-	}
 	}
 	}
 	
@@ -2121,19 +1941,13 @@ void CG_PrevWeapon_f( void ) {
 	cg.weaponSelectTime = cg.time;
 	original = cg.weaponSelect;
 
-	for ( i = 0 ; i < WEAPONS_NUM; i++ ) {
+	for ( i = 1 ; i < WEAPONS_NUM; i++ ) {
 	cg.weaponSelect--;
 	if ( cg.weaponSelect < 1 ) {
 		cg.weaponSelect = WEAPONS_NUM;
 	}
-    if(cg.weaponSelect <= 15){
-		if ( CG_WeaponSelectable( cg.weaponSelect ) ) {
-			break;
-		}
-    } else {
 	if(cg.swep_listcl[cg.weaponSelect] == 1){
 		break;
-	}
 	}
 	}
 	
@@ -2162,14 +1976,8 @@ void CG_Weapon_f( void ) {
 	num = atoi( CG_Argv( 1 ) );
 
 	cg.weaponSelectTime = cg.time;
-    if(num < MAX_WEAPONS){
-	if ( ! ( cg.snap->ps.stats[STAT_WEAPONS] & ( 1 << num ) ) ) {
-		return;		// don't have the weapon
-	}
-    } else {
 	if(!cg.swep_listcl[num]){
 	return;		// don't have the weapon
-	}
 	}
 
 	cg.weaponSelect = num;
@@ -2180,28 +1988,6 @@ void CG_Weapon_f( void ) {
 	trap_Cvar_Set("cg_hide255", "1");
 	}
 }
-
-/*
-===================
-CG_OutOfAmmoChange
-
-The current weapon has just run out of ammo
-===================
-*/
-void CG_OutOfAmmoChange( void ) {
-	int		i;
-
-	cg.weaponSelectTime = cg.time;
-
-	for ( i = MAX_WEAPONS-1 ; i > 0 ; i-- ) {
-		if ( CG_WeaponSelectable( i ) ) {
-			cg.weaponSelect = i;
-			break;
-		}
-	}
-}
-
-
 
 /*
 ===================================================================================================

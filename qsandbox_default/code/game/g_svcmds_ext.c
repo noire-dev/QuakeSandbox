@@ -242,7 +242,7 @@ void Svcmd_PropNpc_AS_f( void ){
 	tent->skill = atof(arg04);
 	tent->health = atoi(arg05);
 	CopyAlloc(tent->message, arg06);	
-	tent->spawnflags = atoi(arg08);
+	tent->mtype = atoi(arg08);
 	if(!Q_stricmp (arg07, "0") ){
 	CopyAlloc(tent->target, arg02);	
 	} else {
@@ -253,9 +253,6 @@ void Svcmd_PropNpc_AS_f( void ){
 	}
 	if(tent->skill <= 0){
 	tent->skill = 1;
-	}
-	if(tent->spawnflags <= 0){
-	tent->spawnflags = 1;
 	}
 	if(!Q_stricmp (tent->message, "0") || !tent->message ){
 	CopyAlloc(tent->message, tent->clientname);
@@ -283,7 +280,7 @@ void Svcmd_SaveSession_f( void )
   
   trap_Argv( 1, num, sizeof( num ) );
   
-	G_UpdateClientSessionDataForMapChange( level.player->client );
+	G_UpdateClientSessionDataForMapChange( level.player );
 	G_UpdateGlobalSessionDataForMapChange();
 	G_SaveClientSessionDataSave( level.player->client );
 
