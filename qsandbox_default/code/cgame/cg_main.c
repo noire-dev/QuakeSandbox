@@ -1843,6 +1843,7 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	trap_S_ClearLoopingSounds( qtrue );
 	
 	trap_SendConsoleCommand("ns_openscript_ui tools/create.ns\n");
+	trap_SendConsoleCommand( va("weapon %i\n", WP_TOOLGUN) );
 }
 
 /*

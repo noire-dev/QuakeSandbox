@@ -428,10 +428,13 @@ typedef enum {
 	WP_PROX_LAUNCHER,
 	WP_CHAINGUN,
 	WP_FLAMETHROWER,
-	WP_ANTIMATTER,
-	WP_TOOLGUN,
+	WP_ANTIMATTER, //Vanilla q3 set
+
+	// New weapons here!
+
 	WP_PHYSGUN,
 	WP_GRAVITYGUN,
+	WP_TOOLGUN, //Sandbox set
 	
 	WEAPONS_NUM		//look for this to add new ones - WEAPONS_HYPER
 } weapon_t;	

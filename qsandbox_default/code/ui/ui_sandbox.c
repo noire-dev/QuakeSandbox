@@ -798,16 +798,19 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		if(uis.sb_tab == 1){
 		Q_strncpyz( s_sandboxmain.modif[4].field.buffer, "0", sizeof(s_sandboxmain.modif[4].field.buffer) );
 		trap_Cmd_ExecuteText( EXEC_INSERT, "ns_openscript_ui tools/create.ns\n" );
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("weapon %i\n", WP_TOOLGUN) );
 		trap_Cmd_ExecuteText( EXEC_INSERT, "menuback\n" );	
 		}
 		if(uis.sb_tab == 2){
 		Q_strncpyz( s_sandboxmain.modif[4].field.buffer, "0", sizeof(s_sandboxmain.modif[4].field.buffer) );
 		trap_Cmd_ExecuteText( EXEC_INSERT, "ns_openscript_ui tools/create.ns\n" );
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("weapon %i\n", WP_TOOLGUN) );
 		trap_Cmd_ExecuteText( EXEC_INSERT, "menuback\n" );	
 		}
 		if(uis.sb_tab == 3){
 		Q_strncpyz( s_sandboxmain.modif[4].field.buffer, "0", sizeof(s_sandboxmain.modif[4].field.buffer) );
 		trap_Cmd_ExecuteText( EXEC_INSERT, "ns_openscript_ui tools/create.ns\n" );
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("weapon %i\n", WP_TOOLGUN) );
 		trap_Cmd_ExecuteText( EXEC_INSERT, "menuback\n" );	
 		}
 		if(uis.sb_tab == 4){
@@ -819,6 +822,7 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		if(uis.sb_tab == 6){
 		Q_strncpyz( s_sandboxmain.modif[4].field.buffer, "0", sizeof(s_sandboxmain.modif[4].field.buffer) );
 		trap_Cmd_ExecuteText( EXEC_INSERT, "ns_openscript_ui tools/create.ns\n" );
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("weapon %i\n", WP_TOOLGUN) );
 		trap_Cmd_ExecuteText( EXEC_INSERT, "menuback\n" );	
 		}
 		if(uis.sb_tab == 7){
@@ -927,6 +931,7 @@ static void SandboxMain_MenuEvent( void* ptr, int event ) {
 		if(uis.sb_tab == 8){
 		Q_strncpyz( s_sandboxmain.modif[4].field.buffer, "0", sizeof(s_sandboxmain.modif[4].field.buffer) );
 		trap_Cmd_ExecuteText( EXEC_INSERT, va("ns_openscript_ui tools/%s.ns\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]) );
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("weapon %i\n", WP_TOOLGUN) );
 		}
 		if(uis.sb_tab == 9){
 		trap_Cmd_ExecuteText( EXEC_INSERT, va("usecvar %s 0 1\n", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], s_sandboxmain.modif[0].field.buffer) );
