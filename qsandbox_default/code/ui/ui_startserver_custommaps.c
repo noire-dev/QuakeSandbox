@@ -118,7 +118,6 @@ int GametypeBits( char *string ) {
 		}
 
 		if( Q_stricmp( token, "ffa" ) == 0 ) {
-			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_FFA;
 			bits |= 1 << GT_LMS;
 			bits |= 1 << GT_ELIMINATION;
@@ -137,20 +136,17 @@ int GametypeBits( char *string ) {
 		}
 
 		if( Q_stricmp( token, "tourney" ) == 0 ) {
-			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_TOURNAMENT;
 			continue;
 		}
 
 		if( Q_stricmp( token, "team" ) == 0 ) {
-			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_TEAM;
 			bits |= 1 << GT_ELIMINATION;
 			continue;
 		}
 
 		if( Q_stricmp( token, "ctf" ) == 0 ) {
-			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_CTF;
 			bits |= 1 << GT_DOUBLE_D;
 			bits |= 1 << GT_CTF_ELIMINATION;
@@ -159,48 +155,40 @@ int GametypeBits( char *string ) {
 		}
 		
 		if( Q_stricmp( token, "oneflag" ) == 0 ) {
-			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_1FCTF;
 			continue;
 		}
                 
 		if( Q_stricmp( token, "overload" ) == 0 ) {
-			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_OBELISK;
 			continue;
 		}
                 
 		if( Q_stricmp( token, "harvester" ) == 0 ) {
-			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_HARVESTER;
 			continue;
 		}
 
 		if( Q_stricmp( token, "elimination" ) == 0 ) {
-			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_ELIMINATION;
 			continue;
 		}
 
 		if( Q_stricmp( token, "ctfelimination" ) == 0 ) {
-			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_CTF_ELIMINATION;
 			continue;
 	}
 
 		if( Q_stricmp( token, "lms" ) == 0 ) {
-			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_LMS;
 			continue;
 		}
 		if( Q_stricmp( token, "dd" ) == 0 ) {
-			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_DOUBLE_D;
 			continue;
 		}
                 
 		if( Q_stricmp( token, "dom" ) == 0 ) {
-			bits |= 1 << GT_SANDBOX;
 			bits |= 1 << GT_DOMINATION;
 			continue;
 		}

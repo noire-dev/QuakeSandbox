@@ -652,12 +652,12 @@ static void StartServer_MapPage_DrawMapName( void *item )
 		color = text_color_disabled;
 	else if ( focus )
 	{
-		color = text_color_highlight;
+		color = color_highlight;
 		style |= UI_PULSE;
 	}
 	else if ( s->generic.flags & QMF_BLINK )
 	{
-		color = text_color_highlight;
+		color = color_highlight;
 		style |= UI_BLINK;
 	}
 	else
@@ -666,7 +666,7 @@ static void StartServer_MapPage_DrawMapName( void *item )
 	if ( focus )
 	{
 		// draw cursor
-		UI_FillRect( s->generic.left, s->generic.top, s->generic.right-s->generic.left+1, s->generic.bottom-s->generic.top+1, listbar_color );
+		UI_FillRect( s->generic.left, s->generic.top, s->generic.right-s->generic.left+1, s->generic.bottom-s->generic.top+1, color_select_bluo );
 		UI_DrawChar( x, y, 13, UI_CENTER|UI_BLINK|UI_SMALLFONT, color);
 	}
 
@@ -1409,12 +1409,12 @@ static void StartServer_MapPage_DrawPageText( void* b )
 		color = text_color_disabled;
 	else if ( focus )
 	{
-		color = text_color_highlight;
+		color = color_highlight;
 		style |= UI_PULSE;
 	}
 	else if ( s->generic.flags & QMF_BLINK )
 	{
-		color = text_color_highlight;
+		color = color_highlight;
 		style |= UI_BLINK;
 	}
 	else
@@ -1423,7 +1423,7 @@ static void StartServer_MapPage_DrawPageText( void* b )
 	if ( focus )
 	{
 		// draw cursor
-		UI_FillRect( s->generic.left, s->generic.top, s->generic.right-s->generic.left+1, s->generic.bottom-s->generic.top+1, listbar_color );
+		UI_FillRect( s->generic.left, s->generic.top, s->generic.right-s->generic.left+1, s->generic.bottom-s->generic.top+1, color_select_bluo );
 	}
 
 	UI_DrawString( x, y, s->generic.name, style, color );

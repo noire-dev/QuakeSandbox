@@ -267,8 +267,7 @@ typedef struct {
 	menuslider_s	tq;
 	menulist_s  	fs;
 	menulist_s  	envlevel;
-        menulist_s  	dlight;
-        menulist_s  	bloom;
+        menulist_s  	postfx;
 	menulist_s  	allow_extensions;
 	menulist_s  	texturebits;
 	menulist_s  	bloomlevel;
@@ -288,8 +287,7 @@ typedef struct
 	qboolean fullscreen;
 	int tq;
 	int envlevel;
-	qboolean dlight;
-	qboolean bloom;
+	qboolean postfx;
 	qboolean hdr;
 	int texturebits;
 	int bloomlevel;
@@ -446,8 +444,7 @@ static void GraphicsOptions_GetInitialVideo( void )
 	s_ivo.extensions  = s_graphicsoptions.allow_extensions.curvalue;
 	s_ivo.tq          = s_graphicsoptions.tq.curvalue;
 	s_ivo.envlevel    = s_graphicsoptions.envlevel.curvalue;
-	s_ivo.dlight      = s_graphicsoptions.dlight.curvalue;
-	s_ivo.bloom      = s_graphicsoptions.bloom.curvalue;
+	s_ivo.postfx      = s_graphicsoptions.postfx.curvalue;
 	s_ivo.hdr     = s_graphicsoptions.hdr.curvalue;
 	s_ivo.bloomlevel    = s_graphicsoptions.bloomlevel.curvalue;
 	s_ivo.filter      = s_graphicsoptions.filter.curvalue;
@@ -477,9 +474,7 @@ static void GraphicsOptions_CheckConfig( void )
 			continue;
 		if ( s_ivo_templates[i].envlevel != s_graphicsoptions.envlevel.curvalue )
 			continue;
-                if ( s_ivo_templates[i].dlight != s_graphicsoptions.dlight.curvalue )
-			continue;
-                if ( s_ivo_templates[i].bloom != s_graphicsoptions.bloom.curvalue )
+                if ( s_ivo_templates[i].postfx != s_graphicsoptions.postfx.curvalue )
 			continue;
 		if ( s_ivo_templates[i].hdr != s_graphicsoptions.hdr.curvalue )
 			continue;
@@ -538,11 +533,7 @@ static void GraphicsOptions_UpdateMenuItems( void )
 	{
 		s_graphicsoptions.apply.generic.flags &= ~(QMF_HIDDEN|QMF_INACTIVE);
 	}
-        if ( s_ivo.dlight != s_graphicsoptions.dlight.curvalue )
-	{
-		s_graphicsoptions.apply.generic.flags &= ~(QMF_HIDDEN|QMF_INACTIVE);
-	}
-        if ( s_ivo.bloom != s_graphicsoptions.bloom.curvalue )
+        if ( s_ivo.postfx != s_graphicsoptions.postfx.curvalue )
 	{
 		s_graphicsoptions.apply.generic.flags &= ~(QMF_HIDDEN|QMF_INACTIVE);
 	}
@@ -644,8 +635,7 @@ static void GraphicsOptions_ApplyChanges( void *unused, int notification )
 	if(s_graphicsoptions.envlevel.curvalue == 2){
 	trap_Cvar_SetValue( "cg_atmosphericLevel", 0 );
 	}
-	trap_Cvar_SetValue( "r_dlightMode", s_graphicsoptions.dlight.curvalue+1 );
-	trap_Cvar_SetValue( "r_bloom", s_graphicsoptions.bloom.curvalue );
+	trap_Cvar_SetValue( "r_postfx", s_graphicsoptions.postfx.curvalue );
 	trap_Cvar_SetValue( "r_hdr", s_graphicsoptions.hdr.curvalue );
 
 	//r_ext_texture_filter_anisotropic is special
@@ -718,8 +708,7 @@ static void GraphicsOptions_Event( void* ptr, int event ) {
 		s_graphicsoptions.aniso.curvalue       = ivo->aniso;
 		s_graphicsoptions.aniso2.curvalue       = ivo->aniso2;
 		s_graphicsoptions.fs.curvalue          = ivo->fullscreen;
-		s_graphicsoptions.dlight.curvalue      = ivo->dlight;
-		s_graphicsoptions.bloom.curvalue      = ivo->bloom;
+		s_graphicsoptions.postfx.curvalue      = ivo->postfx;
 		s_graphicsoptions.hdr.curvalue      = ivo->hdr;
 		break;
 
@@ -797,8 +786,7 @@ static void GraphicsOptions_SetMenuItems( void )
 		s_graphicsoptions.fs.curvalue = 0;
 	}
 	s_graphicsoptions.allow_extensions.curvalue = trap_Cvar_VariableValue("r_allowExtensions");
-    s_graphicsoptions.dlight.curvalue = trap_Cvar_VariableValue("r_dlightMode")-1;
-    s_graphicsoptions.bloom.curvalue = trap_Cvar_VariableValue("r_bloom");
+    s_graphicsoptions.postfx.curvalue = trap_Cvar_VariableValue("r_postfx");
     s_graphicsoptions.hdr.curvalue = trap_Cvar_VariableValue("r_hdr");
     if(trap_Cvar_VariableValue("r_ext_texture_filter_anisotropic")) {
         s_graphicsoptions.aniso.curvalue = trap_Cvar_VariableValue("r_ext_max_anisotropy")/2;
@@ -1146,18 +1134,11 @@ void GraphicsOptions_MenuInit( void )
 	s_graphicsoptions.envlevel.generic.y	 = y;
 	y += BIGCHAR_HEIGHT+2;
         
-        // references/modifies "r_dlightMode"
-	s_graphicsoptions.dlight.generic.type     = MTYPE_SPINCONTROL;
-	s_graphicsoptions.dlight.generic.flags	  = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
-	s_graphicsoptions.dlight.generic.x	      = 400;
-	s_graphicsoptions.dlight.generic.y	      = y;
-	y += BIGCHAR_HEIGHT+2;
-        
-        // references/modifies "r_bloom"
-	s_graphicsoptions.bloom.generic.type     = MTYPE_SPINCONTROL;
-	s_graphicsoptions.bloom.generic.flags	  = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
-	s_graphicsoptions.bloom.generic.x	      = 400;
-	s_graphicsoptions.bloom.generic.y	      = y;
+    // references/modifies "r_postfx"
+	s_graphicsoptions.postfx.generic.type     = MTYPE_SPINCONTROL;
+	s_graphicsoptions.postfx.generic.flags	  = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
+	s_graphicsoptions.postfx.generic.x	      = 400;
+	s_graphicsoptions.postfx.generic.y	      = y;
 	y += BIGCHAR_HEIGHT+2;
 
 	s_graphicsoptions.hdr.generic.type	  = MTYPE_SPINCONTROL;
@@ -1259,10 +1240,8 @@ void GraphicsOptions_MenuInit( void )
 	s_graphicsoptions.fs.itemnames	      = enabled_names;
 	s_graphicsoptions.envlevel.generic.name	 = "Environment effects:";
 	s_graphicsoptions.envlevel.itemnames     = envlevel_names;
-	s_graphicsoptions.dlight.generic.name	  = "High quality envlevel:";
-	s_graphicsoptions.dlight.itemnames	      = enabled_names;
-	s_graphicsoptions.bloom.generic.name	  = "Bloom:";
-	s_graphicsoptions.bloom.itemnames	      = enabled_names;
+	s_graphicsoptions.postfx.generic.name	  = "Post-processing:";
+	s_graphicsoptions.postfx.itemnames	      = enabled_names;
 	s_graphicsoptions.hdr.generic.name	  = "HDR:";
 	s_graphicsoptions.hdr.itemnames	      = enabled_names;
 	s_graphicsoptions.bloomlevel.generic.name	 = "Bloom level:";
@@ -1297,10 +1276,8 @@ void GraphicsOptions_MenuInit( void )
 	s_graphicsoptions.fs.itemnames	      = enabled_namesru;
 	s_graphicsoptions.envlevel.generic.name	 = "Эффекты окружения:";
 	s_graphicsoptions.envlevel.itemnames     = envlevel_namesru;
-	s_graphicsoptions.dlight.generic.name	  = "Качественное освещение:";
-	s_graphicsoptions.dlight.itemnames	      = enabled_namesru;
-	s_graphicsoptions.bloom.generic.name	  = "Свечение:";
-	s_graphicsoptions.bloom.itemnames	      = enabled_namesru;
+	s_graphicsoptions.postfx.generic.name	  = "Пост-обработка:";
+	s_graphicsoptions.postfx.itemnames	      = enabled_namesru;
 	s_graphicsoptions.hdr.generic.name	  = "HDR:";
 	s_graphicsoptions.hdr.itemnames	      = enabled_namesru;
 	s_graphicsoptions.bloomlevel.generic.name	 = "Сила свечения:";
@@ -1333,8 +1310,7 @@ void GraphicsOptions_MenuInit( void )
 	Menu_AddItem( &s_graphicsoptions.menu, ( void * ) &s_graphicsoptions.mode );
 	Menu_AddItem( &s_graphicsoptions.menu, ( void * ) &s_graphicsoptions.fs );
 	Menu_AddItem( &s_graphicsoptions.menu, ( void * ) &s_graphicsoptions.envlevel );
-    Menu_AddItem( &s_graphicsoptions.menu, ( void * ) &s_graphicsoptions.dlight );
-    Menu_AddItem( &s_graphicsoptions.menu, ( void * ) &s_graphicsoptions.bloom );
+    Menu_AddItem( &s_graphicsoptions.menu, ( void * ) &s_graphicsoptions.postfx );
 	Menu_AddItem( &s_graphicsoptions.menu, ( void * ) &s_graphicsoptions.hdr );
 	Menu_AddItem( &s_graphicsoptions.menu, ( void * ) &s_graphicsoptions.bloomlevel );
 	Menu_AddItem( &s_graphicsoptions.menu, ( void * ) &s_graphicsoptions.tq );

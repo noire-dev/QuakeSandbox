@@ -162,6 +162,7 @@ void UI_DrawConnectScreen( qboolean overlay ) {
 	int strWidth;
 	
 	UI_ScreenOffset();
+	trap_Cvar_Set( "r_fx_blur", "0" );			//blur UI postFX
 	
 	// see what information we should display
 	trap_GetClientState( &cstate );

@@ -111,12 +111,16 @@ void UI_PushMenu( menuframework_s *menu )
 	number = rand() % 4 + 1;
 	
 	trap_Cvar_SetValue( "ui_backcolors", number );
+	if(uis.onmap){
+	trap_Cvar_Set( "r_fx_blur", "1" );			//blur UI postFX
+	} else {
+	trap_Cvar_Set( "r_fx_blur", "0" );			//blur UI postFX		
+	}
 	
 	// initialize the screen offset
 	UI_ScreenOffset();
 	
 	uis.menuscroll = 0;
-	
 
 	// avoid stacking menus invoked by hotkeys
 	for (i=0 ; i<uis.menusp ; i++)
@@ -180,8 +184,7 @@ void UI_PopMenu (void)
 	if (uis.menusp) {
 		uis.activemenu = uis.stack[uis.menusp-1];
 		uis.firstdraw = qtrue;
-	}
-	else {
+	} else {
 		UI_ForceMenuOff ();
 	}
 }
@@ -194,6 +197,7 @@ void UI_ForceMenuOff (void)
 	trap_Key_SetCatcher( trap_Key_GetCatcher() & ~KEYCATCH_UI );
 	trap_Key_ClearStates();
 	trap_Cvar_Set( "cl_paused", "0" );
+	trap_Cvar_Set( "r_fx_blur", "0" );			//blur UI postFX
 }
 
 /*

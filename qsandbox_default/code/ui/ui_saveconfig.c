@@ -85,7 +85,7 @@ static void UI_SaveConfigMenu_SavenameDraw( void *self ) {
 
 	if( f == Menu_ItemAtCursor( &saveConfig.menu ) ) {
 		style = UI_LEFT|UI_PULSE|UI_SMALLFONT;
-		color = text_color_highlight;
+		color = color_highlight;
 	}
 	else {
 		style = UI_LEFT|UI_SMALLFONT;

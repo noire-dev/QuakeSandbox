@@ -1100,14 +1100,14 @@ static void StartServer_BotPage_SkillDraw(void* self)
 	w = s->generic.right - x;
 	h = s->generic.bottom - y;
 
-	temp_bkcolor[0] = listbar_color[0];
-	temp_bkcolor[1] = listbar_color[1];
-	temp_bkcolor[2] = listbar_color[2];
+	temp_bkcolor[0] = color_select_bluo[0];
+	temp_bkcolor[1] = color_select_bluo[1];
+	temp_bkcolor[2] = color_select_bluo[2];
 	temp_bkcolor[3] = 0.3 + 0.3*sin(uis.realtime/PULSE_DIVISOR);
 
-	tempcolor[0] = text_color_highlight[0];
-	tempcolor[1] = text_color_highlight[1];
-	tempcolor[2] = text_color_highlight[2];
+	tempcolor[0] = color_highlight[0];
+	tempcolor[1] = color_highlight[1];
+	tempcolor[2] = color_highlight[2];
 	tempcolor[3] = 0.7 + 0.3*sin(uis.realtime/PULSE_DIVISOR);
 
 	pulsecolor[3] = tempcolor[3];
@@ -1330,15 +1330,15 @@ static void StartServer_BotPage_NameDraw(void* self)
 	if (t->generic.flags & QMF_GRAYED)
 		color = text_color_disabled;
 	else if (pulse) {
-		tempcolor[0] = text_color_highlight[0];
-		tempcolor[1] = text_color_highlight[1];
-		tempcolor[2] = text_color_highlight[2];
+		tempcolor[0] = color_highlight[0];
+		tempcolor[1] = color_highlight[1];
+		tempcolor[2] = color_highlight[2];
 		tempcolor[3] = 0.7 + 0.3 * sin(uis.realtime / PULSE_DIVISOR);
 
 		color = tempcolor;
 		style |= UI_PULSE;
 
-		UI_FillRect( x, y, t->generic.right - x +1, t->generic.bottom - y + 1, listbar_color );
+		UI_FillRect( x, y, t->generic.right - x +1, t->generic.bottom - y + 1, color_select_bluo );
 		UI_DrawChar( x, y, 13, UI_CENTER|UI_BLINK|UI_SMALLFONT, color);
 	}
 	else

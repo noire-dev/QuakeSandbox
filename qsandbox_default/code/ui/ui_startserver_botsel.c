@@ -938,9 +938,9 @@ static void UI_BotSelect_ScrollListDraw( void* ptr )
 			if (i == l->curvalue)
 			{
 				UI_FillRect(x,y + (lineheight - BOTLIST_ICONSIZE)/2,
-					l->width*charwidth ,BOTLIST_ICONSIZE, listbar_color);
+					l->width*charwidth ,BOTLIST_ICONSIZE, color_select_bluo);
 				if (color != color_white)
-					color = text_color_highlight;
+					color = color_highlight;
 
 				if (hasfocus)
 					style |= (UI_PULSE|UI_LEFT);

@@ -472,6 +472,7 @@ extern vec4_t		color_blue;
 extern vec4_t		color_grey;
 extern vec4_t		color_red;
 extern vec4_t		color_dim;
+extern vec4_t		color_dim80;
 extern vec4_t		color_green;
 extern vec4_t		color_emerald;
 extern vec4_t		color_bluo;
@@ -482,11 +483,10 @@ extern vec4_t		s_sandboxmain_color1;
 
 extern vec4_t		name_color;
 extern vec4_t		list_color;
-extern vec4_t		listbar_color;
 extern vec4_t		pulse_color;
 extern vec4_t		text_color_disabled;
 extern vec4_t		text_color_normal;
-extern vec4_t		text_color_highlight;
+extern vec4_t 		color_select_bluo;
 
 extern void PText_Init( menutext_s *b );
 extern void	ScrollList_Init( menulist_s *l );

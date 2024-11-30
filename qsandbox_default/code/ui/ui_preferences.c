@@ -577,21 +577,19 @@ static void Crosshair_Draw( void *self ) {
 		color = text_color_disabled;
 	else if ( focus )
 	{
-		color = text_color_highlight;
+		color = color_highlight;
 		style |= UI_PULSE;
 	}
 	else if ( s->generic.flags & QMF_BLINK )
 	{
-		color = text_color_highlight;
+		color = color_highlight;
 		style |= UI_BLINK;
 	}
 	else
 		color = text_color_normal;
 
-	if ( focus )
-	{
+	if ( focus ){
 		// draw cursor
-		//UI_FillRect( s->generic.left, s->generic.top, s->generic.right-s->generic.left+1, s->generic.bottom-s->generic.top+1, listbar_color ); 
 		UI_DrawChar( x, y, 13, UI_CENTER|UI_BLINK|UI_SMALLFONT, color);
 	}
 

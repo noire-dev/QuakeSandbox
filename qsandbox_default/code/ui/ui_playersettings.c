@@ -156,7 +156,7 @@ static void PlayerSettings_DrawName( void *self ) {
 	color = text_color_normal;
 	if( focus ) {
 		style |= UI_PULSE;
-		color = text_color_highlight;
+		color = color_highlight;
 	}
 
 if(cl_language.integer == 0){
@@ -226,7 +226,7 @@ static void PlayerSettings_DrawEffects( void *self ) {
 	color = text_color_normal;
 	if( focus ) {
 		style |= UI_PULSE;
-		color = text_color_highlight;
+		color = color_highlight;
 	}
 
 	if(cl_language.integer == 0){

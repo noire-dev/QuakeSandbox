@@ -1197,9 +1197,9 @@ static void MapSelect_ScrollListDraw( void* ptr )
 					u -= (l->width * charwidth) / 2 + 1;
 				}
 
-				UI_FillRect(u,y,l->width*charwidth ,lineheight,listbar_color);
+				UI_FillRect(u,y,l->width*charwidth ,lineheight,color_select_bluo);
 				if (color != color_white)
-					color = text_color_highlight;
+					color = color_highlight;
 
 				if (hasfocus)
 					style |= (UI_PULSE|UI_LEFT);
@@ -1776,10 +1776,7 @@ static void MapSelect_MenuInit(int gametype, int index, const char* mapname)
 	Menu_AddItem( &s_mapselect.menu, &s_mapselect.multisel);
 	Menu_AddItem( &s_mapselect.menu, &s_mapselect.listview);
 	Menu_AddItem( &s_mapselect.menu, &s_mapselect.maplist);
-
-	if (gametype != GT_CTF) {
-		Menu_AddItem( &s_mapselect.menu, &s_mapselect.allmaps);
-	}
+	Menu_AddItem( &s_mapselect.menu, &s_mapselect.allmaps);
 
 	for (i = 0 ; i < MAX_GRIDMAPSPERPAGE; i++)
 	{

@@ -2917,6 +2917,10 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 	}
 	}
 
+	if ( trap_Key_GetCatcher() == KEYCATCH_UI || trap_Key_GetCatcher() & KEYCATCH_CONSOLE) {
+		return;
+	}
+
 	// draw overlay for target_effect
 	CG_DrawOverlay();
 	

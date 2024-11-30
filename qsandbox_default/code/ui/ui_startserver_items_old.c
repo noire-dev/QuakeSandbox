@@ -861,7 +861,7 @@ static void StartServer_ItemPage_Old_DrawItemButton( void* ptr )
 	}
 	else if ( focus )
 	{
-		color = text_color_highlight;
+		color = color_highlight;
 		style = UI_LEFT|UI_PULSE|UI_SMALLFONT;
 	}
 	else
