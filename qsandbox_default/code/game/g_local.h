@@ -372,36 +372,6 @@ typedef struct {
 	int			spectatorClient;	// for chasecam and follow mode
 	int			wins, losses;		// tournament stats
 	qboolean	teamLeader;			// true when this client is a team leader
-	
-	//The stats will be persistent between level changes for a true SP experience across maps
-	//note that these stats are only stored and retrieved when changing maps through target_mapchange
-	int			sessionHealth;
-	int			sessionArmor;
-	int			sessionWeapons;
-	int			sessionWeapon;		// weapon currently held
-	int			sessionAmmoMG;
-	int			sessionAmmoSG;
-	int			sessionAmmoGL;
-	int			sessionAmmoRL;
-	int			sessionAmmoLG;
-	int			sessionAmmoRG;
-	int			sessionAmmoPG;
-	int			sessionAmmoBFG;
-	int			sessionAmmoGH;
-	int			sessionAmmoNG;
-	int			sessionAmmoPL;
-	int			sessionAmmoCG;
-	int			sessionAmmoFT;
-	int			sessionHoldable;
-	int			carnageScore;
-	int			deaths;
-	char		scoreLevelName[64];
-	int			secrets;
-	int			accuracyShots;
-	int			accuracyHits;
-	int			posX;
-	int			posY;
-	int			posZ;
 } clientSession_t;
 
 //

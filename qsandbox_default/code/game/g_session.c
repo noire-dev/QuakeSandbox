@@ -42,92 +42,33 @@ Called on game shutdown
 void G_WriteClientSessionData( gclient_t *client ) {
 	const char	*s;
 	const char	*var;
-	const char	*var2;
-	const char	*var3;
 
-	s = va("%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i", 
+	s = va("%i %i %i %i %i %i %i", 
 		client->sess.sessionTeam,
 		client->sess.spectatorNum,
 		client->sess.spectatorState,
 		client->sess.spectatorClient,
 		client->sess.wins,
 		client->sess.losses,
-		client->sess.teamLeader,
-		client->sess.sessionHealth,
-		client->sess.sessionArmor,
-		client->sess.sessionWeapon,
-		client->sess.sessionAmmoMG,
-		client->sess.sessionAmmoSG,
-		client->sess.sessionAmmoGL,
-		client->sess.sessionAmmoRL,
-		client->sess.sessionAmmoLG,
-		client->sess.sessionAmmoRG,
-		client->sess.sessionAmmoPG,
-		client->sess.sessionAmmoBFG,
-		client->sess.sessionAmmoGH,
-		client->sess.sessionAmmoNG,
-		client->sess.sessionAmmoPL,
-		client->sess.sessionAmmoCG,
-		client->sess.sessionAmmoFT,
-		client->sess.sessionHoldable,
-		client->sess.carnageScore,
-		client->sess.deaths,
-		client->sess.secrets,
-		client->sess.accuracyShots,
-		client->sess.accuracyHits,
-		client->sess.posX,
-		client->sess.posY,
-		client->sess.posZ
+		client->sess.teamLeader
 		);
 
 	var = va( "session%i", (int)(client - level.clients) );
 	trap_Cvar_Set( var, s );
-
-	//set score level name
-	var2 = va ( "session%i_lvl", client - level.clients );
-	trap_Cvar_Set( var2, client->sess.scoreLevelName );
-	
-	var3 = "save_session0_lvl";
-	trap_Cvar_Set( var3, client->sess.scoreLevelName );
 }
 
 void G_SaveClientSessionData( gclient_t *client ) {
 	const char	*s;
 	const char	*var;
 
-	s = va("%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i", 
+	s = va("%i %i %i %i %i %i %i", 
 		client->sess.sessionTeam,
 		client->sess.spectatorNum,
 		client->sess.spectatorState,
 		client->sess.spectatorClient,
 		client->sess.wins,
 		client->sess.losses,
-		client->sess.teamLeader,
-		client->sess.sessionHealth,
-		client->sess.sessionArmor,
-		client->sess.sessionWeapon,
-		client->sess.sessionAmmoMG,
-		client->sess.sessionAmmoSG,
-		client->sess.sessionAmmoGL,
-		client->sess.sessionAmmoRL,
-		client->sess.sessionAmmoLG,
-		client->sess.sessionAmmoRG,
-		client->sess.sessionAmmoPG,
-		client->sess.sessionAmmoBFG,
-		client->sess.sessionAmmoGH,
-		client->sess.sessionAmmoNG,
-		client->sess.sessionAmmoPL,
-		client->sess.sessionAmmoCG,
-		client->sess.sessionAmmoFT,
-		client->sess.sessionHoldable,
-		client->sess.carnageScore,
-		client->sess.deaths,
-		client->sess.secrets,
-		client->sess.accuracyShots,
-		client->sess.accuracyHits,
-		client->sess.posX,
-		client->sess.posY,
-		client->sess.posZ
+		client->sess.teamLeader
 		);
 
 	var = va( "save_session%i", (int)(client - level.clients) );
@@ -144,7 +85,6 @@ Called on a reconnect
 void G_ReadSessionData( gclient_t *client ) {
 	char	s[MAX_STRING_CHARS];
 	const char	*var;
-	const char	*var2;
 
 	// bk001205 - format
 	int teamLeader;
@@ -154,49 +94,20 @@ void G_ReadSessionData( gclient_t *client ) {
 	var = va( "session%i", (int)(client - level.clients) );
 	trap_Cvar_VariableStringBuffer( var, s, sizeof(s) );
 
-	sscanf( s, "%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",
+	sscanf( s, "%i %i %i %i %i %i %i",
 		&sessionTeam,                 // bk010221 - format
 		&client->sess.spectatorNum,
 		&spectatorState,              // bk010221 - format
 		&client->sess.spectatorClient,
 		&client->sess.wins,
 		&client->sess.losses,
-		&teamLeader,                   // bk010221 - format
-		&client->sess.sessionHealth,
-		&client->sess.sessionArmor,
-		&client->sess.sessionWeapon,
-		&client->sess.sessionAmmoMG,
-		&client->sess.sessionAmmoSG,
-		&client->sess.sessionAmmoGL,
-		&client->sess.sessionAmmoRL,
-		&client->sess.sessionAmmoLG,
-		&client->sess.sessionAmmoRG,
-		&client->sess.sessionAmmoPG,
-		&client->sess.sessionAmmoBFG,
-		&client->sess.sessionAmmoGH,
-		&client->sess.sessionAmmoNG,
-		&client->sess.sessionAmmoPL,
-		&client->sess.sessionAmmoCG,
-		&client->sess.sessionAmmoFT,
-		&client->sess.sessionHoldable,
-		&client->sess.carnageScore,
-		&client->sess.deaths,
-		&client->sess.secrets,
-		&client->sess.accuracyShots,
-		&client->sess.accuracyHits,
-		&client->sess.posX,
-		&client->sess.posY,
-		&client->sess.posZ
+		&teamLeader                   // bk010221 - format
 		);
 
 	// bk001205 - format issues
 	client->sess.sessionTeam = (team_t)sessionTeam;
 	client->sess.spectatorState = (spectatorState_t)spectatorState;
 	client->sess.teamLeader = (qboolean)teamLeader;
-
-	// read score level name
-	var2 = va ( "session%i_lvl", client - level.clients );
-	trap_Cvar_VariableStringBuffer( var2, client->sess.scoreLevelName, sizeof(client->sess.scoreLevelName) );
 }
 
 
@@ -296,7 +207,7 @@ void G_UpdateClientSessionDataForMapChange( gentity_t *ent ) {
 
 	sess = &ent->client->sess;
 
-	sess->sessionHealth = ent->client->ps.stats[STAT_HEALTH];
+	/*sess->sessionHealth = ent->client->ps.stats[STAT_HEALTH];
 	sess->sessionArmor = ent->client->ps.stats[STAT_ARMOR];
 	sess->sessionWeapon = ent->client->ps.weapon;
 
@@ -317,7 +228,7 @@ void G_UpdateClientSessionDataForMapChange( gentity_t *ent ) {
 	sess->accuracyShots = ent->client->accuracy_shots;
 	sess->accuracyHits = ent->client->accuracy_hits;
 
-	strcpy(sess->scoreLevelName, G_GetScoringMapName());
+	strcpy(sess->scoreLevelName, G_GetScoringMapName());*/
 	
 	G_SaveClientSessionData(ent->client);
 }
@@ -327,17 +238,9 @@ void G_SaveClientSessionDataSave( gclient_t *client ) {
 
 	sess = &client->sess;
 
-	sess->posX = (int)(client->ps.origin[0]);
-	sess->posY = (int)(client->ps.origin[1]);
-	sess->posZ = (int)(client->ps.origin[2]);
-
 	trap_Cvar_Set( "save_curmap", G_CvarAutoChar( "mapname" ) );
 	
 	G_SaveClientSessionData(client);
-	
-	sess->posX = 0;
-	sess->posY = 0;
-	sess->posZ = 0;
 }
 
 /*
@@ -352,21 +255,6 @@ void G_ClearSessionDataForMapChange( gclient_t *client ) {
 
 	sess = &client->sess;
 
-	sess->sessionHealth = 0;
-	sess->sessionArmor = 0;
-	sess->sessionWeapon = 0;
-	sess->sessionAmmoMG = 0;
-	sess->sessionAmmoSG = 0;
-	sess->sessionHoldable = 0;
-	sess->carnageScore = 0;
-	sess->deaths = 0;
-	sess->secrets = 0;
-	sess->accuracyShots = 0;
-	sess->accuracyHits = 0;
-	strcpy(sess->scoreLevelName, "" );
-	sess->posX = 0;
-	sess->posY = 0;
-	sess->posZ = 0;
 }
 
 /*
@@ -378,18 +266,15 @@ Updates a client entity with the data that's stored in that client's session dat
 */
 void G_UpdateClientWithSessionData( gentity_t *ent) {
 
-	if ( ent->client->sess.sessionHealth <= 0 ) {
+	//if ( ent->client->sess.sessionHealth <= 0 ) {
 		return;
-	}
+	//}
 
-	//give weapons and ammo
+	/*//give weapons and ammo
 	if(ent->client->sess.sessionAmmoMG != 999){
 		ent->swep_list[WP_MACHINEGUN] = 1;
 		ent->swep_ammo[WP_MACHINEGUN] = ent->client->sess.sessionAmmoMG;
 	}
-	if ( ent->client->sess.posX ) ent->client->ps.origin[0] = ent->client->sess.posX;
-	if ( ent->client->sess.posY ) ent->client->ps.origin[1] = ent->client->sess.posY;
-	if ( ent->client->sess.posZ ) ent->client->ps.origin[2] = ent->client->sess.posZ;
 
 	//select weapon
 	if ( ent->client->sess.sessionWeapon )
@@ -429,7 +314,7 @@ void G_UpdateClientWithSessionData( gentity_t *ent) {
 		ent->client->accuracy_shots = ent->client->sess.accuracyShots;
 	
 	if ( ent->client->sess.accuracyHits )
-		ent->client->accuracy_hits = ent->client->sess.accuracyHits;
+		ent->client->accuracy_hits = ent->client->sess.accuracyHits;*/
 
 	
 	// clear map change session data
@@ -454,13 +339,12 @@ void G_InitWorldSession( void ) {
 	// if the gametype changed since the last session, don't use any client sessions
 	if ( g_gametype.integer != gt ) {
 		level.newSession = qtrue;
-                G_Printf( "Gametype changed, clearing session data.\n" );
+        G_Printf( "Gametype changed, clearing session data.\n" );
 	}
 
 	//restore session from additional ep session data
 	trap_Cvar_VariableStringBuffer( "epsession", s, sizeof(s) );
 	sscanf( s, "%s", &buf );
-
 
 	trap_SetConfigstring( CS_TARGET_VARIABLE, buf );
 
