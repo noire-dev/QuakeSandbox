@@ -25,8 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 /*
 =======================================================================
-
-  SESSION DATA
+SESSION DATA
 
 Session data is the only data that stays persistant across level loads
 and tournament restarts.
@@ -462,7 +461,6 @@ void G_InitWorldSession( void ) {
 	trap_Cvar_VariableStringBuffer( "epsession", s, sizeof(s) );
 	sscanf( s, "%s", &buf );
 
-	//G_Printf("epsession: %s\n", s);
 
 	trap_SetConfigstring( CS_TARGET_VARIABLE, buf );
 

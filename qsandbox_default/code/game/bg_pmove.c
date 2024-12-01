@@ -402,11 +402,11 @@ static void PM_SetMovementDir( void ) {
 		if ( pm->cmd.rightmove == 0 && pm->cmd.forwardmove > 0 ) {
 			pm->ps->movementDir = 0;
 		} else if ( pm->cmd.rightmove < 0 ) {
-			pm->ps->delta_angles[1] += 128;
+			pm->ps->delta_angles[1] += 200;
 		} else if ( pm->cmd.rightmove == 0 && pm->cmd.forwardmove < 0 ) {
 			pm->ps->movementDir = 4;
 		} else if ( pm->cmd.rightmove > 0 ) {
-			pm->ps->delta_angles[1] -= 128;
+			pm->ps->delta_angles[1] -= 200;
 		}
 	}
 }
@@ -2350,7 +2350,7 @@ void PmoveSingle (pmove_t *pmove) {
 	} else if ( pm->waterlevel > 1 ) {
 		// swimming
 		PM_WaterMove();
-	} else if (pml.ladder) {	
+	} else if (pml.ladder && !BG_VehicleCheckClass(pm->ps->stats[STAT_VEHICLE])) {	
 		PM_LadderMove();
 	} else if ( pml.walking ) {
 		// walking on ground

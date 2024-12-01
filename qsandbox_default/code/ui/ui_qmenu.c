@@ -816,7 +816,7 @@ void UIObject_Draw( menuobject_s *b ){
 	
 		// draw label
 		UI_DrawStringCustom( x - (SMALLCHAR_WIDTH*b->fontsize), y, b->generic.text, UI_RIGHT|style, color, b->fontsize, 512 );
-		UI_DrawStringCustom( x + (SMALLCHAR_WIDTH*b->fontsize)*11, y, va(" %i", val), UI_LEFT|style, colorGreen, b->fontsize, 512 );
+		UI_DrawStringCustom( x + (SMALLCHAR_WIDTH*b->fontsize)*11, y, va("%i", val), UI_LEFT|style, color, b->fontsize, 512 );
 	
 		// draw slider
 		UI_SetColor( color );
@@ -1643,7 +1643,7 @@ static void Slider_Draw( menuslider_s *s ) {
 
 	// draw label
 	UI_DrawString( x - SMALLCHAR_WIDTH, y, s->generic.name, UI_RIGHT|style, color );
-	UI_DrawString( x + SMALLCHAR_WIDTH*13, y, va(" %i", val), UI_LEFT|style, colorGreen );
+	UI_DrawString( x + SMALLCHAR_WIDTH*13, y, va("%i", val), UI_LEFT|style, color );
 
 	// draw slider
 	UI_SetColor( color );

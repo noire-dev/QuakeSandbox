@@ -2818,6 +2818,7 @@ void CG_PlayerFlashlight(centity_t *cent) {
     vec3_t forward, right, up;
     vec3_t start, end;
     trace_t trace;
+    trace_t traceambient;
     float distance, lightIntensity, correctedIntensity;
     float minRadius = 32.0f;      // Minimum radius for focused light
     float maxRadius = 300.0f;    // Maximum radius for spread-out light
@@ -2831,9 +2832,11 @@ void CG_PlayerFlashlight(centity_t *cent) {
     VectorMA(start, lightRadius, forward, end);
 
     CG_Trace(&trace, start, NULL, NULL, end, cent->currentState.number, MASK_SHOT);
+    CG_Trace(&traceambient, start, NULL, NULL, end, cent->currentState.number, MASK_SHOT);
 
-    VectorMA(trace.endpos, -32, forward, trace.endpos);
-    distance = VectorDistance(start, trace.endpos);
+    VectorMA(traceambient.endpos, -24, forward, traceambient.endpos);
+    VectorMA(trace.endpos, -8, forward, trace.endpos);
+    distance = VectorDistance(start, traceambient.endpos);
 
     // Calculate light intensity, clamped between minBrightness and maxBrightness
     lightIntensity = 1.0f - (distance / lightRadius);
@@ -2859,7 +2862,8 @@ void CG_PlayerFlashlight(centity_t *cent) {
     correctedIntensity = (lightIntensity * 0.5f)+0.03;
 
     // Add light with adjustable radius and intensity limits
-    trap_R_AddLinearLightToScene(start, trace.endpos, radius, correctedIntensity, correctedIntensity, correctedIntensity);
+    trap_R_AddLinearLightToScene(start, traceambient.endpos, radius, correctedIntensity, correctedIntensity, correctedIntensity);
+    trap_R_AddLightToScene(trace.endpos, radius*1.25, correctedIntensity, correctedIntensity, correctedIntensity);
 }
 
 /*

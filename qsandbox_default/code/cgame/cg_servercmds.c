@@ -332,6 +332,10 @@ static void CG_ParseSweps(void) {
     int weaponIndex;
     int numArgs = trap_Argc();
 
+	for (i = 0; i < WEAPONS_NUM; i++) {
+		cg.swep_listcl[i] = 0;
+	}
+
     for (i = 0-WEAPONS_NUM; i < numArgs; i++) {
         weaponIndex = atoi(CG_Argv(i));
 
