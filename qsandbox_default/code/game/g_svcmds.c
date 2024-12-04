@@ -431,46 +431,6 @@ void Svcmd_PickTarget_f( void ){
 }
 
 /*
-=================
-Svcmd_AdmUseCvar_f
-=================
-*/
-void Svcmd_AdmUseCvar_f( void ) {
-	char		p1[64];
-	char		p2[64];
-	char		p3[64];
-	int			i;
-	static const char* admcvar_items[] = {
-	"g_allowprops",
-	"g_allowsettings",
-	"g_allownpc",
-	"g_allowitems",
-	"g_allownoclip",
-	"g_allowtoolgun",
-	"g_allowphysgun",
-	"g_allowgravitygun",
-	0
-};
-
-    trap_Argv( 1, p1, sizeof( p1 ) );
-	trap_Argv( 2, p2, sizeof( p2 ) );
-	trap_Argv( 3, p3, sizeof( p3 ) );
-	
-	if(atoi(p3) >= 1){
-	trap_SendServerCommand( -1, va("print \"Variable %s is %s\n\"", p1, G_CvarAutoChar( p1 )));
-	return;
-	}
-	
-	for (i = 0; i < 8; i++) {
-    if (Q_stricmp(p1, admcvar_items[i]) == 0) {
-	trap_Cvar_Set(p1, va("%s", p2));
-	trap_SendServerCommand( -1, va("print \"Variable %s changed to %s\n\"", p1, p2));
-	break;
-	}
-	}
-}
-
-/*
 ===================
 Svcmd_ForceTeam_f
 
@@ -569,10 +529,8 @@ struct
   
   { "hideobjects", qfalse, G_HideObjects },
   { "showobjects", qfalse, G_ShowObjects },
-  { "useadmcvar", qfalse, Svcmd_AdmUseCvar_f },
   { "picktarget", qfalse, Svcmd_PickTarget_f },
   { "create", qfalse, Svcmd_PropNpc_AS_f },
-  { "savegame", qfalse, Svcmd_SaveSession_f },
 
   //Noire.Script
   { "ns_openscript", qfalse, Svcmd_NS_OpenScript_f },

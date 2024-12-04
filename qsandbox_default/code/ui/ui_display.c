@@ -59,7 +59,7 @@ typedef struct {
 	menuradiobutton_s  status;
 	menuslider_s  gun;
 	menuslider_s  istyle;
-	menuslider_s  rview;
+	menuradiobutton_s  rview;
 	menuslider_s  rviewf;
 	menuslider_s  rviewu;
 	menuradiobutton_s  speed;
@@ -133,7 +133,6 @@ static void UI_DisplayOptionsMenu_Event( void* ptr, int event ) {
 		break;
 
 	case ID_GUN:
-		displayOptionsInfo.gun.curvalue = (int)(displayOptionsInfo.gun.curvalue + 0.5);
 		if(displayOptionsInfo.gun.curvalue == 0){
 		trap_Cvar_SetValue( "cg_drawGun", 0);
 		}
@@ -149,18 +148,10 @@ static void UI_DisplayOptionsMenu_Event( void* ptr, int event ) {
 		break;
 
 	case ID_REALVIEW:
-		displayOptionsInfo.rview.curvalue = (int)(displayOptionsInfo.rview.curvalue + 0.5);
-		if(displayOptionsInfo.rview.curvalue == 0){
-		trap_Cvar_SetValue( "cg_cameraEyes", 0);
-		}
-		if(displayOptionsInfo.rview.curvalue == 1){
+		if(displayOptionsInfo.rview.curvalue){
 		trap_Cvar_SetValue( "cg_cameraEyes", 1);
-		}
-		if(displayOptionsInfo.rview.curvalue == 2){
-		trap_Cvar_SetValue( "cg_cameraEyes", 2);
-		}
-		if(displayOptionsInfo.rview.curvalue == 3){
-		trap_Cvar_SetValue( "cg_cameraEyes", 3);
+		} else {
+		trap_Cvar_SetValue( "cg_cameraEyes", 0);
 		}
 		break;
 
@@ -181,7 +172,6 @@ static void UI_DisplayOptionsMenu_Event( void* ptr, int event ) {
 		break;
 
 	case ID_ISTYLE:
-		displayOptionsInfo.istyle.curvalue = (int)(displayOptionsInfo.istyle.curvalue + 0.5);
 		trap_Cvar_SetValue( "cg_itemstyle", displayOptionsInfo.istyle.curvalue);
 		break;
 
@@ -393,14 +383,12 @@ static void UI_DisplayOptionsMenu_Init( void ) {
     displayOptionsInfo.gun.maxvalue				= 3;
 
 	y += BIGCHAR_HEIGHT+2;
-	displayOptionsInfo.rview.generic.type     	= MTYPE_SLIDER;
+	displayOptionsInfo.rview.generic.type     	= MTYPE_RADIOBUTTON;
 	displayOptionsInfo.rview.generic.flags	    = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
 	displayOptionsInfo.rview.generic.callback 	= UI_DisplayOptionsMenu_Event;
 	displayOptionsInfo.rview.generic.id       	= ID_REALVIEW;
 	displayOptionsInfo.rview.generic.x	       	= 400;
 	displayOptionsInfo.rview.generic.y	        = y;
-	displayOptionsInfo.rview.minvalue			= 0;
-    displayOptionsInfo.rview.maxvalue			= 3;
 
 	y += BIGCHAR_HEIGHT+2;
 	displayOptionsInfo.rviewf.generic.type     	= MTYPE_SLIDER;

@@ -1004,11 +1004,7 @@ static void CG_CalcEntityLerpPositions( centity_t *cent ) {
 
 	ci = &cgs.clientinfo[ cent->currentState.clientNum ];
 	
-	if(ci->swepid >= 1){
 	weaphack = ci->swepid;
-	} else {
-	weaphack = cent->currentState.weapon;
-	}
 
 //unlagged - projectile nudge
 	// this will be set to how far forward projectiles will be extrapolated
@@ -1050,7 +1046,7 @@ static void CG_CalcEntityLerpPositions( centity_t *cent ) {
 			timeshift = 1000 / sv_fps.integer;
 		}
 		// if it's not, and it's not a grenade launcher
-		else if ( cent->currentState.weapon != WP_GRENADE_LAUNCHER ) {
+		else if ( weaphack != WP_GRENADE_LAUNCHER ) {
 			// extrapolate based on cg_projectileNudge
 			timeshift = cg_projectileNudge.integer + 1000 / sv_fps.integer;
 		}
@@ -1098,12 +1094,8 @@ static void ST_CalcEntityLerpPositions( centity_t *cent ) {
 	int timeshift = 0;
 
 	ci = &cgs.clientinfo[ cent->currentState.clientNum ];
-	
-	if(ci->swepid >= 1){
+
 	weaphack = ci->swepid;
-	} else {
-	weaphack = cent->currentState.weapon;
-	}
 
 //unlagged - projectile nudge
 	// this will be set to how far forward projectiles will be extrapolated
@@ -1145,7 +1137,7 @@ static void ST_CalcEntityLerpPositions( centity_t *cent ) {
 			timeshift = 1000 / sv_fps.integer;
 		}
 		// if it's not, and it's not a grenade launcher
-		else if ( cent->currentState.weapon != WP_GRENADE_LAUNCHER ) {
+		else if ( weaphack != WP_GRENADE_LAUNCHER ) {
 			// extrapolate based on cg_projectileNudge
 			timeshift = cg_projectileNudge.integer + 1000 / sv_fps.integer;
 		}

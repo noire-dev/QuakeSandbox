@@ -207,18 +207,6 @@ static void CG_ParseRespawnTime( void ) {
 
 /*
 =================
-CG_ParseTeam
-=================
-*/
-
-static void CG_ParseTeam( void ) {
-    //TODO: Add code here
-    if(cg_voip_teamonly.integer)
-	trap_Cvar_Set("cl_voipSendTarget",CG_Argv(1));
-}
-
-/*
-=================
 CG_ParseAttackingTeam
 
 =================
@@ -332,24 +320,44 @@ static void CG_ParseSweps(void) {
     int weaponIndex;
     int numArgs = trap_Argc();
 
-	for (i = 0; i < WEAPONS_NUM; i++) {
-		cg.swep_listcl[i] = 0;
-	}
+    for (i = 0; i < WEAPONS_NUM; i++) {
+        cg.swep_listcl[i] = 0;
+    }
 
-    for (i = 0-WEAPONS_NUM; i < numArgs; i++) {
+    for (i = 1; i < numArgs; i++) {
         weaponIndex = atoi(CG_Argv(i));
 
-        if (weaponIndex >= 0-WEAPONS_NUM && weaponIndex < WEAPONS_NUM) {
-			if(weaponIndex > 0){
-            cg.swep_listcl[weaponIndex] = 1;
-			}
-			if(weaponIndex < 0){
-			cg.swep_listcl[weaponIndex * -1] = 2;
-			}
+        if (weaponIndex >= -WEAPONS_NUM && weaponIndex < WEAPONS_NUM) {
+            if (weaponIndex > 0) {
+                cg.swep_listcl[weaponIndex] = 1;
+            } else if (weaponIndex < 0) {
+                cg.swep_listcl[-weaponIndex] = 2;
+            }
         }
     }
 }
 
+static void CG_ParseSpawnSweps(void) {
+    int i;
+    int weaponIndex;
+    int numArgs = trap_Argc();
+
+    for (i = 0; i < WEAPONS_NUM; i++) {
+        cg.swep_spawncl[i] = 0;
+    }
+
+    for (i = 1; i < numArgs; i++) {
+        weaponIndex = atoi(CG_Argv(i));
+
+        if (weaponIndex >= -WEAPONS_NUM && weaponIndex < WEAPONS_NUM) {
+            if (weaponIndex > 0) {
+                cg.swep_spawncl[weaponIndex] = 1;
+            } else if (weaponIndex < 0) {
+                cg.swep_spawncl[-weaponIndex] = 2;
+            }
+        }
+    }
+}
 
 /*
 ================
@@ -747,6 +755,11 @@ static void CG_ServerCommand( void ) {
 		return;
 	}
 
+	if ( !strcmp( cmd, "notify_n" ) ) {
+		CG_AddNotify(CG_Argv(1), 1);
+		return;
+	}
+
 	if ( !strcmp( cmd, "cs" ) ) {
 		CG_ConfigStringModified();
 		return;
@@ -906,11 +919,6 @@ static void CG_ServerCommand( void ) {
 		return;
 	}
 
-    if ( !strcmp( cmd, "team" ) ) {
-		CG_ParseTeam();
-		return;
-	}
-
 	if ( !strcmp( cmd, "weaponProperties" ) ) {
         CG_ParseWeaponProperties();
         return;
@@ -921,18 +929,10 @@ static void CG_ServerCommand( void ) {
         return;
     }
 
-        if ( !strcmp( cmd, "customvotes" ) ) {
-            char infoString[1024];
-            int i;
-            //TODO: Create a ParseCustomvotes function
-            memset(&infoString,0,sizeof(infoString));
-            for(i=1;i<=12;i++) {
-                Q_strcat(infoString,sizeof(infoString),CG_Argv( i ));
-                Q_strcat(infoString,sizeof(infoString)," ");
-            }
-            trap_Cvar_Set("cg_vote_custom_commands",infoString);
-		return;
-	}
+	if ( !strcmp( cmd, "wpspawn" ) ) {
+        CG_ParseSpawnSweps();
+        return;
+    }
 
 	CG_Printf( "Unknown client game command: %s\n", cmd );
 }

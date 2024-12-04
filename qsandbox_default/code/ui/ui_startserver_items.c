@@ -1202,11 +1202,6 @@ static void StartServer_BothItemMenus_MenuInit(qboolean ingame)
 	int count, index;
 	char* text;
 
-	if (uie_olditemmenu.integer != 0) {
-		StartServer_ItemPage_MenuInit_OldMenu(ingame);
-		return;
-	}
-
 	memset(&s_itemcontrols, 0, sizeof(itemcontrols_t));
 
 	StartServer_BothItemMenus_Cache();

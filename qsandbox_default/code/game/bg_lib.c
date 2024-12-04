@@ -191,28 +191,28 @@ size_t strlen( const char *string ) {
 }
 
 int strlenru( const char *string ) {
-	int		result;
-	int		n;
-	int 	i;
-	int		rucount;
-	const char	*s;
+    int result = 0;
+    int i = 0;
+    
+    while (string[i] != '\0') {
+        unsigned char c = string[i];
+        
+        // Если символ ASCII (0-127), то учитываем 1 байт
+        if (c <= 127) {
+            result += 1;
+            i += 1;
+        }
+        // Если символ в UTF-8 (русский, двухбайтовый)
+        else if (c >= 192 && c <= 223) {  // Первый байт в диапазоне 0xC0 - 0xDF
+            result += 1;  // Учитываем символ как 1 символ
+            i += 2;  // Перемещаемся на 2 байта вперед
+        } else {
+            // Невозможно обработать этот символ, просто пропускаем его
+            i += 1;
+        }
+    }
 
-	s = string;
-	result = strlen(s);
-	
-	n = strlen(s);
-	rucount = 0;
-	
-	for(i=0; i<n; i++){
-	if(s[i] >= -64 && s[i] <= -1){	//ебаный unicode
-	rucount += 1;
-	}
-	}
-	if(rucount){
-	return result * 0.5;
-	} else {
-	return result;	
-	}
+    return result;
 }
 
 int ifstrlenru( const char *string ) {

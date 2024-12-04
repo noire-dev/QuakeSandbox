@@ -197,7 +197,7 @@ void PText_Init( menutext_s *t )
 
 	x = t->generic.x;
 	y = t->generic.y;
-	w = UI_ProportionalStringWidth( t->string ) * sizeScale;
+	w = UI_ProportionalStringWidth( t->string ) * (sizeScale*0.75);
 	h =	PROP_HEIGHT * sizeScale;
 
 	if( t->generic.flags & QMF_RIGHT_JUSTIFY ) {
@@ -207,8 +207,8 @@ void PText_Init( menutext_s *t )
 		x -= w / 2;
 	}
 
-	t->generic.left   = x - PROP_GAP_WIDTH * sizeScale;
-	t->generic.right  = x + w + PROP_GAP_WIDTH * sizeScale;
+	t->generic.left   = x - PROP_GAP_WIDTH;
+	t->generic.right  = x + w + PROP_GAP_WIDTH;
 	if(t->generic.heightmod){
 	t->generic.top    = y - (t->generic.heightmod*h);
 	t->generic.bottom = y + (t->generic.heightmod*h);
@@ -2585,11 +2585,15 @@ sfxHandle_t Menu_DefaultKey( menuframework_s *m, int key )
 
 			case MTYPE_FIELD:
 				sound = MenuField_Key( (menufield_s*)item, &key );
+				item->callback( item, QM_ACTIVATED );
 				break;
 				
 			case MTYPE_UIOBJECT:
 				if(b->type == 4 || b->type == 5 || b->type == 7 || b->type == 8){
 				sound = UIObject_Key( (menuobject_s*)item, key );
+				if(b->type == 4){
+				item->callback( item, QM_ACTIVATED );
+				}
 				}
 				break;
 

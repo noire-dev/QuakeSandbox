@@ -6,10 +6,7 @@
 	User interface building blocks and support functions.
 **********************************************************************/
 
-
-
-
-#include "ui_local.h"
+#include "../qcommon/ns_local.h"
 
 uiStatic_t		uis;
 qboolean		m_entersound;		// after a frame, so caching won't disrupt the sound
@@ -92,7 +89,7 @@ void UI_ScreenOffset( void ) {
 	uis.onmap = qtrue;	
 	}
 	if(uis.glconfig.vidHeight/480.0f > 0){
-	trap_Cvar_SetValue("con_scale", uis.glconfig.vidHeight/480.0f);
+	trap_Cvar_SetValue("con_scale", 1.85);
 	}
 	trap_Cvar_Set("cl_conColor", "8 8 8 192");
 }
@@ -609,18 +606,12 @@ void UI_SetActiveMenu( uiMenuCommand_t menu ) {
 		return;
 	case UIMENU_MAIN:
 		UI_ScreenOffset();
-		if(!trap_Cvar_VariableValue("cl_32bit")){
 		if(strlen(ui_3dmap.string) <= 1){
 		UI_MainMenu();
 		UI_CreditMenu(1);
 		}
 		if(strlen(ui_3dmap.string)){
 		trap_Cmd_ExecuteText( EXEC_APPEND, va("set sv_maxclients 1; map %s\n", ui_3dmap.string) );
-		}
-		}
-		if(trap_Cvar_VariableValue("cl_32bit")){
-		UI_MainMenu();
-		UI_CreditMenu(1);
 		}
 		return;
 	case UIMENU_NEED_CD:
@@ -1368,6 +1359,33 @@ void UI_UpdateScreen( void ) {
 }
 
 /*
+###############
+Noire.Script API - Threads
+###############
+*/
+
+char uiThreadBuffer[MAX_CYCLE_SIZE];
+
+// Load threads
+void RunScriptThreads(int time) {
+    int i;
+
+    for (i = 0; i < threadsCount; i++) {
+        ScriptLoop* script = &threadsLoops[i];
+        if (time - script->lastRunTime >= script->interval) {
+            // Обновляем время последнего запуска
+            script->lastRunTime = time;
+
+            // Используем временный буфер для выполнения скрипта
+            strncpy(uiThreadBuffer, script->code, MAX_CYCLE_SIZE - 1);
+            uiThreadBuffer[MAX_CYCLE_SIZE - 1] = '\0'; // Убедимся, что буфер терминальный
+
+            Interpret(uiThreadBuffer); // Запускаем скрипт из временного буфера
+        }
+    }
+}
+
+/*
 =================
 UI_Refresh
 =================
@@ -1383,6 +1401,8 @@ void UI_Refresh( int realtime )
 	}
 
 	UI_UpdateCvars();
+
+	RunScriptThreads(uis.realtime);		//Noire.Script - run threads
 
 	if ( uis.activemenu )
 	{
@@ -1459,12 +1479,6 @@ void UI_Refresh( int realtime )
 		m_entersound = qfalse;
 	}
 	
-}
-
-void UI_DrawTextBox (int x, int y, int width, int lines)
-{
-	UI_FillRect( x + BIGCHAR_WIDTH/2, y + BIGCHAR_HEIGHT/2, ( width + 1 ) * BIGCHAR_WIDTH, ( lines + 1 ) * BIGCHAR_HEIGHT, colorBlack );
-	UI_DrawRect( x + BIGCHAR_WIDTH/2, y + BIGCHAR_HEIGHT/2, ( width + 1 ) * BIGCHAR_WIDTH, ( lines + 1 ) * BIGCHAR_HEIGHT, colorWhite );
 }
 
 qboolean UI_CursorInRect (int x, int y, int width, int height)

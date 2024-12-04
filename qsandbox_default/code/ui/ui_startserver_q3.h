@@ -158,9 +158,3 @@ void StartServer_ServerPage_Cache( void );
 // ui_startserver_item.c
 void StartServer_BothItemMenus_Cache( void );
 void StartServer_ItemPage_MenuInit(void);
-
-
-// ui_startserver_item_old.c
-void StartServer_ItemPage_MenuInit_OldMenu(qboolean ingame);
-
-

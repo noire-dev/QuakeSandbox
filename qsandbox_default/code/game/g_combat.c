@@ -764,7 +764,7 @@ if(ent->singlebot){
 		if(level.time<=level.roundStartTime && level.time>level.roundStartTime-1000*g_elimination_activewarmup.integer)
 			self->client->respawnTime = level.time + rand()%800;
 
-        RespawnTimeMessage(self,self->client->respawnTime);
+        RespawnTimeMessage(self, self->client->respawnTime);
 
 
 	// remove powerups
@@ -1160,27 +1160,21 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		return;
 	}
 
-if ( attacker && attacker->singlebot){
-		float skill = trap_Cvar_VariableValue( "g_spSkill" );
-		int orgdmg = damage;
-
-		if ( attacker->botspawn && attacker->botspawn->skill )
-			skill += attacker->botspawn->skill;
-
-		if (skill < 1)
-			skill = 1;	//relative skill level should not drop below 1 but is allowed to rise above 5
-		
-		damage *= ( ( 0.1 * skill  ) - 0.05 ); //damage is always rounded down.
-		
-		if ( damage < 1 )
-			damage = 1;	//make sure bot does at least -some- damage
-}
-
-	/*if ( client ) {
-		if ( client->noclip ) {
-			return;
-		}
-	}*/
+	if ( attacker && attacker->singlebot){
+			float skill = trap_Cvar_VariableValue( "g_spSkill" );
+			int orgdmg = damage;
+	
+			if ( attacker->botspawn && attacker->botspawn->skill )
+				skill += attacker->botspawn->skill;
+			
+			if (skill < 1)
+				skill = 1;	//relative skill level should not drop below 1 but is allowed to rise above 5
+			
+			damage *= ( ( 0.1 * skill  ) - 0.05 ); //damage is always rounded down.
+			
+			if ( damage < 1 )
+				damage = 1;	//make sure bot does at least -some- damage
+	}
 
 	if ( !dir ) {
 		dflags |= DAMAGE_NO_KNOCKBACK;
@@ -1251,7 +1245,11 @@ if ( attacker && attacker->singlebot){
 
 		mass = 200;
 
-		VectorScale (dir, g_knockback.value * (float)knockback / mass, kvel);
+		if(targ->sandboxObject){
+			VectorScale (dir, g_knockback.value*2 * (float)knockback / mass, kvel);
+		} else {
+			VectorScale (dir, g_knockback.value * (float)knockback / mass, kvel);
+		}
 		if(targ->client){
 		VectorAdd (targ->client->ps.velocity, kvel, targ->client->ps.velocity);
 		}
@@ -1264,27 +1262,27 @@ if ( attacker && attacker->singlebot){
 		// set the timer so that the other client can't cancel
 		// out the movement immediately
 		if(!targ->sandboxObject){
-		if ( !targ->client->ps.pm_time ) {
-			int		t;
+			if ( !targ->client->ps.pm_time ) {
+				int		t;
 
-			t = knockback * 2;
-			if ( t < 50 ) {
-				t = 50;
-			}
-			if ( t > 200 ) {
-				t = 200;
-			}
-			targ->client->ps.pm_time = t;
-			targ->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
-		}
-                //Remeber the last person to hurt the player
-                if( !g_awardpushing.integer || targ==attacker || OnSameTeam (targ, attacker)) {
-                    targ->client->lastSentFlying = -1;
-                } else {
-                    targ->client->lastSentFlying = attacker->s.number;
-                    targ->client->lastSentFlyingTime = level.time;
-                }
+				t = knockback * 2;
+				if ( t < 50 ) {
+					t = 50;
 				}
+				if ( t > 200 ) {
+					t = 200;
+				}
+				targ->client->ps.pm_time = t;
+				targ->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
+			}
+            //Remeber the last person to hurt the player
+            if( !g_awardpushing.integer || targ==attacker || OnSameTeam (targ, attacker)) {
+                targ->client->lastSentFlying = -1;
+            } else {
+                targ->client->lastSentFlying = attacker->s.number;
+                targ->client->lastSentFlyingTime = level.time;
+            }
+		}
 	}
 	
 	if (targ->sandboxObject) {

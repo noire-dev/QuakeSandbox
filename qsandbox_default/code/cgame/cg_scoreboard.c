@@ -116,7 +116,7 @@ static void CG_DrawClientScore( int y, score_t *score, float *color, float fade 
 		hcolor[2] = cg_crosshairColorBlue.value;
 		hcolor[3] = fade * 0.5;
 
-		CG_FillRect( SB_SCORELINE_X + BIGCHAR_WIDTH + (SB_RATING_WIDTH / 2), y, 640 - SB_SCORELINE_X, BIGCHAR_HEIGHT+1, hcolor );
+		CG_FillRect( 90 - cl_screenoffset.value, y, 550 + (cl_screenoffset.value*2), BIGCHAR_HEIGHT+1, hcolor );
 	}
 
 	CG_DrawBigString( SB_SCORELINE_X + (SB_RATING_WIDTH / 2), y, string, fade );
@@ -182,6 +182,11 @@ qboolean CG_DrawScoreboard( void ) {
 	int maxClients;
 	int lineHeight;
 	int topBorderSize, bottomBorderSize;
+	vec4_t         colorblk;
+
+	if (cg.teamoverlay){
+		return;
+	}
 
 	// don't draw amuthing if the menu or console is up
 	if ( cg_paused.integer ) {
@@ -199,7 +204,7 @@ qboolean CG_DrawScoreboard( void ) {
 		fade = 1.0;
 		fadeColor = colorWhite;
 	} else {
-		fadeColor = CG_FadeColor( cg.scoreFadeTime, FADE_TIME );
+		fadeColor = CG_FadeColor( cg.scoreFadeTime, 0 );
 
 		if ( !fadeColor ) {
 			// next time scoreboard comes up, don't print killer
@@ -209,6 +214,14 @@ qboolean CG_DrawScoreboard( void ) {
 		}
 		fade = *fadeColor;
 	}
+
+	colorblk[0]=0.0f;
+	colorblk[1]=0.0f;
+	colorblk[2]=0.0f;
+	colorblk[3]=0.75f;
+	
+	//CG_DrawRoundedRect(0 - cl_screenoffset.value, 0, 640 + (cl_screenoffset.value*2), 480, 0, colorblk);
+	CG_DrawPic( -1 - cl_screenoffset.value, 0, 642+(cl_screenoffset.value*2), 480, trap_R_RegisterShaderNoMip( "menu/art/blacktrans" ) );
 
 	// fragged by ... line
 	if ( cg.killerName[0] ) {
@@ -237,7 +250,7 @@ qboolean CG_DrawScoreboard( void ) {
 
 	y = SB_TOP;
 
-	maxClients = 28;
+	maxClients = 24;
 	lineHeight = SB_INTER_HEIGHT;
 	topBorderSize = 8;
 	bottomBorderSize = 16;

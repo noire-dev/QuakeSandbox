@@ -31,7 +31,7 @@ typedef struct {
     int age; //int that grows each time a new player is stored. The lowest number is always replaced. Reset to 0 then retrieved.
     int	persistant[MAX_PERSISTANT]; //This is the only information we need to save
     int timePlayed;
-    int	accuracy[WP_NUM_WEAPONS][2];
+    int	accuracy[MAX_WEAPONS][2];
 } playerstore_t;
 
 static playerstore_t playerstore[MAX_PLAYERS_STORED];

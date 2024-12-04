@@ -224,7 +224,6 @@ cd windows\build\ui
 %cc%  ../../../code/ui/ui_startserver_custommaps.c
 %cc%  ../../../code/ui/ui_startserver_data.c
 %cc%  ../../../code/ui/ui_startserver_items.c
-%cc%  ../../../code/ui/ui_startserver_items_old.c
 %cc%  ../../../code/ui/ui_startserver_map.c
 %cc%  ../../../code/ui/ui_startserver_mapsel.c
 %cc%  ../../../code/ui/ui_startserver_script.c

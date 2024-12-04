@@ -1693,7 +1693,7 @@ int BotSelectQSWeapon(bot_state_t *bs) {
 	int i;
 	for (i = WEAPONS_NUM; i > 0; i--) {
 		if(bs->swep_list[i] == 1 && (bs->swep_ammo[i] > 0 || bs->swep_ammo[i] == -1)){
-		if(i != WP_TOOLGUN && i != WP_PHYSGUN && i != WP_GRAVITYGUN)
+		if(i != WP_GRAPPLING_HOOK && i != WP_PHYSGUN && i != WP_GRAVITYGUN && i != WP_TOOLGUN)
 		return i;
 		}
 	}

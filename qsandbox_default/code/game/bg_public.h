@@ -132,8 +132,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define	CS_OVERLAY				(CS_SECONDARYOBJECTIVE+1)
 #define CS_SCOREBOARDMUSIC		(CS_OVERLAY+1)
 #define CS_DEATHMUSIC			(CS_SCOREBOARDMUSIC+1)
-#define CS_TARGET_VARIABLE		(CS_DEATHMUSIC+1)
-#define CS_CUTSCENE				(CS_TARGET_VARIABLE+1)
+#define CS_CUTSCENE				(CS_DEATHMUSIC+1)
 #define CS_PLAYERMODEL			(CS_CUTSCENE+1)
 #define CS_PLAYERHEADMODEL		(CS_PLAYERMODEL+1)
 #define CS_OBJECTIVESOVERLAY	(CS_PLAYERHEADMODEL+1)
@@ -284,7 +283,6 @@ typedef enum {
 	STAT_MAX_HEALTH,				// health / armor limit, changable by handicap
 	STAT_NO_PICKUP,					// for dropped ammo
 	STAT_MONEY,						// for buy activator funcs
-	STAT_SWEP,						// for SWEP WEAPONS
 	STAT_SWEPAMMO,					// for SWEP WEAPONS ammo
 	STAT_VEHICLE,					// for vehicle system
 	STAT_VEHICLEHP					// for vehicle system
@@ -438,9 +436,6 @@ typedef enum {
 	
 	WEAPONS_NUM		//look for this to add new ones - WEAPONS_HYPER
 } weapon_t;	
-
-#define WP_NUM_WEAPONS 16
-
 
 // reward sounds (stored in ps->persistant[PERS_PLAYEREVENTS])
 #define	PLAYEREVENT_DENIEDREWARD		0x0001
@@ -696,40 +691,6 @@ typedef enum {
 
 	TEAM_NUM_TEAMS
 } team_t;
-
-typedef enum {
-	PCLASS_FEMALE,
-	PCLASS_MALE,
-	PCLASS_NEUTER,
-
-	PCLASS_NUM_CLASSES
-} pclass_t;
-
-typedef enum {
-	PSPECIAL_NONE,
-	PSPECIAL_POISON,
-	PSPECIAL_SEARCH,
-	PSPECIAL_NAILS,
-	PSPECIAL_VAMPIREBALL,
-	PSPECIAL_GUIDED,
-	PSPECIAL_HOMINGNAIL,
-	PSPECIAL_TRAP,
-	PSPECIAL_SNOWBALL,
-	PSPECIAL_BOUNCE,
-	PSPECIAL_SLOWHOMING,
-	PSPECIAL_MOLOTOV,
-	PSPECIAL_BOUNCEBOMB,
-	PSPECIAL_NEGATIVEKNOCK,
-	PSPECIAL_BATTLESUIT,
-	PSPECIAL_REGEN,
-	PSPECIAL_INVIS,
-	PSPECIAL_SPEED,
-	PSPECIAL_FLIGHT,
-	PSPECIAL_GRENADE,
-	PSPECIAL_TELEPORT,
-
-	PSPECIAL_NUM
-} pspecial_t;
 
 typedef enum {
 	VCLASS_NONE,

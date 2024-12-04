@@ -104,6 +104,17 @@ vmCvar_t	tool_modifypreset2;
 vmCvar_t	tool_modifypreset3;
 vmCvar_t	tool_modifypreset4;
 
+vmCvar_t	sb_ctab_1;
+vmCvar_t	sb_ctab_2;
+vmCvar_t	sb_ctab_3;
+vmCvar_t	sb_ctab_4;
+vmCvar_t	sb_ctab_5;
+vmCvar_t	sb_ctab_6;
+vmCvar_t	sb_ctab_7;
+vmCvar_t	sb_ctab_8;
+vmCvar_t	sb_ctab_9;
+vmCvar_t	sb_ctab_10;
+
 vmCvar_t	toolgun_toolset1;
 vmCvar_t	toolgun_toolset2;
 vmCvar_t	toolgun_toolset3;
@@ -226,7 +237,6 @@ vmCvar_t	uie_map_multisel;
 vmCvar_t	uie_map_list;
 vmCvar_t	uie_bot_multisel;
 vmCvar_t	uie_bot_list;
-vmCvar_t	uie_olditemmenu;
 
 
 static cvarTable_t		cvarTable[] = {
@@ -257,6 +267,17 @@ static cvarTable_t		cvarTable[] = {
 	{ &tool_modifypreset2, "tool_modifypreset2", "set toolcmd_modify2 tm %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s 1", 0 },
 	{ &tool_modifypreset3, "tool_modifypreset3", "set toolcmd_modify3 tm %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s 2", 0 },
 	{ &tool_modifypreset4, "tool_modifypreset4", "set toolcmd_modify4 tm %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s 3", 0 },
+
+	{ &sb_ctab_1, "sb_ctab_1", "", CVAR_ARCHIVE },
+	{ &sb_ctab_2, "sb_ctab_2", "", CVAR_ARCHIVE },
+	{ &sb_ctab_3, "sb_ctab_3", "", CVAR_ARCHIVE },
+	{ &sb_ctab_4, "sb_ctab_4", "", CVAR_ARCHIVE },
+	{ &sb_ctab_5, "sb_ctab_5", "", CVAR_ARCHIVE },
+	{ &sb_ctab_6, "sb_ctab_6", "", CVAR_ARCHIVE },
+	{ &sb_ctab_7, "sb_ctab_7", "", CVAR_ARCHIVE },
+	{ &sb_ctab_8, "sb_ctab_8", "", CVAR_ARCHIVE },
+	{ &sb_ctab_9, "sb_ctab_9", "", CVAR_ARCHIVE },
+	{ &sb_ctab_10, "sb_ctab_10", "", CVAR_ARCHIVE },
 	
 	{ &toolgun_toolset1, "toolgun_toolset1", "--------:", 0 },
 	{ &toolgun_toolset2, "toolgun_toolset2", "--------:", 0 },
@@ -379,7 +400,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &uie_animsfx, "uie_s_animsfx", "1", CVAR_ROM|CVAR_ARCHIVE },
 	{ &uie_mapicons, "uie_mapicons", "0", CVAR_ROM|CVAR_ARCHIVE },
 	{ &uie_autoclosebotmenu, "uie_autoclosebotmenu", "0", CVAR_ROM|CVAR_ARCHIVE },
-	{ &uie_olditemmenu, "uie_olditemmenu", "0", CVAR_ARCHIVE },
 };
 
 static int		cvarTableSize = sizeof(cvarTable) / sizeof(cvarTable[0]);
@@ -404,11 +424,6 @@ void UI_RegisterCvars( void ) {
 	// since first usage defines their default value
 	UIE_StartServer_RegisterDisableCvars(qtrue);
 	trap_Cvar_Set( "cl_sprun", "0" );
-	if(trap_Cvar_VariableValue("cl_32bit")){
-		//if(trap_Cvar_VariableValue("r_picmip") < 2){
-		//	trap_Cvar_Set( "r_picmip", "2" );
-		//}
-	}
 	trap_Cmd_ExecuteText( EXEC_APPEND, "exec uiautoexec.cfg\n");
 }
 

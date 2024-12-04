@@ -754,16 +754,6 @@ respawnRound
 */
 void respawnRound( gentity_t *ent ) {
 	gentity_t	*tent;
-
-	//if(g_gametype.integer!=GT_ELIMINATION || !ent->client->isEliminated)
-	//{
-	//	ent->client->isEliminated  = qtrue;
-		//CopyToBodyQue (ent);
-	//}
-
-
-	//if(g_gametype.integer==GT_ELIMINATION && ent->client->ps.pm_type == PM_SPECTATOR && ent->client->ps.stats[STAT_HEALTH] > 0)
-	//	return;
         if(ent->client->hook)
                 Weapon_HookFree(ent->client->hook);
 
@@ -777,68 +767,6 @@ void respawnRound( gentity_t *ent ) {
                 tent = G_TempEntity( ent->client->ps.origin, EV_PLAYER_TELEPORT_IN );
                 tent->s.clientNum = ent->s.clientNum;
         }
-}
-
-/*
-================
-TeamCvarSet
-
-Sets the red and blue team client number cvars.
-================
- */
-void TeamCvarSet( void )
-{
-    int i;
-    qboolean redChanged = qfalse;
-    qboolean blueChanged = qfalse;
-    qboolean first = qtrue;
-    char* temp = NULL;
-
-    for ( i = 0 ; i < level.maxclients ; i++ ) {
-		if ( level.clients[i].pers.connected == CON_DISCONNECTED ) {
-			continue;
-		}
-		if ( level.clients[i].sess.sessionTeam == TEAM_RED ) {
-                    if(first) {
-                        temp = va("%i",i);
-                        first = qfalse;
-                    }
-                    else
-                        temp = va("%s,%i",temp,i);
-		}
-	}
-
-    if(Q_stricmp(g_redTeamClientNumbers.string,temp))
-        redChanged = qtrue;
-    trap_Cvar_Set("g_redTeamClientNumbers",temp); //Set it right
-    first= qtrue;
-
-    for ( i = 0 ; i < level.maxclients ; i++ ) {
-		if ( level.clients[i].pers.connected == CON_DISCONNECTED ) {
-			continue;
-		}
-		if ( level.clients[i].sess.sessionTeam == TEAM_BLUE ) {
-                    if(first) {
-                        temp = va("%i",i);
-                        first = qfalse;
-                    }
-                    else
-                        temp = va("%s,%i",temp,i);
-		}
-	}
-    if(Q_stricmp(g_blueTeamClientNumbers.string,temp))
-        blueChanged = qtrue;
-    trap_Cvar_Set("g_blueTeamClientNumbers",temp);
-
-    //Note: We need to force update of the cvar or SendYourTeamMessage will send the old cvar value!
-    if(redChanged) {
-        trap_Cvar_Update(&g_redTeamClientNumbers); //Force update of CVAR
-        SendYourTeamMessageToTeam(TEAM_RED);
-    }
-    if(blueChanged) {
-        trap_Cvar_Update(&g_blueTeamClientNumbers);
-        SendYourTeamMessageToTeam(TEAM_BLUE); //Force update of CVAR
-    }
 }
 
 /*
@@ -1713,7 +1641,7 @@ void ClientBegin( int clientNum ) {
     motd ( ent );
 	// set info that persisted after mapchange
 	if (!IsBot(ent)) {
-		G_UpdateClientWithSessionData(ent);
+		G_Sav_LoadData(ent, 0);
 	}
 	G_LogPrintf( "ClientBegin: %i\n", clientNum );
 
@@ -1722,17 +1650,9 @@ void ClientBegin( int clientNum ) {
 		DominationPointNamesMessage(ent);
 		DominationPointStatusMessage(ent);
 	}
-
-			TeamCvarSet();
-
-			// count current clients and rank for scoreboard
-			CalculateRanks();
-
-			G_SendWeaponProperties( ent );
-			
-        //Send the list of custom vote options:
-        if(strlen(custom_vote_info))
-            SendCustomVoteCommands(clientNum);
+	// count current clients and rank for scoreboard
+	CalculateRanks();
+	G_SendWeaponProperties( ent );
 }
 /*
 ===========
@@ -1756,7 +1676,6 @@ void ClientSpawn(gentity_t *ent) {
 	int		health;
 	int		savedPing;
 	int		accuracy_hits, accuracy_shots,vote;
-    int		accuracy[WP_NUM_WEAPONS][2];
 	int		eventSequence;
 	char	userinfo[MAX_INFO_STRING];
 
@@ -1893,7 +1812,6 @@ void ClientSpawn(gentity_t *ent) {
 //	savedAreaBits = client->areabits;
 	accuracy_hits = client->accuracy_hits;
 	accuracy_shots = client->accuracy_shots;
-    memcpy(accuracy,client->accuracy,sizeof(accuracy));
 
     memcpy(persistant,client->ps.persistant,MAX_PERSISTANT*sizeof(int));
 	eventSequence = client->ps.eventSequence;
@@ -1907,10 +1825,6 @@ void ClientSpawn(gentity_t *ent) {
 //	client->areabits = savedAreaBits;
 	client->accuracy_hits = accuracy_hits;
 	client->accuracy_shots = accuracy_shots;
-    for( i = 0 ; i < WP_NUM_WEAPONS ; i++ ){
-		client->accuracy[i][0] = accuracy[i][0];
-		client->accuracy[i][1] = accuracy[i][1];
-	}
 
 	client->lastkilled_client = -1;
 
@@ -1971,11 +1885,18 @@ void ClientSpawn(gentity_t *ent) {
 	if ( !ent->botspawn ) { G_KillBox( ent );}
 	trap_LinkEntity (ent);
 
-	// force the base weapon up
-	client->ps.weapon = WP_MACHINEGUN;
-	ent->swep_id = WP_MACHINEGUN;
-	ent->client->ps.stats[STAT_SWEP] = WP_MACHINEGUN;
 	client->ps.weaponstate = WEAPON_READY;
+	for(i = 1 ; i < WEAPONS_NUM; i++){
+		ent->swep_list[i] = 0;
+		ent->swep_ammo[i] = 0;
+	}
+	SetUnlimitedWeapons(ent);
+	SetSandboxWeapons(ent);
+	if ( ent->botspawn ) {
+		SetupCustomBot( ent );
+	} else {
+		SetCustomWeapons( ent );
+	}
 	ent->client->isEliminated = qfalse;
 
 	// don't allow full run speed for a bit
@@ -2022,21 +1943,6 @@ void ClientSpawn(gentity_t *ent) {
 
     RespawnTimeMessage(ent,0);
 
-	for(i = 1 ; i < WEAPONS_NUM; i++){
-		ent->swep_list[i] = 0;
-		ent->swep_ammo[i] = 0;
-	}
-	SetUnlimitedWeapons(ent);
-	SetSandboxWeapons(ent);
-	if ( ent->botspawn ) {
-		SetupCustomBot( ent );
-	} else {
-		SetCustomWeapons( ent );
-	}
-
-		client->ps.weapon = WP_MACHINEGUN;
-		ent->swep_id = WP_MACHINEGUN;
-		ent->client->ps.stats[STAT_SWEP] = WP_MACHINEGUN;
 		client->ps.weaponstate = WEAPON_READY;
 		ent->client->isEliminated = qfalse;
 		return;
@@ -2126,7 +2032,6 @@ void ClientSpawn(gentity_t *ent) {
 //	savedAreaBits = client->areabits;
 	accuracy_hits = client->accuracy_hits;
 	accuracy_shots = client->accuracy_shots;
-    memcpy(accuracy,client->accuracy,sizeof(accuracy));
 
     memcpy(persistant,client->ps.persistant,MAX_PERSISTANT*sizeof(int));
 	eventSequence = client->ps.eventSequence;
@@ -2140,10 +2045,6 @@ void ClientSpawn(gentity_t *ent) {
 //	client->areabits = savedAreaBits;
 	client->accuracy_hits = accuracy_hits;
 	client->accuracy_shots = accuracy_shots;
-    for( i = 0 ; i < WP_NUM_WEAPONS ; i++ ){
-		client->accuracy[i][0] = accuracy[i][0];
-		client->accuracy[i][1] = accuracy[i][1];
-	}
 
 	client->lastkilled_client = -1;
 
@@ -2205,11 +2106,18 @@ void ClientSpawn(gentity_t *ent) {
 	if ( !ent->botspawn ) { G_KillBox( ent );}
 	trap_LinkEntity (ent);
 
-	// force the base weapon up
-	client->ps.weapon = WP_MACHINEGUN;
-	ent->swep_id = WP_MACHINEGUN;
-	ent->client->ps.stats[STAT_SWEP] = WP_MACHINEGUN;
 	client->ps.weaponstate = WEAPON_READY;
+	for(i = 1 ; i < WEAPONS_NUM; i++){
+		ent->swep_list[i] = 0;
+		ent->swep_ammo[i] = 0;
+	}
+	SetUnlimitedWeapons(ent);
+	SetSandboxWeapons(ent);
+	if ( ent->botspawn ) {
+		SetupCustomBot( ent );
+	} else {
+		SetCustomWeapons( ent );
+	}
 	ent->client->isEliminated = qfalse;
 
 	// don't allow full run speed for a bit
@@ -2256,21 +2164,6 @@ void ClientSpawn(gentity_t *ent) {
 
     RespawnTimeMessage(ent,0);
 
-	for(i = 1 ; i < WEAPONS_NUM; i++){
-		ent->swep_list[i] = 0;
-		ent->swep_ammo[i] = 0;
-	}
-	SetUnlimitedWeapons(ent);
-	SetSandboxWeapons(ent);
-	if ( ent->botspawn ) {
-		SetupCustomBot( ent );
-	} else {
-		SetCustomWeapons( ent );
-	}
-
-		client->ps.weapon = WP_MACHINEGUN;
-		ent->swep_id = WP_MACHINEGUN;
-		ent->client->ps.stats[STAT_SWEP] = WP_MACHINEGUN;
 		client->ps.weaponstate = WEAPON_READY;
 		ent->client->isEliminated = qfalse;
 		return;
@@ -2400,7 +2293,6 @@ void ClientSpawn(gentity_t *ent) {
 //	savedAreaBits = client->areabits;
 	accuracy_hits = client->accuracy_hits;
 	accuracy_shots = client->accuracy_shots;
-    memcpy(accuracy,client->accuracy,sizeof(accuracy));
 
     memcpy(persistant,client->ps.persistant,MAX_PERSISTANT*sizeof(int));
 	eventSequence = client->ps.eventSequence;
@@ -2414,10 +2306,6 @@ void ClientSpawn(gentity_t *ent) {
 //	client->areabits = savedAreaBits;
 	client->accuracy_hits = accuracy_hits;
 	client->accuracy_shots = accuracy_shots;
-    for( i = 0 ; i < WP_NUM_WEAPONS ; i++ ){
-		client->accuracy[i][0] = accuracy[i][0];
-		client->accuracy[i][1] = accuracy[i][1];
-	}
 
 	client->lastkilled_client = -1;
 
@@ -2478,20 +2366,23 @@ void ClientSpawn(gentity_t *ent) {
 
 	if ( (ent->client->sess.sessionTeam == TEAM_SPECTATOR) || ((client->ps.pm_type == PM_SPECTATOR || client->isEliminated) &&
 		(g_gametype.integer == GT_ELIMINATION || g_gametype.integer == GT_CTF_ELIMINATION || g_gametype.integer == GT_LMS) ) ) {
-        //Sago: Lets see if this fixes the bots only bug - loose all point on dead bug. (It didn't)
-        /*if(g_gametype.integer == GT_ELIMINATION || g_gametype.integer == GT_CTF_ELIMINATION || g_gametype.integer == GT_LMS) {
-        G_KillBox( ent );
-		trap_LinkEntity (ent);
-        }*/
+
 	} else {
 		if ( !ent->botspawn ) { G_KillBox( ent );}
 		trap_LinkEntity (ent);
 
-		// force the base weapon up
-		client->ps.weapon = WP_MACHINEGUN;
-		ent->swep_id = WP_MACHINEGUN;
-		ent->client->ps.stats[STAT_SWEP] = WP_MACHINEGUN;
 		client->ps.weaponstate = WEAPON_READY;
+		for(i = 1 ; i < WEAPONS_NUM; i++){
+			ent->swep_list[i] = 0;
+			ent->swep_ammo[i] = 0;
+		}
+		SetUnlimitedWeapons(ent);
+		SetSandboxWeapons(ent);
+		if ( ent->botspawn ) {
+			SetupCustomBot( ent );
+		} else {
+			SetCustomWeapons( ent );
+		}
 
 	}
 
@@ -2528,6 +2419,9 @@ void ClientSpawn(gentity_t *ent) {
 		trap_LinkEntity( ent );
 	}
 
+	//Send spawnbuffer for remember by client
+	G_SendSpawnSwepWeapons( ent );
+
 	// run the presend to set anything else
 	ClientEndFrame( ent );
 
@@ -2538,18 +2432,6 @@ void ClientSpawn(gentity_t *ent) {
         client->spawnprotected = qtrue;
 
     RespawnTimeMessage(ent,0);
-
-	for(i = 1 ; i < WEAPONS_NUM; i++){
-		ent->swep_list[i] = 0;
-		ent->swep_ammo[i] = 0;
-	}
-	SetUnlimitedWeapons(ent);
-	SetSandboxWeapons(ent);
-	if ( ent->botspawn ) {
-		SetupCustomBot( ent );
-	} else {
-		SetCustomWeapons( ent );
-	}
 }
 
 /*
@@ -2589,26 +2471,6 @@ void ClientDisconnect( int clientNum ) {
 			StopFollowing( &g_entities[i] );
 		}
 	}
-
-	// send effect if they were completely connected
-        /*
-         *Sago: I have removed this. A little dangerous but I make him suicide in a moment.
-         */
-	/*if ( ent->client->pers.connected == CON_CONNECTED
-		&& ent->client->sess.sessionTeam != TEAM_SPECTATOR ) {
-		tent = G_TempEntity( ent->client->ps.origin, EV_PLAYER_TELEPORT_OUT );
-		tent->s.clientNum = ent->s.clientNum;
-
-		// They don't get to take powerups with them!
-		// Especially important for stuff like CTF flags
-		TossClientItems( ent );
-		TossClientPersistantPowerups( ent );
-                if( g_gametype.integer == GT_HARVESTER ) {
-			TossClientCubes( ent );
-		}
-
-
-	}*/
 
         //Is the player alive?
         i = (ent->client->ps.stats[STAT_HEALTH]>0);
@@ -2858,7 +2720,6 @@ void SetCustomWeapons( gentity_t *ent ) {
 		if(ent->botskill == 7){
 			ent->health = ent->client->ps.stats[STAT_HEALTH] = 65000;
 		}
-		ent->helpme = 0;
 	}
 	if (ent->client->sess.sessionTeam == TEAM_RED) {
 		if (g_eliminationred_gauntlet.integer) {
@@ -2965,28 +2826,27 @@ void SetCustomWeapons( gentity_t *ent ) {
 		if(ent->botskill == 7){
 			ent->health = ent->client->ps.stats[STAT_HEALTH] = 65000;
 		}
-		ent->helpme = 0;
 	}
 	//Set spawnweapon
 	if(g_gametype.integer == GT_SANDBOX){
-		ent->client->ps.weapon = WP_PHYSGUN;
 		ent->swep_id = WP_PHYSGUN;
-		ent->client->ps.stats[STAT_SWEP] = WP_PHYSGUN;
+		ent->client->ps.generic2 = WP_PHYSGUN;
+		ClientUserinfoChanged( ent->s.clientNum );
+		return;
 	} else {
-		for ( i = WEAPONS_NUM; i > 0; i-- ) {
+		for ( i = WEAPONS_NUM; i > 1; i-- ) {
 			if(ent->swep_list[i] == 1 ){
-				ent->client->ps.weapon = i;
 				ent->swep_id = i;
-				ent->client->ps.stats[STAT_SWEP] = i;
+				ent->client->ps.generic2 = i;
+				ClientUserinfoChanged( ent->s.clientNum );
 				return;
 			}
 		}
-		ent->client->ps.weapon = 1;
 		ent->swep_id = 1;
-		ent->client->ps.stats[STAT_SWEP] = 1;
+		ent->client->ps.generic2 = 1;
+		ClientUserinfoChanged( ent->s.clientNum );
 	}
 }
-
 
 /*
 ===========

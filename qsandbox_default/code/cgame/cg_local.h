@@ -54,12 +54,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define	REWARD_TIME			2000
 #define OBJECTIVES_TIME		2500		//time for objectives updated notification to remain on screen
 #define BLACKOUT_TIME		100.000		//time for the screen to remain black at start of game
-#define	FADEIN_TIME			500.000		//amount of time it takes for screen to fade in at start of game
-#define TITLE_TIME			1500		//amount of time the level title stays on screen
-#define TITLE_FADEIN_TIME	1000.000	//amount of time it takes for level title to fade in
-#define TITLE_FADEOUT_TIME	1000.000	//amount of time it takes for level title to fade out
+#define	FADEIN_TIME			1500.000		//amount of time it takes for screen to fade in at start of game
+#define TITLE_TIME			5000		//amount of time the level title stays on screen
+#define TITLE_FADEIN_TIME	2000.000	//amount of time it takes for level title to fade in
+#define TITLE_FADEOUT_TIME	5000.000	//amount of time it takes for level title to fade out
 #define SCOREB_TIME			750			//amount of time between each scoreboard item is displayed
 #define SCOREB_TIME_LAST	250			//amount of EXTRA time between last scoreboard item and total score
+
+#define MAX_NOTIFICATIONS 8
+#define NOTIFICATION_DURATION 10000
+#define NOTIFICATION_FADE_TIME 750
 
 #define	PULSE_SCALE			1.15			// amount to scale up the icons when activating
 
@@ -155,6 +159,14 @@ typedef struct {
 	animation_t	*animation;
 	int			animationTime;		// time when the first frame of the animation will be exact
 } lerpFrame_t;
+
+//Notifications
+typedef struct {
+    char text[128];
+    int type;
+    int startTime;
+    qboolean active;
+} notification_t;
 
 
 typedef struct {
@@ -591,6 +603,7 @@ typedef struct {
 	int			weaponSelect;
 	
 	int			swep_listcl[WEAPONS_NUM];
+	int			swep_spawncl[WEAPONS_NUM];		//stores spawn weapons
 
 	// auto rotating items
 	vec3_t		autoAngles;
@@ -609,6 +622,8 @@ typedef struct {
 
 	// information screen text during loading
 	char		infoScreenText[MAX_STRING_CHARS];
+
+	qboolean	teamoverlay;
 
 	// scoreboard
 	int			scoresRequestTime;
@@ -640,6 +655,9 @@ typedef struct {
 	char		centerPrint[256];
 	int			centerPrintLines;
 	int			centerPrintTimeC;
+
+	//notifications
+	notification_t notifications[MAX_NOTIFICATIONS];
 
 	// kill timers for carnage reward
 	int			lastKillTime;
@@ -728,8 +746,8 @@ typedef struct {
 	int			stateHead, stateTail;
 //unlagged - optimized prediction
 
-        //time that the client will respawn. If 0 = the player is alive.
-        int respawnTime;
+    //time that the client will respawn. If 0 = the player is alive.
+    int respawnTime;
 	//entityplus
 	qboolean		footstepSuppressed; //hack to suppress initial footstep after first spawn
 
@@ -1045,8 +1063,9 @@ typedef struct {
 	// postprocess
 	qhandle_t	postProcess;
 
-	// errIcon
+	// Icons QS
 	qhandle_t	errIcon;
+	qhandle_t	notifyIcon;
 
 	// sp intermission scoreboard
 	sfxHandle_t	scoreShow;
@@ -1116,6 +1135,8 @@ typedef struct {
 	sfxHandle_t landSound;
 	sfxHandle_t fallSound;
 	sfxHandle_t jumpPadSound;
+
+	sfxHandle_t notifySound;
 
 // LEILEI
 	sfxHandle_t	lspl1Sound;
@@ -1302,7 +1323,6 @@ typedef struct {
 	char domination_points_names[MAX_DOMINATION_POINTS][MAX_DOMINATION_POINTS_NAMES];
 	int domination_points_status[MAX_DOMINATION_POINTS];
 
-
 	int				scores1, scores2;		// from configstrings
 	int				redflag, blueflag;		// flag status from configstrings
 	int				flagStatus;
@@ -1440,8 +1460,6 @@ extern	vmCvar_t	cg_zoomtime;
 extern	vmCvar_t	cg_itemscaletime;
 extern	vmCvar_t	cg_weaponselecttime;
 
-extern	vmCvar_t	cg_weaponBarActiveWidth;
-
 //Noire Set
 extern	vmCvar_t	toolgun_mod1;
 extern	vmCvar_t	toolgun_mod2;
@@ -1526,7 +1544,6 @@ extern	vmCvar_t		cg_draw3dIcons;
 extern	vmCvar_t		cg_drawIcons;
 extern	vmCvar_t		cg_drawCrosshair;
 extern	vmCvar_t		cg_drawCrosshairNames;
-extern	vmCvar_t		cg_drawTeamOverlay;
 extern	vmCvar_t		cg_teamOverlayUserinfo;
 extern	vmCvar_t		cg_crosshairX;
 extern	vmCvar_t		cg_crosshairY;
@@ -1548,7 +1565,6 @@ extern	vmCvar_t		cg_showmiss;
 extern	vmCvar_t		cg_footsteps;
 extern	vmCvar_t		cg_addMarks;
 extern	vmCvar_t		cg_brassTime;
-extern	vmCvar_t		cg_gun_frame;
 extern	vmCvar_t		cg_gun_x;
 extern	vmCvar_t		cg_gun_y;
 extern	vmCvar_t		cg_gun_z;
@@ -1557,7 +1573,6 @@ extern	vmCvar_t		cg_viewsize;
 extern	vmCvar_t		cg_tracerChance;
 extern	vmCvar_t		cg_tracerWidth;
 extern	vmCvar_t		cg_tracerLength;
-extern	vmCvar_t		cg_ignore;
 extern	vmCvar_t		cg_simpleItems;
 extern	vmCvar_t		cg_fov;
 extern	vmCvar_t		cg_zoomFov;
@@ -1607,17 +1622,11 @@ extern vmCvar_t			cg_commonConsole;
 extern	vmCvar_t		pmove_fixed;
 extern	vmCvar_t		pmove_msec;
 extern	vmCvar_t		pmove_float;
-//extern	vmCvar_t		cg_pmove_fixed;
 extern	vmCvar_t		cg_timescaleFadeEnd;
 extern	vmCvar_t		cg_timescaleFadeSpeed;
 extern	vmCvar_t		cg_timescale;
 extern	vmCvar_t		cg_cameraMode;
-extern  vmCvar_t		cg_smallFont;
-extern  vmCvar_t		cg_bigFont;
-extern	vmCvar_t		cg_noTaunt;
 extern	vmCvar_t		cg_noProjectileTrail;
-extern	vmCvar_t		cg_oldRocket;
-extern	vmCvar_t		cg_lodScale;
 
 extern	vmCvar_t		cg_leiEnhancement;			// LEILEI'S LINE!
 extern	vmCvar_t		cg_leiGoreNoise;			// LEILEI'S LINE!
@@ -1626,7 +1635,6 @@ extern	vmCvar_t		cg_cameramode;
 extern	vmCvar_t		cg_cameraEyes;
 extern	vmCvar_t		cg_cameraEyes_Fwd;
 extern	vmCvar_t		cg_cameraEyes_Up;
-extern	vmCvar_t		cg_oldPlasma;
 extern	vmCvar_t		cg_trueLightning;
 extern	vmCvar_t		cg_music;
 //Sago: Moved outside
@@ -1636,30 +1644,18 @@ extern	vmCvar_t		cg_enableBreath;
 
 //unlagged - client options
 extern	vmCvar_t		cg_delag;
-//extern	vmCvar_t		cg_debugDelag;
-//extern	vmCvar_t		cg_drawBBox;
 extern	vmCvar_t		cg_cmdTimeNudge;
 extern	vmCvar_t		sv_fps;
 extern	vmCvar_t		cg_projectileNudge;
 extern	vmCvar_t		cg_optimizePrediction;
 extern	vmCvar_t		cl_timeNudge;
-//extern	vmCvar_t		cg_latentSnaps;
-//extern	vmCvar_t		cg_latentCmds;
-//extern	vmCvar_t		cg_plOut;
 //unlagged - client options
 
 //extra CVARS elimination
 extern	vmCvar_t		cg_alwaysWeaponBar;
-extern	vmCvar_t		cg_hitsound;
-extern  vmCvar_t                cg_voip_teamonly;
 extern  vmCvar_t                cg_voteflags;
-extern  vmCvar_t                cg_cyclegrapple;
-extern  vmCvar_t                cg_vote_custom_commands;
 
 extern  vmCvar_t                cg_autovertex;
-
-//Cvar to adjust the size of the fragmessage
-extern	vmCvar_t		cg_fragmsgsize;
 
 extern	vmCvar_t		cg_atmosphericLevel;
 
@@ -1797,6 +1793,7 @@ qboolean CG_YourTeamHasFlag( void );
 qboolean CG_OtherTeamHasFlag( void );
 qhandle_t CG_StatusHandle(int task);
 void CG_AddToGenericConsole( const char *str, console_t *console );
+void CG_AddNotify(const char *text, int type);
 
 
 //
@@ -1865,10 +1862,8 @@ void CG_GravitygunTrail( clientInfo_t *ci, vec3_t start, vec3_t end );
 void CG_GrappleTrail( centity_t *ent, const weaponInfo_t *wi );
 void CG_AddViewWeapon (playerState_t *ps);
 void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent, int team, clientInfo_t *ci );
-void CG_AddRealWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent, int team, clientInfo_t *ci );
 void CG_DrawWeaponSelect( void );
-
-void CG_DrawWeaponBarNew2(int count, int swepnum);
+void CG_DrawWeaponBarNew2(int count);
 
 //
 // cg_marks.c

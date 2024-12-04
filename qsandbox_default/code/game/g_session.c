@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 //
-#include "g_local.h"
+#include "../qcommon/ns_local.h"
 
 
 /*
@@ -54,24 +54,6 @@ void G_WriteClientSessionData( gclient_t *client ) {
 		);
 
 	var = va( "session%i", (int)(client - level.clients) );
-	trap_Cvar_Set( var, s );
-}
-
-void G_SaveClientSessionData( gclient_t *client ) {
-	const char	*s;
-	const char	*var;
-
-	s = va("%i %i %i %i %i %i %i", 
-		client->sess.sessionTeam,
-		client->sess.spectatorNum,
-		client->sess.spectatorState,
-		client->sess.spectatorClient,
-		client->sess.wins,
-		client->sess.losses,
-		client->sess.teamLeader
-		);
-
-	var = va( "save_session%i", (int)(client - level.clients) );
 	trap_Cvar_Set( var, s );
 }
 
@@ -173,152 +155,108 @@ void G_InitSessionData( gclient_t *client, char *userinfo ) {
 
 /*
 ==================
-G_UpdateGlobalSessionDataForMapChange
-
-Updates session data prior to a map change that's forced by a target_mapchange entity
-==================
-*/
-void G_UpdateGlobalSessionDataForMapChange() {
-	char	buf[MAX_INFO_STRING];
-
-	trap_GetConfigstring(CS_TARGET_VARIABLE, buf, sizeof(buf));
-
-	if ( !buf || strlen(buf) == 0)
-		strcpy(buf, "-");
-
-	trap_Cvar_Set( "epsession", va("%s", buf) );
-
-	trap_Cvar_Set( "save_epsession", "" );
-
-	trap_Cvar_Set( "save_epsession", G_CvarAutoChar( "epsession" ) );
-}
-
-/*
-==================
-G_UpdateClientSessionDataForMapChange
+G_Sav_SaveData
 
 Updates session data for a client prior to a map change that's forced by a target_mapchange entity
 ==================
 */
-void G_UpdateClientSessionDataForMapChange( gentity_t *ent ) {
-	clientSession_t	*sess;
-	char *mapname;
+void G_Sav_SaveData( gentity_t *ent, int slot ) {
 	int secretFound, secretCount;
+	int i;
 
-	sess = &ent->client->sess;
+	NS_setCvar(va("sav_%i_health", slot), va("%i", ent->client->ps.stats[STAT_HEALTH]));
+	NS_setCvar(va("sav_%i_armor", slot), va("%i", ent->client->ps.stats[STAT_ARMOR]));
+	NS_setCvar(va("sav_%i_weapon", slot), va("%i", ent->client->ps.generic2));
 
-	/*sess->sessionHealth = ent->client->ps.stats[STAT_HEALTH];
-	sess->sessionArmor = ent->client->ps.stats[STAT_ARMOR];
-	sess->sessionWeapon = ent->client->ps.weapon;
-
-	if(ent->swep_list[WP_MACHINEGUN] > 0){
-		sess->sessionAmmoMG = ent->swep_ammo[WP_MACHINEGUN];
-	} else {
-		sess->sessionAmmoMG = -999;
+	for (i = 1; i < WEAPONS_NUM; i++){
+		if(ent->swep_list[i] > 0){
+			NS_setCvar(va("sav_%i_weapon%i", slot, i), va("%i", ent->swep_ammo[i]));
+		} else {
+			NS_setCvar(va("sav_%i_weapon%i", slot, i), va("%i", -999));
+		}
 	}
 
-	sess->sessionHoldable = ent->client->ps.stats[STAT_HOLDABLE_ITEM];
-	sess->carnageScore = ent->client->ps.persistant[PERS_SCORE];
-	sess->deaths = ent->client->ps.persistant[PERS_KILLED];
+	NS_setCvar(va("sav_%i_holdable", slot), va("%i", ent->client->ps.stats[STAT_HOLDABLE_ITEM]));
+	NS_setCvar(va("sav_%i_carnage", slot), va("%i", ent->client->ps.persistant[PERS_SCORE]));
+	NS_setCvar(va("sav_%i_deaths", slot), va("%i", ent->client->ps.persistant[PERS_KILLED]));
 
 	secretFound = (ent->client->ps.persistant[PERS_SECRETS] & 0x7F);
 	secretCount = ((ent->client->ps.persistant[PERS_SECRETS] >> 7) & 0x7F) + level.secretCount;
-	sess->secrets = secretFound + (secretCount << 7);
 
-	sess->accuracyShots = ent->client->accuracy_shots;
-	sess->accuracyHits = ent->client->accuracy_hits;
-
-	strcpy(sess->scoreLevelName, G_GetScoringMapName());*/
-	
-	G_SaveClientSessionData(ent->client);
-}
-
-void G_SaveClientSessionDataSave( gclient_t *client ) {
-	clientSession_t	*sess;
-
-	sess = &client->sess;
-
-	trap_Cvar_Set( "save_curmap", G_CvarAutoChar( "mapname" ) );
-	
-	G_SaveClientSessionData(client);
+	NS_setCvar(va("sav_%i_secrets", slot), va("%i", secretFound + (secretCount << 7)));
+	NS_setCvar(va("sav_%i_accShots", slot), va("%i", ent->client->accuracy_shots));
+	NS_setCvar(va("sav_%i_accHits", slot), va("%i", ent->client->accuracy_hits));
 }
 
 /*
 ==================
-G_ClearSessionDataForMapChange
+G_Sav_ClearData
 
 Clears session data for map changes so that data does not persist through a hard map change (a map change not caused by target_mapchange) 
 ==================
 */
-void G_ClearSessionDataForMapChange( gclient_t *client ) {
-	clientSession_t	*sess;
+void G_Sav_ClearData( gclient_t *client, int slot ) {
+	int i;
 
-	sess = &client->sess;
+	NS_setCvar(va("sav_%i_health", slot), va("%i", 0));
+	NS_setCvar(va("sav_%i_armor", slot), va("%i", 0));
+	NS_setCvar(va("sav_%i_weapon", slot), va("%i", 0));
 
+	for (i = 1; i < WEAPONS_NUM; i++){
+		NS_setCvar(va("sav_%i_weapon%i", slot, i), va("%i", -999));
+	}
+
+	NS_setCvar(va("sav_%i_holdable", slot), va("%i", 0));
+	NS_setCvar(va("sav_%i_carnage", slot), va("%i", 0));
+	NS_setCvar(va("sav_%i_deaths", slot), va("%i", 0));
+
+	NS_setCvar(va("sav_%i_secrets", slot), va("%i", 0));
+	NS_setCvar(va("sav_%i_accShots", slot), va("%i", 0));
+	NS_setCvar(va("sav_%i_accHits", slot), va("%i", 0));
 }
 
 /*
 ==================
-G_UpdateClientWithSessionData
+G_Sav_LoadData
 
 Updates a client entity with the data that's stored in that client's session data
 ==================
 */
-void G_UpdateClientWithSessionData( gentity_t *ent) {
+void G_Sav_LoadData( gentity_t *ent, int slot ) {
+	int i;
 
-	//if ( ent->client->sess.sessionHealth <= 0 ) {
+	if ( get_cvar_int(va("sav_%i_health", slot)) <= 0 ) {
 		return;
-	//}
-
-	/*//give weapons and ammo
-	if(ent->client->sess.sessionAmmoMG != 999){
-		ent->swep_list[WP_MACHINEGUN] = 1;
-		ent->swep_ammo[WP_MACHINEGUN] = ent->client->sess.sessionAmmoMG;
 	}
 
-	//select weapon
-	if ( ent->client->sess.sessionWeapon )
-		ent->client->ps.weapon = ent->client->sess.sessionWeapon;
+	ent->health = ent->client->ps.stats[STAT_HEALTH] = get_cvar_int(va("sav_%i_health", slot));
+	ent->client->ps.stats[STAT_ARMOR] = get_cvar_int(va("sav_%i_armor", slot));
+	ent->client->ps.weapon = get_cvar_int(va("sav_%i_weapon", slot));
 
-	//give holdables
-	if ( ent->client->sess.sessionHoldable ) 
-		ent->client->ps.stats[STAT_HOLDABLE_ITEM] = ent->client->sess.sessionHoldable;
-
-	//give health
-	if ( ent->client->sess.sessionHealth ) 
-		ent->health = ent->client->ps.stats[STAT_HEALTH] = ent->client->sess.sessionHealth;
-
-	//give armor
-	if ( ent->client->sess.sessionArmor )
-		ent->client->ps.stats[STAT_ARMOR] = ent->client->sess.sessionArmor;
-
-	//set carnage score info
-	if ( ent->client->sess.carnageScore )
-		ent->client->ps.persistant[PERS_SCORE] = ent->client->sess.carnageScore;
-
-	//set number of deaths
-	if ( ent->client->sess.deaths )
-		ent->client->ps.persistant[PERS_KILLED] = ent->client->sess.deaths;
-
-	//set name of level to which scores should be attributed
-	if ( strcmp( va("%s", ent->client->sess.scoreLevelName ), "0" ) ) {
-		strcpy(level.scoreLevelName, ent->client->sess.scoreLevelName);
+	for (i = 1; i < WEAPONS_NUM; i++){
+		if(get_cvar_int(va("sav_%i_weapon%i", slot, i)) != -999){
+			if(get_cvar_int(va("sav_%i_weapon%i", slot, i)) != 0){
+				ent->swep_list[i] = 1;
+				ent->swep_ammo[i] = get_cvar_int(va("sav_%i_weapon%i", slot, i));
+			} else {
+				ent->swep_list[i] = 2;
+				ent->swep_ammo[i] = get_cvar_int(va("sav_%i_weapon%i", slot, i));
+			}
+		} else {
+			ent->swep_list[i] = 0;
+		}
 	}
 
-	//set secrets
-	if ( ent->client->sess.secrets )
-		ent->client->ps.persistant[PERS_SECRETS] = ent->client->sess.secrets;
-
-	//set accuracy
-	if ( ent->client->sess.accuracyShots )
-		ent->client->accuracy_shots = ent->client->sess.accuracyShots;
+	ent->client->ps.stats[STAT_HOLDABLE_ITEM] = get_cvar_int(va("sav_%i_holdable", slot));
+	ent->client->ps.persistant[PERS_SCORE] = get_cvar_int(va("sav_%i_carnage", slot));
+	ent->client->ps.persistant[PERS_KILLED] = get_cvar_int(va("sav_%i_deaths", slot));
 	
-	if ( ent->client->sess.accuracyHits )
-		ent->client->accuracy_hits = ent->client->sess.accuracyHits;*/
-
+	ent->client->ps.persistant[PERS_SECRETS] = get_cvar_int(va("sav_%i_secrets", slot));
+	ent->client->accuracy_shots = get_cvar_int(va("sav_%i_accShots", slot));
+	ent->client->accuracy_hits = get_cvar_int(va("sav_%i_accHits", slot));
 	
 	// clear map change session data
-	G_ClearSessionDataForMapChange( ent->client );
+	G_Sav_ClearData( ent->client, slot );
 }
 
 /*
@@ -341,15 +279,6 @@ void G_InitWorldSession( void ) {
 		level.newSession = qtrue;
         G_Printf( "Gametype changed, clearing session data.\n" );
 	}
-
-	//restore session from additional ep session data
-	trap_Cvar_VariableStringBuffer( "epsession", s, sizeof(s) );
-	sscanf( s, "%s", &buf );
-
-	trap_SetConfigstring( CS_TARGET_VARIABLE, buf );
-
-	//clear epsession data so it only persists when it's set by target_mapchange
-	trap_Cvar_Set( "epsession", "" );
 }
 
 /*
@@ -368,6 +297,4 @@ void G_WriteSessionData( void ) {
 			G_WriteClientSessionData( &level.clients[i] );
 		}
 	}
-	
-	G_SaveClientSessionData( &level.clients[0] );
 }

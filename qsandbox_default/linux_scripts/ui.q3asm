@@ -40,7 +40,6 @@ ui_startserver_common
 ui_startserver_custommaps
 ui_startserver_data
 ui_startserver_items
-ui_startserver_items_old
 ui_startserver_map
 ui_startserver_mapsel
 ui_startserver_script

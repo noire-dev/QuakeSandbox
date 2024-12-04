@@ -217,6 +217,7 @@ static creditEntry_t uie_credits[] = {
 	{ CMODE_TEXT, "Quake Sandbox", {"Noire.dev", 0, 0, 0  } },
 	{ CMODE_TEXT, "Game", {"Noire.dev", "Vovan_Vm", "teapxt", 0} },
 	{ CMODE_TEXT, "Additional Mods", {"CannerZ45 (CZ45)", 0, 0, 0} },
+	{ CMODE_TEXT, "Main Menu Music", {"iji Mae", 0, 0, 0} },
 	{ CMODE_QUOTE, 0, {0, 0, 0, 0} }
 };
 
@@ -1623,10 +1624,6 @@ static void Credits_PrepareNextCredit( displayCredit_t* dc, int string )
 	dc->titleString = NULL;
 	if (ce->mode == CMODE_QUOTE) {
 		dc->indexData = Credits_ChooseNextItem(quoteListSize, s_credits.recentQuote, &s_credits.recentQuotePos);
-/*		do {
-			dc->indexData = quoteListSize*random();
-		} while (dc->indexData == quoteListSize);*/
-
 		ce = &quoteList[dc->indexData].quote;
 		dc->titleString = ce->title;
 	}
@@ -2552,7 +2549,7 @@ if(s_credits.menu.number == 0){
 }
 if(s_credits.menu.number == 1){
 		uis.hideCursor = qfalse;
-		//trap_Cmd_ExecuteText( EXEC_APPEND, "music music/aumenu\n");
+		trap_Cmd_ExecuteText( EXEC_APPEND, "music music/main_menu\n");
 		UI_PopMenu();
 }
 	return 0;
@@ -2575,7 +2572,7 @@ static void UI_CreditMenu_Draw( void ) {
 		Credits_DrawCredits();
 		if(s_credits.menu.number == 1){
 		uis.hideCursor = qfalse;
-		//trap_Cmd_ExecuteText( EXEC_APPEND, "music music/aumenu\n");
+		trap_Cmd_ExecuteText( EXEC_APPEND, "music music/main_menu\n");
 		UI_PopMenu();
 		}
 	}

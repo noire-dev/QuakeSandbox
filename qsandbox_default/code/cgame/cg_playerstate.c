@@ -124,9 +124,6 @@ void CG_DamageFeedback( int yawByte, int pitchByte, int damage ) {
 	cg.damageTime = cg.snap->serverTime;
 }
 
-
-
-
 /*
 ================
 CG_Respawn
@@ -136,18 +133,16 @@ A respawn happened this snapshot
 */
 void CG_Respawn( void ) {
 	int i;
+	
 	// no error decay on player movement
 	cg.thisFrameTeleport = qtrue;
 
-	// display weapons available
-	cg.weaponSelectTime = cg.time;
-
-	// select the weapon the server says we are using
-	cg.weaponSelect = cg.snap->ps.weapon;
-	
 	for(i = 1; i < WEAPONS_NUM; i++){	// QS weapon predict
-		cg.swep_listcl[i] = 0; 
+		cg.swep_listcl[i] = cg.swep_spawncl[i]; 
 	}
+
+	// select WP_NONE for updating from server
+	cg.weaponSelect = 0;
 }
 
 extern char *eventnames[];
@@ -277,7 +272,7 @@ if(cgs.gametype != GT_SANDBOX && cgs.gametype != GT_SINGLE){
 		if ( ps->stats[STAT_HEALTH] > 0 ) {
 			CG_PainEvent( &cg.predictedPlayerEntity, ps->stats[STAT_HEALTH] );
 		}
-                CG_ScorePlum( ps->clientNum, ps->origin, ops->stats[STAT_HEALTH] - ps->stats[STAT_HEALTH], 0 );
+        CG_ScorePlum( ps->clientNum, ps->origin, ops->stats[STAT_HEALTH] - ps->stats[STAT_HEALTH], 0 );
 	}
 
 
@@ -318,7 +313,7 @@ void CG_CheckLocalSoundsVeh( playerState_t *ps, playerState_t *ops ) {
 		if ( ps->stats[STAT_VEHICLEHP] > 0 ) {
 			CG_PainVehicleEvent( &cg.predictedPlayerEntity, ps->stats[STAT_VEHICLEHP] );
 		}
-                CG_ScorePlum( ps->clientNum, ps->origin, ops->stats[STAT_VEHICLEHP] - ps->stats[STAT_VEHICLEHP], 0 );
+        CG_ScorePlum( ps->clientNum, ps->origin, ops->stats[STAT_VEHICLEHP] - ps->stats[STAT_VEHICLEHP], 0 );
 	}
 
 

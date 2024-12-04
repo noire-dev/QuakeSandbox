@@ -86,17 +86,15 @@ void CG_DrawRoundedRect(float x, float y, float width, float height, float radiu
 	if(radius*2 > height){ radius=height*0.5; }
 	if(radius*2 > width){ radius=width*0.5; }
 	
-	// ????????? ?????
 	trap_R_SetColor( color );
-    trap_R_DrawStretchPic(x, y, radius, radius, 1, 0, 0, 1, cgs.media.corner); // ????? ??????? ????
-    trap_R_DrawStretchPic(x + width - radius, y, radius, radius, 0, 0, 1, 1, cgs.media.corner); // ?????? ??????? ????
-    trap_R_DrawStretchPic(x, y + height - radius, radius, radius, 1, 1, 0, 0, cgs.media.corner); // ????? ?????? ????
-    trap_R_DrawStretchPic(x + width - radius, y + height - radius, radius, radius, 0, 1, 1, 0, cgs.media.corner); // ?????? ?????? ????
+    trap_R_DrawStretchPic(x, y, radius, radius, 1, 0, 0, 1, cgs.media.corner);
+    trap_R_DrawStretchPic(x + width - radius, y, radius, radius, 0, 0, 1, 1, cgs.media.corner);
+    trap_R_DrawStretchPic(x, y + height - radius, radius, radius, 1, 1, 0, 0, cgs.media.corner);
+    trap_R_DrawStretchPic(x + width - radius, y + height - radius, radius, radius, 0, 1, 1, 0, cgs.media.corner);
 
-    // ????????? ??????? ??????
-    CG_FillRect2(x, y + radius, radius, height - (radius * 2), color); // ????? ???????
-    CG_FillRect2(x + width - radius, y + radius, radius, height - (radius * 2), color); // ?????? ???????
-    CG_FillRect2(x + radius, y, width - (radius * 2), height, color); // ??????? ???????
+    CG_FillRect2(x, y + radius, radius, height - (radius * 2), color);
+    CG_FillRect2(x + width - radius, y + radius, radius, height - (radius * 2), color);
+    CG_FillRect2(x + radius, y, width - (radius * 2), height, color);
 }
 
 /*

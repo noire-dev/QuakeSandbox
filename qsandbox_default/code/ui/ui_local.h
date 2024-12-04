@@ -85,6 +85,17 @@ extern vmCvar_t	tool_modifypreset2;
 extern vmCvar_t	tool_modifypreset3;
 extern vmCvar_t	tool_modifypreset4;
 
+extern vmCvar_t	sb_ctab_1;
+extern vmCvar_t	sb_ctab_2;
+extern vmCvar_t	sb_ctab_3;
+extern vmCvar_t	sb_ctab_4;
+extern vmCvar_t	sb_ctab_5;
+extern vmCvar_t	sb_ctab_6;
+extern vmCvar_t	sb_ctab_7;
+extern vmCvar_t	sb_ctab_8;
+extern vmCvar_t	sb_ctab_9;
+extern vmCvar_t	sb_ctab_10;
+
 extern vmCvar_t	toolgun_toolset1;
 extern vmCvar_t	toolgun_toolset2;
 extern vmCvar_t	toolgun_toolset3;
@@ -215,10 +226,8 @@ extern vmCvar_t	uie_animsfx;
 extern vmCvar_t	uie_mapicons;
 extern vmCvar_t	uie_autoclosebotmenu;
 extern vmCvar_t	uie_ingame_dynamicmenu;
-extern vmCvar_t	uie_olditemmenu;
 
 qboolean UI_IsValidCvar(const char* cvar);
-
 
 //
 // ui_qmenu.c
@@ -926,7 +935,6 @@ extern void			UI_DrawChar( int x, int y, int ch, int style, vec4_t color );
 extern void			UI_DrawCharCustom( int x, int y, int ch, int style, vec4_t color, float csize );
 extern qboolean 	UI_CursorInRect (int x, int y, int width, int height);
 extern void			UI_AdjustFrom640( float *x, float *y, float *w, float *h );
-extern void			UI_DrawTextBox (int x, int y, int width, int lines);
 extern qboolean		UI_IsFullscreen( void );
 extern void			UI_SetActiveMenu( uiMenuCommand_t menu );
 extern void			UI_PushMenu ( menuframework_s *menu );

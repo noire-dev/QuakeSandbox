@@ -259,7 +259,6 @@ void SP_target_finish (gentity_t *ent);
 void SP_target_modify (gentity_t *ent);
 void SP_target_secret (gentity_t *ent);
 void SP_target_playerstats (gentity_t *ent);
-void SP_target_variable (gentity_t *ent);
 void SP_target_cutscene (gentity_t *ent);
 void SP_target_botremove (gentity_t *ent);
 void SP_target_music (gentity_t *ent);
@@ -391,7 +390,6 @@ spawn_t	spawns[] = {
 	{"target_modify", SP_target_modify},
 	{"target_secret", SP_target_secret},
 	{"target_playerstats", SP_target_playerstats},
-	{"target_variable", SP_target_variable},
 	{"target_cutscene", SP_target_cutscene},
 	{"target_botremove", SP_target_botremove},
 	{"target_music", SP_target_music},

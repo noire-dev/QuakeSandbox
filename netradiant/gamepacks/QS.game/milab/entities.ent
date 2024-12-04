@@ -2842,23 +2842,6 @@ Changes the player's stats.
 By default the target_stats entity assigns "count" value to "type" statistic.
 </point>
 
-<point name="target_variable" color="0 .7 .7" box="-8 -8 -8 8 8 8">
-Writes or compares the value of a specified variable and activates its target based on whether or not the value compares to the specified value.
--------- KEYS --------
-<targetname key="targetname" name="targetname">activating entity points to this.</targetname>
-<targetname key="targetname2" name="targetname2">activating entity points to this.</targetname>
-<target key="target" name="target">this points to entities to activate when this entity is triggered.</target>
-<target key="target2" name="target2">this points to entities to activate when this entity is triggered.</target>
-<string key="key" name="key">The name of the variable to read or write.</string>
-<string key="value" name="value">The value that will be written or compared to.</string>
--------- SPAWNFLAGS --------
-<flag key="COMPARE_EQUALS" name="COMPARE_EQUALS" bit="0">The entity reads the specified variable and triggers its targets if the specified value matches the value stored in the variable.</flag>
-<flag key="COMPARE_NOT_EQUALS" name="COMPARE_NOT_EQUALS" bit="1">The entity reads the specified variable and triggers its targets if the specified value does not match the value stored in the variable.</flag>
-<flag key="IMMEDIATELY" name="IMMEDIATELY" bit="2">The entity will be activated when it is spawned.</flag>
--------- NOTES --------
-When neither COMPARE_EQUALS or COMPARE_NOT_EQUALS have been set, the entity will write the specified value to the specified variable.Written variables will persists across mapchanges if the map changes was initialized by the target_mapchange entity.
-</point>
-
 <point name="target_laser" color="0 .7 .7" box="-8 -8 -8 8 8 8">
 Draws a laser beam originating from the target_laser entity. Can be set up to deal damage as well.
 -------- KEYS --------
@@ -3690,6 +3673,7 @@ Spawns sandbox object.
 <real key="physicsBounce" name="Physics Bounce Modifier">Physics bounce modifier default=0.5.</real>
 <integer key="vehicle" name="Is Vehicle">Prop vehicle id default=0.</integer>
 <integer key="sb_generic1" name="Material">Prop material id default=0.</integer>
+<integer key="sb_gravity" name="Mass">Prop mass default=800.</integer>
 <integer key="sb_phys" name="Physics Property">Prop physics default=0.</integer>
 <integer key="sb_coll" name="Collision Property">Prop collision default=0.</integer>
 <integer key="locked" name="Locked">Prop locked default=0.</integer>

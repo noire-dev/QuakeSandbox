@@ -263,9 +263,9 @@ Decide what time to shift everyone back to, and do it
 ================
 */
 void G_DoTimeShiftFor( gentity_t *ent ) {	
-	int wpflags[WP_NUM_WEAPONS] = { 0, 0, 2, 4, 0, 0, 8, 16, 0, 0, 0, 32, 0, 64 };
+	int wpflags[MAX_WEAPONS] = { 0, 0, 2, 4, 0, 0, 8, 16, 0, 0, 0, 32, 0, 64 };
 
-	int wpflag = wpflags[ent->client->ps.weapon];
+	int wpflag = wpflags[ent->client->ps.generic2];
 	int time;
 
 	// don't time shift for mistakes or bots
@@ -278,7 +278,7 @@ void G_DoTimeShiftFor( gentity_t *ent ) {
 		// do the full lag compensation, except what the client nudges
 		time = ent->client->attackTime + ent->client->pers.cmdTimeNudge;
                 //Give the lightning gun some handicap (lag was part of weapon balance in VQ3)
-                if(ent->client->ps.weapon == WP_LIGHTNING && g_lagLightning.integer)
+                if(ent->client->ps.generic2 == WP_LIGHTNING && g_lagLightning.integer)
                     time+=50;
 	}
 	else {

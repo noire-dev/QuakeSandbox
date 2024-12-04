@@ -214,9 +214,9 @@ static const char* fraglimittype_itemsru[MAP_LT_COUNT + 1] = {
 
 static const char* mapSource_itemsru[MAP_MS_MAX + 1]={
 	"Список, по порядку",	// MAP_MS_ORDER
-	"Список, случайный",	// MAP_MS_RANDOMLIST
-	"Случайно выбрано",	// MAP_MS_RANDOM
-	"Случайно, не список",	// MAP_MS_RANDOMEXCLUDE
+	"Список, рандом",	// MAP_MS_RANDOMLIST
+	"Рандом",	// MAP_MS_RANDOM
+	"Рандом, не из списка",	// MAP_MS_RANDOMEXCLUDE
 	0
 };
 
@@ -250,10 +250,6 @@ static const char* copyTo_itemsru[MAP_CT_COUNT + 1] = {
 	"все карты",	// MAP_CT_ALL
 	0
 };
-
-
-
-
 
 /*
 =================

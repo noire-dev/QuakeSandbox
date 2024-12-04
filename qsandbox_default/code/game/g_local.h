@@ -161,10 +161,6 @@ struct gentity_s {
 
 	char		*message;
 	char		*botname;
-	
-	char		*selectedpr;			// set in QuakeEd
-	pspecial_t	playerspecial;	   // The players current special
-
 
 	int			timestamp;		// body queue sinking, etc
 
@@ -195,7 +191,6 @@ struct gentity_s {
 
 	int			health;
 	int			price;
-	int			helpme;
 	int			owner;	// clientNum player owner
 	int			locked;	// clientNum player owner
 	char		*ownername;	// clientNum player owner
@@ -270,7 +265,6 @@ struct gentity_s {
 	int			type;
 	int			vehicle;
 	int			objectType;
-	int			vehicleclient;
 
 	//entityplus variables
 	char		*clientname;			// name of the bot to spawn for target_botspawn
@@ -280,7 +274,6 @@ struct gentity_s {
 	char		*target2;	//second target
 	char		*damagetarget;	//second target
 	char		*targetname2; //second targetname
-	int			backpackContents[WP_NUM_WEAPONS - 1];
 	char		*deathTarget;	// target to trigger when bot from target_botspawn dies
 	char		*lootTarget;	//item to drop when bot from target_botspawn dies
 	float		skill; // skill level set by target_skill
@@ -398,45 +391,16 @@ typedef struct {
 	int			teamVoteCount;		// to prevent people from constantly calling votes
 	qboolean	teamInfo;			// send team overlay updates?
 
-   	pspecial_t	playerspecial;	   // The players current special
 	//elimination:
 	int		roundReached;			//Only spawn if we are new to this round
 	int		livesLeft;			//lives in LMS
-
-//unlagged - client options
-	// these correspond with variables in the userinfo string
 	int			delag;
 	int			cmdTimeNudge;
-//unlagged - client options
-//unlagged - lag simulation #2
-/*	int			latentSnaps;
-	int			latentCmds;
-	int			plOut;
-	usercmd_t	cmdqueue[MAX_LATENT_CMDS];
-	int			cmdhead;*/
-//unlagged - lag simulation #2
-//unlagged - true ping
 	int			realPing;
 	int			pingsamples[NUM_PING_SAMPLES];
 	int			samplehead;
-//unlagged - true ping
-    int         customparm01;	//do not delete this, game crashing without it, IDK WHY
-    int         customparm02;
-    qboolean    customparm03;
-    int         customparm04;
-    char        customparm05[ 33 ];
-    char        customparm06[ 40 ];
-    qboolean    customparm07;
-    qboolean    customparm08;
-    qboolean    customparm09;
-    int         customparm10;
-    int         customparm11;
-    int         customparm12;
-    int         customparm13;
-    int         customparm14;
 	
     int         oldmoney;
-
 } clientPersistant_t;
 
 //unlagged - backward reconciliation #1
@@ -465,10 +429,6 @@ struct gclient_s {
 
 	qboolean	noclip;
 
-	//Unlagged - commented out - handled differently
-	//int			lastCmdTime;		// level.time of last usercmd_t, for EF_CONNECTION
-									// we can't just use pers.lastCommand.time, because
-									// of the g_sycronousclients case
 	int			buttons;
 	int			oldbuttons;
 	int			latched_buttons;
@@ -517,7 +477,7 @@ struct gclient_s {
 
 	gentity_t	*persistantPowerup;
 	int			portalID;
-	int			ammoTimes[WP_NUM_WEAPONS];
+	int			ammoTimes[MAX_WEAPONS];
     int			invulnerabilityTime;
 
 	char		*areabits;
@@ -553,7 +513,7 @@ struct gclient_s {
 	//unlagged - smooth clients #1
 	qboolean        spawnprotected;
 	
-	int			accuracy[WP_NUM_WEAPONS][2];
+	int			accuracy[MAX_WEAPONS][2];
 };
 
 //
@@ -959,7 +919,6 @@ void DeathmatchScoreboardMessage (gentity_t *client);
 // Also another place /Sago
 
 void DoubleDominationScoreTimeMessage( gentity_t *ent );
-void YourTeamMessage( gentity_t *ent);
 void AttackingTeamMessage( gentity_t *ent );
 void ObeliskHealthMessage( void );
 void DeathmatchScoreboardMessage (gentity_t *client);
@@ -967,7 +926,6 @@ void EliminationMessage (gentity_t *client);
 void RespawnTimeMessage(gentity_t *ent, int time);
 void DominationPointNamesMessage (gentity_t *client);
 void DominationPointStatusMessage( gentity_t *ent );
-void SendCustomVoteCommands(int clientNum);
 
 //
 // g_pweapon.c
@@ -988,7 +946,6 @@ void SendScoreboardMessageToAllClients( void );
 void SendEliminationMessageToAllClients( void );
 void SendDDtimetakenMessageToAllClients( void );
 void SendDominationPointsStatusMessageToAllClients( void );
-void SendYourTeamMessageToTeam( team_t team );
 void QDECL G_Printf( const char *fmt, ... );
 void QDECL G_Error( const char *fmt, ... ) __attribute__((noreturn));
 //KK-OAX Made Accessible for g_admin.c
@@ -1049,7 +1006,6 @@ void Svcmd_GameMem_f( void );
 //
 void G_ReadSessionData( gclient_t *client );
 void G_InitSessionData( gclient_t *client, char *userinfo );
-void G_SaveClientSessionDataSave( gclient_t *client );
 
 void G_InitWorldSession( void );
 void G_WriteSessionData( void );
@@ -1102,21 +1058,11 @@ typedef struct {
 	char mapname[MAPS_PER_PAGE][MAX_MAPNAME];
 } t_mappage;
 
-typedef struct {
-    char    votename[MAX_CUSTOMNAME]; //Used like "/callvote custom VOTENAME"
-    char    displayname[MAX_CUSTOMDISPLAYNAME]; //Displayed during voting
-    char    command[MAX_CUSTOMCOMMAND]; //The command executed
-} t_customvote;
-
-extern char custom_vote_info[1024];
-
 extern t_mappage getMappage(int page);
 extern int allowedMap(char *mapname);
 extern int allowedGametype(char *gametypeStr);
 extern int allowedTimelimit(int limit);
 extern int allowedFraglimit(int limit);
-extern int VoteParseCustomVotes( void );
-extern t_customvote getCustomVote(char* votecommand);
 
 //
 // g_mapcycle.c
@@ -1177,6 +1123,7 @@ extern	gentity_t		g_entities[MAX_GENTITIES];
 //CVARS
 void G_SendWeaponProperties( gentity_t *ent );
 void G_SendSwepWeapons( gentity_t *ent );
+void G_SendSpawnSwepWeapons( gentity_t *ent );
 void plasma_think( gentity_t *ent );
 void rocket_think( gentity_t *ent );
 void grenade_think( gentity_t *ent );
@@ -1512,44 +1459,7 @@ extern	vmCvar_t	g_skyColorG;
 extern	vmCvar_t	g_skyColorB;
 extern	vmCvar_t	g_skyColorA;
 
-extern	vmCvar_t	save_curmap;
-extern	vmCvar_t	save1_curmap;
-extern	vmCvar_t	save2_curmap;
-extern	vmCvar_t	save3_curmap;
-extern	vmCvar_t	save4_curmap;
-extern	vmCvar_t	save5_curmap;
-extern	vmCvar_t	save6_curmap;
-extern	vmCvar_t	save7_curmap;
-extern	vmCvar_t	save8_curmap;
-extern	vmCvar_t	save_session0;
-extern	vmCvar_t	save_session0_lvl;
-extern	vmCvar_t	save_epsession;
-extern	vmCvar_t	save1_session0;
-extern	vmCvar_t	save1_session0_lvl;
-extern	vmCvar_t	save1_epsession;
-extern	vmCvar_t	save2_session0;
-extern	vmCvar_t	save2_session0_lvl;
-extern	vmCvar_t	save2_epsession;
-extern	vmCvar_t	save3_session0;
-extern	vmCvar_t	save3_session0_lvl;
-extern	vmCvar_t	save3_epsession;
-extern	vmCvar_t	save4_session0;
-extern	vmCvar_t	save4_session0_lvl;
-extern	vmCvar_t	save4_epsession;
-extern	vmCvar_t	save5_session0;
-extern	vmCvar_t	save5_session0_lvl;
-extern	vmCvar_t	save5_epsession;
-extern	vmCvar_t	save6_session0;
-extern	vmCvar_t	save6_session0_lvl;
-extern	vmCvar_t	save6_epsession;
-extern	vmCvar_t	save7_session0;
-extern	vmCvar_t	save7_session0_lvl;
-extern	vmCvar_t	save7_epsession;
-extern	vmCvar_t	save8_session0;
-extern	vmCvar_t	save8_session0_lvl;
-extern	vmCvar_t	save8_epsession;
 extern	vmCvar_t	g_allowprops;
-extern	vmCvar_t	g_allowsettings;
 extern	vmCvar_t	g_allownpc;
 extern	vmCvar_t	g_allowitems;
 extern	vmCvar_t	g_allownoclip;
@@ -1775,12 +1685,6 @@ extern vmCvar_t        g_voteMinFraglimit;
 extern vmCvar_t        g_voteMaxFraglimit;
 extern vmCvar_t        g_maxvotes;
 
-extern vmCvar_t        g_humanplayers;
-
-//used for voIP
-extern vmCvar_t         g_redTeamClientNumbers;
-extern vmCvar_t         g_blueTeamClientNumbers;
-
 //unlagged - server options
 // some new server-side variables
 extern	vmCvar_t	g_delagHitscan;
@@ -1803,7 +1707,7 @@ void	trap_FS_Write( const void *buffer, int len, fileHandle_t f );
 void	trap_FS_FCloseFile( fileHandle_t f );
 int		trap_FS_GetFileList( const char *path, const char *extension, char *listbuf, int bufsize );
 int		trap_FS_Seek( fileHandle_t f, long offset, int origin ); // fsOrigin_t
-void 		trap_System( const char *command );
+void 	trap_System( const char *command );
 void	trap_SendConsoleCommand( int exec_when, const char *text );
 void	trap_Cvar_Register( vmCvar_t *cvar, const char *var_name, const char *value, int flags );
 void	trap_Cvar_Update( vmCvar_t *cvar );
@@ -2026,9 +1930,6 @@ void Svcmd_Chat_f( void );
 void Svcmd_ListIP_f( void );
 void Svcmd_MessageWrapper( void );
 void Svcmd_PropNpc_AS_f( void );
-void Svcmd_SaveSession_f( void );
-
-char *G_CvarAutoChar( char *name );
 
 //Noire.Script
 void Svcmd_NS_OpenScript_f( void );

@@ -36,6 +36,26 @@ void NS_getCvar(VarValue *modify, VarType type, const char *cvarName)
     }
 }
 
+// Функции для возвращения значений cvar
+int get_cvar_int(const char *name) {
+    char cvarValue[MAX_VAR_CHAR_BUF];
+
+    trap_Cvar_VariableStringBuffer(name, cvarValue, sizeof(cvarValue));
+    return atoi(cvarValue);
+}
+float get_cvar_float(const char *name) {
+    char cvarValue[MAX_VAR_CHAR_BUF];
+
+    trap_Cvar_VariableStringBuffer(name, cvarValue, sizeof(cvarValue));
+    return atof(cvarValue);
+}
+char* get_cvar_char(const char *name) {
+    char cvarValue[MAX_VAR_CHAR_BUF];
+
+    trap_Cvar_VariableStringBuffer(name, cvarValue, sizeof(cvarValue));
+    return cvarValue;
+}
+
 void NS_setCvar(const char *cvarName, const char *cvarValue)
 {
     trap_Cvar_Set(cvarName, cvarValue);

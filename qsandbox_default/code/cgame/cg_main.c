@@ -102,8 +102,6 @@ vmCvar_t	cg_zoomtime;
 vmCvar_t	cg_itemscaletime;
 vmCvar_t	cg_weaponselecttime;
 
-vmCvar_t	cg_weaponBarActiveWidth;
-
 //Noire Set
 vmCvar_t	toolgun_mod1;		//modifier
 vmCvar_t	toolgun_mod2;		//modifier
@@ -150,7 +148,7 @@ vmCvar_t	cg_postprocess;
 vmCvar_t	cg_toolguninfo;
 vmCvar_t	cl_language;
 vmCvar_t	con_notifytime;
-vmCvar_t 	cg_leiChibi; // LEILEI THANK YOU!!!
+vmCvar_t 	cg_leiChibi;
 vmCvar_t    cg_cameraeyes;
 vmCvar_t    cg_helightred;
 vmCvar_t    cg_helightgreen;
@@ -207,14 +205,12 @@ vmCvar_t	cg_addMarks;
 vmCvar_t	cg_brassTime;
 vmCvar_t	cg_viewsize;
 vmCvar_t	cg_drawGun;
-vmCvar_t	cg_gun_frame;
 vmCvar_t	cg_gun_x;
 vmCvar_t	cg_gun_y;
 vmCvar_t	cg_gun_z;
 vmCvar_t	cg_tracerChance;
 vmCvar_t	cg_tracerWidth;
 vmCvar_t	cg_tracerLength;
-vmCvar_t	cg_ignore;
 vmCvar_t	cg_simpleItems;
 vmCvar_t	cg_fov;
 vmCvar_t	cg_zoomFov;
@@ -233,7 +229,6 @@ vmCvar_t 	cg_buildScript;
 vmCvar_t	cg_paused;
 vmCvar_t	cg_blood;
 vmCvar_t	cg_predictItems;
-vmCvar_t	cg_drawTeamOverlay;
 vmCvar_t	cg_teamOverlayUserinfo;
 vmCvar_t	cg_drawFriend;
 vmCvar_t	cg_teamChatsOnly;
@@ -272,16 +267,10 @@ vmCvar_t	cg_cameraEyes_Up;
 vmCvar_t	cg_timescaleFadeEnd;
 vmCvar_t	cg_timescaleFadeSpeed;
 vmCvar_t	cg_timescale;
-vmCvar_t	cg_smallFont;
-vmCvar_t	cg_bigFont;
-vmCvar_t	cg_noTaunt;
 vmCvar_t	cg_noProjectileTrail;
-vmCvar_t	cg_oldRocket;
-vmCvar_t	cg_lodScale;
 vmCvar_t	cg_leiEnhancement;
 vmCvar_t	cg_leiBrassNoise;
 vmCvar_t	cg_leiGoreNoise;
-vmCvar_t	cg_oldPlasma;
 vmCvar_t	cg_trueLightning;
 vmCvar_t    cg_music;
 vmCvar_t    cg_weaponOrder;
@@ -305,16 +294,11 @@ vmCvar_t	cl_timeNudge;
 //elimination addition
 vmCvar_t	cg_alwaysWeaponBar;
 vmCvar_t	cg_hitsound;
-vmCvar_t    cg_voip_teamonly;
 vmCvar_t    cg_voteflags;
-vmCvar_t    cg_cyclegrapple;
-vmCvar_t    cg_vote_custom_commands;
 
 vmCvar_t    cg_autovertex;
 // custom variable used in modified atmospheric effects from q3f
 vmCvar_t	cg_atmosphericLevel;
-
-vmCvar_t	cg_fragmsgsize;
 
 vmCvar_t	cg_crosshairPulse;
 
@@ -407,7 +391,6 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_itemscaletime, "cg_itemscaletime", "5000", CVAR_ARCHIVE },
 	{ &cg_weaponselecttime, "cg_weaponselecttime", "5000", CVAR_ARCHIVE },
 	{ &cg_zoomtime, "cg_zoomtime", "300", CVAR_ARCHIVE },
-	{ &cg_weaponBarActiveWidth, "cg_weaponBarActiveWidth", "0", 0 },
 
 	//ArenaSandBox Set
 	{ &toolgun_mod1, "toolgun_mod1", "0", 0},
@@ -454,7 +437,6 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_postprocess, "cg_postprocess", "", 0 },
 	{ &cl_language, "cl_language", "0", CVAR_ARCHIVE },
 	{ &con_notifytime, "con_notifytime", "3", CVAR_ARCHIVE },
-	{ &cg_ignore, "cg_ignore", "0", 0 },	// used for debugging
     { &ui_backcolors, "ui_backcolors", "1", CVAR_ARCHIVE },
 	{ &cg_leiChibi, "cg_leiChibi", "0", CVAR_ARCHIVE}, // LEILEI
     { &cg_cameraeyes, "cg_cameraeyes", "0", CVAR_ARCHIVE },
@@ -535,7 +517,6 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_teamChatScaleX, "cg_teamChatScaleX", "0.7", CVAR_ARCHIVE  },
 	{ &cg_teamChatScaleY, "cg_teamChatScaleY", "1", CVAR_ARCHIVE  },
 	{ &cg_predictItems, "cg_predictItems", "1", CVAR_ARCHIVE },
-	{ &cg_drawTeamOverlay, "cg_drawTeamOverlay", "1", CVAR_ARCHIVE },
 	{ &cg_teamOverlayUserinfo, "teamoverlay", "0", CVAR_ROM | CVAR_USERINFO },
 	{ &cg_stats, "cg_stats", "0", 0 },
 	{ &cg_drawFriend, "cg_drawFriend", "1", CVAR_ARCHIVE },
@@ -547,10 +528,7 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_blood, "com_blood", "1", CVAR_ARCHIVE },
 	{ &cg_alwaysWeaponBar, "cg_alwaysWeaponBar", "0", CVAR_ARCHIVE},	//Elimination
     { &cg_hitsound, "cg_hitsound", "0", CVAR_ARCHIVE},
-    { &cg_voip_teamonly, "cg_voipTeamOnly", "1", CVAR_ARCHIVE},
     { &cg_voteflags, "cg_voteflags", "*", CVAR_ROM},
-    { &cg_cyclegrapple, "cg_cyclegrapple", "1", CVAR_ARCHIVE},
-    { &cg_vote_custom_commands, "cg_vote_custom_commands", "", CVAR_ROM },
 	{ &cg_synchronousClients, "g_synchronousClients", "0", CVAR_SYSTEMINFO },	// communicated by systeminfo
 
     { &cg_autovertex, "cg_autovertex", "0", CVAR_ARCHIVE },
@@ -596,11 +574,7 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &pmove_fixed, "pmove_fixed", "0", CVAR_SYSTEMINFO},
 	{ &pmove_msec, "pmove_msec", "11", CVAR_SYSTEMINFO},
         { &pmove_float, "pmove_float", "1", CVAR_SYSTEMINFO},
-	{ &cg_noTaunt, "cg_noTaunt", "0", CVAR_ARCHIVE},
 	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
-	{ &cg_smallFont, "ui_smallFont", "0.25", CVAR_ARCHIVE},
-	{ &cg_bigFont, "ui_bigFont", "0.4", CVAR_ARCHIVE},
-	{ &cg_oldRocket, "cg_oldRocket", "0", CVAR_ARCHIVE},
 	{ &cg_leiEnhancement, "cg_leiEnhancement", "1", CVAR_ARCHIVE},				// LEILEI default off (in case of whiner)
 	{ &cg_leiGoreNoise, "cg_leiGoreNoise", "1", CVAR_ARCHIVE},					// LEILEI
 	{ &cg_leiBrassNoise, "cg_leiBrassNoise", "1", CVAR_ARCHIVE},				// LEILEI
@@ -608,12 +582,11 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_cameraEyes, "cg_cameraEyes", "0", CVAR_ARCHIVE},				// LEILEI
 	{ &cg_cameraEyes_Fwd, "cg_cameraEyes_Fwd", "3", CVAR_ARCHIVE},				// LEILEI
 	{ &cg_cameraEyes_Up, "cg_cameraEyes_Up", "3", CVAR_ARCHIVE},				// LEILEI
-	{ &cg_oldPlasma, "cg_oldPlasma", "0", CVAR_ARCHIVE},
 	//unlagged - client options
 	{ &cg_delag, "cg_delag", "1", CVAR_ARCHIVE | CVAR_USERINFO },
 	{ &cg_cmdTimeNudge, "cg_cmdTimeNudge", "0", CVAR_ARCHIVE | CVAR_USERINFO },
 	// this will be automagically copied from the server
-	{ &sv_fps, "sv_fps", "20", CVAR_SYSTEMINFO },
+	{ &sv_fps, "sv_fps", "60", CVAR_SYSTEMINFO },
 	{ &cg_projectileNudge, "cg_projectileNudge", "0", CVAR_ARCHIVE },
 	{ &cg_optimizePrediction, "cg_optimizePrediction", "1", CVAR_ARCHIVE },
 	{ &cl_timeNudge, "cl_timeNudge", "0", CVAR_ARCHIVE },
@@ -621,7 +594,6 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_trueLightning, "cg_trueLightning", "0.9", CVAR_ARCHIVE},
     { &cg_music, "cg_music", "", CVAR_ARCHIVE},
 
-	{ &cg_fragmsgsize, "cg_fragmsgsize", "1.0", CVAR_ARCHIVE},
 	{ &cg_crosshairPulse, "cg_crosshairPulse", "1", CVAR_ARCHIVE},
 
 	{ &cg_crosshairColorRed, "cg_crosshairColorRed", "0.5", CVAR_ARCHIVE | CVAR_USERINFO},
@@ -631,8 +603,7 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_weaponBarStyle, "cg_weaponBarStyle", "0", CVAR_ARCHIVE},
     { &cg_weaponOrder,"cg_weaponOrder", "/1/2/4/3/6/7/8/9/5/", CVAR_ARCHIVE},
     { &cg_chatBeep, "cg_chatBeep", "1", CVAR_ARCHIVE },
-    { &cg_teamChatBeep, "cg_teamChatBeep", "1", CVAR_ARCHIVE },
-	{ &cg_lodScale, "cg_lodscale", "5", CVAR_ARCHIVE}		//cheat-free backdoor entry to r_lodscale
+    { &cg_teamChatBeep, "cg_teamChatBeep", "1", CVAR_ARCHIVE }
 };
 
 static int  cvarTableSize = sizeof( cvarTable ) / sizeof( cvarTable[0] );
@@ -715,18 +686,7 @@ void CG_UpdateCvars( void ) {
 		trap_Cvar_Update( cv->vmCvar );
 	}
 
-	// check for modications here
-	// If team overlay is on, ask for updates from the server.  If its off,
-	// let the server know so we don't receive it
-	if ( drawTeamOverlayModificationCount != cg_drawTeamOverlay.modificationCount ) {
-		drawTeamOverlayModificationCount = cg_drawTeamOverlay.modificationCount;
-
-		if ( cg_drawTeamOverlay.integer > 0 ) {
-			trap_Cvar_Set( "teamoverlay", "1" );
-		} else {
-			trap_Cvar_Set( "teamoverlay", "0" );
-		}
-	}
+	trap_Cvar_Set( "teamoverlay", "1" );
 }
 
 int CG_CrosshairPlayer( void ) {
@@ -988,6 +948,8 @@ static void CG_RegisterSounds( void ) {
 
 	cgs.media.talkSound = trap_S_RegisterSound_SourceTech( "sound/player/talk.wav", qfalse );
 	cgs.media.landSound = trap_S_RegisterSound_SourceTech( "sound/player/land1.wav", qfalse);
+
+	cgs.media.notifySound = trap_S_RegisterSound_SourceTech( "sound/notify.wav", qfalse );
 
     switch(cg_hitsound.integer) {
         case 0:
@@ -1726,8 +1688,6 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 
 	trap_Cvar_Set("ns_haveerror", "0");
 	NS_OpenScript("nscript/cgame/init.ns", NULL, 0);		//Noire.Script Init in cgame.qvm
-
-	cg.weaponSelect = WP_MACHINEGUN;
 
 	cgs.redflag = cgs.blueflag = -1; // For compatibily, default to unset for
 	cgs.flagStatus = -1;

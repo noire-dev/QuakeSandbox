@@ -1021,11 +1021,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	}
 	ci = &cgs.clientinfo[ clientNum ];
 	
-	if(ci->swepid >= 1){
 	weaphack = ci->swepid;
-	} else {
-	weaphack = cent->currentState.weapon;
-	}
 
 	switch ( event ) {
 	//
@@ -1498,13 +1494,12 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			//Com_Printf("Ignoring rail trail event\n");
 		}
 		else {
-                        if(es->clientNum == cg.snap->ps.clientNum && !cg.renderingThirdPerson)
-                        {
-                           if(cg_drawGun.integer == 2)
-				VectorMA(es->origin2, 8, cg.refdef.viewaxis[1], es->origin2);
-                           else if(cg_drawGun.integer == 3)
-				VectorMA(es->origin2, 4, cg.refdef.viewaxis[1], es->origin2);
-                        }
+        	if(es->clientNum == cg.snap->ps.clientNum && !cg.renderingThirdPerson){
+        	    if(cg_drawGun.integer == 2)
+					VectorMA(es->origin2, 8, cg.refdef.viewaxis[1], es->origin2);
+        	    else if(cg_drawGun.integer == 3)
+					VectorMA(es->origin2, 4, cg.refdef.viewaxis[1], es->origin2);
+        	}
 
 
 			// draw a rail trail, because it wasn't predicted
@@ -1841,13 +1836,10 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	case EV_EXPLOSION:
 		DEBUGNAME("EV_EXPLOSION");
 		
-		// show plume (if enabled)
-		if ( cg_oldRocket.integer == 0 ) {
-			dir[0] = 0;
-			dir[1] = 0;
-			dir[2] = 25;
-			CG_ParticleExplosion( "explode1", cent->lerpOrigin, dir, 1400, 20, 30 );
-		}
+		dir[0] = 0;
+		dir[1] = 0;
+		dir[2] = 25;
+		CG_ParticleExplosion( "explode1", cent->lerpOrigin, dir, 1400, 20, 30 );
 		
 		// show explosion
 		dir[0] = 0;

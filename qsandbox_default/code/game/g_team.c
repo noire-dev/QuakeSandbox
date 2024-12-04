@@ -1725,7 +1725,7 @@ void TeamplayInfoMessage( gentity_t *ent ) {
 
 			h = player->client->ps.stats[STAT_HEALTH];
 			a = player->client->ps.stats[STAT_ARMOR];
-			w = player->client->ps.weapon;
+			w = player->client->ps.generic2;
 			if(player->client->isEliminated)
 			{
 				h = 0;

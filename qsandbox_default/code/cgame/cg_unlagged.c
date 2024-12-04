@@ -82,61 +82,6 @@ void CG_PredictWeaponEffects( centity_t *cent ) {
 			// trace forward
 			VectorMA( muzzlePoint, 8192, forward, endPoint );
 
-			// THIS IS FOR DEBUGGING!
-			// you definitely *will* want something like this to test the backward reconciliation
-			// to make sure it's working *exactly* right
-			/*if ( cg_debugDelag.integer ) {
-                         * Sago: There are some problems with some unlagged code. People will just have to trust it
-				// trace forward
-				CG_Trace( &trace, muzzlePoint, vec3_origin, vec3_origin, endPoint, cent->currentState.number, CONTENTS_BODY|CONTENTS_SOLID );
-
-				// did we hit another player?
-				if ( trace.fraction < 1.0f && (trace.contents & CONTENTS_BODY) ) {
-					// if we have two snapshots (we're interpolating)
-					if ( cg.nextSnap ) {
-						centity_t *c = &cg_entities[trace.entityNum];
-						vec3_t origin1, origin2;
-
-						// figure the two origins used for interpolation
-						BG_EvaluateTrajectory( &c->currentState.pos, cg.snap->serverTime, origin1 );
-						BG_EvaluateTrajectory( &c->nextState.pos, cg.nextSnap->serverTime, origin2 );
-
-						// print some debugging stuff exactly like what the server does
-
-						// it starts with "Int:" to let you know the target was interpolated
-						CG_Printf("^3Int: time: %d, j: %d, k: %d, origin: %0.2f %0.2f %0.2f\n",
-								cg.oldTime, cg.snap->serverTime, cg.nextSnap->serverTime,
-								c->lerpOrigin[0], c->lerpOrigin[1], c->lerpOrigin[2]);
-						CG_Printf("^5frac: %0.4f, origin1: %0.2f %0.2f %0.2f, origin2: %0.2f %0.2f %0.2f\n",
-							cg.frameInterpolation, origin1[0], origin1[1], origin1[2], origin2[0], origin2[1], origin2[2]);
-					}
-					else {
-						// we haven't got a next snapshot
-						// the client clock has either drifted ahead (seems to happen once per server frame
-						// when you play locally) or the client is using timenudge
-						// in any case, CG_CalcEntityLerpPositions extrapolated rather than interpolated
-						centity_t *c = &cg_entities[trace.entityNum];
-						vec3_t origin1, origin2;
-
-						c->currentState.pos.trTime = TR_LINEAR_STOP;
-						c->currentState.pos.trTime = cg.snap->serverTime;
-						c->currentState.pos.trDuration = 1000 / sv_fps.integer;
-
-						BG_EvaluateTrajectory( &c->currentState.pos, cg.snap->serverTime, origin1 );
-						BG_EvaluateTrajectory( &c->currentState.pos, cg.snap->serverTime + 1000 / sv_fps.integer, origin2 );
-
-						// print some debugging stuff exactly like what the server does
-
-						// it starts with "Ext:" to let you know the target was extrapolated
-						CG_Printf("^3Ext: time: %d, j: %d, k: %d, origin: %0.2f %0.2f %0.2f\n",
-								cg.oldTime, cg.snap->serverTime, cg.snap->serverTime,
-								c->lerpOrigin[0], c->lerpOrigin[1], c->lerpOrigin[2]);
-						CG_Printf("^5frac: %0.4f, origin1: %0.2f %0.2f %0.2f, origin2: %0.2f %0.2f %0.2f\n",
-							cg.frameInterpolation, origin1[0], origin1[1], origin1[2], origin2[0], origin2[1], origin2[2]);
-					}
-				}
-			}*/
-
 			// find the rail's end point
 			CG_Trace( &trace, muzzlePoint, vec3_origin, vec3_origin, endPoint, cg.predictedPlayerState.clientNum, CONTENTS_SOLID );
 
@@ -144,12 +89,12 @@ void CG_PredictWeaponEffects( centity_t *cent ) {
 			VectorMA( muzzlePoint, 4, right, muzzlePoint );
 			VectorMA( muzzlePoint, -1, up, muzzlePoint );
 
-                        if(!cg.renderingThirdPerson) {
-                           if(cg_drawGun.integer == 2)
-				VectorMA(muzzlePoint, 8, cg.refdef.viewaxis[1], muzzlePoint);
-                           else if(cg_drawGun.integer == 3)
-				VectorMA(muzzlePoint, 4, cg.refdef.viewaxis[1], muzzlePoint);
-                        }
+            if(!cg.renderingThirdPerson) {
+            	if(cg_drawGun.integer == 2)
+					VectorMA(muzzlePoint, 8, cg.refdef.viewaxis[1], muzzlePoint);
+            	else if(cg_drawGun.integer == 3)
+					VectorMA(muzzlePoint, 4, cg.refdef.viewaxis[1], muzzlePoint);
+            }
 
 			// draw a rail trail
 			CG_RailTrail( &cgs.clientinfo[cent->currentState.number], muzzlePoint, trace.endpos );

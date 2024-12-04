@@ -584,7 +584,7 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 		}
 
 		G_SendWeaponProperties( ent );		//send game setting to client for sync
-		G_SendSwepWeapons( ent );				//send sweps list to client for sync
+		G_SendSwepWeapons( ent );			//send sweps list to client for sync
 
 		// count down armor when over max
 		if ( !ent->singlebot ){
@@ -633,7 +633,7 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 		  if ( client->ammoTimes[w] >= t ) {
 			  while ( client->ammoTimes[w] >= t )
 				  client->ammoTimes[w] -= t;
-			  ent->swep_ammo[w] += inc;
+			  Add_Ammo( ent, w, inc );
 			  if ( ent->swep_ammo[w] > max ) {
 				  ent->swep_ammo[w] = max;
 			  }
@@ -899,11 +899,11 @@ void PhysgunHold(gentity_t *player) {
 		return; 
 	}
 
-	if (player->client->ps.weapon == WP_GRAVITYGUN){
+	if (player->client->ps.generic2 == WP_GRAVITYGUN){
 		return; 
 	}
 	
-    if (player->client->ps.weapon == WP_PHYSGUN && player->client->buttons & BUTTON_ATTACK && player->client->ps.stats[STAT_HEALTH] && player->client->ps.pm_type != PM_DEAD) {
+    if (player->client->ps.generic2 == WP_PHYSGUN && player->client->buttons & BUTTON_ATTACK && player->client->ps.stats[STAT_HEALTH] && player->client->ps.pm_type != PM_DEAD) {
         if (!player->grabbedEntity) {
             findent = FindEntityForPhysgun(player, PHYSGUN_RANGE);
 			if(findent && findent->isGrabbed == qfalse ){
@@ -1003,11 +1003,11 @@ void GravitygunHold(gentity_t *player) {
 		return; 
 	}
 
-	if (player->client->ps.weapon == WP_PHYSGUN){
+	if (player->client->ps.generic2 == WP_PHYSGUN){
 		return; 
 	}
 	
-    if (player->client->ps.weapon == WP_GRAVITYGUN && player->client->buttons & BUTTON_ATTACK && player->client->ps.stats[STAT_HEALTH] && player->client->ps.pm_type != PM_DEAD) {
+    if (player->client->ps.generic2 == WP_GRAVITYGUN && player->client->buttons & BUTTON_ATTACK && player->client->ps.stats[STAT_HEALTH] && player->client->ps.pm_type != PM_DEAD) {
         if (!player->grabbedEntity) {
             findent = FindEntityForGravitygun(player, GRAVITYGUN_RANGE);
 			if(findent && findent->isGrabbed == qfalse ){
@@ -1340,7 +1340,7 @@ if ( !ent->speed ){
 	}
 
 	// Let go of the hook if we aren't firing
-	if ( client->ps.weapon == WP_GRAPPLING_HOOK &&
+	if ( client->ps.generic2 == WP_GRAPPLING_HOOK &&
 		client->hook && !( ucmd->buttons & BUTTON_ATTACK ) ) {
 		Weapon_HookFree(client->hook);
 	}
@@ -1352,7 +1352,7 @@ if ( !ent->speed ){
 
 	// check for the hit-scan gauntlet, don't let the action
 	// go through as an attack unless it actually hits something
-	if ( client->ps.weapon == WP_GAUNTLET && !( ucmd->buttons & BUTTON_TALK ) &&
+	if ( client->ps.generic2 == WP_GAUNTLET && !( ucmd->buttons & BUTTON_TALK ) &&
 		( ucmd->buttons & BUTTON_ATTACK ) && client->ps.weaponTime <= 0 ) {
 		pm.gauntletHit = CheckGauntletAttack( ent );
 	}
@@ -1430,7 +1430,7 @@ if ( !ent->speed ){
 
 	ent->waterlevel = pm.waterlevel;
 	ent->watertype = pm.watertype;
-	ent->client->ps.stats[STAT_SWEP] = ent->swep_id;
+	ent->client->ps.generic2 = ent->swep_id;
 	ent->client->ps.stats[STAT_SWEPAMMO] = ent->swep_ammo[ent->swep_id];
 	ent->s.generic3 = ent->swep_ammo[ent->swep_id];
 	if(ent->singlebot){
@@ -1706,14 +1706,6 @@ void ClientEndFrame( gentity_t *ent ) {
 
 	// apply all the damage taken this frame
 	P_DamageFeedback (ent);
-
-	//Unlagged: Commented out
-	// add the EF_CONNECTION flag if we haven't gotten commands recently
-	/*if ( level.time - ent->client->lastCmdTime > 1000 ) {
-		ent->s.eFlags |= EF_CONNECTION;
-	} else {
-		ent->s.eFlags &= ~EF_CONNECTION;
-	}*/
 
 	ent->client->ps.stats[STAT_HEALTH] = ent->health;	// FIXME: get rid of ent->health...
 

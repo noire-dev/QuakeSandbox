@@ -400,7 +400,7 @@ static void CG_TouchTriggerPrediction( void ) {
 		}
 
 		if ( ent->eType == ET_TELEPORT_TRIGGER ) {
-			cg.hyperspace = qfalse;
+			cg.hyperspace = qtrue;
 		} else if ( ent->eType == ET_PUSH_TRIGGER ) {
 			BG_TouchJumpPad( &cg.predictedPlayerState, ent, 1 );
 		}
@@ -487,7 +487,7 @@ static int IsUnacceptableError( playerState_t *ps, playerState_t *pps ) {
 	}
 
 	if ( pps->clientNum != ps->clientNum ||
-			pps->weapon != ps->weapon ||
+			pps->generic2 != ps->generic2 ||
 			pps->weaponstate != ps->weaponstate ) {
 		return 11;
 	}
@@ -658,7 +658,7 @@ void CG_PredictPlayerState( void ) {
 		trap_Cvar_Set("pmove_msec", "125");
 	}
 
-	cg_pmove.pmove_fixed = pmove_fixed.integer;// | cg_pmove_fixed.integer;
+	cg_pmove.pmove_fixed = pmove_fixed.integer;
 	cg_pmove.pmove_msec = pmove_msec.integer;
         cg_pmove.pmove_float = pmove_float.integer;
         cg_pmove.pmove_flags = cgs.dmflags;

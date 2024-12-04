@@ -1572,29 +1572,18 @@ static void PM_BeginWeaponChange( int weapon ) {
 	return;	
 	}
 	}
-	pm->ps->generic2 = pm->cmd.weapon;
 	if ( weapon > WP_NONE || weapon < WEAPONS_NUM ) {
 	item = BG_FindSwep(weapon);
-	#ifdef QAGAME
-	if(G_CheckSwep(pm->ps->clientNum, weapon, 0)){
-		if ( pm->ps->weaponstate == WEAPON_DROPPING ) {
-		return;
-		}
-
-        if(pm->pmove_flags & DF_INSTANT_WEAPON_CHANGE)
-        {
-                pm->ps->weaponstate = WEAPON_DROPPING;
-        } else
-        {
-            PM_AddEvent( EV_CHANGE_WEAPON );
-            pm->ps->weaponstate = WEAPON_DROPPING;
-            pm->ps->weaponTime += 200;
-            PM_StartTorsoAnim( TORSO_DROP );
-        }
-	} else {
+	if ( pm->ps->weaponstate == WEAPON_DROPPING ) {
 	return;
 	}
-	#endif
+	pm->ps->weaponstate = WEAPON_DROPPING;
+    if(! (pm->pmove_flags & DF_INSTANT_WEAPON_CHANGE)) {
+        PM_AddEvent( EV_CHANGE_WEAPON );
+        pm->ps->weaponstate = WEAPON_DROPPING;
+        pm->ps->weaponTime += 200;
+        PM_StartTorsoAnim( TORSO_DROP );
+    }
 	return;
 	}
 }
@@ -1618,17 +1607,16 @@ static void PM_FinishWeaponChange( void ) {
 	item = BG_FindSwep(weapon);
 	#ifdef QAGAME
 	if(G_CheckSwep(pm->ps->clientNum, weapon, 1)){
-	pm->ps->weapon = item->giTag;
+	pm->ps->generic2 = item->giTag;
 	pm->ps->weaponstate = WEAPON_RAISING;
-        if(! (pm->pmove_flags & DF_INSTANT_WEAPON_CHANGE))
-        {
+	}
+	#endif
+	if(pm->ps->weaponstate == WEAPON_RAISING){
+		if(! (pm->pmove_flags & DF_INSTANT_WEAPON_CHANGE)) {
             pm->ps->weaponTime += 500;
             PM_StartTorsoAnim( TORSO_RAISE );
         }
-	} else {
-	return;
 	}
-	#endif
 	return;
 	}
 }
@@ -1641,7 +1629,7 @@ PM_TorsoAnimation
 */
 static void PM_TorsoAnimation( void ) {
 	if ( pm->ps->weaponstate == WEAPON_READY ) {
-		if ( pm->ps->weapon == WP_GAUNTLET ) {
+		if ( pm->ps->generic2 == WP_GAUNTLET ) {
 			PM_ContinueTorsoAnim( TORSO_STAND2 );
 		} else {
 			PM_ContinueTorsoAnim( TORSO_STAND );
@@ -1677,7 +1665,7 @@ static void PM_Weapon( void ) {
 
 	// check for dead player
 	if ( pm->ps->stats[STAT_HEALTH] <= 0 ) {
-		pm->ps->weapon = WP_NONE;
+		pm->ps->generic2 = WP_NONE;
 		return;
 	}
 
@@ -1796,7 +1784,7 @@ static void PM_Weapon( void ) {
 
 	if ( pm->ps->weaponstate == WEAPON_RAISING ) {
 		pm->ps->weaponstate = WEAPON_READY;
-		if ( pm->ps->weapon == WP_GAUNTLET ) {
+		if ( pm->ps->generic2 == WP_GAUNTLET ) {
 			PM_StartTorsoAnim( TORSO_STAND2 );
 		} else {
 			PM_StartTorsoAnim( TORSO_STAND );
@@ -1818,7 +1806,7 @@ static void PM_Weapon( void ) {
 	}
 
 	// start the animation even if out of ammo
-	if ( pm->ps->weapon == WP_GAUNTLET ) {
+	if ( pm->ps->generic2 == WP_GAUNTLET ) {
 		// the guantlet only "fires" when it actually hits something
 		if ( !pm->gauntletHit ) {
 			pm->ps->weaponTime = 0;
@@ -1833,7 +1821,7 @@ static void PM_Weapon( void ) {
 	pm->ps->weaponstate = WEAPON_FIRING;
 
 #ifdef QAGAME
-	if(!G_CheckSwepAmmo(pm->ps->clientNum, pm->ps->stats[STAT_SWEP])){
+	if(!G_CheckSwepAmmo(pm->ps->clientNum, pm->ps->generic2)){
 		PM_AddEvent( EV_NOAMMO );
 		pm->ps->weaponTime += 500;
 		return;
@@ -1850,14 +1838,14 @@ if( !(pm->ps->stats[STAT_SWEPAMMO] == -1 || pm->ps->stats[STAT_SWEPAMMO] >= 9999
 if(pm->s->generic3 > 0 ){ pm->s->generic3 -= 1; }
 if(pm->ps->stats[STAT_SWEPAMMO] >= 1 ){ pm->ps->stats[STAT_SWEPAMMO] -= 1; }
 #ifdef 	QAGAME
-if(G_CheckSwepAmmo(pm->ps->clientNum, pm->ps->stats[STAT_SWEP]) > 0 ){ 
-PM_Add_SwepAmmo(pm->ps->clientNum, pm->ps->stats[STAT_SWEP], -1); 
+if(G_CheckSwepAmmo(pm->ps->clientNum, pm->ps->generic2) > 0 ){ 
+PM_Add_SwepAmmo(pm->ps->clientNum, pm->ps->generic2, -1); 
 }
 #endif
 }
 	// fire weapon
 	PM_AddEvent( EV_FIRE_WEAPON );
-	switch( pm->ps->stats[STAT_SWEP] ) {
+	switch( pm->ps->generic2 ) {
 	default:
 	case WP_GAUNTLET:
 		addTime = mod_gdelay;

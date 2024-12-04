@@ -148,6 +148,35 @@ void G_SendSwepWeapons(gentity_t *ent) {
     trap_SendServerCommand(ent - g_entities, va("sweps %s", string));
 }
 
+void G_SendSpawnSwepWeapons(gentity_t *ent) {
+    char string[4096] = "";
+    int i;
+    int len;
+
+    for (i = 1; i < WEAPONS_NUM; i++) {
+		if(ent->swep_list[i] > 0){
+			if(ent->swep_ammo[i] > 0 || ent->swep_ammo[i] == -1){
+				ent->swep_list[i] = 1;	//we have weapon and ammo
+			} else {
+				ent->swep_list[i] = 2;	//we have weapon only
+			}
+		}
+        if (ent->swep_list[i] == 1) {
+            Q_strcat(string, sizeof(string), va("%i ", i));
+        }
+	    if (ent->swep_list[i] == 2) {
+            Q_strcat(string, sizeof(string), va("%i ", i * -1));	//use -id for send 2
+        }
+    }
+    len = strlen(string);
+    if (len > 0 && string[len - 1] == ' ') {
+        string[len - 1] = '\0';
+    }
+
+    trap_SendServerCommand(ent - g_entities, va("wpspawn %s", string));
+	ClientUserinfoChanged( ent->s.clientNum );
+}
+
 /*
 ==================
 DominationPointStatusMessage
@@ -231,27 +260,6 @@ void DominationPointNamesMessage( gentity_t *ent ) {
 
 /*
 ==================
-YourTeamMessage
-==================
-*/
-
-void YourTeamMessage( gentity_t *ent) {
-    int team = level.clients[ent-g_entities].sess.sessionTeam;
-
-    switch(team) {
-        case TEAM_RED:
-            trap_SendServerCommand( ent-g_entities, va("team \"%s\"", g_redTeamClientNumbers.string));
-            break;
-        case TEAM_BLUE:
-            trap_SendServerCommand( ent-g_entities, va("team \"%s\"", g_blueTeamClientNumbers.string));
-            break;
-        default:
-            trap_SendServerCommand( ent-g_entities, "team \"all\"");
-    };
-}
-
-/*
-==================
 AttackingTeamMessage
 
 ==================
@@ -274,17 +282,6 @@ void ObeliskHealthMessage() {
         trap_SendServerCommand( -1, va("oh %i %i",level.healthRedObelisk,level.healthBlueObelisk) );
         level.MustSendObeliskHealth = qfalse;
     }
-}
-
-/*
-==================
-SendCustomVoteCommands
-
-==================
-*/
-
-void SendCustomVoteCommands(int clientNum) {
-	trap_SendServerCommand( clientNum, va("customvotes %s", custom_vote_info) );
 }
 
 /*
@@ -755,7 +752,6 @@ void ThrowWeapon( gentity_t *ent ) {
 	if(amount == 0){ return; }
 	ent->swep_ammo[weapon] = 0;
 	Set_Weapon( ent, weapon, 0);
-	client->ps.weapon = WP_GAUNTLET;
 	client->ps.generic2 = WP_GAUNTLET;
 	trap_SendServerCommand( ent - g_entities, va("clcmd \"%s\"", "weapon 1" ));
 	ent->swep_id = WP_GAUNTLET;
@@ -1476,7 +1472,7 @@ Added for QSandbox.
 ==================
 */
 static void Cmd_Altfire_Physgun_f( gentity_t *ent ){
-	if ( ent->client->ps.weapon == WP_PHYSGUN ){
+	if ( ent->client->ps.generic2 == WP_PHYSGUN ){
 	    if (ent->client->buttons & BUTTON_ATTACK) {
 			if (ent->grabbedEntity) {
 				ent->grabbedEntity->grabNewPhys = 1;	//say physgun about freeze option
@@ -1496,7 +1492,7 @@ static void Cmd_PhysgunDist_f( gentity_t *ent ){
 	
 	trap_Argv( 1, mode, sizeof( mode ) );
 	
-	if ( ent->client->ps.weapon == WP_PHYSGUN ){
+	if ( ent->client->ps.generic2 == WP_PHYSGUN ){
 	    if (ent->client->buttons & BUTTON_ATTACK) {
 			if (ent->grabbedEntity) {
 					if(atoi(mode) == 0){
@@ -1952,26 +1948,7 @@ void Cmd_CallVote_f( gentity_t *ent ) {
                     level.voteKickType = 1; //ban
                 }
 		Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ), "Kick %s?" , level.clients[i].pers.netname );
-        } else if ( !Q_stricmp( arg1, "custom" ) ) {
-                t_customvote customvote;
-                //Sago: There must always be a test to ensure that length(arg2) is non-zero or the client might be able to execute random commands.
-                if(strlen(arg2)<1) {
-                    trap_SendServerCommand( ent-g_entities, va("print \"Custom vote commands are: %s\n\"",custom_vote_info) );
-                    return;
-                }
-                customvote = getCustomVote(arg2);
-                if(Q_stricmp(customvote.votename,arg2)) {
-                    trap_SendServerCommand( ent-g_entities, "print \"Command could not be found\n\"" );
-                    return;
-                }
-                Com_sprintf( level.voteString, sizeof( level.voteString ), "%s", customvote.command );
-                if(strlen(customvote.displayname))
-                    Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ), "%s", customvote.displayname );
-                else
-                    Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ), "%s", customvote.command );
-	} else {
-		//Com_sprintf( level.voteString, sizeof( level.voteString ), "%s \"%s\"", arg1, arg2 );
-		//Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ), "%s", level.voteString );
+        } else {
                 trap_SendServerCommand( ent-g_entities, "print \"Server vality check failed, appears to be my fault. Sorry\n\"" );
                 return;
 	}
@@ -2271,378 +2248,6 @@ void Cmd_UseTarget_f( gentity_t *ent ) {
 	}
 }
 
-/*
-=================
-Cmd_UseCvar_f
-=================
-*/
-void Cmd_UseCvar_f( gentity_t *ent ) {
-	char		p1[64];
-	char		p2[64];
-	char		p3[64];
-	int			i;
-	static const char* cvar_items[] = {
-	"g_minigame",
-	"g_ghspeed",
-	"g_ghtimeout",
-	"g_gdelay",
-	"g_gdamage",
-	"g_grange",
-	"g_gknockback",
-	"g_mgdelay",
-	"g_mgdamage",
-	"g_mgspread",
-	"g_mgexplode",
-	"g_mgsdamage",
-	"g_mgsradius",
-	"g_mgvampire",
-	"g_mginf",
-	"g_mgknockback",
-	"g_sgdelay",
-	"g_sgdamage",
-	"g_sgspread",
-	"g_sgexplode",
-	"g_sgsdamage",
-	"g_sgsradius",
-	"g_sgcount",
-	"g_sgvampire",
-	"g_sginf",
-	"g_sgknockback",
-	"g_gldelay",
-	"g_glspeed",
-	"g_gltimeout",
-	"g_glsradius",
-	"g_glsdamage",
-	"g_gldamage",
-	"g_glbounce",
-	"g_glgravity",
-	"g_glvampire",
-	"g_glinf",
-	"g_glbouncemodifier",
-	"g_glknockback",
-	"g_rldelay",
-	"g_rlspeed",
-	"g_rltimeout",
-	"g_rlsradius",
-	"g_rlsdamage",
-	"g_rldamage",
-	"g_rlbounce",
-	"g_rlgravity",
-	"g_rlvampire",
-	"g_rlinf",
-	"g_rlbouncemodifier",
-	"g_rlknockback",
-	"g_lgdamage",
-	"g_lgdelay",
-	"g_lgrange",
-	"g_lgexplode",
-	"g_lgsdamage",
-	"g_lgsradius",
-	"g_lgvampire",
-	"g_lginf",
-	"g_lgknockback",
-	"g_rgdelay",
-	"g_rgdamage",
-	"g_rgvampire",
-	"g_rginf",
-	"g_rgknockback",
-	"g_pgdelay",
-	"g_pgsradius",
-	"g_pgspeed",
-	"g_pgsdamage",
-	"g_pgdamage",
-	"g_pgtimeout",
-	"g_pgbounce",
-	"g_pggravity",
-	"g_pgvampire",
-	"g_pginf",
-	"g_pgbouncemodifier",
-	"g_pgknockback",
-	"g_bfgdelay",
-	"g_bfgspeed",
-	"g_bfgtimeout",
-	"g_bfgsradius",
-	"g_bfgsdamage",
-	"g_bfgdamage",
-	"g_bfgbounce",
-	"g_bfggravity",
-	"g_bfgvampire",
-	"g_bfginf",
-	"g_bfgbouncemodifier",
-	"g_bfgknockback",
-	"g_ngdelay",
-	"g_ngspeed",
-	"g_ngspread",
-	"g_ngdamage",
-	"g_ngtimeout",
-	"g_ngcount",
-	"g_ngbounce",
-	"g_nggravity",
-	"g_ngrandom",
-	"g_ngvampire",
-	"g_nginf",
-	"g_ngbouncemodifier",
-	"g_ngknockback",
-	"g_pldelay",
-	"g_plspeed",
-	"g_pltimeout",
-	"g_plsradius",
-	"g_plsdamage",
-	"g_plgravity",
-	"g_pldamage",
-	"g_plvampire",
-	"g_plinf",
-	"g_plknockback",
-	"g_cgdelay",
-	"g_cgdamage",
-	"g_cgspread",
-	"g_cgvampire",
-	"g_cginf",
-	"g_cgknockback",
-	"g_ftdelay",
-	"g_ftsradius",
-	"g_ftspeed",
-	"g_ftsdamage",
-	"g_ftdamage",
-	"g_fttimeout",
-	"g_ftbounce",
-	"g_ftgravity",
-	"g_ftvampire",
-	"g_ftinf",
-	"g_ftbouncemodifier",
-	"g_ftknockback",
-	"g_amdelay",
-	"g_amsradius",
-	"g_amspeed",
-	"g_amsdamage",
-	"g_amdamage",
-	"g_amtimeout",
-	"g_ambounce",
-	"g_amgravity",
-	"g_amvampire",
-	"g_aminf",
-	"g_ambouncemodifier",
-	"g_amknockback",
-	"g_glhoming",
-	"g_glguided",
-	"g_rlhoming",
-	"g_rlguided",
-	"g_pghoming",
-	"g_pgguided",
-	"g_bfghoming",
-	"g_bfgguided",
-	"g_nghoming",
-	"g_ngguided",
-	"g_fthoming",
-	"g_ftguided",
-	"g_amhoming",
-	"g_amguided",
-	"g_scoutspeedfactor",
-	"g_scoutfirespeed",
-	"g_scoutdamagefactor",
-	"g_scoutgravitymodifier",
-	"g_scout_infammo",
-	"g_scouthealthmodifier",
-	"g_doublerspeedfactor",
-	"g_doublerfirespeed",
-	"g_doublerdamagefactor",
-	"g_doublergravitymodifier",
-	"g_doubler_infammo",
-	"g_doublerhealthmodifier",
-	"g_guardhealthmodifier",
-	"g_guardspeedfactor",
-	"g_guardfirespeed",
-	"g_guarddamagefactor",
-	"g_guardgravitymodifier",
-	"g_guard_infammo",
-	"g_ammoregenspeedfactor",
-	"g_ammoregenfirespeed",
-	"g_ammoregen_infammo",
-	"g_ammoregendamagefactor",
-	"g_ammoregengravitymodifier",
-	"g_ammoregenhealthmodifier",
-	"g_mgammocount",
-	"g_sgammocount",
-	"g_glammocount",
-	"g_rlammocount",
-	"g_lgammocount",
-	"g_rgammocount",
-	"g_pgammocount",
-	"g_bfgammocount",
-	"g_ngammocount",
-	"g_plammocount",
-	"g_cgammocount",
-	"g_ftammocount",
-	"g_mgweaponcount",
-	"g_sgweaponcount",
-	"g_glweaponcount",
-	"g_rlweaponcount",
-	"g_lgweaponcount",
-	"g_rgweaponcount",
-	"g_pgweaponcount",
-	"g_bfgweaponcount",
-	"g_ngweaponcount",
-	"g_plweaponcount",
-	"g_cgweaponcount",
-	"g_ftweaponcount",
-	"g_amweaponcount",
-	"g_teamblue_speed",
-	"g_teamblue_gravityModifier",
-	"g_teamblue_firespeed",
-	"g_teamblue_damage",
-	"g_teamblue_infammo",
-	"g_teamblue_respawnwait",
-	"g_teamblue_pickupitems",
-	"g_teamred_speed",
-	"g_teamred_gravityModifier",
-	"g_teamred_firespeed",
-	"g_teamred_damage",
-	"g_teamred_infammo",
-	"g_teamred_respawnwait",
-	"g_teamred_pickupitems",
-	"g_regenarmor",
-	"g_spectatorspeed",
-	"eliminationrespawn",
-	"eliminationredrespawn",
-	"g_overlay",
-	"g_slickmove",
-	"g_accelerate",
-	"g_randomItems",
-	"g_kill",
-	"g_kamikazeinf",
-	"g_invulinf",
-	"g_medkitinf",
-	"g_teleporterinf",
-	"g_portalinf",
-	"g_medkitlimit",
-	"g_waterdamage",
-	"g_lavadamage",
-	"g_slimedamage",
-	"g_maxweaponpickup",
-	"g_randomteleport",
-	"g_falldamagesmall",
-	"g_falldamagebig",
-	"g_noplayerclip",
-	"g_flagrespawn",
-	"g_portaltimeout",
-	"g_portalhealth",
-	"g_quadtime",
-	"g_bsuittime",
-	"g_hastetime",
-	"g_invistime",
-	"g_regentime",
-	"g_flighttime",
-	"g_invulmove",
-	"g_invultime",
-	"g_fasthealthregen",
-	"g_slowhealthregen",
-	"g_droppeditemtime",
-	"g_autoflagreturn",
-	"g_hastefirespeed",
-	"g_medkitmodifier",
-	"g_armorprotect",
-	"g_respawnwait",
-	"g_ammolimit",
-	"g_jumpheight",
-	"g_speedfactor",
-	"g_drowndamage",
-	"g_armorrespawn",
-	"g_healthrespawn",
-	"g_ammorespawn",
-	"g_holdablerespawn",
-	"g_megahealthrespawn",
-	"g_poweruprespawn",
-	"g_speed",
-	"g_gravity",
-	"g_gravityModifier",
-	"g_damageModifier",
-	"g_knockback",
-	"g_quadfactor",
-	"g_forcerespawn",
-	"g_respawntime",
-	"g_weaponRespawn",
-	"g_weaponTeamRespawn",
-	"g_proxMineTimeout",
-	"elimination_selfdamage",
-	"elimination_startHealth",
-	"elimination_startArmor",
-	"elimination_bfg",
-	"elimination_grapple",
-	"elimination_roundtime",
-	"elimination_warmup",
-	"elimination_activewarmup",
-	"elimination_allgametypes",
-	"elimination_gauntlet",
-	"elimination_machinegun",
-	"elimination_shotgun",
-	"elimination_grenade",
-	"elimination_rocket",
-	"elimination_railgun",
-	"elimination_lightning",
-	"elimination_plasmagun",
-	"elimination_chain",
-	"elimination_mine",
-	"elimination_nail",
-	"elimination_flame",
-	"elimination_antimatter",
-	"elimination_quad",
-	"elimination_haste",
-	"elimination_bsuit",
-	"elimination_invis",
-	"elimination_regen",
-	"elimination_flight",
-	"elimination_items",
-	"elimination_holdable",
-	"eliminationred_startHealth",
-	"eliminationred_startArmor",
-	"eliminationred_bfg",
-	"eliminationred_grapple",
-	"eliminationred_gauntlet",
-	"eliminationred_machinegun",
-	"eliminationred_shotgun",
-	"eliminationred_grenade",
-	"eliminationred_rocket",
-	"eliminationred_railgun",
-	"eliminationred_lightning",
-	"eliminationred_plasmagun",
-	"eliminationred_chain",
-	"eliminationred_mine",
-	"eliminationred_nail",
-	"eliminationred_flame",
-	"eliminationred_antimatter",
-	"eliminationred_quad",
-	"eliminationred_haste",
-	"eliminationred_bsuit",
-	"eliminationred_invis",
-	"eliminationred_regen",
-	"eliminationred_flight",
-	"eliminationred_holdable",
-	"g_vampire",
-	"g_vampireMaxHealth",
-	"g_regen",
-	0
-};
-if(g_gametype.integer != GT_SANDBOX){ return; }
-if(!g_allowsettings.integer){ return; }
-
-    trap_Argv( 1, p1, sizeof( p1 ) );
-	trap_Argv( 2, p2, sizeof( p2 ) );
-	trap_Argv( 3, p3, sizeof( p3 ) );
-	
-	if(atoi(p3) >= 1){
-	trap_SendServerCommand( -1, va("print \"Variable %s is %s\n\"", p1, G_CvarAutoChar( p1 )));
-	return;
-	}
-	
-	for (i = 0; i < 343; i++) {
-    if (Q_stricmp(p1, cvar_items[i]) == 0) {
-	trap_Cvar_Set(p1, va("%s", p2));
-	trap_SendServerCommand( -1, va("print \"Variable %s changed to %s\n\"", p1, p2));
-	break;
-	}
-	}
-}
-
 void Cmd_GetMappage_f( gentity_t *ent ) {
         t_mappage page;
         char string[(MAX_MAPNAME+1)*MAPS_PER_PAGE+1];
@@ -2690,7 +2295,6 @@ commands_t cmds[ ] =
   { "dropweapon", CMD_TEAM|CMD_LIVING, Cmd_DropWeapon_f },
   { "dropholdable", CMD_TEAM|CMD_LIVING, Cmd_DropHoldable_f },
   { "usetarget", CMD_LIVING, Cmd_UseTarget_f },
-  { "usecvar", 0, Cmd_UseCvar_f },
   { "where", 0, Cmd_Where_f },
 
   // game commands

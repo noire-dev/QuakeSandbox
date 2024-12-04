@@ -264,7 +264,15 @@ void Main_MenuEvent (void* ptr, int event) {
 		break;
 		
 	case ID_MODDB:
+	if(trap_Cvar_VariableValue("os_windows")){
 		trap_System("start https://www.moddb.com/games/qs");
+	}
+	if(trap_Cvar_VariableValue("os_linux")){
+		trap_System("xdg-open https://www.moddb.com/games/qs");
+	}
+	if(trap_Cvar_VariableValue("os_macos")){
+		trap_System("open https://www.moddb.com/games/qs");
+	}
 		break;
 
 	case ID_EXIT:

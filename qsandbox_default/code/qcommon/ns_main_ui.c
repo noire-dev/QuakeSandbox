@@ -168,11 +168,6 @@ void callfunc(Variable *var, const char *name, const char *operation, const char
         NSGUI_Load();
     }
 
-    else {
-        Com_Printf("Noire.Script Error: %s - incorrect number of arguments.\n", name);
-        trap_Cvar_Set("ns_haveerror", "1");
-    }
-
     if (hasReturnValue) {
         set_variable(var, result, operation);
     }

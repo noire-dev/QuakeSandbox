@@ -8,10 +8,6 @@ GAME OPTIONS MENU
 =======================================================================
 */
 
-
-
-
-
 #include "ui_local.h"
 
 
@@ -44,30 +40,27 @@ GAME OPTIONS MENU
 #define ID_DYNAMICLIGHTS		132
 #define ID_IDENTIFYTARGET		133
 #define ID_SYNCEVERYFRAME		134
-#define ID_DRAWTEAMOVERLAY		135
-#define ID_ALLOWDOWNLOAD		136
-#define ID_BACK					137
-#define ID_BOTMENU				138
-#define ID_GIBS					139
-#define ID_BLOOD				140
-#define ID_DRAWFPS				141
-#define ID_DRAWTIMER			142
-#define ID_LAGOMETER			143
-#define ID_PREDICTITEMS			144
-#define ID_SHADOWS				145
-#define ID_TEAMCHATHEIGHT		146
-#define ID_NEWESCAPEMENU		147
-#define ID_FOV					148
-#define ID_ZOOMFOV				149
-#define ID_AMMOWARNING			150
-#define ID_DRAWGUN				151
-#define ID_OLDPLASMA			152
-#define ID_OLDROCKET			153
-#define ID_TRUELIGHTNING		154
-#define ID_COLORRED             155
-#define ID_COLORGREEN           156
-#define ID_COLORBLUE            157
-#define ID_WEAPONBAR            158
+#define ID_ALLOWDOWNLOAD		135
+#define ID_BACK					136
+#define ID_BOTMENU				137
+#define ID_GIBS					138
+#define ID_BLOOD				139
+#define ID_DRAWFPS				140
+#define ID_DRAWTIMER			141
+#define ID_LAGOMETER			142
+#define ID_PREDICTITEMS			143
+#define ID_SHADOWS				144
+#define ID_TEAMCHATHEIGHT		145
+#define ID_NEWESCAPEMENU		146
+#define ID_FOV					147
+#define ID_ZOOMFOV				148
+#define ID_AMMOWARNING			149
+#define ID_DRAWGUN				150
+#define ID_TRUELIGHTNING		151
+#define ID_COLORRED             152
+#define ID_COLORGREEN           153
+#define ID_COLORBLUE            154
+#define ID_WEAPONBAR            155
 
 #define	NUM_CROSSHAIRS			10
 
@@ -97,7 +90,6 @@ typedef struct {
 	menuradiobutton_s	identifytarget;
 	menuradiobutton_s	highqualitysky;
 	menuradiobutton_s	synceveryframe;
-	menulist_s			drawteamoverlay;
 	menuradiobutton_s	allowdownload;
 	menuradiobutton_s	botmenu;
 
@@ -115,8 +107,6 @@ typedef struct {
 	menufield_s			fov;
 	menufield_s			zoomfov;
 
-	menuradiobutton_s	oldplasma;
-	menuradiobutton_s	oldrocket;
 	menuradiobutton_s	truelightning;
 
 
@@ -138,9 +128,6 @@ static const char *teamoverlay_names[] =
 	0
 };
 
-
-
-
 static const char *shadow_types[] =
 {
 	"off",
@@ -149,18 +136,6 @@ static const char *shadow_types[] =
 	"simple stencil",
 	0
 };
-
-static const char *teamoverlay_namesru[] =
-{
-	"выкл",
-	"сверху справа",
-	"снизу справа",
-	"снизу влево",
-	0
-};
-
-
-
 
 static const char *shadow_typesru[] =
 {
@@ -178,7 +153,6 @@ static menucommon_s* g_hud_controls[] = {
 	(menucommon_s*) &s_preferences.crosshairColorBlue,
 	(menucommon_s*) &s_preferences.alwaysweaponbar,
 	(menucommon_s*) &s_preferences.identifytarget,
-	(menucommon_s*) &s_preferences.drawteamoverlay,
 	(menucommon_s*) &s_preferences.teamchatheight,
 	(menucommon_s*) &s_preferences.drawfps,
 	(menucommon_s*) &s_preferences.synceveryframe,
@@ -204,8 +178,6 @@ static menucommon_s* g_object_controls[] = {
 	(menucommon_s*) &s_preferences.brass,
 	(menucommon_s*) &s_preferences.dynamiclights,
 	(menucommon_s*) &s_preferences.gibs,
-	(menucommon_s*) &s_preferences.oldplasma,
-	(menucommon_s*) &s_preferences.oldrocket,
 	(menucommon_s*) &s_preferences.truelightning,
 	NULL
 };
@@ -246,7 +218,6 @@ static void Preferences_SetMenuItems( void ) {
 	s_preferences.dynamiclights.curvalue	= trap_Cvar_VariableValue( "r_dynamiclight" ) != 0;
 	s_preferences.highqualitysky.curvalue	= trap_Cvar_VariableValue ( "r_fastsky" ) == 0;
 	s_preferences.synceveryframe.curvalue	= trap_Cvar_VariableValue( "r_swapInterval" ) != 0;
-	s_preferences.drawteamoverlay.curvalue	= Com_Clamp( 0, 3, trap_Cvar_VariableValue( "cg_drawTeamOverlay" ) );
 	s_preferences.allowdownload.curvalue	= trap_Cvar_VariableValue( "cl_allowDownload" ) != 0;
 	s_preferences.botmenu.curvalue			= trap_Cvar_VariableValue( "uie_autoclosebotmenu" ) != 0;
 
@@ -260,8 +231,6 @@ static void Preferences_SetMenuItems( void ) {
 	s_preferences.shadows.curvalue			= Com_Clamp( 0, 3, trap_Cvar_VariableValue( "cg_shadows" ) );
 	s_preferences.newESCmenu.curvalue		= trap_Cvar_VariableValue( "uie_ingame_dynamicmenu" ) != 0;
 
-	s_preferences.oldplasma.curvalue		= trap_Cvar_VariableValue( "cg_oldPlasma" ) != 0;
-	s_preferences.oldrocket.curvalue		= trap_Cvar_VariableValue( "cg_oldRocket" ) != 0;
 	s_preferences.truelightning.curvalue	= trap_Cvar_VariableValue( "cg_truelightning" ) != 0;
 
 
@@ -486,10 +455,6 @@ static void Preferences_Event( void* ptr, int notification ) {
 		trap_Cvar_SetValue( "r_swapInterval", s_preferences.synceveryframe.curvalue );
 		break;
 
-	case ID_DRAWTEAMOVERLAY:
-		trap_Cvar_SetValue( "cg_drawTeamOverlay", s_preferences.drawteamoverlay.curvalue );
-		break;
-
 	case ID_ALLOWDOWNLOAD:
 		trap_Cvar_SetValue( "cl_allowDownload", s_preferences.allowdownload.curvalue );
 		trap_Cvar_SetValue( "sv_allowDownload", s_preferences.allowdownload.curvalue );
@@ -533,14 +498,6 @@ static void Preferences_Event( void* ptr, int notification ) {
 
 	case ID_NEWESCAPEMENU:
 		trap_Cvar_SetValue( "uie_ingame_dynamicmenu", s_preferences.newESCmenu.curvalue );
-		break;
-
-	case ID_OLDPLASMA:
-		trap_Cvar_SetValue( "cg_oldPlasma", s_preferences.oldplasma.curvalue );
-		break;
-
-	case ID_OLDROCKET:
-		trap_Cvar_SetValue( "cg_oldRocket", s_preferences.oldrocket.curvalue );
 		break;
 
 	case ID_TRUELIGHTNING:
@@ -631,9 +588,6 @@ if(cl_language.integer == 0){
 		case ID_HIGHQUALITYSKY:
 			s = "off = no portal view of destination as well";
 			break;
-		case ID_DRAWTEAMOVERLAY:
-			s = "Team specific messages and info";
-			break;
 		case ID_TEAMCHATHEIGHT:
 			s = "FPS limit - it is recommended to set a supported value";
 			break;
@@ -658,9 +612,6 @@ if(cl_language.integer == 1){
 			break;
 		case ID_HIGHQUALITYSKY:
 			s = "выкл = нету визуализированых порталов";
-			break;
-		case ID_DRAWTEAMOVERLAY:
-			s = "Информация о команде";
 			break;
 		case ID_TEAMCHATHEIGHT:
 			s = "Лимит FPS - рекомендуется ставить как у монитора";
@@ -862,12 +813,6 @@ static void Preferences_MenuInit( void )
 	s_preferences.drawgun.generic.callback = Preferences_Event;
 	s_preferences.drawgun.generic.id       = ID_DRAWGUN;
 
-	s_preferences.drawteamoverlay.generic.type     = MTYPE_SPINCONTROL;
-	s_preferences.drawteamoverlay.generic.flags	   = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
-	s_preferences.drawteamoverlay.generic.callback = Preferences_Event;
-	s_preferences.drawteamoverlay.generic.statusbar= Preferences_Statusbar;
-	s_preferences.drawteamoverlay.generic.id       = ID_DRAWTEAMOVERLAY;
-
 	s_preferences.teamchatheight.generic.type       = MTYPE_FIELD;
 	s_preferences.teamchatheight.generic.id		= ID_TEAMCHATHEIGHT;
 	s_preferences.teamchatheight.generic.callback	= Preferences_InputEvent;
@@ -897,16 +842,6 @@ static void Preferences_MenuInit( void )
 	s_preferences.predictitems.generic.callback = Preferences_Event;
 	s_preferences.predictitems.generic.statusbar= Preferences_Statusbar;
 	s_preferences.predictitems.generic.id       = ID_PREDICTITEMS;
-
-	s_preferences.oldplasma.generic.type     = MTYPE_RADIOBUTTON;
-	s_preferences.oldplasma.generic.flags	  = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
-	s_preferences.oldplasma.generic.callback = Preferences_Event;
-	s_preferences.oldplasma.generic.id       = ID_OLDPLASMA;
-
-	s_preferences.oldrocket.generic.type     = MTYPE_RADIOBUTTON;
-	s_preferences.oldrocket.generic.flags	  = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
-	s_preferences.oldrocket.generic.callback = Preferences_Event;
-	s_preferences.oldrocket.generic.id       = ID_OLDROCKET;
 
 	s_preferences.truelightning.generic.type     = MTYPE_RADIOBUTTON;
 	s_preferences.truelightning.generic.flags	  = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
@@ -940,9 +875,9 @@ s_preferences.render.string			= "RENDER";
 s_preferences.objects.string			= "OBJECTS";
 s_preferences.misc.string			= "MISC";
 s_preferences.crosshair.generic.name		= "Crosshair:";
-s_preferences.crosshairColorRed.generic.name		= "Crosshair red:";
-s_preferences.crosshairColorGreen.generic.name		= "Crosshair green:";
-s_preferences.crosshairColorBlue.generic.name		= "Crosshair blue:";
+s_preferences.crosshairColorRed.generic.name		= "Color red:";
+s_preferences.crosshairColorGreen.generic.name		= "Color green:";
+s_preferences.crosshairColorBlue.generic.name		= "Color blue:";
 s_preferences.alwaysweaponbar.generic.name	      = "Always show weapons:";
 s_preferences.simpleitems.generic.name	      = "Simple Items:";
 s_preferences.wallmarks.generic.name	      = "Marks on Walls:";
@@ -957,20 +892,16 @@ s_preferences.drawfps.generic.name	   = "Draw FPS:";
 s_preferences.drawtimer.generic.name	   = "Draw Timer:";
 s_preferences.drawlagometer.generic.name	   = "Draw Lagometer:";
 s_preferences.drawgun.generic.name	   = "Secret setting =P:";
-s_preferences.drawteamoverlay.generic.name	   = "Draw Team Overlay:";
 s_preferences.teamchatheight.generic.name       = "FPS Limit:";
 s_preferences.fov.generic.name       = "FOV:";
 s_preferences.zoomfov.generic.name       = "Zoom FOV:";
 s_preferences.predictitems.generic.name	   = "Predict Items:";
-s_preferences.oldplasma.generic.name	  = "Old Plasma effect:";
-s_preferences.oldrocket.generic.name	  = "Old Rocket effect:";
 s_preferences.truelightning.generic.name	  = "True lightning:";
 s_preferences.synceveryframe.generic.name	  = "V-Sync:";
 s_preferences.allowdownload.generic.name	   = "Automatic Downloading:";
 s_preferences.botmenu.generic.name	  = "AutoClose Bot Menu:";
 s_preferences.newESCmenu.generic.name	   = "Dynamic Escape Menu:";
-	s_preferences.shadows.itemnames			= shadow_types;
-	s_preferences.drawteamoverlay.itemnames			= teamoverlay_names;
+s_preferences.shadows.itemnames			= shadow_types;
 }
 if(cl_language.integer == 1){
 s_preferences.banner.string		   = "ИГРОВЫЕ ОПЦИИ";
@@ -979,9 +910,9 @@ s_preferences.render.string			= "РЕНДЕР";
 s_preferences.objects.string			= "ОБЪЕКТЫ";
 s_preferences.misc.string			= "ДРУГОЕ";
 s_preferences.crosshair.generic.name		= "Прицел:";
-s_preferences.crosshairColorRed.generic.name		= "Прицел красный:";
-s_preferences.crosshairColorGreen.generic.name		= "Прицел зеленый:";
-s_preferences.crosshairColorBlue.generic.name		= "Прицел синий:";
+s_preferences.crosshairColorRed.generic.name		= "Цвет красный:";
+s_preferences.crosshairColorGreen.generic.name		= "Цвет зеленый:";
+s_preferences.crosshairColorBlue.generic.name		= "Цвет синий:";
 s_preferences.alwaysweaponbar.generic.name	      = "Всегда показывать оружие:";
 s_preferences.simpleitems.generic.name	      = "Простые предметы:";
 s_preferences.wallmarks.generic.name	      = "Отметки на стенах:";
@@ -996,20 +927,16 @@ s_preferences.drawfps.generic.name	   = "Отображение FPS:";
 s_preferences.drawtimer.generic.name	   = "Отображение Времени:";
 s_preferences.drawlagometer.generic.name	   = "Отображение Сети:";
 s_preferences.drawgun.generic.name	   = "Секретная настройка =P:";
-s_preferences.drawteamoverlay.generic.name	   = "Отображение командной панели:";
 s_preferences.teamchatheight.generic.name       = "Лимит FPS:";
 s_preferences.fov.generic.name       = "Поле зрения:";
 s_preferences.zoomfov.generic.name       = "Увеличение:";
 s_preferences.predictitems.generic.name	   = "Предметы клиент:";
-s_preferences.oldplasma.generic.name	  = "Старый эффект Плазмы:";
-s_preferences.oldrocket.generic.name	  = "Старый эффект Ракет:";
 s_preferences.truelightning.generic.name	  = "Правильный эффект молнии:";
 s_preferences.synceveryframe.generic.name	  = "Вертикальная синхронизация:";
 s_preferences.allowdownload.generic.name	   = "Автоматическое скачивание:";
 s_preferences.botmenu.generic.name	  = "Авто закрытие Бот Меню:";
 s_preferences.newESCmenu.generic.name	   = "Новый вид меню:";
-	s_preferences.shadows.itemnames			= shadow_typesru;
-	s_preferences.drawteamoverlay.itemnames			= teamoverlay_namesru;
+s_preferences.shadows.itemnames			= shadow_typesru;
 }
 
 	Menu_AddItem( &s_preferences.menu, &s_preferences.banner );
@@ -1033,7 +960,6 @@ s_preferences.newESCmenu.generic.name	   = "Новый вид меню:";
 	Menu_AddItem( &s_preferences.menu, &s_preferences.identifytarget );
 	Menu_AddItem( &s_preferences.menu, &s_preferences.highqualitysky );
 	Menu_AddItem( &s_preferences.menu, &s_preferences.synceveryframe );
-	Menu_AddItem( &s_preferences.menu, &s_preferences.drawteamoverlay );
 	Menu_AddItem( &s_preferences.menu, &s_preferences.allowdownload );
 	Menu_AddItem( &s_preferences.menu, &s_preferences.botmenu);
 
@@ -1050,8 +976,6 @@ s_preferences.newESCmenu.generic.name	   = "Новый вид меню:";
 	Menu_AddItem( &s_preferences.menu, &s_preferences.fov);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.zoomfov);
 
-	Menu_AddItem( &s_preferences.menu, &s_preferences.oldplasma);
-	Menu_AddItem( &s_preferences.menu, &s_preferences.oldrocket);
 	Menu_AddItem( &s_preferences.menu, &s_preferences.truelightning);
 
 	Menu_AddItem( &s_preferences.menu, &s_preferences.back );

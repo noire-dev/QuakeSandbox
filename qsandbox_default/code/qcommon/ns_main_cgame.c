@@ -10,6 +10,7 @@ const char *function_list[MAX_FUNCS] = {
     "getVariable",
     "setVariable",
     "sendVariable",
+    "notify",
     NULL
 };
 
@@ -25,6 +26,7 @@ const char *function_arg_types[MAX_FUNCS][MAX_ARGS] = {
     {"char"},                                       // getVariable
     {"char", "char", "char"},                       // setVariable
     {"char", "char"},                               // sendVariable
+    {"char", "int"},                                // notify
     {NULL}                                          // NULL
 };
 
@@ -147,9 +149,8 @@ void callfunc(Variable *var, const char *name, const char *operation, const char
 
     }
 
-    else {
-        Com_Printf("Noire.Script Error: %s - incorrect number of arguments.\n", name);
-        trap_Cvar_Set("ns_haveerror", "1");
+    else if (strcmp(name, "notify") == 0 && argCount >= 2) {
+        CG_AddNotify(ns_args[0].c, ns_args[1].i);
     }
 
     if (hasReturnValue) {

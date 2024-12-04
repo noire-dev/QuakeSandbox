@@ -85,9 +85,9 @@ void Use_target_remove_powerups( gentity_t *ent, gentity_t *other, gentity_t *ac
 
 	//remove weapons and ammo
 	if ( ent->spawnflags & 4 ) {
-		activator->client->ps.weapon = WP_NONE;
+		activator->client->ps.generic2 = WP_GAUNTLET;
 
-		for ( i = WP_MACHINEGUN; i < WEAPONS_NUM; i++ ) {
+		for ( i = 2; i < WEAPONS_NUM; i++ ) {
 			activator->swep_list[i] = 0;
 			activator->swep_ammo[i] = 0;
 		}
@@ -677,8 +677,7 @@ void target_mapchange_use (gentity_t *self, gentity_t *other, gentity_t *activat
 	self->nextthink = level.time + FADEOUT_TIME;
 	
 	//store session data to persist health/armor/weapons/ammo and variables to next level (only in SP mode)
-	G_UpdateClientSessionDataForMapChange( activator );
-	G_UpdateGlobalSessionDataForMapChange();
+	G_Sav_SaveData( activator, 0 );
 	
 	G_FadeOut( FADEOUT_TIME / 1000, -1 );
 }
@@ -1505,74 +1504,6 @@ void target_playerstats_use (gentity_t *self, gentity_t *other, gentity_t *activ
 
 void SP_target_playerstats (gentity_t *self) {
 	self->use = target_playerstats_use;
-}
-
-/*QUAKED target_variable (.5 .5 .5) (-8 -8 -8) (8 8 8) COMPARE_EQUALS COMPARE_NOT_EQUALS IMMEDIATELY
-When triggered, this writes a variable with a specified value to memory or compares the value of that variable
-*/
-
-void target_variable_use (gentity_t *self, gentity_t *other, gentity_t *activator) {
-	char buf[MAX_INFO_STRING];
-	char variableInfo[MAX_INFO_STRING];
-	char *value;
-
-	if ( self->spawnflags & 1 || self->spawnflags & 2)
-	{
-		trap_GetConfigstring(CS_TARGET_VARIABLE, buf, sizeof(buf));
-		value = Info_ValueForKey(buf, self->key);
-		if ( g_debugVariables.integer ) {
-			G_Printf("\nDebugvariables: comparing variable \"%s\" to \"%s\"\n", self->key, self->value);
-			G_Printf("In-memory value for variable = \"%s\"\n", value);
-			G_Printf("Variable infostring = %s\n", variableInfo);
-		}
-		
-		if ( (self->spawnflags & 1) && !strcmp(value, self->value) ) {
-			if ( g_debugVariables.integer ) G_Printf("Variables match, targets will be activated\n");
-			G_UseTargets (self, activator);
-		}
-		
-		if ( (self->spawnflags & 2) && strcmp(value, self->value) ) {
-			if ( g_debugVariables.integer ) G_Printf("Variables do not match, targets will be activated\n");
-			G_UseTargets (self, activator);
-		}
-		
-		return;
-	}
-	
-	variableInfo[0] = '\0';
-	Info_SetValueForKey(variableInfo, self->key, self->value);
-	trap_SetConfigstring( CS_TARGET_VARIABLE, variableInfo );
-	if ( g_debugVariables.integer ) {
-		G_Printf("\nDebugvariables: setting variable \"%s\" to \"%s\"\n", self->key, self->value);
-		G_Printf("Variable infostring = %s\n", variableInfo);
-	}
-}
-
-//used for immediately spawnflag
-void target_variable_think (gentity_t *self) {
-	self->nextthink = 0;
-	target_variable_use( self, NULL, self );
-}
-
-void SP_target_variable (gentity_t *self) {
-	if ( !self->key ) {
-		G_Printf("WARNING: target_variable without key at %s\n", vtos(self->s.origin));
-		G_FreeEntity( self );
-		return;
-	}
-
-	if ( !self->key ) {
-		G_Printf("WARNING: target_variable without value at %s\n", vtos(self->s.origin));
-		G_FreeEntity( self );
-		return;
-	}
-	
-	self->use = target_variable_use;
-
-	if ( ( self->spawnflags & 4 ) ) {
-		self->nextthink = level.time + FRAMETIME * 3;	//trigger entities next frame so they can spawn first
-		self->think = target_variable_think;
-	}
 }
 
 /*QUAKED target_cutscene (.5 .5 .5) (-8 -8 -8) (8 8 8) HALT_AI

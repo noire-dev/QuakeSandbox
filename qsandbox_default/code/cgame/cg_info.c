@@ -43,14 +43,14 @@ static void CG_DrawLoadingIcons( void ) {
 	int		x, y;
 
 	for( n = 0; n < loadingPlayerIconCount; n++ ) {
-		x = 8 + n * 36 - cl_screenoffset.integer;
+		x = 8 + n * 36 - cl_screenoffset.value;
 		y = 440-32;
 		CG_DrawPic( x, y, 32, 32, loadingPlayerIcons[n] );
 	}
 
 	for( n = 0; n < loadingItemIconCount; n++ ) {
 		y = 480-20;
-		x = 8 + n * 18- cl_screenoffset.integer;
+		x = 8 + n * 18- cl_screenoffset.value;
 		CG_DrawPic( x, y, 16, 16, loadingItemIcons[n] );
 	}
 }
@@ -167,8 +167,8 @@ void CG_DrawInformation( void ) {
 
 	// blend a detail texture over it
 	detail	= trap_R_RegisterShaderNoMip( "menu/animbg" );
-	CG_DrawPic( -1 - cl_screenoffset.integer, 0, 642 + cl_screenoffset.integer*2, 480, detail );
-	CG_DrawPic( -1 - cl_screenoffset.integer, 0, 642 + cl_screenoffset.integer*2, 480, trap_R_RegisterShaderNoMip( "menu/art/blacktrans" ) );
+	CG_DrawPic( -1 - cl_screenoffset.value, 0, 642 + cl_screenoffset.value*2, 480, detail );
+	CG_DrawPic( -1 - cl_screenoffset.value, 0, 642 + cl_screenoffset.value*2, 480, trap_R_RegisterShaderNoMip( "menu/art/blacktrans" ) );
 	CG_DrawPic( 30, 180-58, 280, 200, levelshot );
 
 	// draw the icons of things as they are loaded

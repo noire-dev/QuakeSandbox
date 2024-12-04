@@ -1752,22 +1752,6 @@ playerscore_t G_CalculatePlayerScore( gentity_t *ent ) {
 
 /*
 ==================
-G_CvarAutoChar
-Return type char
-==================
-*/
-char *G_CvarAutoChar( char *name ) {
-char finaltext[1024];
-
-trap_Cvar_VariableStringBuffer(name, finaltext, sizeof( finaltext ));
-	if(Q_stricmp (finaltext, "") != 0){
-		return va("%s", finaltext );
-	}
-	return va("%s", name );
-}
-
-/*
-==================
 FindEntityForPhysgun
 Added for QSandbox.
 ==================

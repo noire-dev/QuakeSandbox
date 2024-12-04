@@ -299,34 +299,6 @@ vmCvar_t	g_teamred_infammo;
 vmCvar_t	g_teamred_respawnwait;
 vmCvar_t	g_teamred_pickupitems;
 //cvars
-vmCvar_t	save_session0;
-vmCvar_t	save_session0_lvl;
-vmCvar_t	save_epsession;
-vmCvar_t	save1_session0;
-vmCvar_t	save1_session0_lvl;
-vmCvar_t	save1_epsession;
-vmCvar_t	save2_session0;
-vmCvar_t	save2_session0_lvl;
-vmCvar_t	save2_epsession;
-vmCvar_t	save3_session0;
-vmCvar_t	save3_session0_lvl;
-vmCvar_t	save3_epsession;
-vmCvar_t	save4_session0;
-vmCvar_t	save4_session0_lvl;
-vmCvar_t	save4_epsession;
-vmCvar_t	save5_session0;
-vmCvar_t	save5_session0_lvl;
-vmCvar_t	save5_epsession;
-vmCvar_t	save6_session0;
-vmCvar_t	save6_session0_lvl;
-vmCvar_t	save6_epsession;
-vmCvar_t	save7_session0;
-vmCvar_t	save7_session0_lvl;
-vmCvar_t	save7_epsession;
-vmCvar_t	save8_session0;
-vmCvar_t	save8_session0_lvl;
-vmCvar_t	save8_epsession;
-
 vmCvar_t	g_fogModel;
 vmCvar_t	g_fogShader;
 vmCvar_t	g_fogDistance;
@@ -341,17 +313,7 @@ vmCvar_t	g_skyColorG;
 vmCvar_t	g_skyColorB;
 vmCvar_t	g_skyColorA;
 
-vmCvar_t	save_curmap;
-vmCvar_t	save1_curmap;
-vmCvar_t	save2_curmap;
-vmCvar_t	save3_curmap;
-vmCvar_t	save4_curmap;
-vmCvar_t	save5_curmap;
-vmCvar_t	save6_curmap;
-vmCvar_t	save7_curmap;
-vmCvar_t	save8_curmap;
 vmCvar_t	g_allowprops;
-vmCvar_t	g_allowsettings;
 vmCvar_t	g_allownpc;
 vmCvar_t	g_allowitems;
 vmCvar_t	g_allownoclip;
@@ -576,12 +538,6 @@ vmCvar_t        g_voteMaxTimelimit;
 vmCvar_t        g_voteMinFraglimit;
 vmCvar_t        g_voteMaxFraglimit;
 vmCvar_t        g_maxvotes;
-
-vmCvar_t        g_humanplayers;
-
-//used for voIP
-vmCvar_t         g_redTeamClientNumbers;
-vmCvar_t         g_blueTeamClientNumbers;
 
 //unlagged - server options
 vmCvar_t	g_delagHitscan;
@@ -935,45 +891,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_skyColorG, "g_skyColorG", "255", 0, 0, qtrue  },
 	{ &g_skyColorB, "g_skyColorB", "255", 0, 0, qtrue  },
 	{ &g_skyColorA, "g_skyColorA", "0", 0, 0, qtrue  },
-	
-	{ &save_session0, "save_session0", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save_session0_lvl, "save_session0_lvl", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save_epsession, "save_epsession", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save1_session0, 		"save1_session0", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save1_session0_lvl, 	"save1_session0_lvl", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save1_epsession, 	"save1_epsession", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save2_session0, 		"save2_session0", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save2_session0_lvl, 	"save2_session0_lvl", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save2_epsession, 	"save2_epsession", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save3_session0, 		"save3_session0", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save3_session0_lvl, 	"save3_session0_lvl", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save3_epsession, 	"save3_epsession", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save4_session0, 		"save4_session0", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save4_session0_lvl, 	"save4_session0_lvl", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save4_epsession, 	"save4_epsession", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save5_session0, 		"save5_session0", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save5_session0_lvl, 	"save5_session0_lvl", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save5_epsession, 	"save5_epsession", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save6_session0, 		"save6_session0", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save6_session0_lvl, 	"save6_session0_lvl", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save6_epsession, 	"save6_epsession", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save7_session0, 		"save7_session0", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save7_session0_lvl, 	"save7_session0_lvl", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save7_epsession, 	"save7_epsession", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save8_session0, 		"save8_session0", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save8_session0_lvl, 	"save8_session0_lvl", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save8_epsession, 	"save8_epsession", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save_curmap, "save_curmap", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save1_curmap, "save1_curmap", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save2_curmap, "save2_curmap", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save3_curmap, "save3_curmap", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save4_curmap, "save4_curmap", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save5_curmap, "save5_curmap", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save6_curmap, "save6_curmap", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save7_curmap, "save7_curmap", "", CVAR_ARCHIVE, 0, qtrue  },
-	{ &save8_curmap, "save8_curmap", "", CVAR_ARCHIVE, 0, qtrue  },
 	{ &g_allowprops, "g_allowprops", "1", 0, 0, qtrue  },
-	{ &g_allowsettings, "g_allowsettings", "0", 0, 0, qtrue  },
 	{ &g_allownpc, "g_allownpc", "1", 0, 0, qtrue  },
 	{ &g_allowitems, "g_allowitems", "1", 0, 0, qtrue  },
 	{ &g_allownoclip, "g_allownoclip", "1", 0, 0, qtrue  },
@@ -1222,11 +1140,7 @@ static cvarTable_t		gameCvarTable[] = {
 
         { &g_autonextmap, "g_autonextmap", "0", CVAR_ARCHIVE | CVAR_NORESTART, 0, qfalse},
         { &g_mappools, "g_mappools", "0\\maps_dm.cfg\\1\\maps_tourney.cfg\\3\\maps_tdm.cfg\\4\\maps_ctf.cfg\\5\\maps_oneflag.cfg\\6\\maps_obelisk.cfg\
-\\7\\maps_harvester.cfg\\8\\maps_elimination.cfg\\9\\maps_ctf.cfg\\10\\maps_lms.cfg\\11\\maps_dd.cfg\\12\\maps_dom.cfg\\", CVAR_ARCHIVE | CVAR_NORESTART, 0, qfalse},
-        { &g_humanplayers, "g_humanplayers", "0", CVAR_ROM | CVAR_NORESTART, 0, qfalse },
-//used for voIP
-        { &g_redTeamClientNumbers, "g_redTeamClientNumbers", "0",CVAR_ROM, 0, qfalse },
-        { &g_blueTeamClientNumbers, "g_blueTeamClientNumbers", "0",CVAR_ROM, 0, qfalse }
+\\7\\maps_harvester.cfg\\8\\maps_elimination.cfg\\9\\maps_ctf.cfg\\10\\maps_lms.cfg\\11\\maps_dd.cfg\\12\\maps_dom.cfg\\", CVAR_ARCHIVE | CVAR_NORESTART, 0, qfalse}
 };
 
 // bk001129 - made static to avoid aliasing
@@ -1413,10 +1327,6 @@ void G_UpdateCvars( void ) {
 				if ( cv->trackChange ) {
 					//trap_SendServerCommand( -1, va("print \"Server: %s changed to %s\n\"", cv->cvarName, cv->vmCvar->string ) );
 				}
-
-                                if ( cv->vmCvar == &g_votecustom )
-                                    VoteParseCustomVotes();
-
                                 //Here comes the cvars that must trigger a map_restart
                                 if (cv->vmCvar == &g_elimination_allgametypes) {
                                     trap_Cvar_Set("sv_dorestart","1");
@@ -1519,9 +1429,6 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	} else {
 		G_Printf( "Not logging to disk.\n" );
 	}
-
-    //Parse the custom vote names:
-    VoteParseCustomVotes();
 
 	G_InitWorldSession();
 
@@ -2054,9 +1961,6 @@ void CalculateRanks( void ) {
 	if ( level.intermissiontime ) {
 		SendScoreboardMessageToAllClients();
 	}
-
-        if(g_humanplayers.integer != humanplayers) //Presume all spectators are humans!
-            trap_Cvar_Set( "g_humanplayers", va("%i", humanplayers) );
 }
 
 
@@ -2154,23 +2058,6 @@ void SendDominationPointsStatusMessageToAllClients( void ) {
 		}
 	}
 }
-/*
-========================
-SendYourTeamMessageToTeam
-
-Tell all players on a given team who there allies are. Used for VoIP
-========================
-*/
-void SendYourTeamMessageToTeam( team_t team ) {
-	int		i;
-
-	for ( i = 0 ; i < level.maxclients ; i++ ) {
-		if ( level.clients[ i ].pers.connected == CON_CONNECTED && level.clients[ i ].sess.sessionTeam == team ) {
-			YourTeamMessage( g_entities + i );
-		}
-	}
-}
-
 
 /*
 ========================

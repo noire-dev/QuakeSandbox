@@ -1335,7 +1335,7 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 			torsoAngles[PITCH] = 0.0f;
 	}
 
-	if(cg.renderingEyesPerson == 3){
+	if(cg.renderingEyesPerson){
 			torsoAngles[PITCH] = 0.0f;
 	}
 	}
@@ -2328,8 +2328,8 @@ void CG_Player( centity_t *cent ) {
 	torso.shadowPlane = shadowPlane;
 	torso.renderfx = renderfx;
 	if (cg.renderingEyesPerson){
-			torso.renderfx &= RF_FIRST_PERSON;
-		}
+		torso.renderfx &= RF_FIRST_PERSON;
+	}
 
 	if (chibifactortorso) {
 		VectorScale(torso.axis[0], chibifactortorso, torso.axis[0]);
@@ -2566,12 +2566,7 @@ void CG_Player( centity_t *cent ) {
 	cent->eyesOrigin[0] = head.origin[0];
 	cent->eyesOrigin[1] = head.origin[1];
 	cent->eyesOrigin[2] = head.origin[2];
-	if (cg.renderingEyesPerson == 2){
-	vectoangles( head.axis[0], headang);
-	}
-	else
-	{
-
+	if (cg.renderingEyesPerson){
 	VectorCopy(cent->lerpAngles, headang);
 	}
 

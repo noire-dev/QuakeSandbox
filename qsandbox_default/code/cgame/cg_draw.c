@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // cg_draw.c -- draw all of the graphical elements during
 // active (after loading) gameplay
 
-#include "cg_local.h"
+#include "../qcommon/ns_local.h"
 
 int drawTeamOverlayModificationCount = -1;
 
@@ -298,37 +298,37 @@ static void CG_DrawToolgun() {
 		}
 		}
 		
-		CG_DrawPic( -1 - cl_screenoffset.integer, 0+cg_toolguninfo.integer, 300, 125, trap_R_RegisterShaderNoMip( "menu/art/blacktrans" ) );
+		CG_DrawPic( -1 - cl_screenoffset.value, 0+cg_toolguninfo.integer, 300, 125, trap_R_RegisterShaderNoMip( "menu/art/blacktrans" ) );
 
-		CG_DrawGiantString( 0 - cl_screenoffset.integer, 2+cg_toolguninfo.integer, toolgun_tooltext.string, 1.0F);
+		CG_DrawGiantString( 0 - cl_screenoffset.value, 2+cg_toolguninfo.integer, toolgun_tooltext.string, 1.0F);
 		if(toolgun_mod19.integer == 0){
-		CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, toolgun_toolmode1.string, 1.0F);
+		CG_DrawBigString( 0 - cl_screenoffset.value, 32+cg_toolguninfo.integer, toolgun_toolmode1.string, 1.0F);
 		} else
 		if(toolgun_mod19.integer == 1){
-		CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, toolgun_toolmode2.string, 1.0F);
+		CG_DrawBigString( 0 - cl_screenoffset.value, 32+cg_toolguninfo.integer, toolgun_toolmode2.string, 1.0F);
 		} else
 		if(toolgun_mod19.integer == 2){
-		CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, toolgun_toolmode3.string, 1.0F);
+		CG_DrawBigString( 0 - cl_screenoffset.value, 32+cg_toolguninfo.integer, toolgun_toolmode3.string, 1.0F);
 		} else
 		if(toolgun_mod19.integer == 3){
-		CG_DrawBigString( 0 - cl_screenoffset.integer, 32+cg_toolguninfo.integer, toolgun_toolmode4.string, 1.0F);
+		CG_DrawBigString( 0 - cl_screenoffset.value, 32+cg_toolguninfo.integer, toolgun_toolmode4.string, 1.0F);
 		}
-		y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.integer, y, toolgun_tooltip1.string, 1.0F);
-		y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, toolgun_tooltip2.string, 1.0F);
-		y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, toolgun_tooltip3.string, 1.0F);
-		y += 15; CG_DrawBigString( 0 - cl_screenoffset.integer, y, toolgun_tooltip4.string, 1.0F);
+		y = 50+cg_toolguninfo.integer;  CG_DrawBigString( 0 - cl_screenoffset.value, y, toolgun_tooltip1.string, 1.0F);
+		y += 15; CG_DrawBigString( 0 - cl_screenoffset.value, y, toolgun_tooltip2.string, 1.0F);
+		y += 15; CG_DrawBigString( 0 - cl_screenoffset.value, y, toolgun_tooltip3.string, 1.0F);
+		y += 15; CG_DrawBigString( 0 - cl_screenoffset.value, y, toolgun_tooltip4.string, 1.0F);
 
 		origin[0] = 70;
 		origin[1] = 0;
 		origin[2] = 0;
 		angles[YAW] = 90 + 20 * sin( cg.time / 1000.0 );
 		if(!BG_CheckClassname(sb_classnum_view.string)){
-		CG_Draw3DModelToolgun( 640 + cl_screenoffset.integer - TEXT_ICON_SPACE  - 160, 1 + 12, 160, 160,
+		CG_Draw3DModelToolgun( 640 + cl_screenoffset.value - TEXT_ICON_SPACE  - 160, 1 + 12, 160, 160,
 					   trap_R_RegisterModel_SourceTech( toolgun_modelst.string ), 0, origin, angles );
 		} else {
 		for ( it = bg_itemlist + 1 ; it->classname ; it++ ) {
 		if ( !Q_stricmp( it->classname, sb_classnum_view.string ) )
-				CG_Draw3DModelToolgun( 640 + cl_screenoffset.integer - TEXT_ICON_SPACE  - 160, 1 + 12, 160, 160,
+				CG_Draw3DModelToolgun( 640 + cl_screenoffset.value - TEXT_ICON_SPACE  - 160, 1 + 12, 160, 160,
 					   trap_R_RegisterModel_SourceTech( it->world_model[0] ), 0, origin, angles );	
 		}
 	}	
@@ -432,11 +432,11 @@ static void CG_DrawStatusBar( void ) {
 	}
 
 	if( cg.predictedPlayerState.powerups[PW_REDFLAG] ) {
-		CG_DrawFlagModel( 0 - cl_screenoffset.integer, 480 - ICON_SIZE - 38, ICON_SIZE, ICON_SIZE, TEAM_RED, qfalse );
+		CG_DrawFlagModel( 0 - cl_screenoffset.value, 480 - ICON_SIZE - 38, ICON_SIZE, ICON_SIZE, TEAM_RED, qfalse );
 	} else if( cg.predictedPlayerState.powerups[PW_BLUEFLAG] ) {
-		CG_DrawFlagModel( 0 - cl_screenoffset.integer, 480 - ICON_SIZE - 38, ICON_SIZE, ICON_SIZE, TEAM_BLUE, qfalse );
+		CG_DrawFlagModel( 0 - cl_screenoffset.value, 480 - ICON_SIZE - 38, ICON_SIZE, ICON_SIZE, TEAM_BLUE, qfalse );
 	} else if( cg.predictedPlayerState.powerups[PW_NEUTRALFLAG] ) {
-		CG_DrawFlagModel( 0 - cl_screenoffset.integer, 480 - ICON_SIZE - 38, ICON_SIZE, ICON_SIZE, TEAM_FREE, qfalse );
+		CG_DrawFlagModel( 0 - cl_screenoffset.value, 480 - ICON_SIZE - 38, ICON_SIZE, ICON_SIZE, TEAM_FREE, qfalse );
 	}
 
 	//
@@ -446,16 +446,16 @@ static void CG_DrawStatusBar( void ) {
 	if ( weaphack ) { //VEHICLE-SYSTEM: vehicle's speedmeter for all
 		value = ps->stats[STAT_SWEPAMMO];
 		if(value <= 0 && value != -1){	// QS weapon predict
-		cg.swep_listcl[ps->stats[STAT_SWEP]] = 2;
+		cg.swep_listcl[ps->generic2] = 2;
 		} else {
-		cg.swep_listcl[ps->stats[STAT_SWEP]] = 1;	
+		cg.swep_listcl[ps->generic2] = 1;	
 		}
 		if ( value > -1 ) {
 		if(cl_language.integer == 0){
-		CG_DrawStatusElement(628+cl_screenoffset.integer-110, 440, value, "AMMO");
+		CG_DrawStatusElement(628+cl_screenoffset.value-110, 440, value, "AMMO");
 		}
 		if(cl_language.integer == 1){
-		CG_DrawStatusElement(628+cl_screenoffset.integer-110, 440, value, "ПАТРОНЫ");
+		CG_DrawStatusElement(628+cl_screenoffset.value-110, 440, value, "ПАТРОНЫ");
 		}
 		}
 	}
@@ -463,25 +463,25 @@ static void CG_DrawStatusBar( void ) {
 		if ( weaphack ) {
 			value = ps->stats[STAT_SWEPAMMO];
 			if(value <= 0 && value != -1){	// QS weapon predict
-			cg.swep_listcl[ps->stats[STAT_SWEP]] = 2;
+			cg.swep_listcl[ps->generic2] = 2;
 			} else {
-			cg.swep_listcl[ps->stats[STAT_SWEP]] = 1;	
+			cg.swep_listcl[ps->generic2] = 1;	
 			}
 			if ( value > -1 ) {
 			if(cl_language.integer == 0){
-			CG_DrawStatusElement(628+cl_screenoffset.integer-230, 440, value, "AMMO");
+			CG_DrawStatusElement(628+cl_screenoffset.value-230, 440, value, "AMMO");
 			}
 			if(cl_language.integer == 1){
-			CG_DrawStatusElement(628+cl_screenoffset.integer-230, 440, value, "ПАТРОНЫ");
+			CG_DrawStatusElement(628+cl_screenoffset.value-230, 440, value, "ПАТРОНЫ");
 			}
 			}
 		}
 		value = sqrt(vel[0] * vel[0] + vel[1] * vel[1]) * 0.20;
 		if(cl_language.integer == 0){
-		CG_DrawStatusElement(628+cl_screenoffset.integer-110, 440, value, "KM/H");
+		CG_DrawStatusElement(628+cl_screenoffset.value-110, 440, value, "KM/H");
 		}
 		if(cl_language.integer == 1){
-		CG_DrawStatusElement(628+cl_screenoffset.integer-110, 440, value, "КМ/Ч");
+		CG_DrawStatusElement(628+cl_screenoffset.value-110, 440, value, "КМ/Ч");
 		}
 	}
 
@@ -494,10 +494,10 @@ static void CG_DrawStatusBar( void ) {
 	value = ps->stats[STAT_VEHICLEHP];	
 	}
 	if(cl_language.integer == 0){
-	CG_DrawStatusElement(12-cl_screenoffset.integer, 440, value, "HEALTH");
+	CG_DrawStatusElement(12-cl_screenoffset.value, 440, value, "HEALTH");
 	}
 	if(cl_language.integer == 1){
-	CG_DrawStatusElement(12-cl_screenoffset.integer, 440, value, "ЖИЗНИ");
+	CG_DrawStatusElement(12-cl_screenoffset.value, 440, value, "ЖИЗНИ");
 	}
 		
 	//
@@ -506,22 +506,22 @@ static void CG_DrawStatusBar( void ) {
 	value = ps->stats[STAT_ARMOR];
 	if (value > 0 ) {
 		if(cl_language.integer == 0){
-		CG_DrawStatusElement(22-cl_screenoffset.integer+110, 440, value, "ARMOR");
+		CG_DrawStatusElement(22-cl_screenoffset.value+110, 440, value, "ARMOR");
 		}
 		if(cl_language.integer == 1){
-		CG_DrawStatusElement(22-cl_screenoffset.integer+110, 440, value, "БРОНЯ");
+		CG_DrawStatusElement(22-cl_screenoffset.value+110, 440, value, "БРОНЯ");
 		}
 	}
 
-        //Skulls!
+    //Skulls!
 	if(cgs.gametype == GT_HARVESTER) {
         value = ps->generic1;
         if (value > 0 ) {
 			if(cl_language.integer == 0){
-			CG_DrawStatusElement(32-cl_screenoffset.integer+220, 440, value, "SKULLS");
+			CG_DrawStatusElement(32-cl_screenoffset.value+220, 440, value, "SKULLS");
 			}
 			if(cl_language.integer == 1){
-			CG_DrawStatusElement(32-cl_screenoffset.integer+220, 440, value, "ЧЕРЕПА");
+			CG_DrawStatusElement(32-cl_screenoffset.value+220, 440, value, "ЧЕРЕПА");
 			}
         }
     }
@@ -534,6 +534,9 @@ static void CG_DrawStatusBar( void ) {
 
 ===========================================================================================
 */
+
+qboolean n_tip1 = qfalse;
+qboolean n_tip2 = qfalse;
 
 /*
 ================
@@ -553,7 +556,38 @@ static float CG_DrawCounters( float y ) {
 	int			i, total;
 	int			mins, seconds, tens;
 	int			msec;
-	int rst;
+	int 		rst;
+
+	msec = cg.time - cgs.levelStartTime;
+
+	seconds = msec / 1000;
+
+	if(seconds < 3){
+		n_tip1 = qfalse;
+		n_tip2 = qfalse;
+	}
+
+	if(cgs.gametype == GT_SANDBOX){
+		if(seconds == 3 && !n_tip1){
+			if(cl_language.integer == 0){
+				CG_AddNotify ("Welcome to Quake Sandbox 8.0", 1);
+			}
+			if(cl_language.integer == 1){
+				CG_AddNotify ("Добро пожаловать в Quake Sandbox 8.0", 1);
+			}
+			n_tip1 = qtrue;
+		}
+
+		if(seconds == 6 && !n_tip2){
+			if(cl_language.integer == 0){
+				CG_AddNotify ("Press [Q] to open the spawn menu", 1);
+			}
+			if(cl_language.integer == 1){
+				CG_AddNotify ("Нажмите [Q], чтобы открыть меню спавна", 1);
+			}
+			n_tip2 = qtrue;
+		}
+	}
 
 	if ( cg.scoreBoardShowing ) {
 		return y;
@@ -564,15 +598,15 @@ static float CG_DrawCounters( float y ) {
 		for(i = 0;i < cgs.domination_points_count;i++) {
 			switch(cgs.domination_points_status[i]) {
 				case TEAM_RED:
-					CG_DrawStatusElementLong(640+cl_screenoffset.integer-154, y, "^1Red", cgs.domination_points_names[i]);
+					CG_DrawStatusElementLong(640+cl_screenoffset.value-154, y, "^1Red", cgs.domination_points_names[i]);
 					y += 16;
 					break;
 				case TEAM_BLUE:
-					CG_DrawStatusElementLong(640+cl_screenoffset.integer-154, y, "^4Blue", cgs.domination_points_names[i]);
+					CG_DrawStatusElementLong(640+cl_screenoffset.value-154, y, "^4Blue", cgs.domination_points_names[i]);
 					y += 16;
 					break;
 				default:
-					CG_DrawStatusElementLong(640+cl_screenoffset.integer-154, y, "^7White", cgs.domination_points_names[i]);
+					CG_DrawStatusElementLong(640+cl_screenoffset.value-154, y, "^7White", cgs.domination_points_names[i]);
 					y += 16;
 					break;
 			}
@@ -585,10 +619,10 @@ static float CG_DrawCounters( float y ) {
 	speed = sqrt(cg.snap->ps.velocity[0] * cg.snap->ps.velocity[0] + cg.snap->ps.velocity[1] * cg.snap->ps.velocity[1]);
 	if (cg_drawSpeed.integer == 1) {
 		if(cl_language.integer == 0){
-		CG_DrawStatusElementMini(640+cl_screenoffset.integer-104, y, va("%i", speed), "Speed");
+		CG_DrawStatusElementMini(640+cl_screenoffset.value-104, y, va("%i", speed), "Speed");
 		}
 		if(cl_language.integer == 1){
-		CG_DrawStatusElementMini(640+cl_screenoffset.integer-104, y, va("%i", speed), "Скорость");
+		CG_DrawStatusElementMini(640+cl_screenoffset.value-104, y, va("%i", speed), "Скорость");
 		}
 		y += 24;
 	}
@@ -613,10 +647,10 @@ static float CG_DrawCounters( float y ) {
 	}
 	if (cg_drawFPS.integer == 1) {
 		if(cl_language.integer == 0){
-		CG_DrawStatusElementMini(640+cl_screenoffset.integer-104, y, va("%i", fps), "Fps");
+		CG_DrawStatusElementMini(640+cl_screenoffset.value-104, y, va("%i", fps), "Fps");
 		}
 		if(cl_language.integer == 1){
-		CG_DrawStatusElementMini(640+cl_screenoffset.integer-104, y, va("%i", fps), "Fps");
+		CG_DrawStatusElementMini(640+cl_screenoffset.value-104, y, va("%i", fps), "Fps");
 		}
 		y += 24;
 	}
@@ -632,10 +666,10 @@ static float CG_DrawCounters( float y ) {
 
 	if (cg_drawTimer.integer == 1) {
 		if(cl_language.integer == 0){
-		CG_DrawStatusElementMini(640+cl_screenoffset.integer-104, y, va("%i:%i%i", mins, tens, seconds), "Time");
+		CG_DrawStatusElementMini(640+cl_screenoffset.value-104, y, va("%i:%i%i", mins, tens, seconds), "Time");
 		}
 		if(cl_language.integer == 1){
-		CG_DrawStatusElementMini(640+cl_screenoffset.integer-104, y, va("%i:%i%i", mins, tens, seconds), "Время");
+		CG_DrawStatusElementMini(640+cl_screenoffset.value-104, y, va("%i:%i%i", mins, tens, seconds), "Время");
 		}
 		y += 24;
 	}
@@ -660,16 +694,16 @@ static float CG_DrawCounters( float y ) {
 
 			if(cl_language.integer == 0){
 				if(msec>=0){
-					CG_DrawStatusElementMini(640+cl_screenoffset.integer-104, y, va("%i:%i%i", mins, tens, seconds), "Round");
+					CG_DrawStatusElementMini(640+cl_screenoffset.value-104, y, va("%i:%i%i", mins, tens, seconds), "Round");
 				} else {
-					CG_DrawStatusElementMini(640+cl_screenoffset.integer-104, y, "", "Round");
+					CG_DrawStatusElementMini(640+cl_screenoffset.value-104, y, "", "Round");
 				}
 			}
 			if(cl_language.integer == 1){
 				if(msec>=0){
-				CG_DrawStatusElementMini(640+cl_screenoffset.integer-104, y, va("%i:%i%i", mins, tens, seconds), "Раунд");
+				CG_DrawStatusElementMini(640+cl_screenoffset.value-104, y, va("%i:%i%i", mins, tens, seconds), "Раунд");
 				} else {
-				CG_DrawStatusElementMini(640+cl_screenoffset.integer-104, y, "", "Раунд");
+				CG_DrawStatusElementMini(640+cl_screenoffset.value-104, y, "", "Раунд");
 				}
 			}
 			y += 24;
@@ -682,18 +716,18 @@ static float CG_DrawCounters( float y ) {
 		//Nothing
 		} else if(cgs.attackingTeam == TEAM_BLUE) {
 			if(cl_language.integer == 0){
-			CG_DrawStatusElementMini(640+cl_screenoffset.integer-104, y, "^4B", "Attack");
+			CG_DrawStatusElementMini(640+cl_screenoffset.value-104, y, "^4B", "Attack");
 			}
 			if(cl_language.integer == 1){
-			CG_DrawStatusElementMini(640+cl_screenoffset.integer-104, y, "^4С", "Атака");
+			CG_DrawStatusElementMini(640+cl_screenoffset.value-104, y, "^4С", "Атака");
 			}
 		y += 24;
 		} else {
 			if(cl_language.integer == 0){
-			CG_DrawStatusElementMini(640+cl_screenoffset.integer-104, y, "^1R", "Attack");
+			CG_DrawStatusElementMini(640+cl_screenoffset.value-104, y, "^1R", "Attack");
 			}
 			if(cl_language.integer == 1){
-			CG_DrawStatusElementMini(640+cl_screenoffset.integer-104, y, "^1К", "Атака");
+			CG_DrawStatusElementMini(640+cl_screenoffset.value-104, y, "^1К", "Атака");
 			}
 		y += 24;
 		}
@@ -725,7 +759,7 @@ static float CG_DrawLMSmode( float y ) {
 		s = va("LMS: Unknown mode");
 
 	w = CG_DrawStrlen( s ) * SMALLCHAR_WIDTH;
-	CG_DrawSmallString( 635 + cl_screenoffset.integer - w, y + 2, s, 1.0F);
+	CG_DrawSmallString( 635 + cl_screenoffset.value - w, y + 2, s, 1.0F);
 
 	return y + SMALLCHAR_HEIGHT+4;
 }
@@ -748,7 +782,7 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 	gitem_t	*item;
 	int ret_y, count;
 
-	if ( !cg_drawTeamOverlay.integer ) {
+	if (!cg.teamoverlay) {
 		return y;
 	}
 
@@ -794,7 +828,7 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 	w = (pwidth + lwidth + 4 + 7) * SMALLCHAR_WIDTH;
 
 	if ( right )
-		x = 640 - w + cl_screenoffset.integer;
+		x = 640 - w + cl_screenoffset.value;
 	else
 		x = 0;
 
@@ -810,7 +844,7 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 	hcolor[0] = 0.0f;
 	hcolor[1] = 0.0f;
 	hcolor[2] = 0.0f;
-	hcolor[3] = 0.20f;
+	hcolor[3] = 0.75f;
 	trap_R_SetColor( hcolor );
 	CG_DrawPic( x, y, w, h, cgs.media.teamStatusBar );
 	trap_R_SetColor( NULL );
@@ -864,29 +898,6 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 			} else {
 				CG_DrawPic( xx, y, SMALLCHAR_HEIGHT, SMALLCHAR_HEIGHT,
 					cgs.media.deferShader );
-			}
-
-			// Draw powerup icons
-			if (right) {
-				xx = x;
-			} else {
-				xx = x + w - SMALLCHAR_WIDTH;
-			}
-			for (j = 0; j <= PW_NUM_POWERUPS; j++) {
-				if (ci->powerups & (1 << j)) {
-
-					item = BG_FindItemForPowerup( j );
-
-					if (item) {
-						CG_DrawPic( xx, y, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT,
-						trap_R_RegisterShader( item->icon ) );
-						if (right) {
-							xx -= SMALLCHAR_WIDTH;
-						} else {
-							xx += SMALLCHAR_WIDTH;
-						}
-					}
-				}
 			}
 
 			y += SMALLCHAR_HEIGHT;
@@ -950,9 +961,13 @@ static float CG_DrawScores( float y ) {
 
 	y1 = y;
 
+	if(cg.showScores){
+		return;
+	}
+
 	// draw from the right side to left
 	if ( cgs.gametype >= GT_TEAM && cgs.ffa_gt!=1) {
-		x = 640 + cl_screenoffset.integer;
+		x = 640 + cl_screenoffset.value;
 		color[0] = 0.0f;
 		color[1] = 0.0f;
 		color[2] = 1.0f;
@@ -1012,23 +1027,20 @@ static float CG_DrawScores( float y ) {
 			}
 		}
 
-                if ( cgs.gametype == GT_DOUBLE_D ) {
+            if ( cgs.gametype == GT_DOUBLE_D ) {
 			// Display Domination point status
+			y1 = y - 32;//BIGCHAR_HEIGHT - 8;
+			if( cgs.redflag >= 0 && cgs.redflag <= 3 ) {
+				CG_DrawPic( x, y1-4, w, 32, cgs.media.ddPointSkinA[cgs.redflag] );
+			}
 
-				y1 = y - 32;//BIGCHAR_HEIGHT - 8;
-				if( cgs.redflag >= 0 && cgs.redflag <= 3 ) {
-					CG_DrawPic( x, y1-4, w, 32, cgs.media.ddPointSkinA[cgs.redflag] );
-				}
-
-
-
-                        //Time till capture:
-                        if( ( ( statusB == statusA ) && ( statusA == TEAM_RED ) ) ||
-                            ( ( statusB == statusA ) && ( statusA == TEAM_BLUE ) ) ) {
-                                s = va("%i",(cgs.timetaken+10*1000-cg.time)/1000+1);
-                                w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
-                                CG_DrawBigString( x + 32+8-w/2, y-28, s, 1.0F);
-                        }
+            //Time till capture:
+            if( ( ( statusB == statusA ) && ( statusA == TEAM_RED ) ) ||
+                ( ( statusB == statusA ) && ( statusA == TEAM_BLUE ) ) ) {
+                    s = va("%i",(cgs.timetaken+10*1000-cg.time)/1000+1);
+                    w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
+                    CG_DrawBigString( x + 32+8-w/2, y-28, s, 1.0F);
+            }
 		}
 
                 if ( cgs.gametype == GT_OBELISK ) {
@@ -1053,7 +1065,7 @@ static float CG_DrawScores( float y ) {
 	} else {
 		qboolean	spectator;
 
-		x = 640 + cl_screenoffset.integer;
+		x = 640 + cl_screenoffset.value;
 		score = cg.snap->ps.persistant[PERS_SCORE];
 		spectator = ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR );
 
@@ -1118,6 +1130,8 @@ static float CG_DrawScores( float y ) {
 	return y1 - 8;
 }
 
+#define PW_ICON_SIZE ICON_SIZE*0.60
+
 /*
 ================
 CG_DrawPowerups
@@ -1180,16 +1194,16 @@ static float CG_DrawPowerups( float y ) {
 	}
 
 	// draw the icons and timers
-	x = 640 - 100 + cl_screenoffset.integer - ICON_SIZE - CHAR_WIDTH * 2;
+	x = 640 - 85 + cl_screenoffset.value - PW_ICON_SIZE - CHAR_WIDTH * 0.60;
 	for ( i = 0 ; i < active ; i++ ) {
 		item = BG_FindItemForPowerup( sorted[i] );
 
     if (item) {
 
-		  y -= ICON_SIZE;
+		  y -= PW_ICON_SIZE;
 
 		  trap_R_SetColor( colors );
-		  CG_DrawField( x + 35, y, 5, sortedTime[ i ] / 1000, 1 );
+		  CG_DrawField( x + 35, y, 5, sortedTime[ i ] / 1000, 0.60 );
 
 		  t = ps->powerups[ sorted[i] ];
 		  if ( t - cg.time >= POWERUP_BLINKS * POWERUP_BLINK_TIME ) {
@@ -1206,12 +1220,12 @@ static float CG_DrawPowerups( float y ) {
 		  if ( cg.powerupActive == sorted[i] &&
 			  cg.time - cg.powerupTime < PULSE_TIME ) {
 			  f = 1.0 - ( ( (float)cg.time - cg.powerupTime ) / PULSE_TIME );
-			  size = ICON_SIZE * ( 1.0 + ( PULSE_SCALE - 1.0 ) * f );
+			  size = PW_ICON_SIZE * ( 1.0 + ( PULSE_SCALE - 1.0 ) * f );
 		  } else {
-			  size = ICON_SIZE;
+			  size = PW_ICON_SIZE;
 		  }
 
-		  CG_DrawPic( 640 + cl_screenoffset.integer - size, y + ICON_SIZE / 2 - size / 2,
+		  CG_DrawPic( 640 + cl_screenoffset.value - size, y + PW_ICON_SIZE / 2 - size / 2,
 			  size, size, trap_R_RegisterShader( item->icon ) );
     }
 	}
@@ -1231,7 +1245,7 @@ static void CG_DrawLowerRight( void ) {
 
 	y = 480 - ICON_SIZE*1.5;
 
-	if ( cgs.gametype >= GT_TEAM && cgs.ffa_gt!=1 && cg_drawTeamOverlay.integer == 1 && cg.showScores) {
+	if ( cgs.gametype >= GT_TEAM && cgs.ffa_gt!=1 && cg.teamoverlay) {
 		y = CG_DrawTeamOverlay( y, qtrue, qfalse );
 	}
 
@@ -1262,12 +1276,12 @@ static int CG_DrawPickupItem( int y ) {
 		if ( fadeColor ) {
 			CG_RegisterItemVisuals( value );
 			trap_R_SetColor( fadeColor );
-			CG_DrawPic( 8 - cl_screenoffset.integer, y, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
+			CG_DrawPic( 8 - cl_screenoffset.value, y, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
 			if(cl_language.integer == 0){
-			CG_DrawBigString( ICON_SIZE - cl_screenoffset.integer + 16, y + (ICON_SIZE/2 - BIGCHAR_HEIGHT/2), bg_itemlist[ value ].pickup_name, fadeColor[0] );
+			CG_DrawBigString( ICON_SIZE - cl_screenoffset.value + 16, y + (ICON_SIZE/2 - BIGCHAR_HEIGHT/2), bg_itemlist[ value ].pickup_name, fadeColor[0] );
 			}
 			if(cl_language.integer == 1){
-			CG_DrawBigString( ICON_SIZE - cl_screenoffset.integer + 16, y + (ICON_SIZE/2 - BIGCHAR_HEIGHT/2), bg_itemlist[ value ].pickup_nameru, fadeColor[0] );
+			CG_DrawBigString( ICON_SIZE - cl_screenoffset.value + 16, y + (ICON_SIZE/2 - BIGCHAR_HEIGHT/2), bg_itemlist[ value ].pickup_nameru, fadeColor[0] );
 			}
 			trap_R_SetColor( NULL );
 		}
@@ -1340,7 +1354,7 @@ static void CG_DrawGenericConsole( console_t *console, int maxlines, int time, i
 	vec4_t	hcolor;
 	int	chatHeight;
 
-	if (!cg_newConsole.integer && cg.showScores) {
+	if (!cg_newConsole.integer || cg.showScores || cg.scoreBoardShowing ) {
 		return;
 	}
 
@@ -1438,7 +1452,7 @@ static void CG_DrawHoldableItem( void ) {
 
 	if ( value ) {
 		CG_RegisterItemVisuals( value );
-		CG_DrawPic( 640-ICON_SIZE+(cl_screenoffset.integer+1), 1, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
+		CG_DrawPic( 640-ICON_SIZE+(cl_screenoffset.value+1), 1, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
 	}
 	
 	//draw keys
@@ -1454,7 +1468,7 @@ static void CG_DrawHoldableItem( void ) {
 		value = GetHoldableListIndex(HI_KEY_RED);
 		if ( value ) {
 			CG_RegisterItemVisuals( value );
-			CG_DrawPic( 640-ICON_SIZE+xoffset+(cl_screenoffset.integer+1), ((SCREEN_HEIGHT-ICON_SIZE)/4)+yoffset, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
+			CG_DrawPic( 640-ICON_SIZE+xoffset+(cl_screenoffset.value+1), ((SCREEN_HEIGHT-ICON_SIZE)/4)+yoffset, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
 			yoffset += ICON_SIZE;
 		}
 	}
@@ -1464,7 +1478,7 @@ static void CG_DrawHoldableItem( void ) {
 		value = GetHoldableListIndex(HI_KEY_GREEN);
 		if ( value ) {
 			CG_RegisterItemVisuals( value );
-			CG_DrawPic( 640-ICON_SIZE+xoffset+(cl_screenoffset.integer+1), ((SCREEN_HEIGHT-ICON_SIZE)/4)+yoffset, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
+			CG_DrawPic( 640-ICON_SIZE+xoffset+(cl_screenoffset.value+1), ((SCREEN_HEIGHT-ICON_SIZE)/4)+yoffset, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
 			yoffset += ICON_SIZE;
 		}
 	}
@@ -1474,7 +1488,7 @@ static void CG_DrawHoldableItem( void ) {
 		value = GetHoldableListIndex(HI_KEY_BLUE);
 		if ( value ) {
 			CG_RegisterItemVisuals( value );
-			CG_DrawPic( 640-ICON_SIZE+xoffset+(cl_screenoffset.integer+1), ((SCREEN_HEIGHT-ICON_SIZE)/4)+yoffset, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
+			CG_DrawPic( 640-ICON_SIZE+xoffset+(cl_screenoffset.value+1), ((SCREEN_HEIGHT-ICON_SIZE)/4)+yoffset, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
 			yoffset += ICON_SIZE;
 		}
 	}
@@ -1484,7 +1498,7 @@ static void CG_DrawHoldableItem( void ) {
 		value = GetHoldableListIndex(HI_KEY_YELLOW);
 		if ( value ) {
 			CG_RegisterItemVisuals( value );
-			CG_DrawPic( 640-ICON_SIZE+xoffset+(cl_screenoffset.integer+1), ((SCREEN_HEIGHT-ICON_SIZE)/4)+yoffset, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
+			CG_DrawPic( 640-ICON_SIZE+xoffset+(cl_screenoffset.value+1), ((SCREEN_HEIGHT-ICON_SIZE)/4)+yoffset, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
 			yoffset += ICON_SIZE;
 		}
 	}
@@ -1494,7 +1508,7 @@ static void CG_DrawHoldableItem( void ) {
 		value = GetHoldableListIndex(HI_KEY_MASTER);
 		if ( value ) {
 			CG_RegisterItemVisuals( value );
-			CG_DrawPic( 640-ICON_SIZE+xoffset+(cl_screenoffset.integer+1), ((SCREEN_HEIGHT-ICON_SIZE)/4)+yoffset, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
+			CG_DrawPic( 640-ICON_SIZE+xoffset+(cl_screenoffset.value+1), ((SCREEN_HEIGHT-ICON_SIZE)/4)+yoffset, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
 			yoffset += ICON_SIZE;
 		}
 	}
@@ -1504,7 +1518,7 @@ static void CG_DrawHoldableItem( void ) {
 		value = GetHoldableListIndex(HI_KEY_GOLD);
 		if ( value ) {
 			CG_RegisterItemVisuals( value );
-			CG_DrawPic( 640-ICON_SIZE+xoffset+(cl_screenoffset.integer+1), ((SCREEN_HEIGHT-ICON_SIZE)/4)+yoffset, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
+			CG_DrawPic( 640-ICON_SIZE+xoffset+(cl_screenoffset.value+1), ((SCREEN_HEIGHT-ICON_SIZE)/4)+yoffset, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
 			yoffset += ICON_SIZE;
 		}
 	}
@@ -1514,7 +1528,7 @@ static void CG_DrawHoldableItem( void ) {
 		value = GetHoldableListIndex(HI_KEY_SILVER);
 		if ( value ) {
 			CG_RegisterItemVisuals( value );
-			CG_DrawPic( 640-ICON_SIZE+xoffset+(cl_screenoffset.integer+1), ((SCREEN_HEIGHT-ICON_SIZE)/4)+yoffset, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
+			CG_DrawPic( 640-ICON_SIZE+xoffset+(cl_screenoffset.value+1), ((SCREEN_HEIGHT-ICON_SIZE)/4)+yoffset, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
 			yoffset += ICON_SIZE;
 		}
 	}
@@ -1524,7 +1538,7 @@ static void CG_DrawHoldableItem( void ) {
 		value = GetHoldableListIndex(HI_KEY_IRON);
 		if ( value ) {
 			CG_RegisterItemVisuals( value );
-			CG_DrawPic( 640-ICON_SIZE+xoffset+(cl_screenoffset.integer+1), ((SCREEN_HEIGHT-ICON_SIZE)/4)+yoffset, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
+			CG_DrawPic( 640-ICON_SIZE+xoffset+(cl_screenoffset.value+1), ((SCREEN_HEIGHT-ICON_SIZE)/4)+yoffset, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
 			yoffset += ICON_SIZE;
 		}
 	}
@@ -1551,7 +1565,7 @@ static void CG_DrawObjectivesNotification( void ) {
 	if ( draw )
 	{
 		trap_R_SetColor( NULL );
-		CG_DrawPic( 8-cl_screenoffset.integer, 8, ICON_SIZE, ICON_SIZE, cgs.media.objectivesUpdated );
+		CG_DrawPic( 8-cl_screenoffset.value, 8, ICON_SIZE, ICON_SIZE, cgs.media.objectivesUpdated );
 	}
 }
 /*
@@ -1565,7 +1579,7 @@ static void CG_DrawPersistantPowerup( void ) {
 	value = cg.snap->ps.stats[STAT_PERSISTANT_POWERUP];
 	if ( value ) {
 		CG_RegisterItemVisuals( value );
-		CG_DrawPic( 0 - cl_screenoffset.integer, (0+SCREEN_HEIGHT / 2) - ICON_SIZE, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
+		CG_DrawPic( 0 - cl_screenoffset.value, (0+SCREEN_HEIGHT / 2) - ICON_SIZE, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
 	}
 }
 
@@ -1659,7 +1673,7 @@ static void CG_DrawDisconnect( void ) {
 	x = 0;
 	y = 0;
 
-	CG_DrawPic( x-cl_screenoffset.integer, y, 16, 16, trap_R_RegisterShader("gfx/2d/net.tga" ) );
+	CG_DrawPic( x-cl_screenoffset.value, y, 16, 16, trap_R_RegisterShader("gfx/2d/net.tga" ) );
 }
 
 
@@ -1690,9 +1704,9 @@ static void CG_DrawLagometer( void ) {
 	y = 480 - 48;
 
 	trap_R_SetColor( NULL );
-	CG_DrawPic( x + cl_screenoffset.integer, y, 48, 48, cgs.media.lagometerShader );
+	CG_DrawPic( x + cl_screenoffset.value, y, 48, 48, cgs.media.lagometerShader );
 
-	ax = x + cl_screenoffset.integer;
+	ax = x + cl_screenoffset.value;
 	ay = y;
 	aw = 48;
 	ah = 48;
@@ -2064,7 +2078,7 @@ static void CG_DrawCrosshair(void)
 			h *= ( 1 + f );
 		}
 	}
-	if(cl_screenoffset.integer > 0){
+	if(cl_screenoffset.value > 0){
 	x = cg_crosshairX.integer - wideAdjustX; // leilei - widescreen adjust
 	} else {
 	x = cg_crosshairX.integer; // leilei - widescreen adjust
@@ -2405,13 +2419,87 @@ void CG_NSErrors( void ) {
 	CG_DrawRoundedRect(21-cl_screenoffset.value, 21, 190, 16, 0, colord);
 	CG_DrawRoundedRect(20-cl_screenoffset.value, 20, 190, 16, 0, color);
 	}
-	CG_DrawPic( 23-cl_screenoffset.integer, 20+3, 10, 10, cgs.media.errIcon );
+	CG_DrawPic( 23-cl_screenoffset.value, 20+3, 10, 10, cgs.media.errIcon );
 	if(cl_language.integer == 0){
 	CG_DrawStringExt( 38-cl_screenoffset.value, 20+5, "Something is creating script errors", colortex, qfalse, qfalse, 8, 6, 128, -3.5 );
 	}
 	if(cl_language.integer == 1){
 	CG_DrawStringExt( 38-cl_screenoffset.value, 20+5, "Что-то создает скриптовые ошибки", colortex, qfalse, qfalse, 8, 6, 128, -3 );
 	}
+}
+
+void CG_AddNotify(const char *text, int type) {
+    int i;
+    int id = -1;
+
+    for (i = MAX_NOTIFICATIONS - 1; i > 0; i--) {
+        cg.notifications[i] = cg.notifications[i - 1];
+    }
+
+    strncpy(cg.notifications[0].text, text, 127);
+    cg.notifications[0].text[127] = '\0';
+    cg.notifications[0].type = type;
+    cg.notifications[0].startTime = cg.time;
+    cg.notifications[0].active = qtrue;
+
+	trap_S_StartLocalSound( cgs.media.notifySound, CHAN_LOCAL_SOUND );
+}
+
+void CG_Notify(void) {
+    vec4_t backgroundColor = {0.0f, 0.0f, 0.0f, 0.30f};
+    vec4_t textColor = {1.0f, 1.0f, 1.0f, 1.0f};
+    float boxHeight = 20.0f;
+    float margin = 4.0f;
+    float cornerRadius = 6.0f;
+    float startX = 640 + cl_screenoffset.value - 20;
+    float startY = 400 - margin;
+    int i;
+    int timeElapsed;
+    float alpha;
+    float offsetX;
+    float yOffset;
+    float boxWidth;
+
+    if (!cgs.media.notifyIcon) {
+        cgs.media.notifyIcon = trap_R_RegisterShaderNoMip("notifyicon");
+    }
+
+    for (i = 0; i < MAX_NOTIFICATIONS; i++) {
+        if (!cg.notifications[i].active) {
+            continue;
+        }
+
+        timeElapsed = cg.time - cg.notifications[i].startTime;
+        if (timeElapsed > NOTIFICATION_DURATION) {
+            cg.notifications[i].active = qfalse;
+            continue;
+        }
+
+        alpha = 1.0f;
+        offsetX = 0.0f;
+
+        if (timeElapsed < NOTIFICATION_FADE_TIME) {
+            alpha = (float)timeElapsed / NOTIFICATION_FADE_TIME;
+            offsetX = Lerp(300.0f, 0.0f, alpha);
+        } else if (timeElapsed > NOTIFICATION_DURATION - NOTIFICATION_FADE_TIME) {
+            alpha = (float)(NOTIFICATION_DURATION - timeElapsed) / NOTIFICATION_FADE_TIME;
+        }
+
+        backgroundColor[3] = alpha * 0.30f;
+        textColor[3] = alpha;
+
+        boxWidth = 8 * strlenru(cg.notifications[i].text) + 20;
+
+        yOffset = startY - (boxHeight + margin) * i;
+
+        CG_DrawRoundedRect(startX-boxWidth + offsetX, yOffset, boxWidth, boxHeight, cornerRadius, backgroundColor);
+
+        if (cg.notifications[i].type == 1 && cgs.media.notifyIcon) {
+            CG_DrawPic(startX-boxWidth + offsetX + 5, yOffset + 2.5, 16, 16, cgs.media.notifyIcon);
+        }
+
+        CG_DrawStringExt(startX-boxWidth + offsetX + (cg.notifications[i].type > 0 ? 25 : 10), yOffset + 5, cg.notifications[i].text, textColor, qfalse, qfalse, 9, 12, 0, -2);
+    }
 }
 
 /*
@@ -2575,11 +2663,20 @@ if(cl_language.integer == 1){
 }
 
 static void CG_DrawDeathMessage( void ) {
-	if(cl_language.integer == 0){
-	CG_DrawSmallString((640 - (SMALLCHAR_WIDTH * strlen( "Press fire key to respawn" ))) / 2, 480 - (BIGCHAR_HEIGHT * 2), "Press fire key to respawn", 1.0);
-	}
-	if(cl_language.integer == 1){
-	CG_DrawSmallString((640 - (SMALLCHAR_WIDTH * strlen( "Нажмите кнопку стрельбы для респавна" )*0.5)) / 2, 480 - (BIGCHAR_HEIGHT * 2), "Нажмите кнопку стрельбы для респавна", 1.0);
+	if(((double) cg.respawnTime - (double) cg.time) / 1000.0 <= 0){
+		if(cl_language.integer == 0){
+			CG_DrawSmallString((640 - (SMALLCHAR_WIDTH * strlen( "Press fire key to respawn" ))) / 2, 480 - (BIGCHAR_HEIGHT * 1.1), "Press fire key to respawn", 1.0);
+		}
+		if(cl_language.integer == 1){
+			CG_DrawSmallString((640 - (SMALLCHAR_WIDTH * strlen( "Нажмите кнопку стрельбы для респавна" )*0.5)) / 2, 480 - (BIGCHAR_HEIGHT * 1.1), "Нажмите кнопку стрельбы для респавна", 1.0);
+		}
+	} else {
+		if(cl_language.integer == 0){
+			CG_DrawSmallString((640 - (SMALLCHAR_WIDTH * strlen( va("Respawn: %6.2f", ((double) cg.respawnTime - (double) cg.time) / 1000.0) ))) / 2, 480 - (BIGCHAR_HEIGHT * 1.1), va("Respawn: %6.2f", ((double) cg.respawnTime - (double) cg.time) / 1000.0), 1.0);
+		}
+		if(cl_language.integer == 1){
+			CG_DrawSmallString((640 - (SMALLCHAR_WIDTH * strlen( va("Респавн: %6.2f", ((double) cg.respawnTime - (double) cg.time) / 1000.0) )*0.5)) / 2, 480 - (BIGCHAR_HEIGHT * 1.1), va("Респавн: %6.2f", ((double) cg.respawnTime - (double) cg.time) / 1000.0), 1.0);
+		}
 	}
 }
 
@@ -2658,7 +2755,7 @@ void CG_MessageLevelStart( void ) {
 			color[3] = (TITLE_FADEOUT_TIME - ((cg.time - cg.levelStartTime) - (TITLE_FADEIN_TIME + TITLE_TIME))) / TITLE_FADEOUT_TIME;
 
 		len *= BIGCHAR_WIDTH;
-		CG_DrawBigStringColor( 640 - len - 32 + cl_screenoffset.integer, 360, s, color );
+		CG_DrawBigStringColor( 640 - len - 32 + cl_screenoffset.value, 360, s, color );
 	}
 }
 
@@ -2703,7 +2800,7 @@ void CG_DrawFade( void ) {
 			return;
 
 		//simply draw the end color now
-		CG_FillRect(0 - (cl_screenoffset.integer+2), 0, 640 + (cl_screenoffset.integer*2)+4, 480, cg.fadeEndColor);
+		CG_FillRect(0 - (cl_screenoffset.value+2), 0, 640 + (cl_screenoffset.value*2)+4, 480, cg.fadeEndColor);
 		return;
 	}
 
@@ -2720,7 +2817,7 @@ void CG_DrawFade( void ) {
 	Vector4Subtract(cg.fadeStartColor, colorDiff, colorDiff);
 
 	//draw the fade color over the screen
-	CG_FillRect(0 - (cl_screenoffset.integer+2), 0, 640 + (cl_screenoffset.integer*2)+4, 480, colorDiff);
+	CG_FillRect(0 - (cl_screenoffset.value+2), 0, 640 + (cl_screenoffset.value*2)+4, 480, colorDiff);
 }
 
 /*
@@ -2734,7 +2831,7 @@ static void CG_DrawOverlay( void ) {
 	// draw overlay set by target_effect
 	overlay = CG_ConfigString( CS_OVERLAY );
 	if ( strlen(overlay) && cgs.media.effectOverlay )
-		CG_DrawPic( 0 - (cl_screenoffset.integer+1), 0, SCREEN_WIDTH + (cl_screenoffset.integer*2)+2, SCREEN_HEIGHT, cgs.media.effectOverlay );
+		CG_DrawPic( 0 - (cl_screenoffset.value+1), 0, SCREEN_WIDTH + (cl_screenoffset.value*2)+2, SCREEN_HEIGHT, cgs.media.effectOverlay );
 }
 
 /*
@@ -2751,7 +2848,7 @@ static void CG_DrawPostProcess( void ) {
 	}
 	// draw postprocess
 	if ( strlen(cg_postprocess.string) && cgs.media.postProcess )
-		CG_DrawPic( 0 - (cl_screenoffset.integer+1), 0, SCREEN_WIDTH + (cl_screenoffset.integer*2)+2, SCREEN_HEIGHT, cgs.media.postProcess );
+		CG_DrawPic( 0 - (cl_screenoffset.value+1), 0, SCREEN_WIDTH + (cl_screenoffset.value*2)+2, SCREEN_HEIGHT, cgs.media.postProcess );
 }
 
 
@@ -2807,29 +2904,29 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 		teamChatSizeX *= f;
 		teamChatSizeY *= f;
 
-			if(cgs.gametype != GT_SINGLE){
-			CG_DrawGenericConsole(&cgs.console, consoleLines, cg_consoleTime.integer, 
-					0 - cl_screenoffset.integer, 0, 
-					consoleSizeX,
-					consoleSizeY
-					);
-			}
-			if(cgs.gametype != GT_SINGLE){
-			CG_DrawGenericConsole(&cgs.chat, chatLines, cg_chatTime.integer, 
-					0 - cl_screenoffset.integer, 
-					CG_ConsoleChatPositionY(consoleSizeY, chatSizeY) - cg_chatY.integer,
-					chatSizeX,
-					chatSizeY
-					);
-			}
-			if(cgs.gametype != GT_SINGLE){
-			CG_DrawGenericConsole(&cgs.teamChat, teamChatLines, cg_teamChatTime.integer, 
-					0 - cl_screenoffset.integer, 
-					cg_teamChatY.integer - teamChatLines*teamChatSizeY,
-					teamChatSizeX,
-					teamChatSizeY
-				       	);
-			}
+		if(cgs.gametype != GT_SINGLE){
+		CG_DrawGenericConsole(&cgs.console, consoleLines, cg_consoleTime.integer, 
+				0 - cl_screenoffset.value, 0, 
+				consoleSizeX,
+				consoleSizeY
+				);
+		}
+		if(cgs.gametype != GT_SINGLE){
+		CG_DrawGenericConsole(&cgs.chat, chatLines, cg_chatTime.integer, 
+				0 - cl_screenoffset.value, 
+				CG_ConsoleChatPositionY(consoleSizeY, chatSizeY) - cg_chatY.integer,
+				chatSizeX,
+				chatSizeY
+				);
+		}
+		if(cgs.gametype != GT_SINGLE){
+		CG_DrawGenericConsole(&cgs.teamChat, teamChatLines, cg_teamChatTime.integer, 
+				0 - cl_screenoffset.value, 
+				cg_teamChatY.integer - teamChatLines*teamChatSizeY,
+				teamChatSizeX,
+				teamChatSizeY
+			       	);
+		}
 	}
 
 	if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR ) {
@@ -2841,7 +2938,6 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 	} else {
 		// don't draw any status if dead or the scoreboard is being explicitly shown
 		if ( !cg.showScores && cg.snap->ps.stats[STAT_HEALTH] > 0 ) {
-
 			CG_DrawProxWarning();
 			if(stereoFrame == STEREO_CENTER)
 				CG_DrawCrosshair();
@@ -2866,12 +2962,40 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 	}
 
 	if ( !cg.scoreBoardShowing) {
-                CG_DrawCenterDDString();
-                CG_DrawCenter1FctfString();
+    	CG_DrawCenterDDString();
+    	CG_DrawCenter1FctfString();
 	}
 	if(ns_haveerror.integer){
 		CG_NSErrors();
 	}
+		CG_Notify();
+}
+
+/*
+###############
+Noire.Script API - Threads
+###############
+*/
+
+char cgameThreadBuffer[MAX_CYCLE_SIZE];
+
+// Load threads
+void RunScriptThreads(int time) {
+    int i;
+
+    for (i = 0; i < threadsCount; i++) {
+        ScriptLoop* script = &threadsLoops[i];
+        if (time - script->lastRunTime >= script->interval) {
+            // Обновляем время последнего запуска
+            script->lastRunTime = time;
+
+            // Используем временный буфер для выполнения скрипта
+            strncpy(cgameThreadBuffer, script->code, MAX_CYCLE_SIZE - 1);
+            cgameThreadBuffer[MAX_CYCLE_SIZE - 1] = '\0'; // Убедимся, что буфер терминальный
+
+            Interpret(cgameThreadBuffer); // Запускаем скрипт из временного буфера
+        }
+    }
 }
 
 /*
@@ -2888,12 +3012,23 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 		return;
 	}
 
+	// select the weapon the server says we are using
+	if(!cg.weaponSelect){
+		cg.weaponSelect = cg.snap->ps.generic2;
+	}
+
 	// optionally draw the tournement scoreboard instead
 	if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR &&
 		( cg.snap->ps.pm_flags & PMF_SCOREBOARD ) ) {
 		CG_DrawTourneyScoreboard();
 		return;
 	}
+
+	if (!cg.showScores){
+		cg.teamoverlay = qfalse;
+	}
+
+	RunScriptThreads(cg.time);		//Noire.Script - run threads
 
 	// clear around the rendered view if sized down
 	CG_TileClear();
@@ -2981,16 +3116,20 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 
 	// if player is dead, draw death message
 	if ( cgs.gametype == GT_SINGLE ) {
-	if ( cg.snap->ps.pm_type == PM_DEAD ) {
-		CG_DrawDeathMessage();
+		if ( cg.snap->ps.pm_type == PM_DEAD ) {
+			CG_DrawDeathMessage();
 
-		if ( !cg.deathmusicStarted )
-			CG_StartDeathMusic();
-	}
+			if ( !cg.deathmusicStarted )
+				CG_StartDeathMusic();
+		}
 
-	if ( cg.snap->ps.pm_type != PM_DEAD && cg.deathmusicStarted ) {
-		CG_StopDeathMusic();
-	}
+		if ( cg.snap->ps.pm_type != PM_DEAD && cg.deathmusicStarted ) {
+			CG_StopDeathMusic();
+		}
+	} else {
+		if ( cg.snap->ps.pm_type == PM_DEAD ) {
+			CG_DrawDeathMessage();
+		}
 	}
 
 	//draw objectives notification
