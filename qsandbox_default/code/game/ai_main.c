@@ -1183,7 +1183,9 @@ int BotAI(int client, float thinktime) {
 	//the real AI
 	BotDeathmatchAI(bs, thinktime);
 	//set the weapon selection every AI frame
+	bs->cur_ps.generic2 = bs->weaponnum;
 	trap_EA_SelectWeapon(bs->client, bs->weaponnum);
+	
 	//subtract the delta angles
 	for (j = 0; j < 3; j++) {
 		bs->viewangles[j] = AngleMod(bs->viewangles[j] - SHORT2ANGLE(bs->cur_ps.delta_angles[j]));

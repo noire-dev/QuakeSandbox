@@ -1710,10 +1710,12 @@ void BotChooseWeapon(bot_state_t *bs) {
 
 	if (bs->cur_ps.weaponstate == WEAPON_RAISING ||
 			bs->cur_ps.weaponstate == WEAPON_DROPPING) {
+		bs->cur_ps.generic2 = bs->weaponnum;
 		trap_EA_SelectWeapon(bs->client, bs->weaponnum);
 	} else {
 		if (bs->weaponnum != BotSelectQSWeapon(bs)) bs->weaponchange_time = FloatTime();
 		bs->weaponnum = BotSelectQSWeapon(bs);
+		bs->cur_ps.generic2 = bs->weaponnum;
 		trap_EA_SelectWeapon(bs->client, bs->weaponnum);
 	}
 }
@@ -2709,7 +2711,7 @@ bot_moveresult_t BotAttackMove(bot_state_t *bs, int tfl) {
 
 	attackentity = bs->enemy;
 	//
-        if (bs->cur_ps.weapon == WP_GAUNTLET) {
+	if (bs->cur_ps.generic2 == WP_GAUNTLET) {
 		attack_dist = 0;
 		attack_range = 0;
                 jumper = 0.5; // Mix3r_Durachok: less jumpy on the ring
@@ -2782,7 +2784,7 @@ if(!NpcFactionProp(bs, NP_JUMP, 0)){
 			bs->attackjump_time = FloatTime() + 1;
 		}
 	}
-	if (bs->cur_ps.weapon == WP_GAUNTLET) {
+	if (bs->cur_ps.generic2 == WP_GAUNTLET) {
 		attack_dist = 0;
 		attack_range = 0;
 	}
