@@ -1088,6 +1088,13 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		return;	
 		}
 	}
+
+	if(mod == MOD_REGENERATOR && targ->client){
+		if (!targ->client->ps.powerups[PW_REGEN]) {
+			targ->client->ps.powerups[PW_REGEN] = level.time - ( level.time % 1000 );
+		}
+		targ->client->ps.powerups[PW_REGEN] += 5 * 1000;
+	}
 	
 	if (targ->damagetarget){
 	act = G_PickTarget( targ->damagetarget );
@@ -1100,7 +1107,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		return;
 	}
 	
-	if (targ->client->vehiclenum){ //VEHICLE-SYSTEM: damage vehicle instead player
+	if (targ->client && targ->client->vehiclenum){ //VEHICLE-SYSTEM: damage vehicle instead player
  		targ = G_FindEntityForEntityNum(targ->client->vehiclenum);
 	}
 
@@ -1230,6 +1237,8 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 	knockback *= g_amknockback.value;
 	if ( mod == MOD_TARGET_LASER )
 	knockback = attacker->msdamage;
+	if ( mod == MOD_KNOCKER )
+	knockback *= 200;
 
 	if ( targ->flags & FL_NO_KNOCKBACK ) {
 		knockback = 0;

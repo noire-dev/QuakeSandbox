@@ -80,6 +80,14 @@ char* 			entity_items[] = {
 	"weapon_physgun",
 	"weapon_gravitygun",
 	"weapon_toolgun",
+	"weapon_thrower",
+	"weapon_bouncer",
+	"weapon_thunder",
+	"weapon_exploder",
+	"weapon_knocker",
+	"weapon_propgun",
+	"weapon_regenerator",
+	"weapon_nuke",
 	"ammo_bullets",
 	"ammo_shells",
 	"ammo_grenades",
@@ -146,6 +154,14 @@ char* 			item_items[] = {
 	"Physgun",
 	"Gravitygun",
 	"Toolgun",
+	"Thrower",
+	"Bouncer",
+	"Thunder",
+	"Exploder",
+	"Knocker",
+	"Propgun",
+	"Regenerator",
+	"Nuke",
 	"Bullets",
 	"Shells",
 	"Grenades",
@@ -823,7 +839,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.classlist.generic.y		= 70;
 	s_sandboxmain.classlist.width			= 39/6;
 	s_sandboxmain.classlist.height			= 8;
-	s_sandboxmain.classlist.numitems		= 62;
+	s_sandboxmain.classlist.numitems		= 70;
 	s_sandboxmain.classlist.itemnames		= (const char **)s_sandboxmain.classeslist;
 	s_sandboxmain.classlist.color			= s_sandboxmain_color1;
 	//y += 20;
@@ -917,7 +933,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.generic.y		= 70;
 	s_sandboxmain.list.width			= 39/6;
 	s_sandboxmain.list.height			= 8;
-	s_sandboxmain.list.numitems			= 54;
+	s_sandboxmain.list.numitems			= 62;
 	s_sandboxmain.list.itemnames		= (const char **)s_sandboxmain.item_itemslist;
 	s_sandboxmain.list.color			= s_sandboxmain_color1;
 	
@@ -1349,12 +1365,12 @@ if(uis.sb_tab == STAB_ADDONS){
 }
 
 	if(uis.sb_tab == STAB_ITEMS){
-		for (i = 0; i < 54; i++) {
+		for (i = 0; i < 62; i++) {
 			s_sandboxmain.list.itemnames[i] = item_items[i];
 		}
 	}
 	if(uis.sb_tab == STAB_ENTITIES){
-		for (i = 0; i < 62; i++) {
+		for (i = 0; i < 70; i++) {
 			s_sandboxmain.classlist.itemnames[i] = entity_items[i];
 		}
 	}

@@ -739,7 +739,7 @@ maxs		{13,13,13}
 iteminfo "weapon_toolgun"
 {
 name		"Toolgun"
-model		"models/weapons/toolgun/toolgun.md3"
+model		""
 modelindex	MODELINDEX_TOOLGUN
 type		WEAPONI
 index		INVENTORY_GENERAL
@@ -751,7 +751,7 @@ maxs		{13,13,13}
 iteminfo "weapon_physgun"
 {
 name		"Physgun"
-model		"models/weapons/physgun/physgun.md3"
+model		""
 modelindex	MODELINDEX_PHYSGUN
 type		WEAPONI
 index		INVENTORY_GENERAL
@@ -763,8 +763,104 @@ maxs		{13,13,13}
 iteminfo "weapon_gravitygun"
 {
 name		"Gravitygun"
-model		"models/weapons/physgun/physgun.md3"
+model		""
 modelindex	MODELINDEX_GRAVITYGUN
+type		WEAPONI
+index		INVENTORY_GENERAL
+respawntime	30
+mins		{-13,-13,-13}
+maxs		{13,13,13}
+}
+
+iteminfo "weapon_thrower"
+{
+name		"Thrower"
+model		""
+modelindex	MODELINDEX_THROWER
+type		WEAPONI
+index		INVENTORY_GENERAL
+respawntime	30
+mins		{-13,-13,-13}
+maxs		{13,13,13}
+}
+
+iteminfo "weapon_bouncer"
+{
+name		"Bouncer"
+model		""
+modelindex	MODELINDEX_BOUNCER
+type		WEAPONI
+index		INVENTORY_GENERAL
+respawntime	30
+mins		{-13,-13,-13}
+maxs		{13,13,13}
+}
+
+iteminfo "weapon_thunder"
+{
+name		"Thunder"
+model		""
+modelindex	MODELINDEX_THUNDER
+type		WEAPONI
+index		INVENTORY_GENERAL
+respawntime	30
+mins		{-13,-13,-13}
+maxs		{13,13,13}
+}
+
+iteminfo "weapon_exploder"
+{
+name		"Exploder"
+model		""
+modelindex	MODELINDEX_EXPLODER
+type		WEAPONI
+index		INVENTORY_GENERAL
+respawntime	30
+mins		{-13,-13,-13}
+maxs		{13,13,13}
+}
+
+iteminfo "weapon_knocker"
+{
+name		"Knocker"
+model		""
+modelindex	MODELINDEX_KNOCKER
+type		WEAPONI
+index		INVENTORY_GENERAL
+respawntime	30
+mins		{-13,-13,-13}
+maxs		{13,13,13}
+}
+
+iteminfo "weapon_propgun"
+{
+name		"Propgun"
+model		""
+modelindex	MODELINDEX_PROPGUN
+type		WEAPONI
+index		INVENTORY_GENERAL
+respawntime	30
+mins		{-13,-13,-13}
+maxs		{13,13,13}
+}
+
+iteminfo "weapon_regenerator"
+{
+name		"Regenerator"
+model		""
+modelindex	MODELINDEX_REGENERATOR
+type		WEAPONI
+index		INVENTORY_GENERAL
+respawntime	30
+mins		{-13,-13,-13}
+maxs		{13,13,13}
+}
+
+iteminfo "weapon_nuke"
+{
+name		"Nuke"
+model		""
+modelindex	MODELINDEX_NUKE
 type		WEAPONI
 index		INVENTORY_GENERAL
 respawntime	30

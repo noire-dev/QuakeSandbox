@@ -594,6 +594,46 @@ weight "weapon_gravitygun"
 	return 800;
 }
 
+weight "weapon_thrower"
+{
+	return 800;
+}
+
+weight "weapon_bouncer"
+{
+	return 800;
+}
+
+weight "weapon_thunder"
+{
+	return 800;
+}
+
+weight "weapon_exploder"
+{
+	return 800;
+}
+
+weight "weapon_knocker"
+{
+	return 800;
+}
+
+weight "weapon_propgun"
+{
+	return 800;
+}
+
+weight "weapon_regenerator"
+{
+	return 800;
+}
+
+weight "weapon_nuke"
+{
+	return 800;
+}
+
 //No items
 
 weight "item_botroam"

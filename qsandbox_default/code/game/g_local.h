@@ -134,13 +134,13 @@ struct gentity_s {
 	char		*model;
 	char		*model2;
 	int			freetime;			// level.time when the object was freed
-
+	
 	int			eventTime;			// events will be cleared EVENT_VALID_MSEC after set
 	qboolean	freeAfterEvent;
 	qboolean	unlinkAfterEvent;
 
 	qboolean	physicsObject;		// if true, it can be pushed by movers and fall off edges
-									// all game items are physicsObjects,
+									// all game items are physicsObjects, 
 	float		physicsBounce;		// 1.0 = continuous bounce, 0.0 = no bounce
 	int			clipmask;			// brushes with this content value will be collided against
 									// when moving.  items and corpses do not collide against
@@ -154,13 +154,11 @@ struct gentity_s {
 	int			soundPos2;
 	int			soundLoop;
 	gentity_t	*parent;
-	gentity_t	*botspawn;
 	gentity_t	*nextTrain;
 	gentity_t	*prevTrain;
 	vec3_t		pos1, pos2;
 
 	char		*message;
-	char		*botname;
 
 	int			timestamp;		// body queue sinking, etc
 
@@ -176,7 +174,6 @@ struct gentity_s {
 	vec3_t		movedir;
 
 	int			nextthink;
-	int			lastThinkTime;
 	void		(*think)(gentity_t *self);
 	void		(*reached)(gentity_t *self);	// movers call this when hitting endpoint
 	void		(*blocked)(gentity_t *self, gentity_t *other);
@@ -190,14 +187,51 @@ struct gentity_s {
 	int			last_move_time;
 
 	int			health;
+
+	qboolean	takedamage;
+
+	int			damage;
+	int			splashDamage;	// quad will increase this without increasing radius
+	int			splashRadius;
+	int			methodOfDeath;
+	int			splashMethodOfDeath;
+
+	int			count;
+
+	gentity_t	*chain;
+	gentity_t	*enemy;
+	gentity_t	*activator;
+	gentity_t	*teamchain;		// next entity in team
+	gentity_t	*teammaster;	// master of the team
+
+	int			kamikazeTime;
+	int			kamikazeShockTime;
+
+	int			watertype;
+	int			waterlevel;
+
+	int			noise_index;
+
+	// timing variables
+	float		wait;
+	float		random;
+
+	gitem_t		*item;			// for bonus items
+
+	//NEW VARIABLES
+
+	int			playerangle;
+	int			flashon;
+	int			crosson;
 	int			price;
 	int			owner;	// clientNum player owner
 	int			locked;	// clientNum player owner
 	char		*ownername;	// clientNum player owner
-	qboolean	takedamage;
-	qboolean	takedamage2;
-	
 	int			sandboxObject;
+	qboolean	takedamage2;
+	char		*botname;
+
+	int			lastThinkTime;
 	
 	int			sb_coltype;
 	int			sb_gravity;
@@ -221,40 +255,10 @@ struct gentity_s {
 	int			sb_takedamage;
 	int			sb_takedamage2;
 
-
-	int			damage;
-	int			splashDamage;	// quad will increase this without increasing radius
-	int			splashRadius;
-	int			methodOfDeath;
-	int			splashMethodOfDeath;
-
-	int			count;
-	int			playerangle;
-	int			flashon;
-	int			crosson;
-
-	gentity_t	*chain;
-	gentity_t	*enemy;
-	gentity_t	*activator;
-	gentity_t	*teamchain;		// next entity in team
-	gentity_t	*teammaster;	// master of the team
-
-	int			kamikazeTime;
-	int			kamikazeShockTime;
-
-	int			watertype;
-	int			waterlevel;
-
-	int			noise_index;
 	float		lip;
 	float		height;
 	float		phase;
 
-	// timing variables
-	float		wait;
-	float		random;
-
-	gitem_t		*item;			// for bonus items
 	int			wait_to_pickup;
 	int			singlebot;
 	int			tool_id;
@@ -267,6 +271,7 @@ struct gentity_s {
 	int			objectType;
 
 	//entityplus variables
+	gentity_t	*botspawn;
 	char		*clientname;			// name of the bot to spawn for target_botspawn
 	char		*mapname;				// name of the map to switch to for target_mapchange
 	char		*teleporterTarget;		// forces a client to be teleported to the entity with this targetname when using holdable_teleporter. Also used as key for holdable_teleporter itself.
@@ -426,14 +431,14 @@ struct gclient_s {
 	clientSession_t		sess;
 
 	qboolean	readyToExit;		// wishes to leave the intermission
-
 	qboolean	noclip;
 
+	int			lastCmdTime;		// level.time of last usercmd_t, for EF_CONNECTION
+									// we can't just use pers.lastCommand.time, because
+									// of the g_sycronousclients case
 	int			buttons;
 	int			oldbuttons;
 	int			latched_buttons;
-	
-	int         vehiclenum;
 
 	vec3_t		oldOrigin;
 
@@ -458,7 +463,7 @@ struct gclient_s {
 	// timers
 	int			respawnTime;		// can respawn when time > this, force after g_forcerespwan
 	int			inactivityTime;		// kick players when time > this
-	qboolean	inactivityWarning;	// qtrue if the five seoond warning has been given
+	qboolean	inactivityWarning;	// qtrue if the five second warning has been given
 	int			rewardTime;			// clear the EF_AWARD_IMPRESSIVE, etc when time > this
 
 	int			airOutTime;
@@ -467,7 +472,7 @@ struct gclient_s {
 
 	qboolean	fireHeld;			// used for hook
 	gentity_t	*hook;				// grapple hook if out
-	gentity_t	*lasersight;			// flashlight
+	gentity_t	*lasersight;		// flashlight
 
 	int			switchTeamTime;		// time the player switched teams
 
@@ -478,20 +483,21 @@ struct gclient_s {
 	gentity_t	*persistantPowerup;
 	int			portalID;
 	int			ammoTimes[MAX_WEAPONS];
-    int			invulnerabilityTime;
+	int			invulnerabilityTime;
 
 	char		*areabits;
 
-	qboolean	isEliminated;			//Has been killed in this round
+	// NEW VARIABLES
+	qboolean	isEliminated;			// Has been killed in this round
 	
-	//New vote system. The votes are saved in the client info, so we know who voted on what and can cancel votes on leave.
-	//0=not voted, 1=voted yes, -1=voted no
+	// New vote system. The votes are saved in the client info, so we know who voted on what and can cancel votes on leave.
+	// 0=not voted, 1=voted yes, -1=voted no
 	int vote;
 	
-	int lastSentFlying;                             //The last client that sent the player flying
-	int lastSentFlyingTime;                         //So we can time out
+	int lastSentFlying;                             // The last client that sent the player flying
+	int lastSentFlyingTime;                         // So we can time out
 
-	//unlagged - backward reconciliation #1
+	// unlagged - backward reconciliation #1
 	// the serverTime the button was pressed
 	// (stored before pmove_fixed changes serverTime)
 	int			attackTime;
@@ -504,15 +510,14 @@ struct gclient_s {
 	// an approximation of the actual server time we received this
 	// command (not in 50ms increments)
 	int			frameOffset;
-	//unlagged - backward reconciliation #1
 
-	//unlagged - smooth clients #1
+	int			vehiclenum;
+
+	// unlagged - smooth clients #1
 	// the last frame number we got an update from this client
 	int			lastUpdateFrame;
-	//	int			debugDelag;
-	//unlagged - smooth clients #1
 	qboolean        spawnprotected;
-	
+
 	int			accuracy[MAX_WEAPONS][2];
 };
 
@@ -713,7 +718,6 @@ int		G_SoundIndex( char *name );
 void	G_TeamCommand( team_t team, char *cmd );
 void	G_KillBox (gentity_t *ent);
 gentity_t *G_Find (gentity_t *from, int fieldofs, const char *match);
-gentity_t *G_ScrFind (gentity_t *from, int fieldofs, const char *match, const char *symbol);
 gentity_t *G_PickTarget (char *targetname);
 void	G_UseTargets (gentity_t *ent, gentity_t *activator);
 void	G_UseDeathTargets (gentity_t *ent, gentity_t *activator);
@@ -795,11 +799,17 @@ gentity_t *fire_grenade (gentity_t *self, vec3_t start, vec3_t aimdir);
 gentity_t *fire_rocket (gentity_t *self, vec3_t start, vec3_t dir);
 gentity_t *fire_bfg (gentity_t *self, vec3_t start, vec3_t dir);
 gentity_t *fire_grapple (gentity_t *self, vec3_t start, vec3_t dir);
-gentity_t *fire_nails( gentity_t *self, vec3_t start, vec3_t forward, vec3_t right, vec3_t up );
 gentity_t *fire_nail( gentity_t *self, vec3_t start, vec3_t forward, vec3_t right, vec3_t up );
 gentity_t *fire_prox( gentity_t *self, vec3_t start, vec3_t aimdir );
 gentity_t *fire_flame (gentity_t *self, vec3_t start, vec3_t aimdir);
 gentity_t *fire_antimatter (gentity_t *self, vec3_t start, vec3_t aimdir);
+gentity_t *fire_thrower( gentity_t *self, vec3_t start, vec3_t forward, vec3_t right, vec3_t up );
+gentity_t *fire_bouncer( gentity_t *self, vec3_t start, vec3_t forward, vec3_t right, vec3_t up );
+gentity_t *fire_exploder (gentity_t *self, vec3_t start, vec3_t dir);
+gentity_t *fire_knocker( gentity_t *self, vec3_t start, vec3_t forward, vec3_t right, vec3_t up );
+gentity_t *fire_regenerator (gentity_t *self, vec3_t start, vec3_t dir);
+gentity_t *fire_propgun( gentity_t *self, vec3_t start, vec3_t forward, vec3_t right, vec3_t up );
+gentity_t *fire_nuke( gentity_t *self, vec3_t start, vec3_t forward, vec3_t right, vec3_t up );
 
 //
 // g_mover.c
@@ -828,6 +838,7 @@ void G_HideObjects();
 void G_ShowObjects();
 gentity_t *G_FindEntityForEntityNum(int entityn);
 gentity_t *G_FindEntityForClientNum(int entityn);
+void BlockDie (gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int mod);
 
 
 //
@@ -906,6 +917,7 @@ void KamikazeRadiusDamage( vec3_t origin, gentity_t *attacker, float damage, flo
 void KamikazeShockWave( vec3_t origin, gentity_t *attacker, float damage, float push, float radius, int mod );
 void G_StartKamikaze( gentity_t *ent );
 void G_StartCarExplode( gentity_t *ent );
+void G_StartNukeExplode( gentity_t *ent );
 
 //
 // p_hud.c

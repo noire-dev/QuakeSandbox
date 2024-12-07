@@ -79,6 +79,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define OT_BASIC					1
 #define OT_VEHICLE					2
 #define OT_TNT						3
+#define OT_NUKE						4
 
 //factions
 #define NPC_PLAYER					0
@@ -429,6 +430,14 @@ typedef enum {
 	WP_ANTIMATTER, //Vanilla q3 set
 
 	// New weapons here!
+	WP_THROWER,
+	WP_BOUNCER,
+	WP_THUNDER,
+	WP_EXPLODER,
+	WP_KNOCKER,
+	WP_PROPGUN,
+	WP_REGENERATOR,
+	WP_NUKE,
 
 	WP_PHYSGUN,
 	WP_GRAVITYGUN,
@@ -768,6 +777,10 @@ typedef enum {
 	MOD_CAR,
 	MOD_CAREXPLODE,
 	MOD_PROP,
+	MOD_SWEP,
+	MOD_KNOCKER,
+	MOD_REGENERATOR,
+	MOD_NUKE,
 	MOD_BREAKABLE_SPLASH
 } meansOfDeath_t;
 

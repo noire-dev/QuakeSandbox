@@ -753,8 +753,8 @@ void ThrowWeapon( gentity_t *ent ) {
 	ent->swep_ammo[weapon] = 0;
 	Set_Weapon( ent, weapon, 0);
 	client->ps.generic2 = WP_GAUNTLET;
-	trap_SendServerCommand( ent - g_entities, va("clcmd \"%s\"", "weapon 1" ));
 	ent->swep_id = WP_GAUNTLET;
+	ClientUserinfoChanged( ent->s.clientNum );
 	xr_item = BG_FindSwep( weapon );
 	if(!xr_item->classname){ return; }
 	xr_drop = Throw_Item( ent, xr_item, 0 );

@@ -1901,6 +1901,30 @@ PM_Add_SwepAmmo(pm->ps->clientNum, pm->ps->generic2, -1);
 	case WP_GRAVITYGUN:
 		addTime = 100;
 		break;
+	case WP_THROWER:
+		addTime = 150;
+		break;
+	case WP_BOUNCER:
+		addTime = 1000;
+		break;
+	case WP_THUNDER:
+		addTime = 1000;
+		break;
+	case WP_EXPLODER:
+		addTime = 1600;
+		break;
+	case WP_KNOCKER:
+		addTime = 500;
+		break;
+	case WP_PROPGUN:
+		addTime = 1000;
+		break;
+	case WP_REGENERATOR:
+		addTime = 1000;
+		break;
+	case WP_NUKE:
+		addTime = 3000;
+		break;
 	}
 
 	if( bg_itemlist[pm->ps->stats[STAT_PERSISTANT_POWERUP]].giTag == PW_SCOUT ) {
@@ -1947,7 +1971,7 @@ static void PM_Animate( void ) {
 		pm->ps->pm_time = 5;
 	}
 
-	if ( pm->cmd.buttons & BUTTON_GESTURE ) {
+	if ( pm->cmd.buttons & BUTTON_GESTURE && pm->cmd.weapon != WP_PHYSGUN ) {
 		if(!pm->ps->stats[STAT_VEHICLE]){ //VEHICLE-SYSTEM: disable gesture for all
 		if(g_gametype.integer != GT_SINGLE){
 		if ( pm->ps->torsoTimer == 0 ) {
@@ -2046,6 +2070,10 @@ are being updated isntead of a full move
 void PM_UpdateViewAngles( playerState_t *ps, const usercmd_t *cmd ) {
 	short		temp;
 	int		i;
+
+	if(pm->cmd.buttons & BUTTON_GESTURE && pm->cmd.buttons & BUTTON_ATTACK && pm->cmd.weapon == WP_PHYSGUN){
+		return;
+	}
 
 	if ( ps->pm_type == PM_CUTSCENE ) {		//prevent player from looking around
       // set the delta angle

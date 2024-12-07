@@ -605,6 +605,8 @@ typedef struct {
 	int			swep_listcl[WEAPONS_NUM];
 	int			swep_spawncl[WEAPONS_NUM];		//stores spawn weapons
 
+	float		savedSens;						//physgun
+
 	// auto rotating items
 	vec3_t		autoAngles;
 	vec3_t		autoAxis[3];

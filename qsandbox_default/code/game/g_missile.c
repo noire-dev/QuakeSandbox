@@ -63,6 +63,9 @@ void G_BounceMissile( gentity_t *ent, trace_t *trace ) {
 		if(ent->classname == "antimatter"){
 		VectorScale( ent->s.pos.trDelta, g_ambouncemodifier.value, ent->s.pos.trDelta );
 		}
+		if(ent->classname == "missile"){
+		VectorScale( ent->s.pos.trDelta, 0.65, ent->s.pos.trDelta );
+		}
 		// check for stop
 		if ( trace->plane.normal[2] > 0.2 && VectorLength( ent->s.pos.trDelta ) < 40 ) {
 			G_SetOrigin( ent, trace->endpos );
@@ -719,6 +722,9 @@ void Guided_Missile_Think( gentity_t *missile )
 		}
 		if(missile->classname == "antimatter"){
      VectorScale( forward, g_amspeed.integer, forward );
+		}
+		if(missile->classname == "missile"){
+     VectorScale( forward, 300, forward );
 		}
 
 	// line straight forward
@@ -1420,6 +1426,363 @@ if(g_amguided.integer == 1){
 	VectorScale( dir, g_amspeed.value, bolt->s.pos.trDelta );
 	SnapVector( bolt->s.pos.trDelta );			// save net bandwidth
 	VectorCopy (start, bolt->r.currentOrigin);
+
+	return bolt;
+}
+
+//NEW WEAPONS
+/*
+=================
+SWEPS
+=================
+*/
+gentity_t *fire_thrower( gentity_t *self, vec3_t start, vec3_t forward, vec3_t right, vec3_t up ) {
+	gentity_t	*bolt;
+	vec3_t		dir;
+	vec3_t		end;
+	float		r, u, scale;
+
+	bolt = G_Spawn();
+	bolt->classname = "missile";
+	bolt->nextthink = level.time + 5000;
+	bolt->think = G_ExplodeMissile;
+	bolt->s.eType = ET_MISSILE;
+	bolt->s.eFlags = EF_BOUNCE_HALF;
+	bolt->r.svFlags = SVF_USE_CURRENT_ORIGIN;
+	bolt->s.generic3 = WP_NAILGUN;
+	bolt->r.ownerNum = self->s.number;
+	//unlagged - projectile nudge
+	// we'll need this for nudging projectiles later
+	bolt->s.otherEntityNum = self->s.number;
+	//unlagged - projectile nudge
+	bolt->parent = self;
+	bolt->damage = 25;
+	bolt->methodOfDeath = MOD_SWEP;
+	bolt->clipmask = MASK_SHOT;
+	bolt->target_ent = NULL;
+	bolt->s.pos.trType = TR_GRAVITY;
+	bolt->s.pos.trTime = level.time;
+	VectorCopy( start, bolt->s.pos.trBase );
+
+	r = random() * M_PI * 2.0f;
+	u = sin(r) * crandom() * 50 * 16;
+	r = cos(r) * crandom() * 50 * 16;
+	VectorMA( start, 8192 * 16, forward, end);
+	VectorMA (end, r, right, end);
+	VectorMA (end, u, up, end);
+	VectorSubtract( end, start, dir );
+	VectorNormalize( dir );
+
+	scale = 3500 + random() * 100;
+	VectorScale( dir, scale, bolt->s.pos.trDelta );
+	SnapVector( bolt->s.pos.trDelta );
+
+	VectorCopy( start, bolt->r.currentOrigin );
+
+	return bolt;
+}
+
+gentity_t *fire_bouncer( gentity_t *self, vec3_t start, vec3_t forward, vec3_t right, vec3_t up ) {
+	gentity_t	*bolt;
+	vec3_t		dir;
+	vec3_t		end;
+	float		r, u, scale;
+
+	bolt = G_Spawn();
+	bolt->classname = "missile";
+	bolt->nextthink = level.time + 5000;
+	bolt->think = G_ExplodeMissile;
+	bolt->s.eType = ET_MISSILE;
+	bolt->s.eFlags = EF_BOUNCE_HALF;
+	bolt->r.svFlags = SVF_USE_CURRENT_ORIGIN;
+	bolt->s.generic3 = WP_NAILGUN;
+	bolt->r.ownerNum = self->s.number;
+	//unlagged - projectile nudge
+	// we'll need this for nudging projectiles later
+	bolt->s.otherEntityNum = self->s.number;
+	//unlagged - projectile nudge
+	bolt->parent = self;
+	bolt->damage = 16;
+	bolt->methodOfDeath = MOD_SWEP;
+	bolt->clipmask = MASK_SHOT;
+	bolt->target_ent = NULL;
+	bolt->s.pos.trType = TR_GRAVITY;
+	bolt->s.pos.trTime = level.time;
+	VectorCopy( start, bolt->s.pos.trBase );
+
+	r = random() * M_PI * 2.0f;
+	u = sin(r) * crandom() * 1111 * 16;
+	r = cos(r) * crandom() * 1111 * 16;
+	VectorMA( start, 8192 * 16, forward, end);
+	VectorMA (end, r, right, end);
+	VectorMA (end, u, up, end);
+	VectorSubtract( end, start, dir );
+	VectorNormalize( dir );
+
+	scale = 2000 + random() * 100;
+	VectorScale( dir, scale, bolt->s.pos.trDelta );
+	SnapVector( bolt->s.pos.trDelta );
+
+	VectorCopy( start, bolt->r.currentOrigin );
+
+	return bolt;
+}
+
+gentity_t *fire_exploder (gentity_t *self, vec3_t start, vec3_t dir) {
+	gentity_t	*bolt;
+
+	VectorNormalize (dir);
+
+	bolt = G_Spawn();
+	bolt->classname = "missile";
+	bolt->nextthink = level.time + 50;
+	bolt->think = Guided_Missile_Think;
+    bolt->wait = level.time + 30000;
+	bolt->s.eType = ET_MISSILE;
+	bolt->r.svFlags = SVF_USE_CURRENT_ORIGIN;
+	bolt->s.generic3 = WP_ROCKET_LAUNCHER;
+	bolt->r.ownerNum = self->s.number;
+//unlagged - projectile nudge
+	// we'll need this for nudging projectiles later
+	bolt->s.otherEntityNum = self->s.number;
+//unlagged - projectile nudge
+	bolt->parent = self;
+	bolt->damage = 150;
+	bolt->splashDamage = 150;
+	bolt->splashRadius = 300;
+	bolt->methodOfDeath = MOD_SWEP;
+	bolt->splashMethodOfDeath = MOD_SWEP;
+	bolt->clipmask = MASK_SHOT;
+	bolt->target_ent = NULL;
+	bolt->s.pos.trType = TR_LINEAR;
+	bolt->s.pos.trTime = level.time - MISSILE_PRESTEP_TIME;		// move a bit on the very first frame
+	VectorCopy( start, bolt->s.pos.trBase );
+	VectorScale( dir, 350, bolt->s.pos.trDelta );
+	SnapVector( bolt->s.pos.trDelta );			// save net bandwidth
+	VectorCopy (start, bolt->r.currentOrigin);
+
+	return bolt;
+}
+
+gentity_t *fire_knocker( gentity_t *self, vec3_t start, vec3_t forward, vec3_t right, vec3_t up ) {
+	gentity_t	*bolt;
+	vec3_t		dir;
+	vec3_t		end;
+	float		r, u, scale;
+
+	bolt = G_Spawn();
+	bolt->classname = "missile";
+	bolt->nextthink = level.time + 5000;
+	bolt->think = G_ExplodeMissile;
+	bolt->s.eType = ET_MISSILE;
+	bolt->s.eFlags = EF_BOUNCE_HALF;
+	bolt->r.svFlags = SVF_USE_CURRENT_ORIGIN;
+	bolt->s.generic3 = WP_ANTIMATTER;
+	bolt->r.ownerNum = self->s.number;
+	//unlagged - projectile nudge
+	// we'll need this for nudging projectiles later
+	bolt->s.otherEntityNum = self->s.number;
+	//unlagged - projectile nudge
+	bolt->parent = self;
+	bolt->damage = 2;
+	bolt->methodOfDeath = MOD_KNOCKER;
+	bolt->clipmask = MASK_SHOT;
+	bolt->target_ent = NULL;
+	bolt->s.pos.trType = TR_GRAVITY;
+	bolt->s.pos.trTime = level.time;
+	VectorCopy( start, bolt->s.pos.trBase );
+
+	r = random() * M_PI * 2.0f;
+	u = sin(r) * crandom() * 1 * 16;
+	r = cos(r) * crandom() * 1 * 16;
+	VectorMA( start, 8192 * 16, forward, end);
+	VectorMA (end, r, right, end);
+	VectorMA (end, u, up, end);
+	VectorSubtract( end, start, dir );
+	VectorNormalize( dir );
+
+	scale = 3500;
+	VectorScale( dir, scale, bolt->s.pos.trDelta );
+	SnapVector( bolt->s.pos.trDelta );
+
+	VectorCopy( start, bolt->r.currentOrigin );
+
+	return bolt;
+}
+
+gentity_t *fire_regenerator (gentity_t *self, vec3_t start, vec3_t dir) {
+	gentity_t	*bolt;
+
+	VectorNormalize (dir);
+
+	bolt = G_Spawn();
+	bolt->classname = "missile";
+	bolt->nextthink = level.time + 10000;
+	bolt->think = G_ExplodeMissile;
+	bolt->s.eType = ET_MISSILE;
+	bolt->r.svFlags = SVF_USE_CURRENT_ORIGIN;
+	bolt->s.generic3 = WP_PLASMAGUN;
+	bolt->r.ownerNum = self->s.number;
+//unlagged - projectile nudge
+	// we'll need this for nudging projectiles later
+	bolt->s.otherEntityNum = self->s.number;
+//unlagged - projectile nudge
+	bolt->parent = self;
+	bolt->damage = 2;
+	bolt->splashDamage = 2;
+	bolt->splashRadius = 80;
+	bolt->methodOfDeath = MOD_REGENERATOR;
+	bolt->splashMethodOfDeath = MOD_REGENERATOR;
+	bolt->clipmask = MASK_SHOT;
+	bolt->target_ent = NULL;
+	bolt->s.pos.trType = TR_GRAVITY;
+	bolt->s.pos.trTime = level.time - MISSILE_PRESTEP_TIME;		// move a bit on the very first frame
+	VectorCopy( start, bolt->s.pos.trBase );
+	VectorScale( dir, 1800, bolt->s.pos.trDelta );
+	SnapVector( bolt->s.pos.trDelta );			// save net bandwidth
+
+	VectorCopy (start, bolt->r.currentOrigin);
+
+	return bolt;
+}
+
+gentity_t *fire_propgun( gentity_t *self, vec3_t start, vec3_t forward, vec3_t right, vec3_t up ) {
+	gentity_t	*bolt;
+	vec3_t		dir;
+	vec3_t		end;
+    trace_t 	tr;
+	float		r, u, scale;
+	int 		random_mt = (rand() % 254) + 1;
+
+	bolt = G_Spawn();
+	bolt->s.eType = ET_GENERAL;
+	bolt->spawnflags = 0;
+	bolt->sandboxObject = 1;
+	bolt->objectType = OT_BASIC;
+	bolt->s.torsoAnim = OT_BASIC;
+	bolt->sb_takedamage = 1;
+	bolt->sb_takedamage2 = 0;
+	bolt->classname = "func_prop";
+	bolt->s.generic2 = random_mt;
+	bolt->sb_material = random_mt;
+	bolt->s.pos.trType = TR_GRAVITY; bolt->s.pos.trTime = level.time; bolt->physicsObject = qtrue; bolt->physicsBounce = 0.65; bolt->sb_phys = 2;
+	bolt->r.contents = CONTENTS_SOLID;
+	bolt->sb_coll = 0;
+	bolt->health = -1;
+	bolt->s.scales[0] = 0.5;
+	bolt->sb_colscale0 = 0.5;
+	bolt->s.scales[1] = 0.5;
+	bolt->sb_colscale1 = 0.5;
+	bolt->s.scales[2] = 0.5;
+	bolt->sb_colscale2 = 0.5;
+	bolt->vehicle = 0;
+	bolt->sb_gravity = 800;
+	bolt->s.generic3 = 800;
+	bolt->sb_coltype = 25;
+	bolt->lastPlayer = self;
+	bolt->takedamage = bolt->sb_takedamage;
+	bolt->takedamage2 = bolt->sb_takedamage2;
+	VectorMA(start, 64, forward, start);
+	VectorSet( bolt->r.mins, -12.5, -12.5, -12.5);
+	VectorSet( bolt->r.maxs, 12.5, 12.5, 12.5 );	
+	bolt->s.modelindex = G_ModelIndex( "props/cube" );
+	bolt->sb_model = "cube";
+
+	trap_Trace(&tr, start, bolt->r.mins, bolt->r.maxs, start, bolt->s.number, MASK_OBJECTS);
+
+	if (tr.startsolid) {
+		G_FreeEntity(bolt);
+		return;
+	}
+
+	VectorCopy( start, bolt->s.pos.trBase );
+
+	r = random() * M_PI * 2.0f;
+	u = sin(r) * crandom() * 100 * 16;
+	r = cos(r) * crandom() * 100 * 16;
+	VectorMA( start, 8192 * 16, forward, end);
+	VectorMA (end, r, right, end);
+	VectorMA (end, u, up, end);
+	VectorSubtract( end, start, dir );
+	VectorNormalize( dir );
+
+	scale = 2000;
+	VectorScale( dir, scale, bolt->s.pos.trDelta );
+	SnapVector( bolt->s.pos.trDelta );
+
+	VectorCopy( start, bolt->r.currentOrigin );
+	
+	trap_LinkEntity(bolt);
+
+	return bolt;
+}
+
+gentity_t *fire_nuke( gentity_t *self, vec3_t start, vec3_t forward, vec3_t right, vec3_t up ) {
+	gentity_t	*bolt;
+	vec3_t		dir;
+	vec3_t		end;
+    trace_t 	tr;
+	float		r, u, scale;
+
+	bolt = G_Spawn();
+	bolt->s.eType = ET_GENERAL;
+	bolt->spawnflags = 0;
+	bolt->sandboxObject = 1;
+	bolt->objectType = OT_NUKE;
+	bolt->s.torsoAnim = OT_NUKE;
+	bolt->sb_takedamage = 1;
+	bolt->sb_takedamage2 = 1;
+	bolt->classname = "misc_hihihiha";
+	bolt->s.generic2 = 0;
+	bolt->sb_material = 0;
+	bolt->s.pos.trType = TR_GRAVITY; bolt->s.pos.trTime = level.time; bolt->physicsObject = qtrue; bolt->physicsBounce = 0.65; bolt->sb_phys = 2;
+	bolt->r.contents = 0;
+	bolt->sb_coll = 0;
+	bolt->health = 1;
+	bolt->s.scales[0] = 4.0;
+	bolt->sb_colscale0 = 4.0;
+	bolt->s.scales[1] = 4.0;
+	bolt->sb_colscale1 = 4.0;
+	bolt->s.scales[2] = 4.0;
+	bolt->sb_colscale2 = 4.0;
+	bolt->vehicle = 0;
+	bolt->sb_gravity = 800;
+	bolt->s.generic3 = 800;
+	bolt->sb_coltype = 25;
+	bolt->lastPlayer = self;
+	bolt->die = BlockDie;
+	bolt->takedamage = bolt->sb_takedamage;
+	bolt->takedamage2 = bolt->sb_takedamage2;
+	VectorMA(start, 64, forward, start);
+	VectorSet( bolt->r.mins, -12.5, -12.5, -12.5);
+	VectorSet( bolt->r.maxs, 12.5, 12.5, 12.5 );	
+	bolt->s.modelindex = G_ModelIndex( "models/ammo/rocket/rocket.md3" );
+
+	trap_Trace(&tr, start, bolt->r.mins, bolt->r.maxs, start, bolt->s.number, MASK_OBJECTS);
+
+	if (tr.startsolid) {
+		G_FreeEntity(bolt);
+		return;
+	}
+
+	VectorCopy( start, bolt->s.pos.trBase );
+
+	r = random() * M_PI * 2.0f;
+	u = sin(r) * crandom() * 1333 * 16;
+	r = cos(r) * crandom() * 1333 * 16;
+	VectorMA( start, 8192 * 16, forward, end);
+	VectorMA (end, r, right, end);
+	VectorMA (end, u, up, end);
+	VectorSubtract( end, start, dir );
+	VectorNormalize( dir );
+
+	scale = 3000;
+	VectorScale( dir, scale, bolt->s.pos.trDelta );
+	SnapVector( bolt->s.pos.trDelta );
+
+	VectorCopy( start, bolt->r.currentOrigin );
+	
+	trap_LinkEntity(bolt);
 
 	return bolt;
 }

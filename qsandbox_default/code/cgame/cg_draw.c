@@ -1656,12 +1656,49 @@ static void CG_DrawDisconnect( void ) {
 	usercmd_t	cmd;
 	const char		*s;
 	int			w;  // bk010215 - FIXME char message[1024];
+	int currentViewDistance;
+
+	//AUTO FIX NETWORK
+
+	/*if (cg.restart_net == qfalse){
+		cg.restart_value = -1;
+	}
+
+	if (cg.restart_net == qtrue && cg.restart_value == -1) { 	// Network not working
+	    cg.restart_value = get_cvar_int("sv_viewdistance"); 	// Save current value
+	    NS_setCvar("sv_viewdistance", "1");              		// Reset network
+		cg.restart_time = cg.time + 500;						// Restart time
+	}
+
+	if(cg.time > cg.restart_time){
+		cg.restart_time = cg.time + 500;
+	} else {
+		return;
+	}
+
+	currentViewDistance = get_cvar_int("sv_viewdistance");
+
+	if (cg.restart_value > 0) {
+	    if (currentViewDistance < cg.restart_value) {
+	        NS_setCvar("sv_viewdistance", va("%i", currentViewDistance + 1));
+	    } else {
+			cg.restart_net = qfalse;	// Network repaired
+	    }
+	} else if (cg.restart_value == 0) {
+	    if (currentViewDistance < 90) {
+	        NS_setCvar("sv_viewdistance", va("%i", currentViewDistance + 1));
+	    } else {
+	        NS_setCvar("sv_viewdistance", "0");
+			cg.restart_net = qfalse;	// Network repaired
+	    }
+	}*/
+
+	//AUTO FIX NETWORK END
 
 	// draw the phone jack if we are completely past our buffers
 	cmdNum = trap_GetCurrentCmdNumber() - CMD_BACKUP + 1;
 	trap_GetUserCmd( cmdNum, &cmd );
-	if ( cmd.serverTime <= cg.snap->ps.commandTime
-		|| cmd.serverTime > cg.time ) {	// special check for map_restart // bk 0102165 - FIXME
+	if ( cmd.serverTime <= cg.snap->ps.commandTime || cmd.serverTime > cg.time ) {	// special check for map_restart // bk 0102165 - FIXME
 		return;
 	}
 

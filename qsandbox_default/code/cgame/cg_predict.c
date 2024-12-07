@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // ahead the client's movement.
 // It also handles local physics interaction, like fragments bouncing off walls
 
-#include "cg_local.h"
+#include "../qcommon/ns_local.h"
 
 static	pmove_t		cg_pmove;
 
@@ -757,6 +757,17 @@ void CG_PredictPlayerState( void ) {
 
 		if ( cg_pmove.pmove_fixed ) {
 			PM_UpdateViewAngles( cg_pmove.ps, &cg_pmove.cmd );
+		}
+
+		if(cg_pmove.cmd.buttons & BUTTON_GESTURE && cg_pmove.cmd.buttons & BUTTON_ATTACK && cg_pmove.cmd.weapon == WP_PHYSGUN){
+			NS_setCvar("sensitivity", "0.025");
+		} else {
+			if(cg.savedSens != 0 && cg.savedSens != 0.025){
+				NS_setCvar("sensitivity", va("%.6f", cg.savedSens));
+			}
+			if(cg.savedSens != 0.025){
+				cg.savedSens = get_cvar_float("sensitivity");
+			}
 		}
 
 		// don't do anything if the time is before the snapshot player time

@@ -836,9 +836,12 @@ static void PortalDie (gentity_t *self, gentity_t *inflictor, gentity_t *attacke
 	//FIXME do something more interesting
 }
 
-static void BlockDie (gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int mod) {
+void BlockDie (gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int mod) {
 	if(self->vehicle || self->objectType == OT_TNT){ //VEHICLE-SYSTEM: vehicle's explode for all
 	G_StartCarExplode(self);
+	}
+	if(self->objectType == OT_NUKE){
+	G_StartNukeExplode(self);
 	}
 	G_FreeEntity( self );
 }

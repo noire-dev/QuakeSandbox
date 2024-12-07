@@ -1183,7 +1183,6 @@ int BotAI(int client, float thinktime) {
 	//the real AI
 	BotDeathmatchAI(bs, thinktime);
 	//set the weapon selection every AI frame
-	bs->cur_ps.generic2 = bs->weaponnum;
 	trap_EA_SelectWeapon(bs->client, bs->weaponnum);
 	
 	//subtract the delta angles
@@ -1378,6 +1377,7 @@ int BotAISetupClient(int client, struct bot_settings_s *settings, qboolean resta
 	bot_state_t *bs;
 	int errnum;
 	char userinfo[MAX_INFO_STRING];
+	int  i;
     //KK-OAX Changed to Tremulous's BG_Alloc
 	if (!botstates[client]) {
             if(!BG_CanAlloc(sizeof(bot_state_t))) {
@@ -1445,6 +1445,11 @@ int BotAISetupClient(int client, struct bot_settings_s *settings, qboolean resta
 	if (*gender == 'f' || *gender == 'F') trap_BotSetChatGender(bs->cs, CHAT_GENDERFEMALE);
 	else if (*gender == 'm' || *gender == 'M') trap_BotSetChatGender(bs->cs, CHAT_GENDERMALE);
 	else trap_BotSetChatGender(bs->cs, CHAT_GENDERLESS);
+
+	for(i = 0; i < WEAPONS_NUM; i++){
+		bs->swep_list[i] = 0;
+		bs->swep_ammo[i] = 0;
+	}
 
 	bs->inuse = qtrue;
 	bs->client = client;

@@ -1693,11 +1693,11 @@ int BotSelectQSWeapon(bot_state_t *bs) {
 	int i;
 	for (i = WEAPONS_NUM; i > 0; i--) {
 		if(bs->swep_list[i] == 1 && (bs->swep_ammo[i] > 0 || bs->swep_ammo[i] == -1)){
-		if(i != WP_GRAPPLING_HOOK && i != WP_PHYSGUN && i != WP_GRAVITYGUN && i != WP_TOOLGUN)
+		if(i != WP_NONE && i != WP_GRAPPLING_HOOK && i != WP_PHYSGUN && i != WP_GRAVITYGUN && i != WP_TOOLGUN && i != WP_REGENERATOR)
 		return i;
 		}
 	}
-	return 1;
+	return WP_NONE;
 }
 
 /*
@@ -1706,18 +1706,10 @@ BotChooseWeapon
 ==================
 */
 void BotChooseWeapon(bot_state_t *bs) {
-	int i;
-
-	if (bs->cur_ps.weaponstate == WEAPON_RAISING ||
-			bs->cur_ps.weaponstate == WEAPON_DROPPING) {
-		bs->cur_ps.generic2 = bs->weaponnum;
-		trap_EA_SelectWeapon(bs->client, bs->weaponnum);
-	} else {
-		if (bs->weaponnum != BotSelectQSWeapon(bs)) bs->weaponchange_time = FloatTime();
-		bs->weaponnum = BotSelectQSWeapon(bs);
-		bs->cur_ps.generic2 = bs->weaponnum;
-		trap_EA_SelectWeapon(bs->client, bs->weaponnum);
-	}
+	if (bs->weaponnum != BotSelectQSWeapon(bs)) bs->weaponchange_time = FloatTime();
+	bs->weaponnum = BotSelectQSWeapon(bs);
+	bs->cur_ps.generic2 = bs->weaponnum;
+	trap_EA_SelectWeapon(bs->client, bs->weaponnum);
 }
 
 /*

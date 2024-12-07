@@ -1014,6 +1014,113 @@ void Weapon_Toolgun( gentity_t *ent ) {
 	return;
 }
 
+/*
+======================================================================
+
+NEW WEAPONS
+
+======================================================================
+*/
+
+void Weapon_Thrower_Fire (gentity_t *ent) {
+	gentity_t	*m;
+	int			count;
+
+	for( count = 0; count < 1; count++ ) {
+		m = fire_thrower (ent, muzzle, forward, right, up );
+		m->damage *= s_quadFactor;
+		m->splashDamage *= s_quadFactor;
+	}
+}
+
+void Weapon_Bouncer_Fire (gentity_t *ent) {
+	gentity_t	*m;
+	int			count;
+
+	for( count = 0; count < 11; count++ ) {
+		m = fire_bouncer (ent, muzzle, forward, right, up );
+		m->damage *= s_quadFactor;
+		m->splashDamage *= s_quadFactor;
+	}
+}
+
+void Weapon_Thunder_Fire(gentity_t *ent) {
+    gentity_t *m;
+    int count;
+    vec3_t forward, right, up, spread, newDir;
+
+    // Получаем вектора для направления выстрела
+    AngleVectors(ent->client->ps.viewangles, forward, right, up);
+
+    for (count = 0; count < 6; count++) {
+        spread[0] = crandom() * 0.45;
+        spread[1] = crandom() * 0.45;
+        spread[2] = crandom() * 0.10;
+
+        VectorAdd(forward, spread, newDir);
+
+        VectorNormalize(newDir);
+
+        m = fire_grenade(ent, muzzle, newDir);
+
+        m->damage *= s_quadFactor;
+        m->splashDamage *= s_quadFactor;
+    }
+}
+
+void Weapon_Exploder_Fire (gentity_t *ent) {
+	gentity_t	*m;
+
+	m = fire_exploder (ent, muzzle, forward);
+	m->damage *= s_quadFactor;
+	m->splashDamage *= s_quadFactor;
+}
+
+void Weapon_Knocker_Fire (gentity_t *ent) {
+	gentity_t	*m;
+	int			count;
+
+	for( count = 0; count < 1; count++ ) {
+		m = fire_knocker (ent, muzzle, forward, right, up );
+		m->damage *= s_quadFactor;
+		m->splashDamage *= s_quadFactor;
+	}
+}
+
+void Weapon_Propgun_Fire (gentity_t *ent) {
+	gentity_t	*m;
+	int			count;
+
+	for( count = 0; count < 1; count++ ) {
+		m = fire_propgun (ent, muzzle, forward, right, up );
+		m->damage *= s_quadFactor;
+		m->splashDamage *= s_quadFactor;
+	}
+
+//	VectorAdd( m->s.pos.trDelta, ent->client->ps.velocity, m->s.pos.trDelta );	// "real" physics
+}
+
+void Weapon_Regenerator_Fire (gentity_t *ent) {
+	gentity_t	*m;
+	int			count;
+
+	for( count = 0; count < 1; count++ ) {
+		m = fire_regenerator (ent, muzzle, forward);
+		m->damage *= s_quadFactor;
+		m->splashDamage *= s_quadFactor;
+	}
+}
+
+void Weapon_Nuke_Fire (gentity_t *ent) {
+	gentity_t	*m;
+	int			count;
+
+	for( count = 0; count < 8; count++ ) {
+		m = fire_nuke (ent, muzzle, forward, right, up );
+		m->damage *= s_quadFactor;
+		m->splashDamage *= s_quadFactor;
+	}
+}
 
 /*
 ===============
@@ -1202,6 +1309,31 @@ void FireWeapon( gentity_t *ent ) {
 	case WP_GRAVITYGUN:
 		//GravitygunHold()
 		break;
+	case WP_THROWER:
+		Weapon_Thrower_Fire( ent );
+		break;
+	case WP_BOUNCER:
+		Weapon_Bouncer_Fire( ent );
+		break;
+	case WP_THUNDER:
+		Weapon_Thunder_Fire( ent );
+		break;
+	case WP_EXPLODER:
+		Weapon_Exploder_Fire( ent );
+		break;
+	case WP_KNOCKER:
+		Weapon_Knocker_Fire( ent );
+		break;
+	case WP_PROPGUN:
+		Weapon_Propgun_Fire( ent );
+		break;
+	case WP_REGENERATOR:
+		Weapon_Regenerator_Fire( ent );
+		break;
+	case WP_NUKE:
+		Weapon_Nuke_Fire( ent );
+		break;
+
 	default:
 // FIXME		G_Error( "Bad ent->s.weapon" );
 		break;
@@ -1484,6 +1616,34 @@ void CarExplodeDamage( gentity_t *self ) {
 	self->nextthink = level.time + 100;
 }
 
+void NukeExplodeDamage( gentity_t *self ) {
+	int i;
+	float t;
+	gentity_t *ent;
+	vec3_t newangles;
+
+	self->count += 100;
+
+	if (self->count >= KAMI_SHOCKWAVE_STARTTIME) {
+		// shockwave push back
+		t = self->count - KAMI_SHOCKWAVE_STARTTIME;
+		KamikazeShockWave(self->s.pos.trBase, self->activator, 50, 400,	800, MOD_NUKE );
+	}
+	//
+	if (self->count >= KAMI_EXPLODE_STARTTIME) {
+		// do our damage
+		t = self->count - KAMI_EXPLODE_STARTTIME;
+		KamikazeRadiusDamage( self->s.pos.trBase, self->activator, 100, 800, MOD_NUKE );
+	}
+
+	// either cycle or kill self
+	if( self->count >= KAMI_SHOCKWAVE_ENDTIME ) {
+		G_FreeEntity( self );
+		return;
+	}
+	self->nextthink = level.time + 100;
+}
+
 void G_StartCarExplode( gentity_t *ent ) {
 	gentity_t	*explosion;
 	gentity_t	*te;
@@ -1505,6 +1665,46 @@ void G_StartCarExplode( gentity_t *ent ) {
 	explosion->kamikazeTime = level.time;
 
 	explosion->think = CarExplodeDamage;
+	explosion->nextthink = level.time + 100;
+	explosion->count = 0;
+	VectorClear(explosion->movedir);
+
+	trap_LinkEntity( explosion );
+
+	if ( !strcmp(ent->activator->classname, "bodyque") ) {
+		explosion->activator = &g_entities[ent->activator->r.ownerNum];
+	}
+	else {
+		explosion->activator = ent->activator;
+	}
+
+	// play global sound at all clients
+	te = G_TempEntity(snapped, EV_GLOBAL_TEAM_SOUND );
+	te->r.svFlags |= SVF_BROADCAST;
+	te->s.eventParm = GTS_KAMIKAZE;
+}
+
+void G_StartNukeExplode( gentity_t *ent ) {
+	gentity_t	*explosion;
+	gentity_t	*te;
+	vec3_t		snapped;
+
+	// start up the explosion logic
+	explosion = G_Spawn();
+
+	explosion->s.eType = ET_EVENTS + EV_KAMIKAZE;
+	explosion->eventTime = level.time;
+
+	VectorCopy( ent->r.currentOrigin, snapped );
+	SnapVector( snapped );		// save network bandwidth
+	G_SetOrigin( explosion, snapped );
+
+	explosion->classname = "kamikaze";
+	explosion->s.pos.trType = TR_STATIONARY;
+
+	explosion->kamikazeTime = level.time;
+
+	explosion->think = NukeExplodeDamage;
 	explosion->nextthink = level.time + 100;
 	explosion->count = 0;
 	VectorClear(explosion->movedir);
