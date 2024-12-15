@@ -570,10 +570,10 @@ static float CG_DrawCounters( float y ) {
 	if(cgs.gametype == GT_SANDBOX){
 		if(seconds == 3 && !n_tip1){
 			if(cl_language.integer == 0){
-				CG_AddNotify ("Welcome to Quake Sandbox 8.0", 1);
+				CG_AddNotify ("Welcome to Quake Sandbox 8.1", 1);
 			}
 			if(cl_language.integer == 1){
-				CG_AddNotify ("Добро пожаловать в Quake Sandbox 8.0", 1);
+				CG_AddNotify ("Добро пожаловать в Quake Sandbox 8.1", 1);
 			}
 			n_tip1 = qtrue;
 		}

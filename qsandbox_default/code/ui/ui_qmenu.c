@@ -741,11 +741,11 @@ void UIObject_Draw( menuobject_s *b ){
 			}
 		}
 		if(strlen(b->itemnames[select_i]) > 0 && b->styles == 2 && hasfocus && UI_CursorInRect( select_x, select_y, SMALLCHAR_WIDTH*b->width, SMALLCHAR_WIDTH*b->width)){
-			float wordsize = (SMALLCHAR_HEIGHT*b->fontsize*2.00);
+			float wordsize = (SMALLCHAR_HEIGHT*b->fontsize);
 			select_x += wordsize;
 			select_y -= wordsize*1.45;
-			UI_DrawRoundedRect(select_x-wordsize, select_y-4, (strlen(b->itemnames[select_i])*(SMALLCHAR_HEIGHT*b->fontsize*2.00)+wordsize*2), (SMALLCHAR_HEIGHT*b->fontsize*2.00)+8, 5, color_dim80);
-			UI_DrawStringCustom( select_x, select_y, b->itemnames[select_i], style|UI_DROPSHADOW, color_bluo, b->fontsize*2.00, ((SMALLCHAR_WIDTH*b->width)/(SMALLCHAR_WIDTH*b->fontsize*0.50))-4 );
+			UI_DrawRoundedRect(select_x-wordsize, select_y-4, (strlen(b->itemnames[select_i])*(SMALLCHAR_HEIGHT*b->fontsize)+wordsize*2), (SMALLCHAR_HEIGHT*b->fontsize)+8, 5, color_dim80);
+			UI_DrawStringCustom( select_x, select_y, b->itemnames[select_i], style|UI_DROPSHADOW, color_bluo, b->fontsize, 512 );
 		}
 	}
 

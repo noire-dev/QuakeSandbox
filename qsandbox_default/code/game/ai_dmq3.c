@@ -150,7 +150,7 @@ void FillWeaponInfo(int weaponstate, int weapon, weaponinfo_t *wi) {
     wi->numprojectiles = 1;
     wi->hspread = 0.0f;
     wi->vspread = 0.0f;
-    wi->speed = 900.0f;
+    wi->speed = 2000.0f;
     wi->acceleration = 0.0f;
     VectorClear(wi->recoil);
     VectorClear(wi->offset);
@@ -3541,8 +3541,7 @@ void BotAimAtEnemy(bot_state_t *bs) {
 		bestorigin[0] += 20 * crandom() * (1 - aim_accuracy);
 		bestorigin[1] += 20 * crandom() * (1 - aim_accuracy);
 		bestorigin[2] += 10 * crandom() * (1 - aim_accuracy);
-	}
-	else {
+	} else {
 		//
 		VectorCopy(bs->lastenemyorigin, bestorigin);
 		bestorigin[2] += 8;

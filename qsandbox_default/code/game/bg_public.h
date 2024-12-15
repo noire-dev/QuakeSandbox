@@ -943,11 +943,11 @@ float BG_GetVehicleSettings (int id, int set);
 
 
 #define ARENAS_PER_TIER		4
-#define MAX_ARENAS			1024
-#define	MAX_ARENAS_TEXT		8192
+#define MAX_ARENAS			8192
+#define	MAX_ARENAS_TEXT		25000
 
-#define MAX_BOTS			2048
-#define MAX_BOTS_TEXT		16384
+#define MAX_BOTS			8192
+#define MAX_BOTS_TEXT		25000
 
 
 // Kamikaze

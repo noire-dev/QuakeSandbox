@@ -760,7 +760,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.styles			= 2;
 	s_sandboxmain.list.columns			= 6+((1.75*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
 	s_sandboxmain.list.string			= "props";
-	s_sandboxmain.list.fontsize			= 0.4;
+	s_sandboxmain.list.fontsize			= 1;
 	s_sandboxmain.list.corner			= 65;
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
@@ -777,7 +777,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.texturelist.type				= 5;
 	s_sandboxmain.texturelist.styles			= 2;
 	s_sandboxmain.texturelist.columns			= 6+((1.75*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
-	s_sandboxmain.texturelist.fontsize			= 0.4;
+	s_sandboxmain.texturelist.fontsize			= 1;
 	s_sandboxmain.texturelist.corner			= 65;
 	s_sandboxmain.texturelist.generic.flags		= QMF_PULSEIFFOCUS;
 	s_sandboxmain.texturelist.generic.callback	= SandboxMain_MenuEvent;
@@ -830,7 +830,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.classlist.styles			= 2;
 	s_sandboxmain.classlist.columns			= 6+((1.75*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
 	s_sandboxmain.classlist.string			= "";
-	s_sandboxmain.classlist.fontsize		= 0.4;
+	s_sandboxmain.classlist.fontsize		= 1;
 	s_sandboxmain.classlist.corner			= 40;
 	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
@@ -868,7 +868,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.styles			= 2;
 	s_sandboxmain.list.columns			= 6+((1.75*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
 	s_sandboxmain.list.string			= "bots";
-	s_sandboxmain.list.fontsize			= 0.4;
+	s_sandboxmain.list.fontsize			= 1;
 	s_sandboxmain.list.corner			= 65;
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
@@ -924,7 +924,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.styles			= 2;
 	s_sandboxmain.list.columns			= 6+((1.75*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
 	s_sandboxmain.list.string			= "";
-	s_sandboxmain.list.fontsize			= 0.4;
+	s_sandboxmain.list.fontsize			= 1;
 	s_sandboxmain.list.corner			= 65;
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;
@@ -975,16 +975,19 @@ void SandboxMain_MenuInit( void ) {
 	if(uis.sb_tab == STAB_LISTS){
 	s_sandboxmain.classlist.generic.type		= MTYPE_UIOBJECT;
 	s_sandboxmain.classlist.type				= 5;
-	s_sandboxmain.classlist.styles				= 0;
+	s_sandboxmain.classlist.styles				= 2;
+	s_sandboxmain.classlist.columns				= 6+((1.75*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
+	s_sandboxmain.classlist.string 				= "spawnlists/icons";
 	s_sandboxmain.classlist.fontsize			= 1;
-	s_sandboxmain.classlist.generic.flags	= QMF_PULSEIFFOCUS;
+	s_sandboxmain.classlist.corner				= 65;
+	s_sandboxmain.classlist.generic.flags		= QMF_PULSEIFFOCUS;
 	s_sandboxmain.classlist.generic.callback	= SandboxMain_MenuEvent;
 	s_sandboxmain.classlist.generic.id		= ID_CLASSLIST;
 	s_sandboxmain.classlist.generic.x		= 40 - uis.wideoffset;
-	s_sandboxmain.classlist.generic.y		= 215 + 70;
-	s_sandboxmain.classlist.width			= 39+(2*uis.wideoffset/SMALLCHAR_WIDTH);
-	s_sandboxmain.classlist.height			= 15;
-	s_sandboxmain.classlist.numitems		= trap_FS_GetFileList( va("spawnlists", s_sandboxmain.classlist.itemnames[s_sandboxmain.classlist.curvalue]), "cfg", s_sandboxmain.names2, 524288 );
+	s_sandboxmain.classlist.generic.y		= 215 + 62;
+	s_sandboxmain.classlist.width			= 39/6;
+	s_sandboxmain.classlist.height			= 4;
+	s_sandboxmain.classlist.numitems		= trap_FS_GetFileList( "spawnlists", "cfg", s_sandboxmain.names2, 524288 );
 	s_sandboxmain.classlist.itemnames		= (const char **)s_sandboxmain.classeslist;
 	s_sandboxmain.classlist.columns			= 1;
 	s_sandboxmain.classlist.color			= s_sandboxmain_color1;
@@ -996,7 +999,7 @@ void SandboxMain_MenuInit( void ) {
 	s_sandboxmain.list.styles			= 2;
 	s_sandboxmain.list.columns			= 6+((1.75*uis.wideoffset)/((39/6)*SMALLCHAR_WIDTH-7));
 	s_sandboxmain.list.string 			= (char *)UI_Alloc(256);
-	s_sandboxmain.list.fontsize			= 0.4;
+	s_sandboxmain.list.fontsize			= 1;
 	s_sandboxmain.list.corner			= 65;
 	s_sandboxmain.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_sandboxmain.list.generic.callback	= SandboxMain_MenuEvent;

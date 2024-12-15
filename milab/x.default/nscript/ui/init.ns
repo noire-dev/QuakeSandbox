@@ -42,19 +42,6 @@ float   spawn_skill = 0
 char    spawn_name = 0
 //      spawn_sound
 int     spawn_weapon = 0
-	    //0-WP_NONE
-	    //1-WP_GAUNTLET
-	    //2-WP_MACHINEGUN
-	    //3-WP_SHOTGUN
-	    //4-WP_GRENADE_LAUNCHER
-	    //5-WP_ROCKET_LAUNCHER
-	    //6-WP_LIGHTNING
-	    //7-WP_RAILGUN
-	    //8-WP_PLASMAGUN
-	    //9-WP_BFG
-	    //10-WP_NAILGUN
-	    //11-WP_PROX_LAUNCHER
-	    //12-WP_CHAINGUN
 
 //#######################
 //Gui variables
