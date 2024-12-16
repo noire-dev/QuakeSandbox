@@ -1230,19 +1230,11 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 	int		camereyes;
 
 
-
-	{
 	VectorCopy( cent->lerpAngles, headAngles );
-	headAngles[YAW] = AngleMod( headAngles[YAW] );
-	}
-
-
 	//headAngles[YAW] = AngleMod( headAngles[YAW] );
-
 
 	VectorClear( legsAngles );
 	VectorClear( torsoAngles );
-
 
 	camereyes = 0;
 	if ( cent->currentState.number == cg.snap->ps.clientNum) {
@@ -1341,7 +1333,6 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 	}
 
 	// --------- roll -------------
-
 
 	// lean towards the direction of travel
 	VectorCopy( cent->currentState.pos.trDelta, velocity );

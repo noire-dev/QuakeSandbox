@@ -1686,7 +1686,7 @@ gentity_t *fire_propgun( gentity_t *self, vec3_t start, vec3_t forward, vec3_t r
 	VectorSet( bolt->r.mins, -12.5, -12.5, -12.5);
 	VectorSet( bolt->r.maxs, 12.5, 12.5, 12.5 );	
 	bolt->s.modelindex = G_ModelIndex( "props/cube" );
-	bolt->sb_model = "cube";
+	bolt->sb_model = "props/cube";
 
 	trap_Trace(&tr, start, bolt->r.mins, bolt->r.maxs, start, bolt->s.number, MASK_OBJECTS);
 

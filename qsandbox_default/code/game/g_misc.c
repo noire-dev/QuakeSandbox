@@ -1053,7 +1053,7 @@ void SP_func_prop( gentity_t *ent ) {
 			CopyAlloc(ent->sb_class, ent->classname);
 			s->spawn(ent);
 			//spawn another class
-			ent->s.modelindex = G_ModelIndex( va("props/%s",ent->sb_model) );	//модель
+			ent->s.modelindex = G_ModelIndex( ent->sb_model );	//модель
 			ent->s.constantLight = ent->sb_red | ( ent->sb_green << 8 ) | ( ent->sb_blue << 16 ) | ( ent->sb_radius << 24 );
 			ent->s.loopSound = G_SoundIndex(ent->sb_sound);	//звук
 			ent->s.scales[0] = ent->sb_colscale0;
@@ -1097,7 +1097,7 @@ void SP_func_prop( gentity_t *ent ) {
 	ent->classname = "func_prop";
 	ent->s.eType = ET_GENERAL;
 	ent->s.pos.trType = TR_STATIONARY;
-	ent->s.modelindex = G_ModelIndex( va("props/%s",ent->sb_model) );
+	ent->s.modelindex = G_ModelIndex( ent->sb_model );
 	ent->s.constantLight = ent->sb_red | ( ent->sb_green << 8 ) | ( ent->sb_blue << 16 ) | ( ent->sb_radius << 24 );
 	ent->s.loopSound = G_SoundIndex(ent->sb_sound);
 	ent->die = BlockDie;
@@ -1243,7 +1243,7 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 			CopyAlloc(ent->sb_class, ent->classname);
 			s->spawn(ent);
 			//spawn another class
-			ent->s.modelindex = G_ModelIndex( va("props/%s",arg02) );
+			ent->s.modelindex = G_ModelIndex( arg02 );
 			CopyAlloc(ent->sb_model, arg02);
 			ent->sb_coltype = atoi(arg05);
 			ent->classname = "func_prop";
@@ -1262,7 +1262,7 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent->takedamage = ent->sb_takedamage;
 	ent->takedamage2 = ent->sb_takedamage2;
 	ent->die = BlockDie;		
-	ent->s.modelindex = G_ModelIndex( va("props/%s",arg02) );
+	ent->s.modelindex = G_ModelIndex( arg02 );
 	CopyAlloc(ent->sb_model, arg02);
 	if(atoi(arg21) <= 0){
 	ent->sb_coltype = atoi(arg05);
@@ -1311,7 +1311,7 @@ void G_ModProp( gentity_t *targ, gentity_t *attacker, char *arg01, char *arg02, 
 		}
 	}
 	if(attacker->tool_id == 3){
-		targ->s.modelindex = G_ModelIndex( va("props/%s", arg01) );
+		targ->s.modelindex = G_ModelIndex( arg01 );
 		CopyAlloc(targ->sb_model, arg01);
 	}
 	if(attacker->tool_id == 4){

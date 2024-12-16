@@ -1692,9 +1692,13 @@ int BotSynonymContext(bot_state_t *bs) {
 int BotSelectQSWeapon(bot_state_t *bs) {
 	int i;
 	for (i = WEAPONS_NUM; i > 0; i--) {
+		if(bs->swep_list[WP_BFG] == 1 && bs->swep_ammo[WP_BFG] > 0){
+			return WP_BFG;
+		}
 		if(bs->swep_list[i] == 1 && (bs->swep_ammo[i] > 0 || bs->swep_ammo[i] == -1)){
-		if(i != WP_NONE && i != WP_GRAPPLING_HOOK && i != WP_PHYSGUN && i != WP_GRAVITYGUN && i != WP_TOOLGUN && i != WP_REGENERATOR)
-		return i;
+		if(i != WP_NONE && i != WP_GRAPPLING_HOOK && i != WP_PHYSGUN && i != WP_GRAVITYGUN && i != WP_TOOLGUN && i != WP_REGENERATOR){
+			return i;
+		}
 		}
 	}
 	return WP_NONE;

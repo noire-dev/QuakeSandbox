@@ -208,7 +208,7 @@ static sandboxmain_t	s_sandboxmain;
 const char* tool_spawnpreset_arg(int num){
 	if(num == 1){
 		if(!toolgun_disabledarg1.integer){
-			return s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue];
+			return va("props/%s", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]);
 		} else {
 			return "";
 		}
