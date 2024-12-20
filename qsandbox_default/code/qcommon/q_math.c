@@ -1026,3 +1026,30 @@ int Q_isnan( float x )
 
 	return (int)( (unsigned int)t.i >> 31 );
 }
+
+void RotateAroundAxis(vec3_t axis[3], const vec3_t rotationAxis, float angle) {
+    vec3_t temp[3];
+    float radians = DEG2RAD(angle);
+    float sinAngle = sin(radians);
+    float cosAngle = cos(radians);
+	int i;
+
+    VectorCopy(axis[0], temp[0]);
+    VectorCopy(axis[1], temp[1]);
+    VectorCopy(axis[2], temp[2]);
+
+    for (i = 0; i < 3; i++) {
+        axis[i][0] = (cosAngle + (1 - cosAngle) * rotationAxis[0] * rotationAxis[0]) * temp[i][0] +
+                     ((1 - cosAngle) * rotationAxis[0] * rotationAxis[1] - sinAngle * rotationAxis[2]) * temp[i][1] +
+                     ((1 - cosAngle) * rotationAxis[0] * rotationAxis[2] + sinAngle * rotationAxis[1]) * temp[i][2];
+
+        axis[i][1] = ((1 - cosAngle) * rotationAxis[1] * rotationAxis[0] + sinAngle * rotationAxis[2]) * temp[i][0] +
+                     (cosAngle + (1 - cosAngle) * rotationAxis[1] * rotationAxis[1]) * temp[i][1] +
+                     ((1 - cosAngle) * rotationAxis[1] * rotationAxis[2] - sinAngle * rotationAxis[0]) * temp[i][2];
+
+        axis[i][2] = ((1 - cosAngle) * rotationAxis[2] * rotationAxis[0] - sinAngle * rotationAxis[1]) * temp[i][0] +
+                     ((1 - cosAngle) * rotationAxis[2] * rotationAxis[1] + sinAngle * rotationAxis[0]) * temp[i][1] +
+                     (cosAngle + (1 - cosAngle) * rotationAxis[2] * rotationAxis[2]) * temp[i][2];
+    }
+}
+

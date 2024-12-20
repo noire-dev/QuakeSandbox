@@ -18,14 +18,11 @@ LOAD CONFIG MENU
 #define ART_BACK1			"menu/art/back_1"	
 #define ART_FIGHT0			"menu/art/load_0"
 #define ART_FIGHT1			"menu/art/load_1"
-#define ART_FRAMEL			"menu/art/frame2_l"
-#define ART_FRAMER			"menu/art/frame1_r"
 #define ART_ARROWS			"menu/art/arrows_horz_0"
 #define ART_ARROWLEFT		"menu/art/arrows_horz_left"
 #define ART_ARROWRIGHT		"menu/art/arrows_horz_right"
 #define ART_SAVE0			"menu/art/save_0"
 #define ART_SAVE1			"menu/art/save_1"
-#define ART_BACKGROUND		"menu/art/frame1_l"
 
 #define MAX_CONFIGS			2048
 #define NAMEBUFSIZE			( MAX_CONFIGS * 16 )
@@ -47,8 +44,6 @@ typedef struct {
 	menuframework_s	menu;
 
 	menutext_s		banner;
-	menubitmap_s	framel;
-	menubitmap_s	framer;
 
 	menuobject_s		list;
 
@@ -391,11 +386,6 @@ static void UI_SaveConfigMenu_SavenameDraw( void *self ) {
 	fade[2] = 1.0;
 	fade[3] = 0.8;
 
-	trap_R_SetColor(fade);
-	UI_DrawNamedPic(320 - 120, FILENAME_Y - 12, 80, SMALLCHAR_HEIGHT + 24, ART_FRAMEL);
-	UI_DrawNamedPic(320 + 40, FILENAME_Y - 12, 80, SMALLCHAR_HEIGHT + 24, ART_FRAMER);
-	trap_R_SetColor(NULL);
-
 	if(cl_language.integer == 0){
 	UI_DrawString( 320, FILENAME_Y - 36, "Enter filename:", UI_CENTER|UI_SMALLFONT, color_grey );
 	}
@@ -488,22 +478,6 @@ static void LoadConfig_MenuInit( qboolean load, const char* title,  configCallba
 	s_configs.banner.string 		= titlebuf;
 	s_configs.banner.color			= color_white;
 	s_configs.banner.style			= UI_CENTER;
-
-	s_configs.framel.generic.type	= MTYPE_BITMAP;
-	s_configs.framel.generic.name	= ART_FRAMEL;
-	s_configs.framel.generic.flags	= QMF_INACTIVE;
-	s_configs.framel.generic.x		= 0;
-	s_configs.framel.generic.y		= 52;
-	s_configs.framel.width			= 256;
-	s_configs.framel.height			= 334;
-
-	s_configs.framer.generic.type	= MTYPE_BITMAP;
-	s_configs.framer.generic.name	= ART_FRAMER;
-	s_configs.framer.generic.flags	= QMF_INACTIVE;
-	s_configs.framer.generic.x		= 376;
-	s_configs.framer.generic.y		= 52;
-	s_configs.framer.width			= 256;
-	s_configs.framer.height			= 334;
 
 	s_configs.arrows.generic.type	= MTYPE_BITMAP;
 	s_configs.arrows.generic.name	= ART_ARROWS;
@@ -624,8 +598,6 @@ static void LoadConfig_MenuInit( qboolean load, const char* title,  configCallba
 		s_configs.showid.generic.flags |= (QMF_GRAYED|QMF_INACTIVE);
 
 	Menu_AddItem( &s_configs.menu, &s_configs.banner );
-	Menu_AddItem( &s_configs.menu, &s_configs.framel );
-	Menu_AddItem( &s_configs.menu, &s_configs.framer );
 	Menu_AddItem( &s_configs.menu, &s_configs.list );
 	Menu_AddItem( &s_configs.menu, &s_configs.showid );
 	Menu_AddItem( &s_configs.menu, &s_configs.arrows );
@@ -651,14 +623,11 @@ void UI_LoadConfig_Cache( void ) {
 	trap_R_RegisterShaderNoMip( ART_BACK1 );
 	trap_R_RegisterShaderNoMip( ART_FIGHT0 );
 	trap_R_RegisterShaderNoMip( ART_FIGHT1 );
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
 	trap_R_RegisterShaderNoMip( ART_ARROWS );
 	trap_R_RegisterShaderNoMip( ART_ARROWLEFT );
 	trap_R_RegisterShaderNoMip( ART_ARROWRIGHT );
 	trap_R_RegisterShaderNoMip( ART_SAVE0 );
 	trap_R_RegisterShaderNoMip( ART_SAVE1 );
-	trap_R_RegisterShaderNoMip( ART_BACKGROUND );
 }
 
 

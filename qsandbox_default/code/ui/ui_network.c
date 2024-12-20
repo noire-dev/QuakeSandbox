@@ -10,9 +10,6 @@ NETWORK OPTIONS MENU
 
 #include "ui_local.h"
 
-
-#define ART_FRAMEL			"menu/art/frame2_l"
-#define ART_FRAMER			"menu/art/frame1_r"
 #define ART_BACK0			"menu/art/back_0"
 #define ART_BACK1			"menu/art/back_1"
 
@@ -37,8 +34,6 @@ typedef struct {
 	menuframework_s	menu;
 
 	menutext_s		banner;
-	menubitmap_s	framel;
-	menubitmap_s	framer;
 
 	menutext_s		graphics;
 	menutext_s		display;
@@ -136,22 +131,6 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	networkOptionsInfo.banner.color				= color_white;
 	networkOptionsInfo.banner.style				= UI_CENTER;
 
-	networkOptionsInfo.framel.generic.type		= MTYPE_BITMAP;
-	networkOptionsInfo.framel.generic.name		= ART_FRAMEL;
-	networkOptionsInfo.framel.generic.flags		= QMF_INACTIVE;
-	networkOptionsInfo.framel.generic.x			= 0;  
-	networkOptionsInfo.framel.generic.y			= 78;
-	networkOptionsInfo.framel.width				= 256;
-	networkOptionsInfo.framel.height			= 329;
-
-	networkOptionsInfo.framer.generic.type		= MTYPE_BITMAP;
-	networkOptionsInfo.framer.generic.name		= ART_FRAMER;
-	networkOptionsInfo.framer.generic.flags		= QMF_INACTIVE;
-	networkOptionsInfo.framer.generic.x			= 376;
-	networkOptionsInfo.framer.generic.y			= 76;
-	networkOptionsInfo.framer.width				= 256;
-	networkOptionsInfo.framer.height			= 334;
-
 	networkOptionsInfo.graphics.generic.type		= MTYPE_PTEXT;
 	networkOptionsInfo.graphics.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	networkOptionsInfo.graphics.generic.id			= ID_GRAPHICS;
@@ -239,8 +218,6 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	networkOptionsInfo.back.focuspic			= ART_BACK1;
 
 	Menu_AddItem( &networkOptionsInfo.menu, ( void * ) &networkOptionsInfo.banner );
-	Menu_AddItem( &networkOptionsInfo.menu, ( void * ) &networkOptionsInfo.framel );
-	Menu_AddItem( &networkOptionsInfo.menu, ( void * ) &networkOptionsInfo.framer );
 	Menu_AddItem( &networkOptionsInfo.menu, ( void * ) &networkOptionsInfo.graphics );
 	Menu_AddItem( &networkOptionsInfo.menu, ( void * ) &networkOptionsInfo.display );
 	Menu_AddItem( &networkOptionsInfo.menu, ( void * ) &networkOptionsInfo.sound );
@@ -273,8 +250,6 @@ UI_NetworkOptionsMenu_Cache
 ===============
 */
 void UI_NetworkOptionsMenu_Cache( void ) {
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
 	trap_R_RegisterShaderNoMip( ART_BACK0 );
 	trap_R_RegisterShaderNoMip( ART_BACK1 );
 }

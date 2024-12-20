@@ -10,9 +10,6 @@ DISPLAY OPTIONS MENU
 
 #include "ui_local.h"
 
-
-#define ART_FRAMEL			"menu/art/frame2_l"
-#define ART_FRAMER			"menu/art/frame1_r"
 #define ART_BACK0			"menu/art/back_0"
 #define ART_BACK1			"menu/art/back_1"
 
@@ -41,8 +38,6 @@ typedef struct {
 	menuframework_s	menu;
 
 	menutext_s		banner;
-	menubitmap_s	framel;
-	menubitmap_s	framer;
 
 	menutext_s		graphics;
 	menutext_s		display;
@@ -209,22 +204,6 @@ static void UI_DisplayOptionsMenu_Init( void ) {
 	}
 	displayOptionsInfo.banner.color				= color_white;
 	displayOptionsInfo.banner.style				= UI_CENTER;
-
-	displayOptionsInfo.framel.generic.type		= MTYPE_BITMAP;
-	displayOptionsInfo.framel.generic.name		= ART_FRAMEL;
-	displayOptionsInfo.framel.generic.flags		= QMF_INACTIVE;
-	displayOptionsInfo.framel.generic.x			= 0;  
-	displayOptionsInfo.framel.generic.y			= 78;
-	displayOptionsInfo.framel.width				= 256;
-	displayOptionsInfo.framel.height			= 329;
-
-	displayOptionsInfo.framer.generic.type		= MTYPE_BITMAP;
-	displayOptionsInfo.framer.generic.name		= ART_FRAMER;
-	displayOptionsInfo.framer.generic.flags		= QMF_INACTIVE;
-	displayOptionsInfo.framer.generic.x			= 376;
-	displayOptionsInfo.framer.generic.y			= 76;
-	displayOptionsInfo.framer.width				= 256;
-	displayOptionsInfo.framer.height			= 334;
 
 	displayOptionsInfo.graphics.generic.type		= MTYPE_PTEXT;
 	displayOptionsInfo.graphics.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -486,8 +465,6 @@ displayOptionsInfo.istyle.generic.name	   	= "Стиль предметов:";
 }
 
 	Menu_AddItem( &displayOptionsInfo.menu, ( void * ) &displayOptionsInfo.banner );
-	Menu_AddItem( &displayOptionsInfo.menu, ( void * ) &displayOptionsInfo.framel );
-	Menu_AddItem( &displayOptionsInfo.menu, ( void * ) &displayOptionsInfo.framer );
 	Menu_AddItem( &displayOptionsInfo.menu, ( void * ) &displayOptionsInfo.graphics );
 	Menu_AddItem( &displayOptionsInfo.menu, ( void * ) &displayOptionsInfo.display );
 	Menu_AddItem( &displayOptionsInfo.menu, ( void * ) &displayOptionsInfo.sound );
@@ -545,8 +522,6 @@ UI_DisplayOptionsMenu_Cache
 ===============
 */
 void UI_DisplayOptionsMenu_Cache( void ) {
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
 	trap_R_RegisterShaderNoMip( ART_BACK0 );
 	trap_R_RegisterShaderNoMip( ART_BACK1 );
 }

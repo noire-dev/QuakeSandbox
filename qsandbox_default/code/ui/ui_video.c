@@ -32,16 +32,11 @@ DRIVER INFORMATION MENU
 =======================================================================
 */
 
-
-#define DRIVERINFO_FRAMEL	"menu/art/frame2_l"
-#define DRIVERINFO_FRAMER	"menu/art/frame1_r"
 #define DRIVERINFO_BACK0	"menu/art/back_0"
 #define DRIVERINFO_BACK1	"menu/art/back_1"
 
 static char* driverinfo_artlist[] = 
 {
-	DRIVERINFO_FRAMEL,
-	DRIVERINFO_FRAMER,
 	DRIVERINFO_BACK0,
 	DRIVERINFO_BACK1,
 	NULL,
@@ -54,8 +49,6 @@ typedef struct
 	menuframework_s	menu;
 	menutext_s		banner;
 	menubitmap_s	back;
-	menubitmap_s	framel;
-	menubitmap_s	framer;
 	char			stringbuff[1024];
 	char*			strings[64];
 	int				numstrings;
@@ -157,22 +150,6 @@ static void UI_DriverInfo_Menu( void )
 	s_driverinfo.banner.color	      = color_white;
 	s_driverinfo.banner.style	      = UI_CENTER;
 
-	s_driverinfo.framel.generic.type  = MTYPE_BITMAP;
-	s_driverinfo.framel.generic.name  = DRIVERINFO_FRAMEL;
-	s_driverinfo.framel.generic.flags = QMF_INACTIVE;
-	s_driverinfo.framel.generic.x	  = 0;
-	s_driverinfo.framel.generic.y	  = 78;
-	s_driverinfo.framel.width  	      = 256;
-	s_driverinfo.framel.height  	  = 329;
-
-	s_driverinfo.framer.generic.type  = MTYPE_BITMAP;
-	s_driverinfo.framer.generic.name  = DRIVERINFO_FRAMER;
-	s_driverinfo.framer.generic.flags = QMF_INACTIVE;
-	s_driverinfo.framer.generic.x	  = 376;
-	s_driverinfo.framer.generic.y	  = 76;
-	s_driverinfo.framer.width  	      = 256;
-	s_driverinfo.framer.height  	  = 334;
-
 	s_driverinfo.back.generic.type	   = MTYPE_BITMAP;
 	s_driverinfo.back.generic.name     = DRIVERINFO_BACK0;
 	s_driverinfo.back.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -215,8 +192,6 @@ static void UI_DriverInfo_Menu( void )
 	}
 
 	Menu_AddItem( &s_driverinfo.menu, &s_driverinfo.banner );
-	Menu_AddItem( &s_driverinfo.menu, &s_driverinfo.framel );
-	Menu_AddItem( &s_driverinfo.menu, &s_driverinfo.framer );
 	Menu_AddItem( &s_driverinfo.menu, &s_driverinfo.back );
 
 	UI_PushMenu( &s_driverinfo.menu );
@@ -229,9 +204,6 @@ GRAPHICS OPTIONS MENU
 
 =======================================================================
 */
-
-#define GRAPHICSOPTIONS_FRAMEL	"menu/art/frame2_l"
-#define GRAPHICSOPTIONS_FRAMER	"menu/art/frame1_r"
 #define GRAPHICSOPTIONS_BACK0	"menu/art/back_0"
 #define GRAPHICSOPTIONS_BACK1	"menu/art/back_1"
 #define GRAPHICSOPTIONS_ACCEPT0	"menu/art/accept_0"
@@ -252,8 +224,6 @@ typedef struct {
 	menuframework_s	menu;
 
 	menutext_s		banner;
-	menubitmap_s	framel;
-	menubitmap_s	framer;
 
 	menutext_s		graphics;
 	menutext_s		display;
@@ -1026,22 +996,6 @@ void GraphicsOptions_MenuInit( void )
 	s_graphicsoptions.banner.color         = color_white;
 	s_graphicsoptions.banner.style         = UI_CENTER;
 
-	s_graphicsoptions.framel.generic.type  = MTYPE_BITMAP;
-	s_graphicsoptions.framel.generic.name  = GRAPHICSOPTIONS_FRAMEL;
-	s_graphicsoptions.framel.generic.flags = QMF_INACTIVE;
-	s_graphicsoptions.framel.generic.x	   = 0;
-	s_graphicsoptions.framel.generic.y	   = 78;
-	s_graphicsoptions.framel.width  	   = 256;
-	s_graphicsoptions.framel.height  	   = 329;
-
-	s_graphicsoptions.framer.generic.type  = MTYPE_BITMAP;
-	s_graphicsoptions.framer.generic.name  = GRAPHICSOPTIONS_FRAMER;
-	s_graphicsoptions.framer.generic.flags = QMF_INACTIVE;
-	s_graphicsoptions.framer.generic.x	   = 376;
-	s_graphicsoptions.framer.generic.y	   = 76;
-	s_graphicsoptions.framer.width  	   = 256;
-	s_graphicsoptions.framer.height  	   = 334;
-
 	s_graphicsoptions.graphics.generic.type		= MTYPE_PTEXT;
 	s_graphicsoptions.graphics.generic.flags	= QMF_RIGHT_JUSTIFY;
 	s_graphicsoptions.graphics.generic.id		= ID_GRAPHICS;
@@ -1295,8 +1249,6 @@ void GraphicsOptions_MenuInit( void )
 	}
 
 	Menu_AddItem( &s_graphicsoptions.menu, ( void * ) &s_graphicsoptions.banner );
-	Menu_AddItem( &s_graphicsoptions.menu, ( void * ) &s_graphicsoptions.framel );
-	Menu_AddItem( &s_graphicsoptions.menu, ( void * ) &s_graphicsoptions.framer );
 
 	Menu_AddItem( &s_graphicsoptions.menu, ( void * ) &s_graphicsoptions.graphics );
 	Menu_AddItem( &s_graphicsoptions.menu, ( void * ) &s_graphicsoptions.display );
@@ -1335,8 +1287,6 @@ GraphicsOptions_Cache
 =================
 */
 void GraphicsOptions_Cache( void ) {
-	trap_R_RegisterShaderNoMip( GRAPHICSOPTIONS_FRAMEL );
-	trap_R_RegisterShaderNoMip( GRAPHICSOPTIONS_FRAMER );
 	trap_R_RegisterShaderNoMip( GRAPHICSOPTIONS_BACK0 );
 	trap_R_RegisterShaderNoMip( GRAPHICSOPTIONS_BACK1 );
 	trap_R_RegisterShaderNoMip( GRAPHICSOPTIONS_ACCEPT0 );

@@ -19,8 +19,6 @@ SETUP MENU
 
 #define ART_BACK0		"menu/art/back_0"
 #define ART_BACK1		"menu/art/back_1"
-#define ART_FRAMEL		"menu/art/frame2_l"
-#define ART_FRAMER		"menu/art/frame1_r"
 
 #define ID_CUSTOMIZEPLAYER		10
 #define ID_CUSTOMIZECONTROLS	11
@@ -39,8 +37,6 @@ typedef struct {
 	menuframework_s	menu;
 
 	menutext_s		banner;
-	menubitmap_s	framel;
-	menubitmap_s	framer;
 	menutext_s		setupplayer;
 	menutext_s		setupmodel;
 	menutext_s		setupcontrols;
@@ -187,22 +183,6 @@ static void UI_SetupMenu_Init( void ) {
 	setupMenuInfo.banner.color						= color_white;
 	setupMenuInfo.banner.style						= UI_CENTER;
 
-	setupMenuInfo.framel.generic.type				= MTYPE_BITMAP;
-	setupMenuInfo.framel.generic.name				= ART_FRAMEL;
-	setupMenuInfo.framel.generic.flags				= QMF_INACTIVE;
-	setupMenuInfo.framel.generic.x					= 0;  
-	setupMenuInfo.framel.generic.y					= 78;
-	setupMenuInfo.framel.width  					= 256;
-	setupMenuInfo.framel.height  					= 329;
-
-	setupMenuInfo.framer.generic.type				= MTYPE_BITMAP;
-	setupMenuInfo.framer.generic.name				= ART_FRAMER;
-	setupMenuInfo.framer.generic.flags				= QMF_INACTIVE;
-	setupMenuInfo.framer.generic.x					= 376;
-	setupMenuInfo.framer.generic.y					= 76;
-	setupMenuInfo.framer.width  					= 256;
-	setupMenuInfo.framer.height  					= 334;
-
 	y = 128 - SETUP_MENU_VERTICAL_SPACING;
 	setupMenuInfo.setupplayer.generic.type			= MTYPE_PTEXT;
 	setupMenuInfo.setupplayer.generic.flags			= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -347,8 +327,6 @@ static void UI_SetupMenu_Init( void ) {
 	}
 
 	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.banner );
-	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.framel );
-	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.framer );
 	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.setupplayer );
 	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.setupmodel );
 	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.setupcontrols );
@@ -371,8 +349,6 @@ UI_SetupMenu_Cache
 void UI_SetupMenu_Cache( void ) {
 	trap_R_RegisterShaderNoMip( ART_BACK0 );
 	trap_R_RegisterShaderNoMip( ART_BACK1 );
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
 }
 
 

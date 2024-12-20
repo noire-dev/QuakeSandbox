@@ -2,15 +2,11 @@
 //
 #include "ui_local.h"
 
-#define SERVERINFO_FRAMEL	"menu/art/frame2_l"
-#define SERVERINFO_FRAMER	"menu/art/frame1_r"
 #define SERVERINFO_BACK0	"menu/art/back_0"
 #define SERVERINFO_BACK1	"menu/art/back_1"
 
 static char* serverinfo_artlist[] =
 {
-	SERVERINFO_FRAMEL,	
-	SERVERINFO_FRAMER,
 	SERVERINFO_BACK0,
 	SERVERINFO_BACK1,
 	NULL
@@ -23,8 +19,6 @@ typedef struct
 {
 	menuframework_s	menu;
 	menutext_s		banner;
-	menubitmap_s	framel;
-	menubitmap_s	framer;
 	menubitmap_s	back;
 	menutext_s		add;
 	char			info[MAX_INFO_STRING];
@@ -191,22 +185,6 @@ void UI_ServerInfoMenu( void )
 	s_serverinfo.banner.color	      = color_white;
 	s_serverinfo.banner.style	      = UI_CENTER;
 
-	s_serverinfo.framel.generic.type  = MTYPE_BITMAP;
-	s_serverinfo.framel.generic.name  = SERVERINFO_FRAMEL;
-	s_serverinfo.framel.generic.flags = QMF_INACTIVE;
-	s_serverinfo.framel.generic.x	  = 0;  
-	s_serverinfo.framel.generic.y	  = 78;
-	s_serverinfo.framel.width  	      = 256;
-	s_serverinfo.framel.height  	  = 329;
-
-	s_serverinfo.framer.generic.type  = MTYPE_BITMAP;
-	s_serverinfo.framer.generic.name  = SERVERINFO_FRAMER;
-	s_serverinfo.framer.generic.flags = QMF_INACTIVE;
-	s_serverinfo.framer.generic.x	  = 376;
-	s_serverinfo.framer.generic.y	  = 76;
-	s_serverinfo.framer.width  	      = 256;
-	s_serverinfo.framer.height  	  = 334;
-
 	s_serverinfo.add.generic.type	  = MTYPE_PTEXT;
 	s_serverinfo.add.generic.flags    = QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_serverinfo.add.generic.callback = ServerInfo_Event;
@@ -252,8 +230,6 @@ void UI_ServerInfoMenu( void )
 		s_serverinfo.numlines = 16;
 
 	Menu_AddItem( &s_serverinfo.menu, (void*) &s_serverinfo.banner );
-	Menu_AddItem( &s_serverinfo.menu, (void*) &s_serverinfo.framel );
-	Menu_AddItem( &s_serverinfo.menu, (void*) &s_serverinfo.framer );
 	Menu_AddItem( &s_serverinfo.menu, (void*) &s_serverinfo.add );
 	Menu_AddItem( &s_serverinfo.menu, (void*) &s_serverinfo.back );
 

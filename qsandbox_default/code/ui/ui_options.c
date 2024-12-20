@@ -9,9 +9,6 @@ SYSTEM CONFIGURATION MENU
 
 #include "ui_local.h"
 
-
-#define ART_FRAMEL			"menu/art/frame2_l"
-#define ART_FRAMER			"menu/art/frame1_r"
 #define ART_BACK0			"menu/art/back_0"
 #define ART_BACK1			"menu/art/back_1"
 
@@ -27,8 +24,6 @@ typedef struct {
 	menuframework_s	menu;
 
 	menutext_s		banner;
-	menubitmap_s	framel;
-	menubitmap_s	framer;
 
 	menutext_s		graphics;
 	menutext_s		display;
@@ -80,8 +75,6 @@ SystemConfig_Cache
 ===============
 */
 void SystemConfig_Cache( void ) {
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
 	trap_R_RegisterShaderNoMip( ART_BACK0 );
 	trap_R_RegisterShaderNoMip( ART_BACK1 );
 }
@@ -121,22 +114,6 @@ void Options_MenuInit( void ) {
 	}
 	s_options.banner.color			= color_white;
 	s_options.banner.style			= UI_CENTER;
-
-	s_options.framel.generic.type  = MTYPE_BITMAP;
-	s_options.framel.generic.name  = ART_FRAMEL;
-	s_options.framel.generic.flags = QMF_INACTIVE;
-	s_options.framel.generic.x	   = 8;  
-	s_options.framel.generic.y	   = 76;
-	s_options.framel.width  	   = 256;
-	s_options.framel.height  	   = 334;
-
-	s_options.framer.generic.type  = MTYPE_BITMAP;
-	s_options.framer.generic.name  = ART_FRAMER;
-	s_options.framer.generic.flags = QMF_INACTIVE;
-	s_options.framer.generic.x	   = 376;
-	s_options.framer.generic.y	   = 76;
-	s_options.framer.width  	   = 256;
-	s_options.framer.height  	   = 334;
 
 	y = 168;
 	s_options.graphics.generic.type		= MTYPE_PTEXT;
@@ -214,8 +191,6 @@ void Options_MenuInit( void ) {
 	s_options.back.focuspic         = ART_BACK1;
 
 	Menu_AddItem( &s_options.menu, ( void * ) &s_options.banner );
-	Menu_AddItem( &s_options.menu, ( void * ) &s_options.framel );
-	Menu_AddItem( &s_options.menu, ( void * ) &s_options.framer );
 	Menu_AddItem( &s_options.menu, ( void * ) &s_options.graphics );
 	Menu_AddItem( &s_options.menu, ( void * ) &s_options.display );
 	Menu_AddItem( &s_options.menu, ( void * ) &s_options.sound );

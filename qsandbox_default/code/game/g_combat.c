@@ -1195,6 +1195,8 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 	knockback *= 1.00;
 	if ( mod == MOD_PROP )
 	knockback *= 1.00;
+	if ( mod == MOD_NUKE )
+	knockback *= 3.00;
 	if ( mod == MOD_GAUNTLET )
 	knockback *= g_gknockback.value;
 	if ( mod == MOD_MACHINEGUN )

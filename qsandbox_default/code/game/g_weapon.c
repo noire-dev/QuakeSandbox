@@ -1627,13 +1627,13 @@ void NukeExplodeDamage( gentity_t *self ) {
 	if (self->count >= KAMI_SHOCKWAVE_STARTTIME) {
 		// shockwave push back
 		t = self->count - KAMI_SHOCKWAVE_STARTTIME;
-		KamikazeShockWave(self->s.pos.trBase, self->activator, 50, 400,	800, MOD_NUKE );
+		KamikazeShockWave(self->s.pos.trBase, self->lastPlayer, 50, 400,	800, MOD_NUKE );
 	}
 	//
 	if (self->count >= KAMI_EXPLODE_STARTTIME) {
 		// do our damage
 		t = self->count - KAMI_EXPLODE_STARTTIME;
-		KamikazeRadiusDamage( self->s.pos.trBase, self->activator, 100, 800, MOD_NUKE );
+		KamikazeRadiusDamage( self->s.pos.trBase, self->lastPlayer, 100, 800, MOD_NUKE );
 	}
 
 	// either cycle or kill self

@@ -781,8 +781,6 @@ static void StartServer_WeaponPage_SetControlFromId(int id, int type)
 	}
 }
 
-
-
 /*
 =================
 StartServer_WeaponPage_UpdateInterface
@@ -846,8 +844,6 @@ static void StartServer_WeaponPage_UpdateInterface(void)
 	}
 }
 
-
-
 /*
 =================
 StartServer_WeaponPage_Cache
@@ -859,10 +855,6 @@ void StartServer_WeaponPage_Cache( void )
 	trap_R_RegisterShaderNoMip( SERVER_SAVE1 );
 }
 
-
-
-
-
 /*
 =================
 StartServer_WeaponPage_Save
@@ -872,11 +864,6 @@ static void StartServer_WeaponPage_Save( void )
 {
 	StartServer_SaveScriptData();
 }
-
-
-
-
-
 
 /*
 =================
@@ -905,9 +892,6 @@ static qboolean StartServer_WeaponPage_CheckMinMaxFail( controlinit_t* c )
 	return qfalse;
 }
 
-
-
-
 /*
 =================
 StartServer_WeaponPage_SpinEvent
@@ -928,9 +912,6 @@ static void StartServer_WeaponPage_SpinEvent( void* ptr, int event )
 	*(s->init->number) = s_weaponcontrols.spin[id].control.curvalue;
 	StartServer_WeaponPage_UpdateInterface();
 }
-
-
-
 
 /*
 =================
@@ -953,8 +934,6 @@ static void StartServer_WeaponPage_RadioEvent( void* ptr, int event )
 
 	StartServer_WeaponPage_UpdateInterface();
 }
-
-
 
 /*
 =================
@@ -990,9 +969,6 @@ static void StartServer_WeaponPage_FieldEvent( void* ptr, int event )
 	StartServer_WeaponPage_UpdateInterface();
 }
 
-
-
-
 /*
 =================
 StartServer_WeaponPage_SetStatusBar
@@ -1004,8 +980,6 @@ static void StartServer_WeaponPage_SetStatusBar( const char* text )
 	if (text)
 		Q_strncpyz(s_weaponcontrols.statusbar_message, text, MAX_STATUSBAR_TEXT);
 }
-
-
 
 /*
 =================
@@ -1037,98 +1011,7 @@ static void StartServer_WeaponPage_ControlListStatusBar(void* ptr)
 		Com_Printf("Status bar: unsupported control type (%i)\n", m->id);
 		return;
 	}
-
-
-	/*switch (c->id) {
-	case ID_SERVER_CONFIGBUG:
-		StartServer_WeaponPage_SetStatusBar("fixes change of time and frag limits (pre 1.30 only)");
-		return;
-
-	case ID_SERVER_PMOVEMSEC:
-		StartServer_WeaponPage_SetStatusBar("pmove step time, minimum 8 (recommended)");
-		return;
-
-	case ID_SERVER_PMOVEFIXED:
-		StartServer_WeaponPage_SetStatusBar("on = same movement physics for all players");
-		return;
-
-	case ID_SERVER_RESPAWN:
-		StartServer_WeaponPage_SetStatusBar("forces respawn of dead player");
-		return;
-
-	case ID_SERVER_ALLOWMAXRATE:
-		StartServer_WeaponPage_SetStatusBar("limit data sent to a single client per second");
-		return;
-
-	case ID_SERVER_MAXRATE:
-		StartServer_WeaponPage_SetStatusBar("8000 or 10000 are typical, 0 = no limit");
-		return;
-
-	case ID_SERVER_DEDICATED:
-		StartServer_WeaponPage_SetStatusBar("LAN = local game, Internet = announced to master server");
-		return;
-
-	case ID_SERVER_SMOOTHCLIENTS:
-		StartServer_WeaponPage_SetStatusBar("on = server allows a client to predict other player movement");
-		return;
-
-	case ID_SERVER_SYNCCLIENTS:
-		StartServer_WeaponPage_SetStatusBar("on = allows client to record demos, may affect performance");
-		return;
-
-	case ID_SERVER_GRAVITY:
-		StartServer_WeaponPage_SetStatusBar("affects all maps, default = 800");
-		return;
-		
-	case ID_SERVER_JUMPHEIGHT:
-		StartServer_WeaponPage_SetStatusBar("affects all maps, default = 270");
-		return;
-
-	case ID_SERVER_KNOCKBACK:
-		StartServer_WeaponPage_SetStatusBar("kickback from damage, default = 1000");
-		return;
-
-	case ID_SERVER_QUADFACTOR:
-		StartServer_WeaponPage_SetStatusBar("additional damage caused by quad, default = 3");
-		return;
-
-	case ID_SERVER_NETPORT:
-		StartServer_WeaponPage_SetStatusBar("server listens on this port for client connections");
-		return;
-
-	case ID_SERVER_SVFPS:
-		StartServer_WeaponPage_SetStatusBar("server framerate, default = 20");
-		return;
-
-	case ID_SERVER_ALLOWPRIVATECLIENT:
-		StartServer_WeaponPage_SetStatusBar("reserve some player slots - password required");
-		return;
-
-	case ID_SERVER_PRIVATECLIENT:
-		StartServer_WeaponPage_SetStatusBar("number of reserved slots, reduces max clients");
-		return;
-
-	case ID_SERVER_WEAPONRESPAWN:
-		StartServer_WeaponPage_SetStatusBar("time before weapon respawns, default = 5, TeamDM = 30");
-		return;
-
-	case ID_SERVER_ALLOWPASS:
-		StartServer_WeaponPage_SetStatusBar("all clients must use a password to connect");
-		return;
-
-	case ID_SERVER_ALLOWMINPING:
-	case ID_SERVER_ALLOWMAXPING:
-	case ID_SERVER_MINPING:
-	case ID_SERVER_MAXPING:
-		StartServer_WeaponPage_SetStatusBar("Client ping limit, tested on first connection");
-		return;
-	}*/
 }
-
-
-
-
-
 
 /*
 =================

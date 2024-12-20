@@ -6,8 +6,6 @@
 #define ART_BACK1			"menu/art/back_1"	
 #define ART_FIGHT0			"menu/art/accept_0"
 #define ART_FIGHT1			"menu/art/accept_1"
-#define ART_FRAMEL			"menu/art/frame2_l"
-#define ART_FRAMER			"menu/art/frame1_r"
 
 #define MAX_WSITEMS			256
 #define NAMEBUFSIZE			( MAX_WSITEMS * 48 )
@@ -24,8 +22,6 @@ typedef struct {
 	menuframework_s	menu;
 
 	menutext_s		banner;
-	menubitmap_s	framel;
-	menubitmap_s	framer;
 
 	menulist_s		list;
 	menufield_s		filter;
@@ -266,22 +262,6 @@ static void UI_Advanced_MenuInit( void ) {
 	s_advanced.banner.color				= color_white;
 	s_advanced.banner.style				= UI_CENTER;
 
-	s_advanced.framel.generic.type		= MTYPE_BITMAP;
-	s_advanced.framel.generic.name		= ART_FRAMEL;
-	s_advanced.framel.generic.flags		= QMF_INACTIVE;
-	s_advanced.framel.generic.x			= 0;  
-	s_advanced.framel.generic.y			= 78;
-	s_advanced.framel.width				= 256;
-	s_advanced.framel.height			= 329;
-
-	s_advanced.framer.generic.type		= MTYPE_BITMAP;
-	s_advanced.framer.generic.name		= ART_FRAMER;
-	s_advanced.framer.generic.flags		= QMF_INACTIVE;
-	s_advanced.framer.generic.x			= 376;
-	s_advanced.framer.generic.y			= 76;
-	s_advanced.framer.width				= 256;
-	s_advanced.framer.height			= 334;
-
 	s_advanced.back.generic.type		= MTYPE_BITMAP;
 	s_advanced.back.generic.name		= ART_BACK0;
 	s_advanced.back.generic.flags		= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -348,8 +328,6 @@ static void UI_Advanced_MenuInit( void ) {
 	UI_Advanced_LoadItemsFromFile();
 
 	Menu_AddItem( &s_advanced.menu, &s_advanced.banner );
-	Menu_AddItem( &s_advanced.menu, &s_advanced.framel );
-	Menu_AddItem( &s_advanced.menu, &s_advanced.framer );
 	Menu_AddItem( &s_advanced.menu, &s_advanced.list );
 	Menu_AddItem( &s_advanced.menu, &s_advanced.back );
 	Menu_AddItem( &s_advanced.menu, &s_advanced.go );
@@ -367,8 +345,6 @@ void UI_AdvancedMenu_Cache( void ) {
 	trap_R_RegisterShaderNoMip( ART_BACK1 );
 	trap_R_RegisterShaderNoMip( ART_FIGHT0 );
 	trap_R_RegisterShaderNoMip( ART_FIGHT1 );
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
 }
 
 

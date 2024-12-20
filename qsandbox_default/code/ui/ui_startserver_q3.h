@@ -46,10 +46,6 @@ START SERVER MENU HEADER (Q3 UI INTERFACE SPECIFIC) *****
 #define GAMESERVER_ACTION0 "menu/uie_art/action0"
 #define GAMESERVER_ACTION1 "menu/uie_art/action1"
 
-
-
-#define FRAME_LEFT "menu/art/frame2_l"
-#define FRAME_RIGHT "menu/art/frame1_r"
 #define FRAME_SPLASH "menu/art/cut_frame"
 #define FRAME_EXCLUDED "menu/uie_art/excluded"
 

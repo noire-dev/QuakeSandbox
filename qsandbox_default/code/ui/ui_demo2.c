@@ -19,8 +19,6 @@ DEMOS MENU
 #define ART_BACK1			"menu/art/back_1"	
 #define ART_GO0				"menu/art/fight_0"
 #define ART_GO1				"menu/art/fight_1"
-#define ART_FRAMEL			"menu/art/frame2_l"
-#define ART_FRAMER			"menu/art/frame1_r"
 #define ART_ARROWS			"menu/art/arrows_horz_0"
 #define ART_ARROWLEFT		"menu/art/arrows_horz_left"
 #define ART_ARROWRIGHT		"menu/art/arrows_horz_right"
@@ -44,8 +42,6 @@ typedef struct {
 	menuframework_s	menu;
 
 	menutext_s		banner;
-	menubitmap_s	framel;
-	menubitmap_s	framer;
 
 	menulist_s		list;
 
@@ -242,14 +238,6 @@ static void Demos_MenuInit( void ) {
 	s_demos.banner.color			= color_white;
 	s_demos.banner.style			= UI_CENTER;
 
-	s_demos.framel.generic.type		= MTYPE_BITMAP;
-	s_demos.framel.generic.name		= ART_FRAMEL;
-	s_demos.framel.generic.flags	= QMF_INACTIVE;
-	s_demos.framel.generic.x		= 0;  
-	s_demos.framel.generic.y		= 78;
-	s_demos.framel.width			= 256;
-	s_demos.framel.height			= 329;
-
 	s_demos.timedemo.generic.type	= MTYPE_RADIOBUTTON;
 	s_demos.timedemo.generic.x		= 480 - SMALLCHAR_WIDTH;
 	s_demos.timedemo.generic.y		= 480 - 32 - SMALLCHAR_HEIGHT / 2;
@@ -261,14 +249,6 @@ static void Demos_MenuInit( void ) {
 	}
 	s_demos.timedemo.generic.flags	= QMF_SMALLFONT|QMF_PULSEIFFOCUS;
 	s_demos.timedemo.generic.id		= ID_TIMEDEMO;
-
-	s_demos.framer.generic.type		= MTYPE_BITMAP;
-	s_demos.framer.generic.name		= ART_FRAMER;
-	s_demos.framer.generic.flags	= QMF_INACTIVE;
-	s_demos.framer.generic.x		= 376;
-	s_demos.framer.generic.y		= 76;
-	s_demos.framer.width			= 256;
-	s_demos.framer.height			= 334;
 
 	s_demos.arrows.generic.type		= MTYPE_BITMAP;
 	s_demos.arrows.generic.name		= ART_ARROWS;
@@ -362,8 +342,6 @@ static void Demos_MenuInit( void ) {
 	}
 
 	Menu_AddItem( &s_demos.menu, &s_demos.banner );
-	Menu_AddItem( &s_demos.menu, &s_demos.framel );
-	Menu_AddItem( &s_demos.menu, &s_demos.framer );
 	Menu_AddItem( &s_demos.menu, &s_demos.list );
 	Menu_AddItem( &s_demos.menu, &s_demos.arrows );
 	Menu_AddItem( &s_demos.menu, &s_demos.left );
@@ -383,8 +361,6 @@ void Demos_Cache( void ) {
 	trap_R_RegisterShaderNoMip( ART_BACK1 );
 	trap_R_RegisterShaderNoMip( ART_GO0 );
 	trap_R_RegisterShaderNoMip( ART_GO1 );
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
 	trap_R_RegisterShaderNoMip( ART_ARROWS );
 	trap_R_RegisterShaderNoMip( ART_ARROWLEFT );
 	trap_R_RegisterShaderNoMip( ART_ARROWRIGHT );

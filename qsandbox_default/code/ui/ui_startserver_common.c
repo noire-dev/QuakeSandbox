@@ -50,8 +50,6 @@ void StartServer_BackgroundDraw(qboolean excluded)
 	h = 480 - 2 * y;
 
 	trap_R_SetColor( dim );
-	UI_DrawNamedPic( 32, y, w, h, FRAME_LEFT);
-	UI_DrawNamedPic( 640 - 32 - w, y, w, h, FRAME_RIGHT );
 
 	if (excluded)
 	{
@@ -141,8 +139,6 @@ void StartServer_CommonControls_Cache( void )
 	trap_R_RegisterShaderNoMip( GAMESERVER_BOTS0 );
 	trap_R_RegisterShaderNoMip( GAMESERVER_BOTS1 );
 
-	trap_R_RegisterShaderNoMip( FRAME_LEFT );
-	trap_R_RegisterShaderNoMip( FRAME_RIGHT );
 	trap_R_RegisterShaderNoMip( FRAME_EXCLUDED );
 }
 

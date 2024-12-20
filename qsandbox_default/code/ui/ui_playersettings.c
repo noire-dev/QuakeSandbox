@@ -1,13 +1,8 @@
 // Copyright (C) 1999-2000 Id Software, Inc.
 //
 
-
-
-
 #include "ui_local.h"
 
-#define ART_FRAMEL			"menu/art/frame2_l"
-#define ART_FRAMER			"menu/art/frame1_r"
 #define ART_MODEL0			"menu/art/model_0"
 #define ART_MODEL1			"menu/art/model_1"
 #define ART_BACK0			"menu/art/back_0"
@@ -44,8 +39,6 @@ typedef struct {
 	menuframework_s		menu;
 
 	menutext_s			banner;
-	menubitmap_s		framel;
-	menubitmap_s		framer;
 
 	menufield_s			name;
 	menulist_s			effects;
@@ -447,22 +440,6 @@ static void PlayerSettings_MenuInit( void ) {
 	s_playersettings.banner.color         = color_white;
 	s_playersettings.banner.style         = UI_CENTER;
 
-	s_playersettings.framel.generic.type  = MTYPE_BITMAP;
-	s_playersettings.framel.generic.name  = ART_FRAMEL;
-	s_playersettings.framel.generic.flags = QMF_LEFT_JUSTIFY|QMF_INACTIVE;
-	s_playersettings.framel.generic.x     = 0;
-	s_playersettings.framel.generic.y     = 78;
-	s_playersettings.framel.width         = 256;
-	s_playersettings.framel.height        = 329;
-
-	s_playersettings.framer.generic.type  = MTYPE_BITMAP;
-	s_playersettings.framer.generic.name  = ART_FRAMER;
-	s_playersettings.framer.generic.flags = QMF_LEFT_JUSTIFY|QMF_INACTIVE;
-	s_playersettings.framer.generic.x     = 376;
-	s_playersettings.framer.generic.y     = 76;
-	s_playersettings.framer.width         = 256;
-	s_playersettings.framer.height        = 334;
-
 	y = 50;
 	s_playersettings.name.generic.type			= MTYPE_FIELD;
 	s_playersettings.name.generic.flags			= QMF_NODEFAULTINIT;
@@ -682,8 +659,6 @@ y = 170;
 	s_playersettings.modeltype.style					= UI_CENTER|UI_DROPSHADOW|UI_SMALLFONT;
 
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.banner );
-	Menu_AddItem( &s_playersettings.menu, &s_playersettings.framel );
-	Menu_AddItem( &s_playersettings.menu, &s_playersettings.framer );
 
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.name );
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.effects );
@@ -716,8 +691,6 @@ PlayerSettings_Cache
 =================
 */
 void PlayerSettings_Cache( void ) {
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
 	trap_R_RegisterShaderNoMip( ART_MODEL0 );
 	trap_R_RegisterShaderNoMip( ART_MODEL1 );
 	trap_R_RegisterShaderNoMip( ART_BACK0 );

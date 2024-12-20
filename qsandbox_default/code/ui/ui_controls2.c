@@ -12,9 +12,6 @@ CONTROLS MENU
 
 #define ART_BACK0			"menu/art/back_0"
 #define ART_BACK1			"menu/art/back_1"
-#define ART_FRAMEL			"menu/art/frame2_l"
-#define ART_FRAMER			"menu/art/frame1_r"
-
 
 typedef struct {
 	char	*command;
@@ -127,8 +124,6 @@ typedef struct
 	menuframework_s		menu;
 
 	menutext_s			banner;
-	menubitmap_s		framel;
-	menubitmap_s		framer;
 //	menubitmap_s		player;
 
 	menutext_s			movement;
@@ -1219,22 +1214,6 @@ static void Controls_MenuInit( void )
 	s_controls.banner.color			= color_white;
 	s_controls.banner.style			= UI_CENTER;
 
-	s_controls.framel.generic.type  = MTYPE_BITMAP;
-	s_controls.framel.generic.name  = ART_FRAMEL;
-	s_controls.framel.generic.flags = QMF_LEFT_JUSTIFY|QMF_INACTIVE;
-	s_controls.framel.generic.x     = 0;
-	s_controls.framel.generic.y     = 78;
-	s_controls.framel.width  	    = 256;
-	s_controls.framel.height  	    = 329;
-
-	s_controls.framer.generic.type  = MTYPE_BITMAP;
-	s_controls.framer.generic.name  = ART_FRAMER;
-	s_controls.framer.generic.flags = QMF_LEFT_JUSTIFY|QMF_INACTIVE;
-	s_controls.framer.generic.x     = 376;
-	s_controls.framer.generic.y     = 76;
-	s_controls.framer.width  	    = 256;
-	s_controls.framer.height  	    = 334;
-
 	s_controls.looking.generic.type     = MTYPE_PTEXT;
 	s_controls.looking.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_controls.looking.generic.id	    = ID_LOOKING;
@@ -1754,8 +1733,6 @@ static void Controls_MenuInit( void )
 	s_controls.name.color			= text_color_normal;
 
 	Menu_AddItem( &s_controls.menu, &s_controls.banner );
-	Menu_AddItem( &s_controls.menu, &s_controls.framel );
-	Menu_AddItem( &s_controls.menu, &s_controls.framer );
 	Menu_AddItem( &s_controls.menu, &s_controls.model.bitmap );
 	Menu_AddItem( &s_controls.menu, &s_controls.name );
 
@@ -1863,8 +1840,6 @@ Controls_Cache
 void Controls_Cache( void ) {
 	trap_R_RegisterShaderNoMip( ART_BACK0 );
 	trap_R_RegisterShaderNoMip( ART_BACK1 );
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
 }
 
 

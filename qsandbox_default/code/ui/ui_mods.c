@@ -6,8 +6,6 @@
 #define ART_BACK1			"menu/art/back_1"	
 #define ART_FIGHT0			"menu/art/load_0"
 #define ART_FIGHT1			"menu/art/load_1"
-#define ART_FRAMEL			"menu/art/frame2_l"
-#define ART_FRAMER			"menu/art/frame1_r"
 
 #define MAX_MODS			256
 #define NAMEBUFSIZE			( MAX_MODS * 48 )
@@ -22,8 +20,6 @@ typedef struct {
 	menuframework_s	menu;
 
 	menutext_s		banner;
-	menubitmap_s	framel;
-	menubitmap_s	framer;
 
 	menulist_s		list;
 
@@ -185,22 +181,6 @@ static void UI_Mods_MenuInit( void ) {
 	s_mods.banner.color				= color_white;
 	s_mods.banner.style				= UI_CENTER;
 
-	s_mods.framel.generic.type		= MTYPE_BITMAP;
-	s_mods.framel.generic.name		= ART_FRAMEL;
-	s_mods.framel.generic.flags		= QMF_INACTIVE;
-	s_mods.framel.generic.x			= 0;  
-	s_mods.framel.generic.y			= 78;
-	s_mods.framel.width				= 256;
-	s_mods.framel.height			= 329;
-
-	s_mods.framer.generic.type		= MTYPE_BITMAP;
-	s_mods.framer.generic.name		= ART_FRAMER;
-	s_mods.framer.generic.flags		= QMF_INACTIVE;
-	s_mods.framer.generic.x			= 376;
-	s_mods.framer.generic.y			= 76;
-	s_mods.framer.width				= 256;
-	s_mods.framer.height			= 334;
-
 	s_mods.back.generic.type		= MTYPE_BITMAP;
 	s_mods.back.generic.name		= ART_BACK0;
 	s_mods.back.generic.flags		= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -236,8 +216,6 @@ static void UI_Mods_MenuInit( void ) {
 	UI_Mods_LoadMods();
 
 	Menu_AddItem( &s_mods.menu, &s_mods.banner );
-	Menu_AddItem( &s_mods.menu, &s_mods.framel );
-	Menu_AddItem( &s_mods.menu, &s_mods.framer );
 	Menu_AddItem( &s_mods.menu, &s_mods.list );
 	Menu_AddItem( &s_mods.menu, &s_mods.back );
 	Menu_AddItem( &s_mods.menu, &s_mods.go );
@@ -253,8 +231,6 @@ void UI_ModsMenu_Cache( void ) {
 	trap_R_RegisterShaderNoMip( ART_BACK1 );
 	trap_R_RegisterShaderNoMip( ART_FIGHT0 );
 	trap_R_RegisterShaderNoMip( ART_FIGHT1 );
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
 }
 
 

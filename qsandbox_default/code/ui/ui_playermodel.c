@@ -11,10 +11,7 @@
 #define MODEL_BACK1			"menu/art/back_1"
 #define MODEL_SELECT		"menu/art/opponents_select"
 #define MODEL_SELECTED		"menu/art/opponents_selected"
-#define MODEL_FRAMEL		"menu/art/frame1_l"
-#define MODEL_FRAMER		"menu/art/frame1_r"
 #define MODEL_PORTS			"menu/uie_art/model_ports"
-#define MODEL_SKINPORTS		"menu/uie_art/skins_ports"
 #define MODEL_ARROWSLR		"menu/art/gs_arrows_0"
 #define MODEL_ARROWSL		"menu/art/gs_arrows_l"
 #define MODEL_ARROWSR		"menu/art/gs_arrows_r"
@@ -37,8 +34,6 @@ static char* playermodel_artlist[] =
 	MODEL_BACK1,
 	MODEL_SELECT,
 	MODEL_SELECTED,
-	MODEL_FRAMEL,
-	MODEL_FRAMER,
 	MODEL_PORTS,
 	MODEL_ARROWSLR,
 	MODEL_ARROWSL,
@@ -46,7 +41,6 @@ static char* playermodel_artlist[] =
 	MODEL_ARROWSBT,
 	MODEL_ARROWSB,
 	MODEL_ARROWST,
-	MODEL_SKINPORTS,
 	MODEL_ANIMATE0,
 	MODEL_ANIMATE1,
 	MODEL_ANIMSELECT0,
@@ -146,10 +140,7 @@ typedef struct
 	menubitmap_s	models[MAX_MODELSPERPAGE];
 	menubitmap_s	skins[MAX_SKINSPERPAGE];
 
-	menubitmap_s	framel;
-	menubitmap_s	framer;
 	menubitmap_s	ports;
-	menubitmap_s	skinports;
 	menutext_s		banner;
 	menubitmap_s	back;
 	menubitmap_s	modelarrows;
@@ -735,11 +726,9 @@ static void PlayerModel_ShowControls( void )
 
 	if (s_playermodel.showAnim) {
 		// background artwork, already inactive
-		s_playermodel.framel.generic.flags |= QMF_HIDDEN;
 		s_playermodel.modelarrows.generic.flags |= QMF_HIDDEN;
 		s_playermodel.skinarrows.generic.flags |= QMF_HIDDEN;
 		s_playermodel.ports.generic.flags |= QMF_HIDDEN;
-		s_playermodel.skinports.generic.flags |= QMF_HIDDEN;
 
 		// possibly active controls
 		s_playermodel.modelup.generic.flags |= (QMF_HIDDEN|QMF_INACTIVE);
@@ -768,11 +757,9 @@ static void PlayerModel_ShowControls( void )
 	}
 	else {
 	if(!s_playermodel.showColor){
-		s_playermodel.framel.generic.flags &= ~QMF_HIDDEN;
 		s_playermodel.modelarrows.generic.flags &= ~QMF_HIDDEN;
 		s_playermodel.skinarrows.generic.flags &= ~QMF_HIDDEN;
 		s_playermodel.ports.generic.flags &= ~QMF_HIDDEN;
-		s_playermodel.skinports.generic.flags &= ~QMF_HIDDEN;
 
 		s_playermodel.animsfx.generic.flags |= (QMF_HIDDEN|QMF_INACTIVE);
 		s_playermodel.modelChange.generic.flags &= ~(QMF_HIDDEN|QMF_INACTIVE);
@@ -807,11 +794,9 @@ static void PlayerModel_ShowControls( void )
 	}
 	if(s_playermodel.showColor){
 		// background artwork, already inactive
-		s_playermodel.framel.generic.flags |= QMF_HIDDEN;
 		s_playermodel.modelarrows.generic.flags |= QMF_HIDDEN;
 		s_playermodel.skinarrows.generic.flags |= QMF_HIDDEN;
 		s_playermodel.ports.generic.flags |= QMF_HIDDEN;
-		s_playermodel.skinports.generic.flags |= QMF_HIDDEN;
 
 		// possibly active controls
 		s_playermodel.modelup.generic.flags |= (QMF_HIDDEN|QMF_INACTIVE);
@@ -1876,22 +1861,6 @@ static void PlayerModel_MenuInit( void )
 	s_playermodel.banner.color         = color_white;
 	s_playermodel.banner.style         = UI_CENTER;
 
-	s_playermodel.framel.generic.type  = MTYPE_BITMAP;
-	s_playermodel.framel.generic.name  = MODEL_FRAMEL;
-	s_playermodel.framel.generic.flags = QMF_LEFT_JUSTIFY|QMF_INACTIVE;
-	s_playermodel.framel.generic.x     = 0;
-	s_playermodel.framel.generic.y     = 78;
-	s_playermodel.framel.width         = 256;
-	s_playermodel.framel.height        = 329;
-
-	s_playermodel.framer.generic.type  = MTYPE_BITMAP;
-	s_playermodel.framer.generic.name  = MODEL_FRAMER;
-	s_playermodel.framer.generic.flags = QMF_LEFT_JUSTIFY|QMF_INACTIVE;
-	s_playermodel.framer.generic.x     = 376;
-	s_playermodel.framer.generic.y     = 76;
-	s_playermodel.framer.width         = 256;
-	s_playermodel.framer.height        = 334;
-
 	s_playermodel.ports.generic.type  = MTYPE_BITMAP;
 	s_playermodel.ports.generic.name  = MODEL_PORTS;
 	s_playermodel.ports.generic.flags = QMF_LEFT_JUSTIFY|QMF_INACTIVE;
@@ -1926,14 +1895,6 @@ static void PlayerModel_MenuInit( void )
 
 	y =	MODELARRAY_Y + 4*(ICON_SIZE + PICTURE_GAP);
 	x =	MODELARRAY_X - (ICON_SIZE + PICTURE_GAP)/2;
-
-	s_playermodel.skinports.generic.type  = MTYPE_BITMAP;
-	s_playermodel.skinports.generic.name  = MODEL_SKINPORTS;
-	s_playermodel.skinports.generic.flags = QMF_LEFT_JUSTIFY|QMF_INACTIVE;
-	s_playermodel.skinports.generic.x     = x;
-	s_playermodel.skinports.generic.y     = y;
-	s_playermodel.skinports.width         = 352;
-	s_playermodel.skinports.height        = 64;
 
 	for (i=0; i < MAX_SKINSPERPAGE; i++)
 	{
@@ -2154,10 +2115,7 @@ static void PlayerModel_MenuInit( void )
 		PlayerModel_RotateControlEvent, 640 - 128 - 64, 480 - 64);
 
 	Menu_AddItem( &s_playermodel.menu,	&s_playermodel.banner );
-	Menu_AddItem( &s_playermodel.menu,	&s_playermodel.framel );
-	Menu_AddItem( &s_playermodel.menu,	&s_playermodel.framer );
 	Menu_AddItem( &s_playermodel.menu,	&s_playermodel.ports );
-	//Menu_AddItem( &s_playermodel.menu,	&s_playermodel.skinports );
 
 	for (i=0; i<MAX_MODELSPERPAGE; i++)
 	{

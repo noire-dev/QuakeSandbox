@@ -1094,14 +1094,6 @@ static void PM_CrashLand( void ) {
 			PM_AddEvent( PM_FootstepForSurface() );
 		}
 	}
-	} else {
-	if ( !(pml.groundTrace.surfaceFlags & SURF_NODAMAGE) )  {
-	if ( delta > 60 ) {
-		PM_AddEvent( EV_FALL_FAR );
-	}
-	PM_AddEvent( EV_FALL_MEDIUM );
-	PM_AddEvent( EV_CRASH25 );
-	}	
 	}
 
 	// start footstep cycle over

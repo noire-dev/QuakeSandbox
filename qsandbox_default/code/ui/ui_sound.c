@@ -13,9 +13,6 @@ SOUND OPTIONS MENU
 
 #include "ui_local.h"
 
-
-#define ART_FRAMEL			"menu/art/frame2_l"
-#define ART_FRAMER			"menu/art/frame1_r"
 #define ART_BACK0			"menu/art/back_0"
 #define ART_BACK1			"menu/art/back_1"
 
@@ -47,8 +44,6 @@ typedef struct {
 	menuframework_s		menu;
 
 	menutext_s			banner;
-	menubitmap_s		framel;
-	menubitmap_s		framer;
 
 	menutext_s			graphics;
 	menutext_s			display;
@@ -165,22 +160,6 @@ static void UI_SoundOptionsMenu_Init( void ) {
 	soundOptionsInfo.banner.generic.y			= 16;
 	soundOptionsInfo.banner.color				= color_white;
 	soundOptionsInfo.banner.style				= UI_CENTER;
-
-	soundOptionsInfo.framel.generic.type		= MTYPE_BITMAP;
-	soundOptionsInfo.framel.generic.name		= ART_FRAMEL;
-	soundOptionsInfo.framel.generic.flags		= QMF_INACTIVE;
-	soundOptionsInfo.framel.generic.x			= 0;  
-	soundOptionsInfo.framel.generic.y			= 78;
-	soundOptionsInfo.framel.width				= 256;
-	soundOptionsInfo.framel.height				= 329;
-
-	soundOptionsInfo.framer.generic.type		= MTYPE_BITMAP;
-	soundOptionsInfo.framer.generic.name		= ART_FRAMER;
-	soundOptionsInfo.framer.generic.flags		= QMF_INACTIVE;
-	soundOptionsInfo.framer.generic.x			= 376;
-	soundOptionsInfo.framer.generic.y			= 76;
-	soundOptionsInfo.framer.width				= 256;
-	soundOptionsInfo.framer.height				= 334;
 
 	soundOptionsInfo.graphics.generic.type		= MTYPE_PTEXT;
 	soundOptionsInfo.graphics.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -304,8 +283,6 @@ static void UI_SoundOptionsMenu_Init( void ) {
 	}
 
 	Menu_AddItem( &soundOptionsInfo.menu, ( void * ) &soundOptionsInfo.banner );
-	Menu_AddItem( &soundOptionsInfo.menu, ( void * ) &soundOptionsInfo.framel );
-	Menu_AddItem( &soundOptionsInfo.menu, ( void * ) &soundOptionsInfo.framer );
 	Menu_AddItem( &soundOptionsInfo.menu, ( void * ) &soundOptionsInfo.graphics );
 	Menu_AddItem( &soundOptionsInfo.menu, ( void * ) &soundOptionsInfo.display );
 	Menu_AddItem( &soundOptionsInfo.menu, ( void * ) &soundOptionsInfo.sound );
@@ -351,8 +328,6 @@ UI_SoundOptionsMenu_Cache
 ===============
 */
 void UI_SoundOptionsMenu_Cache( void ) {
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
 	trap_R_RegisterShaderNoMip( ART_BACK0 );
 	trap_R_RegisterShaderNoMip( ART_BACK1 );
 }

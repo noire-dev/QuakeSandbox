@@ -6,8 +6,6 @@
 	SPECIFY SERVER
 *********************************************************************************/
 
-#define SPECIFYSERVER_FRAMEL	"menu/art/frame2_l"
-#define SPECIFYSERVER_FRAMER	"menu/art/frame1_r"
 #define SPECIFYSERVER_BACK0		"menu/art/back_0"
 #define SPECIFYSERVER_BACK1		"menu/art/back_1"
 #define SPECIFYSERVER_FIGHT0	"menu/art/fight_0"
@@ -18,8 +16,6 @@
 
 static char* specifyserver_artlist[] =
 {
-	SPECIFYSERVER_FRAMEL,
-	SPECIFYSERVER_FRAMER,
 	SPECIFYSERVER_BACK0,	
 	SPECIFYSERVER_BACK1,	
 	SPECIFYSERVER_FIGHT0,
@@ -31,8 +27,6 @@ typedef struct
 {
 	menuframework_s	menu;
 	menutext_s		banner;
-	menubitmap_s	framel;
-	menubitmap_s	framer;
 	menufield_s		domain;
 	menufield_s		port;
 	menubitmap_s	go;
@@ -114,22 +108,6 @@ void SpecifyServer_MenuInit( void )
 	s_specifyserver.banner.color  		 = color_white;
 	s_specifyserver.banner.style  		 = UI_CENTER;
 
-	s_specifyserver.framel.generic.type  = MTYPE_BITMAP;
-	s_specifyserver.framel.generic.name  = SPECIFYSERVER_FRAMEL;
-	s_specifyserver.framel.generic.flags = QMF_INACTIVE;
-	s_specifyserver.framel.generic.x	 = 0;  
-	s_specifyserver.framel.generic.y	 = 78;
-	s_specifyserver.framel.width  	     = 256;
-	s_specifyserver.framel.height  	     = 329;
-
-	s_specifyserver.framer.generic.type  = MTYPE_BITMAP;
-	s_specifyserver.framer.generic.name  = SPECIFYSERVER_FRAMER;
-	s_specifyserver.framer.generic.flags = QMF_INACTIVE;
-	s_specifyserver.framer.generic.x	 = 376;
-	s_specifyserver.framer.generic.y	 = 76;
-	s_specifyserver.framer.width  	     = 256;
-	s_specifyserver.framer.height  	     = 334;
-
 	s_specifyserver.domain.generic.type       = MTYPE_FIELD;
 	if(cl_language.integer == 0){
 	s_specifyserver.domain.generic.name       = "Address:";
@@ -179,8 +157,6 @@ void SpecifyServer_MenuInit( void )
 	s_specifyserver.back.focuspic         = SPECIFYSERVER_BACK1;
 
 	Menu_AddItem( &s_specifyserver.menu, &s_specifyserver.banner );
-	Menu_AddItem( &s_specifyserver.menu, &s_specifyserver.framel );
-	Menu_AddItem( &s_specifyserver.menu, &s_specifyserver.framer );
 	Menu_AddItem( &s_specifyserver.menu, &s_specifyserver.domain );
 	Menu_AddItem( &s_specifyserver.menu, &s_specifyserver.port );
 	Menu_AddItem( &s_specifyserver.menu, &s_specifyserver.go );

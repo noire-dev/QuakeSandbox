@@ -1425,3 +1425,5 @@ highscores_t COM_LoadLevelScores( char *levelname );
 void VectorLerp(const vec3_t start, float t, const vec3_t end, vec3_t result);
 float VectorDot(const vec3_t v1, const vec3_t v2);
 float VectorDistance(const vec3_t v1, const vec3_t v2);
+
+void RotateAroundAxis(vec3_t axis[3], const vec3_t rotationAxis, float angle);
