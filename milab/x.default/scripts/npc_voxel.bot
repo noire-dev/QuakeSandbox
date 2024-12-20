@@ -128,3 +128,8 @@ name		npc26
 model		voxel/26
 aifile	bots/npc_c.c
 }
+{
+name		npc27
+model		voxel/27
+aifile	bots/npc_c.c
+}
