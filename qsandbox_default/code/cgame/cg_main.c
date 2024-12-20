@@ -580,8 +580,8 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_leiBrassNoise, "cg_leiBrassNoise", "1", CVAR_ARCHIVE},				// LEILEI
 	{ &cg_cameramode, "cg_cameramode", "0", CVAR_ARCHIVE},				// LEILEI
 	{ &cg_cameraEyes, "cg_cameraEyes", "0", CVAR_ARCHIVE},				// LEILEI
-	{ &cg_cameraEyes_Fwd, "cg_cameraEyes_Fwd", "3", CVAR_ARCHIVE},				// LEILEI
-	{ &cg_cameraEyes_Up, "cg_cameraEyes_Up", "3", CVAR_ARCHIVE},				// LEILEI
+	{ &cg_cameraEyes_Fwd, "cg_cameraEyes_Fwd", "0", CVAR_ARCHIVE},				// LEILEI
+	{ &cg_cameraEyes_Up, "cg_cameraEyes_Up", "7", CVAR_ARCHIVE},				// LEILEI
 	//unlagged - client options
 	{ &cg_delag, "cg_delag", "1", CVAR_ARCHIVE | CVAR_USERINFO },
 	{ &cg_cmdTimeNudge, "cg_cmdTimeNudge", "0", CVAR_ARCHIVE | CVAR_USERINFO },
