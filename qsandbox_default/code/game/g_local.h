@@ -225,7 +225,6 @@ struct gentity_s {
 	int			crosson;
 	int			price;
 	int			owner;	// clientNum player owner
-	int			locked;	// clientNum player owner
 	char		*ownername;	// clientNum player owner
 	int			sandboxObject;
 	qboolean	takedamage2;
@@ -235,19 +234,12 @@ struct gentity_s {
 	
 	int			sb_coltype;
 	int			sb_gravity;
-	float		sb_colscale0;
-	float		sb_colscale1;
-	float		sb_colscale2;
-	float		sb_rotate0;
-	float		sb_rotate1;
-	float		sb_rotate2;
 	char		*sb_class;
-	char		*sb_model;
 	char		*sb_sound;
 	int			sb_material;
 	int			sb_phys;
 	int			sb_coll;
-	int			sb_ettype;
+	int			sb_isnpc;
 	int			sb_red;
 	int			sb_green;
 	int			sb_blue;
@@ -1097,11 +1089,8 @@ int G_GetMapLockArena ( char *map );
 qboolean G_ClassnameAllowed( char *input );
 qboolean G_ClassnameAllowedAll( char *input );
 void G_WriteMapfile_f( void );
-void G_WriteMapfileAll_f( void );
 void G_LoadMapfile( char *filename );
-void G_LoadMapfileAll( char *filename );
 void G_LoadMapfile_f( void );
-void G_LoadMapfileAll_f( void );
 
 // ai_main.c
 #define MAX_FILEPATH			144

@@ -1338,7 +1338,7 @@ static void Cmd_SpawnList_Item_f( gentity_t *ent ){
 	if(!g_allownpc.integer){ return; }
 	
 	tent = G_Spawn();
-	tent->sb_ettype = 1;
+	tent->sb_isnpc = 1;
 	VectorCopy( tr.endpos, tent->s.origin);
 	tent->s.origin[2] += 25;
 	tent->classname = "target_botspawn";

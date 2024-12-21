@@ -566,9 +566,6 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 			}
 			}
 			
-			client->ps.stats[STAT_MONEY] = client->pers.oldmoney;
-			
-			
 			//Start killing players in LMS, if we are in overtime
 			if(g_elimination_roundtime.integer&&g_gametype.integer==GT_LMS && TeamHealthCount( -1, TEAM_FREE ) != ent->health &&(level.roundNumber==level.roundNumberStarted)&&(level.time>=level.roundStartTime+1000*g_elimination_roundtime.integer)) {
 				ent->damage=5;
@@ -582,6 +579,8 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 					ent->health= client->ps.stats[STAT_MAX_HEALTH];
 			}
 		}
+
+		client->ps.stats[STAT_MONEY] = client->pers.oldmoney;
 
 		G_SendWeaponProperties( ent );		//send game setting to client for sync
 		G_SendSwepWeapons( ent );			//send sweps list to client for sync

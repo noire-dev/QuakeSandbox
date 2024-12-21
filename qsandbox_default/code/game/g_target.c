@@ -762,7 +762,7 @@ void botsandbox_check (gentity_t *self){
 void SP_target_botspawn (gentity_t *self) {
 	float healthMultiplier = 1;
 	float skill;
-	if(self->sb_ettype <= 0){
+	if(self->sb_isnpc <= 0){
 	if ( !self->clientname || !strcmp(self->clientname, "") )
 		self->clientname = "sarge";
 

@@ -123,24 +123,6 @@ void G_ClearEntitiesAll( void ){
 	}
 }
 
-void G_AddEntity( char* classname, vec3_t origin, int spawnflags, float wait, float random ){
-	gentity_t *ent;
-	ent = G_Spawn();
-	ent->classname = classname;
-	ent->spawnflags = spawnflags;
-	ent->random = random;
-	ent->wait = wait;
-	
-	VectorCopy( origin, ent->s.origin );
-	VectorCopy( ent->s.origin, ent->s.pos.trBase );
-	VectorCopy( ent->s.origin, ent->r.currentOrigin );
-	
-	// if we didn't get a classname, don't bother spawning anything
-	if ( !G_CallSpawn( ent ) ) {
-		G_FreeEntity( ent );
-	}
-}
-
 static int G_setTokens2( char* in, char* out, int start ){
 	int i = 0;
 	while ( in[ start + i ] != ' ' ){
@@ -215,13 +197,8 @@ static qboolean G_AbeforeB2( char *A, char *B, token_t *in, int start ){
 typedef enum {
 	F_INT, 
 	F_FLOAT,
-	F_LSTRING,			// string on disk, pointer in memory, TAG_LEVEL
-	F_GSTRING,			// string on disk, pointer in memory, TAG_GAME
+	F_STRING,
 	F_VECTOR,
-	F_ANGLEHACK,
-	F_ENTITY,			// index on disk, pointer in memory
-	F_ITEM,				// index on disk, pointer in memory
-	F_CLIENT,			// index on disk, pointer in memory
 	F_IGNORE
 } fieldtypeCopy_t;
 
@@ -234,17 +211,19 @@ typedef struct
 } fieldCopy_t;
 
 fieldCopy_t fieldsCopy[] = {
-	{"classname", FOFS(classname), F_LSTRING},
+	{"classname", FOFS(classname), F_STRING},
+	{"model", FOFS(model), F_STRING},
+	{"model2", FOFS(model2), F_STRING},
 	{"origin", FOFS(s.origin), F_VECTOR},
-	{"model", FOFS(model), F_LSTRING},
-	{"model2", FOFS(model2), F_LSTRING},
+	{"angles", FOFS(s.angles), F_VECTOR},
+	{"modelscale_vec", FOFS(s.scales), F_VECTOR},
 	{"spawnflags", FOFS(spawnflags), F_INT},
 	{"speed", FOFS(speed), F_FLOAT},
-	{"target", FOFS(target), F_LSTRING},
-	{"targetname", FOFS(targetname), F_LSTRING},
-	{"message", FOFS(message), F_LSTRING},
-	{"botname", FOFS(botname), F_LSTRING},
-	{"team", FOFS(team), F_LSTRING},
+	{"target", FOFS(target), F_STRING},
+	{"targetname", FOFS(targetname), F_STRING},
+	{"message", FOFS(message), F_STRING},
+	{"botname", FOFS(botname), F_STRING},
+	{"team", FOFS(team), F_STRING},
 	{"wait", FOFS(wait), F_FLOAT},
 	{"random", FOFS(random), F_FLOAT},
 	{"count", FOFS(count), F_INT},
@@ -264,46 +243,36 @@ fieldCopy_t fieldsCopy[] = {
 	{"mgravity", FOFS(mgravity), F_INT},
 	{"mnoclip", FOFS(mnoclip), F_INT},
 	{"allowuse", FOFS(allowuse), F_INT},
-	{"angles", FOFS(s.angles), F_VECTOR},
-	{"angle", FOFS(s.angles), F_ANGLEHACK},
-	{"targetShaderName", FOFS(targetShaderName), F_LSTRING},
-	{"targetShaderNewName", FOFS(targetShaderNewName), F_LSTRING},
-	{"mapname", FOFS(mapname), F_LSTRING},
-	{"clientname", FOFS(clientname), F_LSTRING},
-	{"teleporterTarget", FOFS(teleporterTarget), F_LSTRING},
-	{"deathTarget", FOFS(deathTarget), F_LSTRING},
-	{"lootTarget", FOFS(lootTarget), F_LSTRING},
+	{"targetShaderName", FOFS(targetShaderName), F_STRING},
+	{"targetShaderNewName", FOFS(targetShaderNewName), F_STRING},
+	{"mapname", FOFS(mapname), F_STRING},
+	{"clientname", FOFS(clientname), F_STRING},
+	{"teleporterTarget", FOFS(teleporterTarget), F_STRING},
+	{"deathTarget", FOFS(deathTarget), F_STRING},
+	{"lootTarget", FOFS(lootTarget), F_STRING},
 	{"skill", FOFS(skill), F_FLOAT},
-	{"overlay", FOFS(overlay), F_LSTRING},
-	{"target2", FOFS(target2), F_LSTRING},
-	{"damagetarget", FOFS(damagetarget), F_LSTRING},
-	{"targetname2", FOFS(targetname2), F_LSTRING},
-	{"key", FOFS(key), F_LSTRING},
-	{"value", FOFS(value), F_LSTRING},
+	{"overlay", FOFS(overlay), F_STRING},
+	{"target2", FOFS(target2), F_STRING},
+	{"damagetarget", FOFS(damagetarget), F_STRING},
+	{"targetname2", FOFS(targetname2), F_STRING},
+	{"key", FOFS(key), F_STRING},
+	{"value", FOFS(value), F_STRING},
 	{"armor", FOFS(armor), F_INT},
-	{"music", FOFS(music), F_LSTRING},
-	{"sb_model", FOFS(sb_model), F_LSTRING},
-	{"sb_class", FOFS(sb_class), F_LSTRING},
-	{"sb_sound", FOFS(sb_sound), F_LSTRING},
+	{"music", FOFS(music), F_STRING},
+	{"sb_class", FOFS(sb_class), F_STRING},
+	{"sb_sound", FOFS(sb_sound), F_STRING},
 	{"sb_coltype", FOFS(sb_coltype), F_INT},
-	{"sb_colscale0", FOFS(sb_colscale0), F_FLOAT},
-	{"sb_colscale1", FOFS(sb_colscale1), F_FLOAT},
-	{"sb_colscale2", FOFS(sb_colscale2), F_FLOAT},
-	{"sb_rotate0", FOFS(sb_rotate0), F_FLOAT},
-	{"sb_rotate1", FOFS(sb_rotate1), F_FLOAT},
-	{"sb_rotate2", FOFS(sb_rotate2), F_FLOAT},
 	{"physicsBounce", FOFS(physicsBounce), F_FLOAT},
 	{"vehicle", FOFS(vehicle), F_INT},
 	{"sb_material", FOFS(sb_material), F_INT},
 	{"sb_gravity", FOFS(sb_gravity), F_INT},
 	{"sb_phys", FOFS(sb_phys), F_INT},
 	{"sb_coll", FOFS(sb_coll), F_INT},
-	{"locked", FOFS(locked), F_INT},
 	{"sb_red", FOFS(sb_red), F_INT},
 	{"sb_green", FOFS(sb_green), F_INT},
 	{"sb_blue", FOFS(sb_blue), F_INT},
 	{"sb_radius", FOFS(sb_radius), F_INT},
-	{"sb_ettype", FOFS(sb_ettype), F_INT},
+	{"sb_isnpc", FOFS(sb_isnpc), F_INT},
 	{"sb_takedamage", FOFS(sb_takedamage), F_INT},
 	{"sb_takedamage2", FOFS(sb_takedamage2), F_INT},
 	{"objectType", FOFS(objectType), F_INT},
@@ -342,7 +311,7 @@ static void G_LoadMapfileEntity( token_t *in, int min, int max ){
 		for( field = fieldsCopy; field->name; field++ ){
 			if( !strcmp(va("\"%s\"",field->name), in[i].value ) ) {
 				switch( field->type ) {
-				  case F_LSTRING:
+				  case F_STRING:
 					*(char **)(b+field->ofs) = G_NewString(G_ClearString(in[i+1].value));
 					break;
 				  case F_VECTOR:
@@ -361,15 +330,6 @@ static void G_LoadMapfileEntity( token_t *in, int min, int max ){
 					break;
 				  case F_FLOAT:
 					*(float *)(b+field->ofs) = atof(G_ClearString(in[i+1].value));
-					break;
-				  case F_ANGLEHACK:
-					buf = in[i+1].value;
-					strcat(buf, in[i+2].value);
-					strcat(buf, in[i+3].value);
-					sscanf (G_ClearString(buf), "%f %f %f", &vec[0], &vec[1], &vec[2]);
-					((float *)(b+field->ofs))[0] = vec[0];
-					((float *)(b+field->ofs))[1] = vec[1];
-					((float *)(b+field->ofs))[2] = vec[2];
 					break;
 				  default:
 				  case F_IGNORE:
@@ -477,98 +437,6 @@ void G_LoadMapfile( char *filename ){
 	
 }
 
-void G_LoadMapfileAll( char *filename ){
-	qboolean lastSpace = qtrue;
-	qboolean pgbreak = qfalse;
-	int i = 0;
-	int charCount = 0;
-	int tokenNum = 0;
-	int maxTokennum;
-	int lpar, rpar;
-	int len;
-	fileHandle_t	f;
-	
-	len = trap_FS_FOpenFile ( filename, &f, FS_READ );
-	
-	if ( !f ) {
-		G_Printf( "%s",va( S_COLOR_YELLOW "mapfile not found: %s\n", filename ) );	
-		return;
-	}
-
-	if ( len >= 2500000*6 ) {
-		trap_Error( va( S_COLOR_RED "map file too large: %s is %i, max allowed is %i", filename, len, 2500000*6 ) );
-		trap_FS_FCloseFile( f );
-		return;
-	}
-	ClearRegisteredItems();
-	G_ClearEntitiesAll();
-
-	trap_FS_Read( mapbuffer, len, f );
-	mapbuffer[len] = 0;
-	trap_FS_FCloseFile( f );
-	
-	COM_Compress(mapbuffer);
-	
-	for ( i = 0; i < MAX_MAPFILE_LENGTH; i++ ){
-		
-		//Filter comments( start at # and end at break )
-		if( mapbuffer[i] == '#' ){
-			while( i < MAX_MAPFILE_LENGTH && !pgbreak ){
-				if( mapbuffer[i] == '\n' || mapbuffer[i] == '\r' )
-					pgbreak = qtrue;
-				i++;
-			}
-			pgbreak = qfalse;
-			lastSpace = qtrue;
-			//continue;
-		}
-		
-		if( SkippedChar( mapbuffer[i] ) ){
-			if( !lastSpace ){
-				mapbuffer[charCount] = ' ';
-				charCount++;
-				lastSpace = qtrue;
-			}
-			continue;
-		}
-		
-		lastSpace = qfalse;
-		mapbuffer[charCount] = mapbuffer[i];
-		charCount++;
-	}
-	
-	i = 0;
-	while( i < MAX_MAPFILE_LENGTH && tokenNum < MAX_TOKENNUM){
-		i = G_setTokens2( mapbuffer, tokens2[tokenNum].value, i);
-		tokens2[tokenNum].type = G_setTokenType2( tokens2[tokenNum].value );
-		tokenNum++;
-	}
-	maxTokennum = tokenNum;
-	
-	G_Printf("Mapfile parser found %i tokens\n", maxTokennum );
-	
-	for( tokenNum = 0; tokenNum < maxTokennum; tokenNum++ ){
-			if( strcmp( tokens2[tokenNum].value, "{" ) == 0 ){
-				//CG_Printf("lpar found\n");
-				lpar = tokenNum;
-				if( G_AbeforeB2((char*)"{",(char*)"}", tokens2, tokenNum+2)){
-					G_Printf("error: \"}\" expected at %s\n", tokens2[tokenNum].value);
-					break;
-				}
-				//CG_Printf("debug abeforeb\n");
-				rpar = G_FindNextToken2((char*)"}", tokens2, tokenNum+2 );
-				//CG_Printf("debug findnexttoken\n");
-				if( rpar != -1 ){
-					G_LoadMapfileEntity(tokens2, lpar+1, rpar-1);
-					//G_setHudElement(i, tokens, lpar+1, rpar-1);
-					tokenNum = rpar;
-				}	
-			}	
-	}
-	SaveRegisteredItems();
-	
-}
-
 void G_LoadMapfile_f( void ) {
 	char buf[MAX_QPATH];
 	char mapname[64];
@@ -588,30 +456,6 @@ void G_LoadMapfile_f( void ) {
 	trap_Argv( 1, buf, sizeof( buf ) );
 	
 	G_LoadMapfile(buf);
-	trap_Cvar_Set("mapfile",buf);
-	trap_Cvar_VariableStringBuffer("mapname", mapname, sizeof(mapname));
-	trap_Cvar_Set("lastmap",mapname);
-}
-
-void G_LoadMapfileAll_f( void ) {
-	char buf[MAX_QPATH];
-	char mapname[64];
-	int	i;
-	
-	for (i = 0; i < MAX_CLIENTS; i++ ) {
-		if ( g_entities[i].singlebot >= 1 ) {
-			DropClientSilently( g_entities[i].client->ps.clientNum );
-		}
-	}
-	
-	if ( trap_Argc() < 2 ) {
-                G_Printf("Usage: loadmapall <filename>\n");
-		return;
-	}
-	
-	trap_Argv( 1, buf, sizeof( buf ) );
-	
-	G_LoadMapfileAll(buf);
 	trap_Cvar_Set("mapfile",buf);
 	trap_Cvar_VariableStringBuffer("mapname", mapname, sizeof(mapname));
 	trap_Cvar_Set("lastmap",mapname);
@@ -648,14 +492,14 @@ void G_WriteMapfile_f( void ) {
 		
 		for( field=fieldsCopy; field->name; field++ ){
 			switch( field->type ) {
-			case F_LSTRING:
+			case F_STRING:
 				if( *(char **)(b+field->ofs) ){
 					string = va("   \"%s\"   \"%s\"\n", field->name, *(char **)(b+field->ofs) );
 					trap_FS_Write(string, strlen(string), f);
 				}
 				break;
 			case F_VECTOR:
-				if( (((float *)(b+field->ofs))[0] && ((float *)(b+field->ofs))[1] && ((float *)(b+field->ofs))[2]) || !strcmp(field->name,"origin") ){
+				if( (((float *)(b+field->ofs))[0] || ((float *)(b+field->ofs))[1] || ((float *)(b+field->ofs))[2]) ){
 					string = va("   \"%s\"   \"%f %f %f\"\n", field->name, ((float *)(b+field->ofs))[0], ((float *)(b+field->ofs))[1], ((float *)(b+field->ofs))[2] );
 					trap_FS_Write(string, strlen(string), f);
 				}
@@ -669,84 +513,6 @@ void G_WriteMapfile_f( void ) {
 			case F_FLOAT:
 				if( *(float *)(b+field->ofs) ){
 					string = va("   \"%s\"   \"%f\"\n", field->name, *(float *)(b+field->ofs) );
-					trap_FS_Write(string, strlen(string), f);
-				}
-				break;
-			case F_ANGLEHACK:
-				if( ((float *)(b+field->ofs))[0] && ((float *)(b+field->ofs))[1] && ((float *)(b+field->ofs))[2] ){
-					string = va("   \"%s\"   \"%f %f %f\"\n", field->name, ((float *)(b+field->ofs))[0], ((float *)(b+field->ofs))[1], ((float *)(b+field->ofs))[2] );
-					trap_FS_Write(string, strlen(string), f);
-				}
-				break;
-			default:
-			case F_IGNORE:
-				break;
-			}
-		}
-		string = va("}\n\n");
-		trap_FS_Write(string, strlen(string), f);
-	}
-	trap_FS_FCloseFile(f);
-}
-
-void G_WriteMapfileAll_f( void ) {
-	int i;
-	fileHandle_t f;
-	char *string;
-	char buf[MAX_QPATH];
-	fieldCopy_t *field;
-	byte	*b;
-	
-	if ( trap_Argc() < 2 ) {
-                G_Printf("Usage: savemapall <filename>\n");
-		return;
-	}
-	
-	trap_Argv( 1, buf, sizeof( buf ) );
-	
-	trap_FS_FOpenFile(va("%s", buf ),&f,FS_WRITE);
-	
-	for( i = 0; i < MAX_GENTITIES; i++ ){
-	  
-		if( !g_entities[i].inuse )
-			continue;
-		
-		if( !G_ClassnameAllowedAll(g_entities[i].classname) )
-			continue;
-		b = (byte *) &g_entities[i];
-		
-		string = va("{\n");
-		trap_FS_Write(string, strlen(string), f);
-		
-		for( field=fieldsCopy; field->name; field++ ){
-			switch( field->type ) {
-			case F_LSTRING:
-				if( *(char **)(b+field->ofs) ){
-					string = va("   \"%s\"   \"%s\"\n", field->name, *(char **)(b+field->ofs) );
-					trap_FS_Write(string, strlen(string), f);
-				}
-				break;
-			case F_VECTOR:
-				if( (((float *)(b+field->ofs))[0] && ((float *)(b+field->ofs))[1] && ((float *)(b+field->ofs))[2]) || !strcmp(field->name,"origin") ){
-					string = va("   \"%s\"   \"%f %f %f\"\n", field->name, ((float *)(b+field->ofs))[0], ((float *)(b+field->ofs))[1], ((float *)(b+field->ofs))[2] );
-					trap_FS_Write(string, strlen(string), f);
-				}
-				break;
-			case F_INT:
-				if( *(int *)(b+field->ofs) ){
-					string = va("   \"%s\"   \"%i\"\n", field->name, *(int *)(b+field->ofs) );
-					trap_FS_Write(string, strlen(string), f);
-				}
-				break;
-			case F_FLOAT:
-				if( *(float *)(b+field->ofs) ){
-					string = va("   \"%s\"   \"%f\"\n", field->name, *(float *)(b+field->ofs) );
-					trap_FS_Write(string, strlen(string), f);
-				}
-				break;
-			case F_ANGLEHACK:
-				if( ((float *)(b+field->ofs))[0] && ((float *)(b+field->ofs))[1] && ((float *)(b+field->ofs))[2] ){
-					string = va("   \"%s\"   \"%f %f %f\"\n", field->name, ((float *)(b+field->ofs))[0], ((float *)(b+field->ofs))[1], ((float *)(b+field->ofs))[2] );
 					trap_FS_Write(string, strlen(string), f);
 				}
 				break;

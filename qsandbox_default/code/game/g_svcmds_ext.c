@@ -218,7 +218,7 @@ void Svcmd_PropNpc_AS_f( void ){
 	if(!g_allownpc.integer){ return; }
 	
 	tent = G_Spawn();
-	tent->sb_ettype = 1;
+	tent->sb_isnpc = 1;
 	VectorCopy( end, tent->s.origin);
 	tent->s.origin[2] += 25;
 	tent->classname = "target_botspawn";

@@ -57,6 +57,9 @@ void AddScore( gentity_t *ent, vec3_t origin, int score ) {
 	if ( !ent->client ) {
 		return;
 	}
+	if ( ent->singlebot ){
+		return;
+	}
 	// no scoring during pre-match warmup
 	if ( level.warmupTime ) {
 		return;

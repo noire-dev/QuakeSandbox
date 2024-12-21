@@ -103,9 +103,6 @@ trap_SendServerCommand( activator->s.clientNum, va( "cp \"Owned by %s\n\"", ent-
 return;
 }	
 }
-if(ent->locked != 0){
-return;
-}
 
 if(ent->price > 0){
 	
@@ -160,9 +157,6 @@ if(self->owner != 0){
 trap_SendServerCommand( other->s.clientNum, va( "cp \"Owned by %s\n\"", self->ownername ));
 return;
 }	
-}
-if(self->locked != 0){
-return;
 }
 
 if(self->price > 0){
@@ -357,9 +351,6 @@ void Use_target_push( gentity_t *self, gentity_t *other, gentity_t *activator ) 
 	if ( activator->client->ps.powerups[PW_FLIGHT] ) {
 		return;
 	}
-if(self->locked != 0){
-return;
-}
 
 	VectorCopy (self->s.origin2, activator->client->ps.velocity);
 
@@ -417,9 +408,6 @@ void trigger_teleporter_touch (gentity_t *self, gentity_t *other, trace_t *trace
 	if ( !other->client ) {
 		return;
 	}
-if(self->locked != 0){
-return;
-}
 	if ( other->client->ps.pm_type == PM_DEAD ) {
 		return;
 	}

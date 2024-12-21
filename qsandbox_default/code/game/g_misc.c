@@ -1053,17 +1053,12 @@ void SP_func_prop( gentity_t *ent ) {
 			CopyAlloc(ent->sb_class, ent->classname);
 			s->spawn(ent);
 			//spawn another class
-			ent->s.modelindex = G_ModelIndex( ent->sb_model );	//модель
+			ent->s.modelindex = G_ModelIndex( ent->model );	//модель
 			ent->s.constantLight = ent->sb_red | ( ent->sb_green << 8 ) | ( ent->sb_blue << 16 ) | ( ent->sb_radius << 24 );
 			ent->s.loopSound = G_SoundIndex(ent->sb_sound);	//звук
-			ent->s.scales[0] = ent->sb_colscale0;
-			ent->s.scales[1] = ent->sb_colscale1;
-			ent->s.scales[2] = ent->sb_colscale2;
-			ent->s.apos.trBase[0] = ent->sb_rotate0;
-			ent->s.apos.trBase[1] = ent->sb_rotate1;
-			ent->s.apos.trBase[2] = ent->sb_rotate2;
-			VectorSet( ent->r.mins, -ent->sb_coltype*ent->sb_colscale0, -ent->sb_coltype*ent->sb_colscale1, -ent->sb_coltype*ent->sb_colscale2);
-			VectorSet( ent->r.maxs, ent->sb_coltype*ent->sb_colscale0, ent->sb_coltype*ent->sb_colscale1, ent->sb_coltype*ent->sb_colscale2 );
+			VectorCopy( ent->s.angles, ent->s.apos.trBase );
+			VectorSet( ent->r.mins, -ent->sb_coltype*ent->s.scales[0], -ent->sb_coltype*ent->s.scales[1], -ent->sb_coltype*ent->s.scales[2]);
+			VectorSet( ent->r.maxs, ent->sb_coltype*ent->s.scales[0], ent->sb_coltype*ent->s.scales[1], ent->sb_coltype*ent->s.scales[2] );
 			ent->s.pos.trTime = level.time;
 			if(ent->sb_takedamage == 0){
 				ent->takedamage = qfalse;
@@ -1097,7 +1092,7 @@ void SP_func_prop( gentity_t *ent ) {
 	ent->classname = "func_prop";
 	ent->s.eType = ET_GENERAL;
 	ent->s.pos.trType = TR_STATIONARY;
-	ent->s.modelindex = G_ModelIndex( ent->sb_model );
+	ent->s.modelindex = G_ModelIndex( ent->model );
 	ent->s.constantLight = ent->sb_red | ( ent->sb_green << 8 ) | ( ent->sb_blue << 16 ) | ( ent->sb_radius << 24 );
 	ent->s.loopSound = G_SoundIndex(ent->sb_sound);
 	ent->die = BlockDie;
@@ -1126,15 +1121,10 @@ void SP_func_prop( gentity_t *ent ) {
 	ent->s.generic2 = ent->sb_material;
 	ent->s.generic3 = ent->sb_gravity;
 	ent->s.torsoAnim = ent->objectType;
-	ent->s.scales[0] = ent->sb_colscale0;
-	ent->s.scales[1] = ent->sb_colscale1;
-	ent->s.scales[2] = ent->sb_colscale2;
-	ent->s.apos.trBase[0] = ent->sb_rotate0;
-	ent->s.apos.trBase[1] = ent->sb_rotate1;
-	ent->s.apos.trBase[2] = ent->sb_rotate2;
+	VectorCopy( ent->s.angles, ent->s.apos.trBase );
 	if(ent->vehicle <= 0){
-	VectorSet( ent->r.mins, -ent->sb_coltype*ent->sb_colscale0, -ent->sb_coltype*ent->sb_colscale1, -ent->sb_coltype*ent->sb_colscale2);
-	VectorSet( ent->r.maxs, ent->sb_coltype*ent->sb_colscale0, ent->sb_coltype*ent->sb_colscale1, ent->sb_coltype*ent->sb_colscale2 );
+	VectorSet( ent->r.mins, -ent->sb_coltype*ent->s.scales[0], -ent->sb_coltype*ent->s.scales[1], -ent->sb_coltype*ent->s.scales[2]);
+	VectorSet( ent->r.maxs, ent->sb_coltype*ent->s.scales[0], ent->sb_coltype*ent->s.scales[1], ent->sb_coltype*ent->s.scales[2] );
 	} else {
 	VectorSet( ent->r.mins, -25, -25, -15);
 	VectorSet( ent->r.maxs, 25, 25, 15 );
@@ -1212,11 +1202,8 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent->sb_radius = atoi(arg16);
 
 	ent->s.scales[0] = atof(arg17);
-	ent->sb_colscale0 = atof(arg17);
 	ent->s.scales[1] = atof(arg18);
-	ent->sb_colscale1 = atof(arg18);
 	ent->s.scales[2] = atof(arg19);
-	ent->sb_colscale2 = atof(arg19);
 	
 	ent->objectType = atoi(arg20);
 	ent->s.torsoAnim = atoi(arg20);
@@ -1244,12 +1231,12 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 			s->spawn(ent);
 			//spawn another class
 			ent->s.modelindex = G_ModelIndex( arg02 );
-			CopyAlloc(ent->sb_model, arg02);
+			CopyAlloc(ent->model, arg02);
 			ent->sb_coltype = atoi(arg05);
 			ent->classname = "func_prop";
 			ent->r.svFlags &= ~SVF_NOCLIENT;
-			VectorSet( ent->r.mins, -ent->sb_coltype*ent->sb_colscale0, -ent->sb_coltype*ent->sb_colscale1, -ent->sb_coltype*ent->sb_colscale2);
-			VectorSet( ent->r.maxs, ent->sb_coltype*ent->sb_colscale0, ent->sb_coltype*ent->sb_colscale1, ent->sb_coltype*ent->sb_colscale2 );
+			VectorSet( ent->r.mins, -ent->sb_coltype*ent->s.scales[0], -ent->sb_coltype*ent->s.scales[1], -ent->sb_coltype*ent->s.scales[2]);
+			VectorSet( ent->r.maxs, ent->sb_coltype*ent->s.scales[0], ent->sb_coltype*ent->s.scales[1], ent->sb_coltype*ent->s.scales[2] );
 			trap_LinkEntity( ent );
 			return;
 		}
@@ -1258,16 +1245,15 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	//prop init
 	ent->s.eType = ET_GENERAL;
 	ent->classname = "func_prop";
-	VectorCopy( ent->s.angles, ent->s.apos.trBase );
 	ent->takedamage = ent->sb_takedamage;
 	ent->takedamage2 = ent->sb_takedamage2;
 	ent->die = BlockDie;		
 	ent->s.modelindex = G_ModelIndex( arg02 );
-	CopyAlloc(ent->sb_model, arg02);
+	CopyAlloc(ent->model, arg02);
 	if(atoi(arg21) <= 0){
 	ent->sb_coltype = atoi(arg05);
-	VectorSet( ent->r.mins, -ent->sb_coltype*ent->sb_colscale0, -ent->sb_coltype*ent->sb_colscale1, -ent->sb_coltype*ent->sb_colscale2);
-	VectorSet( ent->r.maxs, ent->sb_coltype*ent->sb_colscale0, ent->sb_coltype*ent->sb_colscale1, ent->sb_coltype*ent->sb_colscale2 );
+	VectorSet( ent->r.mins, -ent->sb_coltype*ent->s.scales[0], -ent->sb_coltype*ent->s.scales[1], -ent->sb_coltype*ent->s.scales[2]);
+	VectorSet( ent->r.maxs, ent->sb_coltype*ent->s.scales[0], ent->sb_coltype*ent->s.scales[1], ent->sb_coltype*ent->s.scales[2] );
 	} else {
 	ent->sb_coltype = atoi(arg05);
 	VectorSet( ent->r.mins, -25, -25, -15);
@@ -1312,7 +1298,7 @@ void G_ModProp( gentity_t *targ, gentity_t *attacker, char *arg01, char *arg02, 
 	}
 	if(attacker->tool_id == 3){
 		targ->s.modelindex = G_ModelIndex( arg01 );
-		CopyAlloc(targ->sb_model, arg01);
+		CopyAlloc(targ->model, arg01);
 	}
 	if(attacker->tool_id == 4){
 		if(atoi(arg19) == 0){
@@ -1367,36 +1353,26 @@ void G_ModProp( gentity_t *targ, gentity_t *attacker, char *arg01, char *arg02, 
 	if(attacker->tool_id == 9){
 	if(atoi(arg19) == 0){
 		targ->s.apos.trBase[0] += atof(arg01);
-		targ->sb_rotate0 += atof(arg01);
 	}
 	if(atoi(arg19) == 1){
 		targ->s.apos.trBase[1] += atof(arg01);
-		targ->sb_rotate1 += atof(arg01);
 	}
 	if(atoi(arg19) == 2){
 		targ->s.apos.trBase[2] += atof(arg01);
-		targ->sb_rotate2 += atof(arg01);
 	}
-		trap_UnlinkEntity( targ );
-		trap_LinkEntity( targ );
 	}
 	if(attacker->tool_id == 10){
 	if(atoi(arg19) == 0){
 		targ->s.scales[0] = atof(arg01);
-		targ->sb_colscale0 = atof(arg01);
 	}
 	if(atoi(arg19) == 1){
 		targ->s.scales[1] = atof(arg01);
-		targ->sb_colscale1 = atof(arg01);
 	}
 	if(atoi(arg19) == 2){
 		targ->s.scales[2] = atof(arg01);
-		targ->sb_colscale2 = atof(arg01);
 	}
-		VectorSet( targ->r.mins, -targ->sb_coltype*targ->sb_colscale0, -targ->sb_coltype*targ->sb_colscale1, -targ->sb_coltype*targ->sb_colscale2);
-		VectorSet( targ->r.maxs, targ->sb_coltype*targ->sb_colscale0, targ->sb_coltype*targ->sb_colscale1, targ->sb_coltype*targ->sb_colscale2 );
-		trap_UnlinkEntity( targ );
-		trap_LinkEntity( targ );
+		VectorSet( targ->r.mins, -targ->sb_coltype*targ->s.scales[0], -targ->sb_coltype*targ->s.scales[1], -targ->sb_coltype*targ->s.scales[2]);
+		VectorSet( targ->r.maxs, targ->sb_coltype*targ->s.scales[0], targ->sb_coltype*targ->s.scales[1], targ->sb_coltype*targ->s.scales[2] );
 	}
 }
 
@@ -1506,7 +1482,9 @@ void G_RunProp(gentity_t *ent) {
     trap_Trace(&tr, ent->r.currentOrigin, ent->r.mins, ent->r.maxs, origin, ent->s.number, MASK_PLAYERSOLID);
 
     VectorCopy(tr.endpos, ent->r.currentOrigin);
+    // Save origin, rotate
     VectorCopy(ent->r.currentOrigin, ent->s.origin);
+	VectorCopy( ent->s.apos.trBase, ent->s.angles );
 	
     // Link the entity back into the world
     trap_LinkEntity(ent);
@@ -1612,11 +1590,6 @@ void G_RunProp(gentity_t *ent) {
     		}
 		}
 	}
-
-    // Save rotation
-    ent->sb_rotate0 = ent->s.apos.trBase[0];
-    ent->sb_rotate1 = ent->s.apos.trBase[1];
-    ent->sb_rotate2 = ent->s.apos.trBase[2];
 
     // Check for solid start (possible embedded in another object)
     if (tr.startsolid) {

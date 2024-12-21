@@ -523,9 +523,7 @@ struct
   { "clientkick_game", qfalse, ClientKick_f },
   { "endgamenow", qfalse, EndGame_f },
   { "savemap", qfalse, G_WriteMapfile_f },
-  { "savemapall", qfalse, G_WriteMapfileAll_f },
   { "loadmap", qfalse, G_LoadMapfile_f },
-  { "loadmapall", qfalse, G_LoadMapfileAll_f },
   
   { "hideobjects", qfalse, G_HideObjects },
   { "showobjects", qfalse, G_ShowObjects },

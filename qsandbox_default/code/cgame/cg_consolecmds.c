@@ -375,9 +375,7 @@ void CG_InitConsoleCommands( void ) {
 	trap_AddCommand ("usetarget");
 	trap_AddCommand ("random");
 	trap_AddCommand ("savemap");
-	trap_AddCommand ("savemapall");
 	trap_AddCommand ("loadmap");
-	trap_AddCommand ("loadmapall");
 	trap_AddCommand ("save_menu");
 	trap_AddCommand ("load_menu");
 	//Noire.Script

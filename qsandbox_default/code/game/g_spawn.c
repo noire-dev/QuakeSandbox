@@ -85,13 +85,9 @@ qboolean	G_SpawnVector4( const char *key, const char *defaultString, float *out 
 typedef enum {
 	F_INT, 
 	F_FLOAT,
-	F_LSTRING,			// string on disk, pointer in memory, TAG_LEVEL
-	F_GSTRING,			// string on disk, pointer in memory, TAG_GAME
+	F_STRING,			// string on disk, pointer in memory, TAG_LEVEL
 	F_VECTOR,
 	F_ANGLEHACK,
-	F_ENTITY,			// index on disk, pointer in memory
-	F_ITEM,				// index on disk, pointer in memory
-	F_CLIENT,			// index on disk, pointer in memory
 	F_IGNORE
 } fieldtype_t;
 
@@ -104,17 +100,19 @@ typedef struct
 } field_t;
 
 field_t fields[] = {
-	{"classname", FOFS(classname), F_LSTRING},
+	{"classname", FOFS(classname), F_STRING},
+	{"model", FOFS(model), F_STRING},
+	{"model2", FOFS(model2), F_STRING},
 	{"origin", FOFS(s.origin), F_VECTOR},
-	{"model", FOFS(model), F_LSTRING},
-	{"model2", FOFS(model2), F_LSTRING},
+	{"angles", FOFS(s.angles), F_VECTOR},
+	{"modelscale_vec", FOFS(s.scales), F_VECTOR},
 	{"spawnflags", FOFS(spawnflags), F_INT},
 	{"speed", FOFS(speed), F_FLOAT},
-	{"target", FOFS(target), F_LSTRING},
-	{"targetname", FOFS(targetname), F_LSTRING},
-	{"message", FOFS(message), F_LSTRING},
-	{"botname", FOFS(botname), F_LSTRING},
-	{"team", FOFS(team), F_LSTRING},
+	{"target", FOFS(target), F_STRING},
+	{"targetname", FOFS(targetname), F_STRING},
+	{"message", FOFS(message), F_STRING},
+	{"botname", FOFS(botname), F_STRING},
+	{"team", FOFS(team), F_STRING},
 	{"wait", FOFS(wait), F_FLOAT},
 	{"random", FOFS(random), F_FLOAT},
 	{"count", FOFS(count), F_INT},
@@ -134,46 +132,37 @@ field_t fields[] = {
 	{"mgravity", FOFS(mgravity), F_INT},
 	{"mnoclip", FOFS(mnoclip), F_INT},
 	{"allowuse", FOFS(allowuse), F_INT},
-	{"angles", FOFS(s.angles), F_VECTOR},
 	{"angle", FOFS(s.angles), F_ANGLEHACK},
-	{"targetShaderName", FOFS(targetShaderName), F_LSTRING},
-	{"targetShaderNewName", FOFS(targetShaderNewName), F_LSTRING},
-	{"mapname", FOFS(mapname), F_LSTRING},
-	{"clientname", FOFS(clientname), F_LSTRING},
-	{"teleporterTarget", FOFS(teleporterTarget), F_LSTRING},
-	{"deathTarget", FOFS(deathTarget), F_LSTRING},
-	{"lootTarget", FOFS(lootTarget), F_LSTRING},
+	{"targetShaderName", FOFS(targetShaderName), F_STRING},
+	{"targetShaderNewName", FOFS(targetShaderNewName), F_STRING},
+	{"mapname", FOFS(mapname), F_STRING},
+	{"clientname", FOFS(clientname), F_STRING},
+	{"teleporterTarget", FOFS(teleporterTarget), F_STRING},
+	{"deathTarget", FOFS(deathTarget), F_STRING},
+	{"lootTarget", FOFS(lootTarget), F_STRING},
 	{"skill", FOFS(skill), F_FLOAT},
-	{"overlay", FOFS(overlay), F_LSTRING},
-	{"target2", FOFS(target2), F_LSTRING},
-	{"damagetarget", FOFS(damagetarget), F_LSTRING},
-	{"targetname2", FOFS(targetname2), F_LSTRING},
-	{"key", FOFS(key), F_LSTRING},
-	{"value", FOFS(value), F_LSTRING},
+	{"overlay", FOFS(overlay), F_STRING},
+	{"target2", FOFS(target2), F_STRING},
+	{"damagetarget", FOFS(damagetarget), F_STRING},
+	{"targetname2", FOFS(targetname2), F_STRING},
+	{"key", FOFS(key), F_STRING},
+	{"value", FOFS(value), F_STRING},
 	{"armor", FOFS(armor), F_INT},
-	{"music", FOFS(music), F_LSTRING},
-	{"sb_model", FOFS(sb_model), F_LSTRING},
-	{"sb_class", FOFS(sb_class), F_LSTRING},
-	{"sb_sound", FOFS(sb_sound), F_LSTRING},
+	{"music", FOFS(music), F_STRING},
+	{"sb_class", FOFS(sb_class), F_STRING},
+	{"sb_sound", FOFS(sb_sound), F_STRING},
 	{"sb_coltype", FOFS(sb_coltype), F_INT},
-	{"sb_colscale0", FOFS(sb_colscale0), F_FLOAT},
-	{"sb_colscale1", FOFS(sb_colscale1), F_FLOAT},
-	{"sb_colscale2", FOFS(sb_colscale2), F_FLOAT},
-	{"sb_rotate0", FOFS(sb_rotate0), F_FLOAT},
-	{"sb_rotate1", FOFS(sb_rotate1), F_FLOAT},
-	{"sb_rotate2", FOFS(sb_rotate2), F_FLOAT},
 	{"physicsBounce", FOFS(physicsBounce), F_FLOAT},
 	{"vehicle", FOFS(vehicle), F_INT},
 	{"sb_material", FOFS(sb_material), F_INT},
 	{"sb_gravity", FOFS(sb_gravity), F_INT},
 	{"sb_phys", FOFS(sb_phys), F_INT},
 	{"sb_coll", FOFS(sb_coll), F_INT},
-	{"locked", FOFS(locked), F_INT},
 	{"sb_red", FOFS(sb_red), F_INT},
 	{"sb_green", FOFS(sb_green), F_INT},
 	{"sb_blue", FOFS(sb_blue), F_INT},
 	{"sb_radius", FOFS(sb_radius), F_INT},
-	{"sb_ettype", FOFS(sb_ettype), F_INT},
+	{"sb_isnpc", FOFS(sb_isnpc), F_INT},
 	{"sb_takedamage", FOFS(sb_takedamage), F_INT},
 	{"sb_takedamage2", FOFS(sb_takedamage2), F_INT},
 	{"objectType", FOFS(objectType), F_INT},
@@ -673,7 +662,7 @@ void G_ParseField( const char *key, const char *value, gentity_t *ent ) {
 			b = (byte *)ent;
 
 			switch( f->type ) {
-			case F_LSTRING:
+			case F_STRING:
 				*(char **)(b+f->ofs) = G_NewString (value);
 				break;
 			case F_VECTOR:

@@ -737,10 +737,6 @@ return;
 }	
 }
 
-if(ent->locked != 0){
-return;
-}
-
 if(ent->price > 0){
 if ( ent->moverState == MOVER_POS1 ) {
 if(activator->client->pers.oldmoney < ent->price){
@@ -1130,9 +1126,6 @@ trap_SendServerCommand( other->s.clientNum, va( "cp \"Owned by %s\n\"", ent->own
 return;
 }	
 }
-if(ent->locked != 0){
-return;
-}	
 
 if(ent->price > 0){
 //trap_SendServerCommand( other->s.clientNum, va( "cp %s_%i\n", ent->message, ent->price ));

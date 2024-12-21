@@ -1670,11 +1670,8 @@ gentity_t *fire_propgun( gentity_t *self, vec3_t start, vec3_t forward, vec3_t r
 	bolt->sb_coll = 0;
 	bolt->health = -1;
 	bolt->s.scales[0] = 0.5;
-	bolt->sb_colscale0 = 0.5;
 	bolt->s.scales[1] = 0.5;
-	bolt->sb_colscale1 = 0.5;
 	bolt->s.scales[2] = 0.5;
-	bolt->sb_colscale2 = 0.5;
 	bolt->vehicle = 0;
 	bolt->sb_gravity = 800;
 	bolt->s.generic3 = 800;
@@ -1686,7 +1683,7 @@ gentity_t *fire_propgun( gentity_t *self, vec3_t start, vec3_t forward, vec3_t r
 	VectorSet( bolt->r.mins, -12.5, -12.5, -12.5);
 	VectorSet( bolt->r.maxs, 12.5, 12.5, 12.5 );	
 	bolt->s.modelindex = G_ModelIndex( "props/cube" );
-	bolt->sb_model = "props/cube";
+	bolt->model = "props/cube";
 
 	trap_Trace(&tr, start, bolt->r.mins, bolt->r.maxs, start, bolt->s.number, MASK_OBJECTS);
 
@@ -1740,11 +1737,8 @@ gentity_t *fire_nuke( gentity_t *self, vec3_t start, vec3_t forward, vec3_t righ
 	bolt->sb_coll = 0;
 	bolt->health = 1;
 	bolt->s.scales[0] = 4.0;
-	bolt->sb_colscale0 = 4.0;
 	bolt->s.scales[1] = 4.0;
-	bolt->sb_colscale1 = 4.0;
 	bolt->s.scales[2] = 4.0;
-	bolt->sb_colscale2 = 4.0;
 	bolt->vehicle = 0;
 	bolt->sb_gravity = 800;
 	bolt->s.generic3 = 800;
