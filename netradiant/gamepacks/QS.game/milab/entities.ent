@@ -3634,6 +3634,8 @@ Spawns sandbox object.
 <integer key="sb_material" name="Material">Prop material id default=0.</integer>
 <integer key="sb_gravity" name="Mass">Prop mass default=800.</integer>
 <integer key="objectType" name="objectType">Object type (OT_).</integer>
+<integer key="vehicle" name="vehicle">Vehicle type.</integer>
+<real key="physicsBounce" name="physicsBounce">Bounce modifier.</real>
 </point>
 
 

@@ -297,7 +297,7 @@ static void SandboxMain_SaveChanges( void ) {
 	Q_strncpyz( s_sandboxmain.modif[0].field.buffer, s_sandboxmain.texturelist.itemnames[s_sandboxmain.texturelist.curvalue], sizeof(s_sandboxmain.modif[0].field.buffer) );
 	}
 	if(trap_Cvar_VariableValue("toolgun_tool") == 3){
-	trap_Cvar_Set( "toolgun_mod1", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]);
+	trap_Cvar_Set( "toolgun_mod1", va("props/%s", s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue]));
 	Q_strncpyz( s_sandboxmain.modif[0].field.buffer, s_sandboxmain.list.itemnames[s_sandboxmain.list.curvalue], sizeof(s_sandboxmain.modif[0].field.buffer) );
 	}
 	}

@@ -3617,75 +3617,25 @@ Controls the NPC.
 Spawns sandbox object.
 -------- KEYS --------
 <string key="classname" name="Classname">Class name of the entity.</string>
-<string key="model" name="Model">Path to the entity's model.</string>
-<string key="model2" name="Model 2">Path to the secondary model.</string>
-<integer key="spawnflags" name="Spawn Flags">Flags that modify entity's behavior when spawned.</integer>
-<real key="speed" name="Speed">Speed of the entity.</real>
-<target key="target" name="Target">This points to entities to activate when this entity is triggered.</target>
-<targetname key="targetname" name="Target Name">Activating trigger points to this.</targetname>
-<string key="message" name="Message">Message associated with the entity.</string>
-<string key="team" name="Team">Team associated with the entity.</string>
-<real key="wait" name="Wait Time">Time to wait before action.</real>
-<real key="random" name="Random">Random value for the entity's behavior.</real>
-<integer key="count" name="Count">Count associated with the entity.</integer>
-<integer key="playerangle" name="Player Angle">Angle of the player.</integer>
-<integer key="price" name="Price">Price of the entity.</integer>
-<integer key="health" name="Health">Health points of the entity.</integer>
-<integer key="dmg" name="Damage">Damage dealt by the entity.</integer>
-<integer key="mtype" name="Missile Type">Type of missile.</integer>
-<integer key="mtimeout" name="Missile Timeout">Timeout for the missile.</integer>
-<integer key="mhoming" name="Missile Homing">Homing capability of the missile.</integer>
-<integer key="mspeed" name="Missile Speed">Speed of the missile.</integer>
-<integer key="mbounce" name="Missile Bounce">Bouncing capability of the missile.</integer>
-<integer key="mdamage" name="Missile Damage">Damage of the missile.</integer>
-<integer key="msdamage" name="Missile Splash Damage">Splash damage of the missile.</integer>
-<integer key="msradius" name="Missile Splash Radius">Splash radius of the missile.</integer>
-<integer key="mgravity" name="Missile Gravity">Gravity affecting the missile.</integer>
-<integer key="mnoclip" name="Missile NoClip">No-clip capability of the missile.</integer>
-<integer key="allowuse" name="Allow Use">Allow usage by players.</integer>
-<direction key="angles" name="Angles">Angles of the entity.</direction>
-<angle key="angle" name="Angle">Hack to set a single angle.</angle>
-<string key="targetShaderName" name="Target Shader Name">Name of the target shader.</string>
-<string key="targetShaderNewName" name="Target Shader New Name">New name for the target shader.</string>
-<string key="mapname" name="Map Name">Name of the map.</string>
-<string key="clientname" name="Client Name">Name of the client.</string>
-<string key="teleporterTarget" name="Teleporter Target">Target of the teleporter.</string>
-<string key="deathTarget" name="Death Target">Target upon death.</string>
-<string key="lootTarget" name="Loot Target">Target for loot.</string>
-<real key="skill" name="Skill Level">Skill level required.</real>
-<integer key="objectType" name="objectType">Object type (OT_).</integer>
-<target key="target2" name="Target 2">This points to entities to activate when this entity is triggered.</target>
-<targetname key="targetname2" name="Target Name 2">This points to entities to activate when this entity is triggered.</targetname>
-<string key="key" name="Key">Key for the entity.</string>
-<string key="value" name="Value">Value associated with the key.</string>
-<integer key="armor" name="Armor">Armor points of the entity.</integer>
-<string key="music" name="Music">Music associated with the entity.</string>
-<string key="sb_model" name="Prop Model">Prop model name in props folder.</string>
-<string key="sb_class" name="Prop Class">Prop class like classname.</string>
-<string key="sb_sound" name="Prop Sound">Prop sound like speaker.</string>
-<integer key="sb_coltype" name="Coll Size">Prop coll size default=25.</integer>
-<real key="sb_colscale0" name="Coll Scale X">Prop scale default=1.</real>
-<real key="sb_colscale1" name="Coll Scale Y">Prop scale default=1.</real>
-<real key="sb_colscale2" name="Coll Scale Z">Prop scale default=1.</real>
-<real key="sb_rotate0" name="Rotate X">Prop rotate default=0.</real>
-<real key="sb_rotate1" name="Rotate Y">Prop rotate default=0.</real>
-<real key="sb_rotate2" name="Rotate Z">Prop rotate default=0.</real>
-<real key="physicsBounce" name="Physics Bounce Modifier">Physics bounce modifier default=0.5.</real>
-<integer key="vehicle" name="Is Vehicle">Prop vehicle id default=0.</integer>
-<integer key="sb_generic1" name="Material">Prop material id default=0.</integer>
-<integer key="sb_gravity" name="Mass">Prop mass default=800.</integer>
-<integer key="sb_phys" name="Physics Property">Prop physics default=0.</integer>
-<integer key="sb_coll" name="Collision Property">Prop collision default=0.</integer>
-<integer key="locked" name="Locked">Prop locked default=0.</integer>
+<string key="sb_class" name="Sandbox Classname">Class name of the entity.</string>
+<model key="model" name="Model File">Path/name of model to use (e.g. models/mapobjects/teleporter/teleporter.md3).</model>
+<angles key="angles" name="Pitch Yaw Roll">Individual control of PITCH, YAW, and ROLL (default 0 0 0).</angles>
+<real3 key="modelscale_vec" name="Scale XYZ" value="1 1 1">Floating-point vector used to scale a model's axes individually (default 1.0 1.0 1.0).</real3>
 <integer key="sb_red" name="Light Red">Light red default=0.</integer>
 <integer key="sb_green" name="Light Green">Light green default=0.</integer>
 <integer key="sb_blue" name="Light Blue">Light blue default=0.</integer>
 <integer key="sb_radius" name="Light Radius">Light radius default=0.</integer>
-<integer key="sb_ettype" name="Entity Type">Prop ET_ default=0.</integer>
+<string key="sb_sound" name="Prop Sound">Prop sound like speaker.</string>
+<integer key="sb_coltype" name="Coll Size">Prop coll size default=25.</integer>
 <integer key="sb_takedamage" name="Take Damage">Prop take damage default=1.</integer>
 <integer key="sb_takedamage2" name="Take Damage 2">Prop take damage default=0.</integer>
-<real key="distance" name="Prop Distance">Prop distance default=0.</real>
-<integer key="type" name="Type">Prop type default=0.</integer>
+<integer key="sb_phys" name="Physics Property">Prop physics default=0.</integer>
+<integer key="sb_coll" name="Collision Property">Prop collision default=0.</integer>
+<integer key="sb_material" name="Material">Prop material id default=0.</integer>
+<integer key="sb_gravity" name="Mass">Prop mass default=800.</integer>
+<integer key="objectType" name="objectType">Object type (OT_).</integer>
+<integer key="vehicle" name="vehicle">Vehicle type.</integer>
+<real key="physicsBounce" name="physicsBounce">Bounce modifier.</real>
 </point>
 
 

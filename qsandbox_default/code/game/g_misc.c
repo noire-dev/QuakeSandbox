@@ -1335,8 +1335,6 @@ void G_ModProp( gentity_t *targ, gentity_t *attacker, char *arg01, char *arg02, 
 		targ->r.contents = CONTENTS_TRIGGER;
 		targ->sb_coll = 1;
 		}
-	trap_UnlinkEntity( targ );
-	trap_LinkEntity( targ );
 	}
 	if(attacker->tool_id == 7){
 		targ->health = atoi(arg01);
