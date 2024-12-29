@@ -16,7 +16,7 @@ INGAME MENU
 #include "ui_dynamicmenu.h"
 
 
-#define INGAME_FRAME		"menu/art/addbotframe"
+#define INGAME_FRAME		"menu/art/cut_frame"
 #define INGAME_SCROLL		"menu/uie_art/separator"
 //#define INGAME_FRAME					"menu/art/cut_frame"
 #define INGAME_MENU_VERTICAL_SPACING	26

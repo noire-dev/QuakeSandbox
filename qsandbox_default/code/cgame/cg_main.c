@@ -163,7 +163,6 @@ vmCvar_t    cl_screenoffset;
 vmCvar_t    ui_backcolors;
 vmCvar_t	legsskin;
 vmCvar_t	team_legsskin;
-vmCvar_t	cg_oldscoreboard;
 vmCvar_t	cg_itemstyle;
 vmCvar_t	cg_gibtime;
 vmCvar_t	cg_paintballMode;
@@ -453,7 +452,6 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_itemstyle, "cg_itemstyle", "2", CVAR_ARCHIVE },
 	{ &legsskin, "legsskin", "sarge/default", CVAR_USERINFO | CVAR_ARCHIVE },
 	{ &team_legsskin, "team_legsskin", "sarge/default", CVAR_USERINFO | CVAR_ARCHIVE },
-	{ &cg_oldscoreboard, "cg_oldscoreboard", "0", CVAR_ARCHIVE },
 	{ &cg_gibtime, "cg_gibtime", "30", CVAR_ARCHIVE },
 	{ &cg_gibjump, "cg_gibjump", "350", CVAR_ARCHIVE },
 	{ &cg_gibvelocity, "cg_gibvelocity", "350", CVAR_ARCHIVE },

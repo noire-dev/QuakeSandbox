@@ -16,7 +16,7 @@ INGAME CALLVOTE MAP SELECTION MENU
 #include "ui_dynamicmenu.h"
 
 
-#define MAPVOTE_FRAME		"menu/art/addbotframe"
+#define MAPVOTE_FRAME		"menu/art/cut_frame"
 #define ART_ARROWS			"menu/art/arrows_vert_0"
 #define ART_ARROWUP			"menu/art/arrows_vert_top"
 #define ART_ARROWDOWN		"menu/art/arrows_vert_bot"

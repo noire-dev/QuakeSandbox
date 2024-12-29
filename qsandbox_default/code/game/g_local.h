@@ -826,8 +826,6 @@ void DropPortalDestination( gentity_t *ent );
 void G_ModProp( gentity_t *targ, gentity_t *attacker, char *arg01, char *arg02, char *arg03, char *arg04, char *arg05, char *arg06, char *arg07, char *arg08, char *arg09, char *arg10, char *arg11, char *arg12, char *arg13, char *arg14, char *arg15, char *arg16, char *arg17, char *arg18, char *arg19 );
 void G_RunProp( gentity_t *ent );
 void G_BounceProp( gentity_t *ent, trace_t *trace );
-void G_HideObjects();
-void G_ShowObjects();
 gentity_t *G_FindEntityForEntityNum(int entityn);
 gentity_t *G_FindEntityForClientNum(int entityn);
 void BlockDie (gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int mod);

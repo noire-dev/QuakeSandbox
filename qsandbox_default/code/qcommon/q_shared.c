@@ -1759,3 +1759,18 @@ float VectorDistance(const vec3_t v1, const vec3_t v2) {
     
     return sqrt(diff[0] * diff[0] + diff[1] * diff[1] + diff[2] * diff[2]);
 }
+
+/*
+==========================
+FS_FileExists
+==========================
+*/
+static qboolean	FS_FileExists(const char *filename) {
+	int len;
+
+	len = trap_FS_FOpenFile( filename, NULL, FS_READ );
+	if (len>0) {
+		return qtrue;
+	}
+	return qfalse;
+}

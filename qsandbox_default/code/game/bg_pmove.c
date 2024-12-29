@@ -1205,13 +1205,13 @@ static void PM_GroundTrace( void ) {
 			return;
 	}
 
-	// if the trace didn't hit anything, we are in free fall
-	if ( trace.fraction == 1.0 ) {
+	// if the trace didn't hit anything, we are in free fall NOIRE.DEV: TURN IT OFF!
+	/*if ( trace.fraction == 1.0 ) {
 		PM_GroundTraceMissed();
 		pml.groundPlane = qfalse;
 		pml.walking = qfalse;
 		return;
-	}
+	}*/ 
 
 	// check if getting thrown off the ground
 	if ( pm->ps->velocity[2] > 0 && DotProduct( pm->ps->velocity, trace.plane.normal ) > 10 ) {

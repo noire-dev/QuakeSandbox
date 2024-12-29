@@ -177,7 +177,7 @@ static void CG_General( centity_t *cent ) {
 	s1 = &cent->currentState;
 
 	// if set to invisible, skip
-	if (!s1->modelindex) {
+	if (!s1->modelindex && !s1->modelindex2) {
 		return;
 	}
 
@@ -195,11 +195,23 @@ static void CG_General( centity_t *cent ) {
 	VectorCopy( cent->lerpOrigin, ent.origin);
 	VectorCopy( cent->lerpOrigin, ent.oldorigin);
 
+	if(!s1->modelindex2){
 	ent.hModel = cgs.gameModels[s1->modelindex];
+	} else {
+	ent.hModel = cgs.gameModels[s1->modelindex2];	
+	}
 	ent.reType = RT_MODEL;
+	if(!s1->modelindex2){
 	ent.customSkin = trap_R_RegisterSkin(va("ptex/%s/%i.skin", CG_ConfigString( CS_MODELS+s1->modelindex ), s1->generic2));
+	} else {
+	ent.customSkin = trap_R_RegisterSkin(va("ptex/%s/%i.skin", CG_ConfigString( CS_MODELS+s1->modelindex2 ), s1->generic2));	
+	}
 	if(s1->generic2 > 0){
+	if(!s1->modelindex2){
 	ent.customShader = trap_R_RegisterShader(va("ptex/%s/%i", CG_ConfigString( CS_MODELS+s1->modelindex ), s1->generic2));
+	} else {
+	ent.customShader = trap_R_RegisterShader(va("ptex/%s/%i", CG_ConfigString( CS_MODELS+s1->modelindex2 ), s1->generic2));	
+	}
 	}					
 	if(s1->generic2 == 255){	
 	if(cg_hide255.integer){		
@@ -218,7 +230,11 @@ static void CG_General( centity_t *cent ) {
 	ent.shaderRGBA[2] = b;
 	ent.shaderRGBA[3] = 255;
 	
+	if(!s1->modelindex2){
 	Com_sprintf(str, sizeof(str), CG_ConfigString(CS_MODELS + s1->modelindex));
+	} else {
+	Com_sprintf(str, sizeof(str), CG_ConfigString(CS_MODELS + s1->modelindex2));
+	}
 
 	// player model
 	if (s1->number == cg.snap->ps.clientNum) {

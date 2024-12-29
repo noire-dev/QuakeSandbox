@@ -1031,6 +1031,37 @@ void G_TouchProp( gentity_t *self, gentity_t *other, trace_t *trace ) {
 	self->nextthink = level.time + 1;
 }
 
+void setModel(gentity_t *ent, char *modelName) {
+	int len;
+    if (!ent || !modelName) {
+        Com_Printf("Invalid entity or model name\n");
+        return;
+    }
+
+    len = strlen(modelName);
+    if (len == 0) {
+        Com_Printf("Model name is empty\n");
+        return;
+    }
+
+    ent->s.modelindex = G_ModelIndex(modelName);
+    CopyAlloc(ent->model, modelName);
+
+    if (len >= 4 && !Q_stricmp(ent->model + len - 4, ".md3")) {
+        Com_Printf("MD3 Model load: '%s'\n", ent->model);
+        ent->model[len - 4] = '\0'; // Убираем расширение
+        memset(ent->model + len - 3, 0, 4); // Удаляем остатки
+    }
+
+	if (len >= 4 && !Q_stricmp(ent->model + len - 4, ".bsp")) {
+		Com_Printf("BSP Model load: '%s'\n", ent->model);
+		if(FS_FileExists(ent->model)){
+	    	trap_SetBrushModel(ent, ent->model);
+			ent->s.modelindex2 = G_ModelIndex(modelName);
+		}
+	}
+}
+
 /*QUAKED func_prop (0 .5 .8) ?
 A bmodel that just sits there, doing nothing.  Can be used for conditional walls and models.
 "model2"	.md3 model to also draw
@@ -1041,6 +1072,7 @@ A bmodel that just sits there, doing nothing.  Can be used for conditional walls
 void SP_func_prop( gentity_t *ent ) {
 	spawn_t	*s;
 	gitem_t	*item;
+	int		len;
 	
 	VectorCopy( ent->s.origin, ent->s.pos.trBase );
 	VectorCopy( ent->s.origin, ent->r.currentOrigin );
@@ -1053,7 +1085,6 @@ void SP_func_prop( gentity_t *ent ) {
 			CopyAlloc(ent->sb_class, ent->classname);
 			s->spawn(ent);
 			//spawn another class
-			ent->s.modelindex = G_ModelIndex( ent->model );	//модель
 			ent->s.constantLight = ent->sb_red | ( ent->sb_green << 8 ) | ( ent->sb_blue << 16 ) | ( ent->sb_radius << 24 );
 			ent->s.loopSound = G_SoundIndex(ent->sb_sound);	//звук
 			VectorCopy( ent->s.angles, ent->s.apos.trBase );
@@ -1085,6 +1116,7 @@ void SP_func_prop( gentity_t *ent ) {
 			ent->s.torsoAnim = ent->objectType;
 			ent->classname = "func_prop";
 			ent->r.svFlags &= ~SVF_NOCLIENT;
+			setModel(ent, ent->model);
 			trap_LinkEntity( ent );
 			return;
 		}
@@ -1092,7 +1124,6 @@ void SP_func_prop( gentity_t *ent ) {
 	ent->classname = "func_prop";
 	ent->s.eType = ET_GENERAL;
 	ent->s.pos.trType = TR_STATIONARY;
-	ent->s.modelindex = G_ModelIndex( ent->model );
 	ent->s.constantLight = ent->sb_red | ( ent->sb_green << 8 ) | ( ent->sb_blue << 16 ) | ( ent->sb_radius << 24 );
 	ent->s.loopSound = G_SoundIndex(ent->sb_sound);
 	ent->die = BlockDie;
@@ -1130,6 +1161,7 @@ void SP_func_prop( gentity_t *ent ) {
 	VectorSet( ent->r.maxs, 25, 25, 15 );
 	}
 	ent->touch = G_TouchProp;
+	setModel(ent, ent->model);
 	trap_LinkEntity( ent );
 }
 
@@ -1139,6 +1171,7 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	vec3_t		o;
 	spawn_t	*s;
 	gitem_t	*item;
+	int		len;
 	
 	o[0] = ((int)((xyz[0] + (xyz[0] < 0 ? -atoi(arg06) : atoi(arg06))) / (atoi(arg06) * 2)) * (atoi(arg06) * 2));
 	o[1] = ((int)((xyz[1] + (xyz[1] < 0 ? -atoi(arg06) : atoi(arg06))) / (atoi(arg06) * 2)) * (atoi(arg06) * 2));
@@ -1230,13 +1263,12 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 			CopyAlloc(ent->sb_class, ent->classname);
 			s->spawn(ent);
 			//spawn another class
-			ent->s.modelindex = G_ModelIndex( arg02 );
-			CopyAlloc(ent->model, arg02);
 			ent->sb_coltype = atoi(arg05);
 			ent->classname = "func_prop";
 			ent->r.svFlags &= ~SVF_NOCLIENT;
 			VectorSet( ent->r.mins, -ent->sb_coltype*ent->s.scales[0], -ent->sb_coltype*ent->s.scales[1], -ent->sb_coltype*ent->s.scales[2]);
 			VectorSet( ent->r.maxs, ent->sb_coltype*ent->s.scales[0], ent->sb_coltype*ent->s.scales[1], ent->sb_coltype*ent->s.scales[2] );
+			setModel(ent, arg02);
 			trap_LinkEntity( ent );
 			return;
 		}
@@ -1248,8 +1280,6 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	ent->takedamage = ent->sb_takedamage;
 	ent->takedamage2 = ent->sb_takedamage2;
 	ent->die = BlockDie;		
-	ent->s.modelindex = G_ModelIndex( arg02 );
-	CopyAlloc(ent->model, arg02);
 	if(atoi(arg21) <= 0){
 	ent->sb_coltype = atoi(arg05);
 	VectorSet( ent->r.mins, -ent->sb_coltype*ent->s.scales[0], -ent->sb_coltype*ent->s.scales[1], -ent->sb_coltype*ent->s.scales[2]);
@@ -1260,10 +1290,12 @@ void G_BuildPropSL( char *arg02, char *arg03, vec3_t xyz, gentity_t *player, cha
 	VectorSet( ent->r.maxs, 25, 25, 15 );
 	}
 	ent->touch = G_TouchProp;
+	setModel(ent, arg02);
 	trap_LinkEntity( ent );
 }
 
 void G_ModProp( gentity_t *targ, gentity_t *attacker, char *arg01, char *arg02, char *arg03, char *arg04, char *arg05, char *arg06, char *arg07, char *arg08, char *arg09, char *arg10, char *arg11, char *arg12, char *arg13, char *arg14, char *arg15, char *arg16, char *arg17, char *arg18, char *arg19 ) { //tool_id
+	int		len;
 	if(g_gametype.integer != GT_SANDBOX){
 		return; 
 	}
@@ -1297,8 +1329,7 @@ void G_ModProp( gentity_t *targ, gentity_t *attacker, char *arg01, char *arg02, 
 		}
 	}
 	if(attacker->tool_id == 3){
-		targ->s.modelindex = G_ModelIndex( arg01 );
-		CopyAlloc(targ->model, arg01);
+		setModel(targ, arg01);
 	}
 	if(attacker->tool_id == 4){
 		if(atoi(arg19) == 0){
@@ -1479,10 +1510,9 @@ void G_RunProp(gentity_t *ent) {
     // Trace a line from the current origin to the new position
     trap_Trace(&tr, ent->r.currentOrigin, ent->r.mins, ent->r.maxs, origin, ent->s.number, MASK_PLAYERSOLID);
 
-    VectorCopy(tr.endpos, ent->r.currentOrigin);
-    // Save origin, rotate
-    VectorCopy(ent->r.currentOrigin, ent->s.origin);
-	VectorCopy( ent->s.apos.trBase, ent->s.angles );
+    // Save origin
+    VectorCopy(tr.endpos, ent->s.origin);
+	VectorCopy(tr.endpos, ent->r.currentOrigin);
 	
     // Link the entity back into the world
     trap_LinkEntity(ent);
@@ -1536,7 +1566,7 @@ void G_RunProp(gentity_t *ent) {
 					}
 				}
 			}
-			if(impactForceAll > PHYS_DAMAGESENS){
+			if(impactForceAll > PHYS_DAMAGESENS && !tr.startsolid){
 				if(hit->grabbedEntity != ent){
 				G_PropDamage(hit, ent->lastPlayer, (int)(impactForceAll * PHYS_DAMAGE));
 				}
@@ -1563,7 +1593,7 @@ void G_RunProp(gentity_t *ent) {
     }
 
     // Rotate entity during movement (optional physics feature)
-	if (!ent->isGrabbed){
+	if (!ent->isGrabbed && !tr.startsolid){
 		if(ent->s.pos.trType != TR_GRAVITY_WATER){
     		if (ent->s.pos.trDelta[2] != 0) {
     		    ent->s.apos.trBase[0] -= ent->s.pos.trDelta[2] * PHYS_ROTATING * 0.20;
@@ -1589,6 +1619,13 @@ void G_RunProp(gentity_t *ent) {
 		}
 	}
 
+    // Save rotate
+    VectorCopy(ent->s.apos.trBase, ent->s.angles);
+	VectorCopy(ent->s.apos.trBase, ent->r.currentAngles);
+
+    // Link the entity back into the world
+    trap_LinkEntity(ent);
+
     // Check for solid start (possible embedded in another object)
     if (tr.startsolid) {
         tr.fraction = 0;
@@ -1601,68 +1638,7 @@ void G_RunProp(gentity_t *ent) {
 		return;
 	}
 
-	if (tr.startsolid) {
-		G_DisablePropPhysics(ent, tr.endpos);
-		return;
-	}
-
 	G_BounceProp(ent, &tr);
-}
-
-/*
-================
-G_HideObjects
-
-================
-*/
-void G_HideObjects() {
-	int			i;
-	gentity_t	*ent;
-
-	//
-	// go through all allocated objects
-	//
-	ent = &g_entities[0];
-	for (i=0 ; i<level.num_entities ; i++, ent++) {
-	if(i>level.num_entities-1){
-	G_Printf("Object (hide) processed!\n");	
-	}
-	if(ent->sandboxObject){
-	trap_UnlinkEntity( ent );
-	}
-	continue;
-	
-	}
-}
-
-/*
-================
-G_ShowObjects
-
-================
-*/
-void G_ShowObjects() {
-	int			i;
-	gentity_t	*ent;
-	int			thinktime = 1;
-
-	//
-	// go through all allocated objects
-	//
-	ent = &g_entities[0];
-	for (i=0 ; i<level.num_entities ; i++, ent++) {
-	thinktime += 10;
-	if(i>level.num_entities-1){
-	G_Printf("Object (show) processed!\n");	
-	}
-	if(ent->sandboxObject){
-	ent->nextthink = level.time + thinktime;
-	ent->think = ShowSandObject;
-	}
-	continue;
-	
-	}
-	G_Printf("Object (show) processed!");
 }
 
 /*

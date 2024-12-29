@@ -18,7 +18,7 @@ ADD BOTS MENU
 #define ART_BACK1			"menu/art/back_1"	
 #define ART_FIGHT0			"menu/art/accept_0"
 #define ART_FIGHT1			"menu/art/accept_1"
-#define ART_BACKGROUND		"menu/art/addbotframe"
+#define ART_BACKGROUND		"menu/art/cut_frame"
 #define ART_ARROWS			"menu/art/arrows_vert_0"
 #define ART_ARROWUP			"menu/art/arrows_vert_top"
 #define ART_ARROWDOWN		"menu/art/arrows_vert_bot"

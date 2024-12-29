@@ -525,8 +525,6 @@ struct
   { "savemap", qfalse, G_WriteMapfile_f },
   { "loadmap", qfalse, G_LoadMapfile_f },
   
-  { "hideobjects", qfalse, G_HideObjects },
-  { "showobjects", qfalse, G_ShowObjects },
   { "picktarget", qfalse, Svcmd_PickTarget_f },
   { "create", qfalse, Svcmd_PropNpc_AS_f },
 

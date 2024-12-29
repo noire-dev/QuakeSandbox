@@ -16,7 +16,7 @@ TEAM ORDERS MENU
 #include "ui_local.h"
 
 
-#define ART_FRAME		"menu/art/addbotframe"
+#define ART_FRAME		"menu/art/cut_frame"
 #define ART_BACK0		"menu/art/back_0"
 #define ART_BACK1		"menu/art/back_1"	
 

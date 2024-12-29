@@ -15,7 +15,7 @@ REMOVE BOTS MENU
 #include "ui_local.h"
 
 
-#define ART_BACKGROUND		"menu/art/addbotframe"
+#define ART_BACKGROUND		"menu/art/cut_frame"
 #define ART_BACK0			"menu/art/back_0"
 #define ART_BACK1			"menu/art/back_1"
 #define ART_DELETE0			"menu/art/delete_0"

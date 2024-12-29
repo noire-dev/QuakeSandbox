@@ -8,35 +8,25 @@ MAIN MENU
 =======================================================================
 */
 
-
-
-
-
 #include "ui_local.h"
 
-
 #define MODLOADER				"menu/gamemode_default"
-
-
 
 #define ID_SINGLEPLAYER			10
 #define ID_MULTIPLAYER			11
 #define ID_SETUP				12
 #define ID_DEMOS				13
-#define ID_CINEMATICS			14
-#define ID_TEAMARENA			15
-#define ID_MODS					16
-#define ID_EXIT					17
-#define ID_SKIRMISH             18
-#define ID_PLAYERNAME			19
-#define ID_MODELTYPE			20
-#define ID_GAMEMODEP			21
-#define ID_MODDB				22
-#define ID_MODLOADER			23
-#define ID_BUTTON1				24
-#define ID_BUTTON2				25
-#define ID_BUTTON3				26
-#define ID_MODLIST					27
+#define ID_MODS					14
+#define ID_EXIT					15
+#define ID_SKIRMISH             16
+#define ID_PLAYERNAME			17
+#define ID_GAMEMODEP			18
+#define ID_MODDB				19
+#define ID_MODLOADER			20
+#define ID_BUTTON1				21
+#define ID_BUTTON2				22
+#define ID_BUTTON3				23
+#define ID_MODLIST				24
 
 #define MODDB				"menu/moddb"
 #define M_BUTTON1			"menu/button1"
@@ -46,10 +36,7 @@ MAIN MENU
 
 #define MAIN_MENU_CENTER 200
 
-
 vec4_t color_translucent	= {1.0f, 1.0f, 1.0f, 0.2f};
-
-
 
 typedef struct {
 	menuframework_s	menu;
@@ -65,12 +52,9 @@ typedef struct {
 	menutext_s		multiplayer;
 	menutext_s		setup;
 	menutext_s		demos;
-	menutext_s		cinematics;
-	menutext_s		teamArena;
 	menutext_s		mods;
 	menutext_s		exit;
 	menutext_s		name;
-	menutext_s		modeltype;
 	menuobject_s	modlist;
 	
 	char			names[524288];
@@ -79,11 +63,6 @@ typedef struct {
 #ifndef NO_UIE_MINILOGO
 	menubitmap_s	logo;
 #endif
-
-	modelAnim_t 	model;
-	char 			playername[MAX_NAME_LENGTH];
-
-	qhandle_t		bannerModel;
 } mainmenu_t;
 
 
@@ -145,59 +124,6 @@ void MainMenu_ReloadGame( void )
 
 /*
 =================
-Main_SetPlayerModelType
-=================
-*/
-static void Main_SetPlayerModelType( void )
-{
-	if (UIE_PlayerInfo_IsTeamModel())
-	{
-		if(cl_language.integer == 0){
-		s_main.modeltype.string = "Team Model";
-		}
-		if(cl_language.integer == 1){
-		s_main.modeltype.string = "Командная Модель";
-		}
-	}
-	else
-	{
-		if(cl_language.integer == 0){
-		s_main.modeltype.string = "DM Model";
-		}
-		if(cl_language.integer == 1){
-		s_main.modeltype.string = "Обычная Модель";
-		}
-	}
-
-	PText_Init(&s_main.modeltype);
-}
-
-
-
-/*
-=================
-Main_ToggleModelType
-=================
-*/
-static void Main_ToggleModelType( void )
-{
-	qboolean type;
-
-	if (UIE_PlayerInfo_IsTeamModel()) {
-		type = qfalse;
-	}
-	else {
-		type = qtrue;
-	}
-
-	UIE_PlayerInfo_DrawTeamModel(&s_main.model, type);
-	Main_SetPlayerModelType();
-}
-
-
-
-/*
-=================
 Main_MenuEvent
 =================
 */
@@ -234,25 +160,12 @@ void Main_MenuEvent (void* ptr, int event) {
 		UI_DemosMenu();
 		break;
 
-	case ID_CINEMATICS:
-		//UI_CinematicsMenu();
-		break;
-
 	case ID_MODS:
 		UI_ModsMenu();
 		break;
 
-	case ID_TEAMARENA:
-		trap_Cvar_Set( "fs_game", "missionpack");
-		trap_Cmd_ExecuteText( EXEC_APPEND, "vid_restart;" );
-		break;
-
 	case ID_PLAYERNAME:
 		UI_PlayerSettingsMenu();
-		break;	
-
-	case ID_MODELTYPE:
-		Main_ToggleModelType();
 		break;
 		
 	case ID_GAMEMODEP:
@@ -339,19 +252,6 @@ static void Main_MenuDraw( void ) {
 	}
 	else
 	{
-      // change the players name if different to control
-   
-	   trap_Cvar_VariableStringBuffer( "name", buffer, MAX_NAME_LENGTH);
-	   Q_CleanStr(buffer);
-	   if (strcmp(s_main.playername, buffer)) {
-		   strcpy(s_main.playername, buffer);
-		   PText_Init(&s_main.name);
-	   }
-   
-	   // update type of model displayed
-	   if (uis.firstdraw)
-		   Main_SetPlayerModelType();
-	   
 	   UI_DrawRoundedRect(317+uis.wideoffset, 30, 1000000, 20*SMALLCHAR_HEIGHT*1.25, 10, modlistcolor);
 	   // standard menu drawing
 	   Menu_Draw( &s_main.menu );
@@ -359,47 +259,6 @@ static void Main_MenuDraw( void ) {
 	UI_DrawString( 600+uis.wideoffset, 450, "Quake Sandbox v8.1", UI_RIGHT|UI_SMALLFONT, color );
 	UI_DrawString( 600+uis.wideoffset, 465, "by Noire.dev", UI_RIGHT|UI_SMALLFONT, color );
 }
-
-
-/*
-=================
-Main_DrawPlayer
-=================
-*/
-static void Main_DrawPlayer( void *self )
-{
-	UIE_PlayerInfo_AnimateModel(&s_main.model);
-}
-
-
-
-
-/*
-===============
-UI_TeamArenaExists
-===============
-*/
-static qboolean UI_TeamArenaExists( void ) {
-	int		numdirs;
-	char	dirlist[2048];
-	char	*dirptr;
-  char  *descptr;
-	int		i;
-	int		dirlen;
-
-	numdirs = trap_FS_GetFileList( "$modlist", "", dirlist, sizeof(dirlist) );
-	dirptr  = dirlist;
-	for( i = 0; i < numdirs; i++ ) {
-		dirlen = strlen( dirptr ) + 1;
-    descptr = dirptr + dirlen;
-		if (Q_stricmp(dirptr, "missionpack") == 0) {
-			return qtrue;
-		}
-	dirptr += dirlen + strlen(descptr) + 1;
-	}
-	return qfalse;
-}
-
 
 /*
 ===============
@@ -412,7 +271,6 @@ and that local cinematics are killed
 */
 void UI_MainMenu( void ) {
 	int		y;
-	qboolean teamArena = qfalse;
 	int		style;
 	float	sizeScale;
 	int		i;
@@ -580,24 +438,6 @@ void UI_MainMenu( void ) {
 	s_main.exit.style		    	= UI_LEFT|UI_SMALLFONT;
 
 	y += MAIN_MENU_VERTICAL_SPACING;
-
-	s_main.modeltype.generic.type			= MTYPE_PTEXT;
-	s_main.modeltype.generic.flags			= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
-	s_main.modeltype.generic.x				= 480;
-	s_main.modeltype.generic.y				= PLAYERMODEL_TEXTHEIGHT + (PROP_HEIGHT*sizeScale);
-	s_main.modeltype.generic.id				= ID_MODELTYPE;
-	s_main.modeltype.generic.callback		= Main_MenuEvent;
-	s_main.modeltype.string					= "";
-	s_main.modeltype.color					= text_color_normal;
-	s_main.modeltype.style					= style|UI_SMALLFONT;
-
-	s_main.model.bitmap.generic.type      = MTYPE_BITMAP;
-	s_main.model.bitmap.generic.flags     = QMF_INACTIVE;
-	s_main.model.bitmap.generic.ownerdraw = Main_DrawPlayer;
-	s_main.model.bitmap.generic.x	        = PLAYERMODEL_X;
-	s_main.model.bitmap.generic.y	        = PLAYERMODEL_Y;
-	s_main.model.bitmap.width	            = PLAYERMODEL_WIDTH;
-	s_main.model.bitmap.height            = PLAYERMODEL_HEIGHT;
 	
 	if(cl_language.integer == 0){
     s_main.singleplayer.string			= "Start New Game";
@@ -701,11 +541,6 @@ void UI_MainMenu( void ) {
 	Menu_AddItem( &s_main.menu,	&s_main.exit );
 	Menu_AddItem( &s_main.menu,	&s_main.name );
 	Menu_AddItem( &s_main.menu, &s_main.modlist );
-	//Menu_AddItem( &s_main.menu,	&s_main.modeltype );
-	//Menu_AddItem( &s_main.menu,	&s_main.model.bitmap);
-
-	// prepare the player model
-	//UIE_PlayerInfo_InitModel(&s_main.model);
 
 	trap_Key_SetCatcher( KEYCATCH_UI );
 	uis.menusp = 0;
