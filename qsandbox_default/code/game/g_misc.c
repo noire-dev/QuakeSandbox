@@ -1056,8 +1056,8 @@ void setModel(gentity_t *ent, char *modelName) {
 	if (len >= 4 && !Q_stricmp(ent->model + len - 4, ".bsp")) {
 		Com_Printf("BSP Model load: '%s'\n", ent->model);
 		if(FS_FileExists(ent->model)){
-	    	trap_SetBrushModel(ent, ent->model);
-			ent->s.modelindex2 = G_ModelIndex(modelName);
+	    	//trap_SetBrushModel(ent, ent->model);
+			//ent->s.modelindex2 = G_ModelIndex(modelName);
 		}
 	}
 }
