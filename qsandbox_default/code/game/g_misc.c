@@ -1053,12 +1053,21 @@ void setModel(gentity_t *ent, char *modelName) {
         memset(ent->model + len - 3, 0, 4); // Удаляем остатки
     }
 
-	if (len >= 4 && !Q_stricmp(ent->model + len - 4, ".bsp")) {
-		Com_Printf("BSP Model load: '%s'\n", ent->model);
-		if(FS_FileExists(ent->model)){
-	    	//trap_SetBrushModel(ent, ent->model);
-			//ent->s.modelindex2 = G_ModelIndex(modelName);
-		}
+    if (len >= 4 && !Q_stricmp(ent->model + len - 4, ".mdr")) {
+        Com_Printf("MDR Model load: '%s'\n", ent->model);
+        ent->model[len - 4] = '\0'; // Убираем расширение
+        memset(ent->model + len - 3, 0, 4); // Удаляем остатки
+    }
+
+    if (len >= 4 && !Q_stricmp(ent->model + len - 4, ".iqm")) {
+        Com_Printf("IQM Model load: '%s'\n", ent->model);
+        ent->model[len - 4] = '\0'; // Убираем расширение
+        memset(ent->model + len - 3, 0, 4); // Удаляем остатки
+    }
+
+	if(FS_FileExists(va("%s.bsp", ent->model))){		//Проверка модели коллизии
+		trap_SetBrushModel(ent, va("%s.bsp", ent->model));	//Загружаем если есть
+		ent->s.modelindex2 = G_ModelIndex(modelName);	//Коллизия созраняется в первый слот а модель теперь в втором слоте
 	}
 }
 
@@ -1455,6 +1464,8 @@ void G_BounceProp( gentity_t *ent, trace_t *trace ) {
 	if ( trace->plane.normal[2] > 0.2 && VectorLength( ent->s.pos.trDelta ) < 40 ) {
         ent->s.apos.trBase[0] = 0;
         ent->s.apos.trBase[2] = 0;
+        ent->r.currentAngles[0] = 0;
+        ent->r.currentAngles[2] = 0;
         G_DisablePropPhysics(ent, trace->endpos);
 		return;
 	}
@@ -1622,6 +1633,9 @@ void G_RunProp(gentity_t *ent) {
     // Save rotate
     VectorCopy(ent->s.apos.trBase, ent->s.angles);
 	VectorCopy(ent->s.apos.trBase, ent->r.currentAngles);
+	if(ent->s.modelindex2){
+		ent->r.currentAngles[1] += 90;	//if brush model, rotate bsp model
+	}
 
     // Link the entity back into the world
     trap_LinkEntity(ent);

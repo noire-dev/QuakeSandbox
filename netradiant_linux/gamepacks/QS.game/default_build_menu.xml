@@ -87,15 +87,6 @@ build commands
 <command>[q3map2] -light -novertex -fast -fastgrid -floodlight -sunonly -brightness 0.4 "[MapFile]"</command>
 </build>
 <separator />
-<build name="Debug: Analyze">
-<command>[q3map2] -analyze "[BspFile]"</command>
-<command>PAUSE</command>
-</build>
-<build name="Debug: Info">
-<command>[q3map2] -info "[BspFile]"</command>
-<command>PAUSE</command>
-</build>
-<separator />
 <build name="Edit: Update entities">
 <command>[q3map2] -onlyents "[MapFile]"</command>
 </build>
@@ -105,15 +96,13 @@ build commands
 <separator />
 <build name="Bots: Optimized">
 <command>[mbspc] -threads 8 -forcesidesvisible -optimize -bsp2aas &quot;[BspFile]&quot;</command>
-<command>PAUSE</command>
+</build>
+<build name="Coll: Collision model">
+<command>[q3map2] -meta "[MapFile]"</command>
 </build>
 <separator />
 <build name="Make: Game archive">
 <command>[q3map2] -pk3 -png "[BspFile]"</command>
-<command>PAUSE</command>
-</build>
-<build name="Make: Json">
-<command>[q3map2] -json "[BspFile]"</command>
 </build>
 <separator />
 <build name="Convert: ASE">

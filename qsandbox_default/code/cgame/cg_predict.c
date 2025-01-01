@@ -125,7 +125,7 @@ static void CG_ClipMoveToEntities ( const vec3_t start, const vec3_t mins, const
 		trap_CM_TransformedBoxTrace ( &trace, start, end,
 			mins, maxs, cmodel,  mask, origin, angles);
 
-		if (ent->scales[0] != 1.00 || ent->scales[1] != 1.00 || ent->scales[2] != 1.00){
+		if (ent->generic3){
 			continue;
 		}
 
