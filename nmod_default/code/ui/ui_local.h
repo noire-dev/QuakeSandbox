@@ -72,8 +72,7 @@ typedef void (*voidfunc_f)(void);
 #define UIE_LOGO_NAME "menu/nmod_logo"
 
 #define UIE_LOGO_X 570
-#define UIE_LOGO_Y 400
-
+#define UIE_LOGO_Y 390
 
 //
 // ui_main.c
@@ -931,6 +930,7 @@ typedef struct {
 	qboolean			demoversion;
 	qboolean			firstdraw;
 	qboolean			onmap;
+	qboolean			addonsdraw;
 } uiStatic_t;
 
 extern void			UI_Init( void );

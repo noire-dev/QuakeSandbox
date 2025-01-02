@@ -2101,7 +2101,7 @@ static void PlayerModel_MenuInit( void )
 	s_playermodel.logo.generic.x			= UIE_LOGO_X;
 	s_playermodel.logo.generic.y			= UIE_LOGO_Y;
 	s_playermodel.logo.width				= 64;
-	s_playermodel.logo.height				= 16;
+	s_playermodel.logo.height				= 22;
 	s_playermodel.logo.focuspic 			= UIE_LOGO_NAME;
 	s_playermodel.logo.focuscolor 			= color_translucent;
 #endif

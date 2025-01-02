@@ -86,7 +86,7 @@ CG_ClipMoveToEntities
 ====================
 */
 static void CG_ClipMoveToEntities ( const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-							int skipNumber, int mask, trace_t *tr ) {
+							int skipNumber, int mask, trace_t *tr, qboolean skip ) {
 	int			i, x, zd, zu;
 	trace_t		trace;
 	entityState_t	*ent;
@@ -128,7 +128,11 @@ static void CG_ClipMoveToEntities ( const vec3_t start, const vec3_t mins, const
 		trap_CM_TransformedBoxTrace ( &trace, start, end,
 			mins, maxs, cmodel,  mask, origin, angles);
 
-		if (ent->generic3){
+		if(skip && ent->generic3){
+			continue;
+		}
+
+		if(!(ent->scales[0] == ent->scales[1] == ent->scales[2])){
 			continue;
 		}
 
@@ -156,7 +160,19 @@ void	CG_Trace( trace_t *result, const vec3_t start, const vec3_t mins, const vec
 	trap_CM_BoxTrace ( &t, start, end, mins, maxs, 0, mask);
 	t.entityNum = t.fraction != 1.0 ? ENTITYNUM_WORLD : ENTITYNUM_NONE;
 	// check all other solid models
-	CG_ClipMoveToEntities (start, mins, maxs, end, skipNumber, mask, &t);
+	CG_ClipMoveToEntities (start, mins, maxs, end, skipNumber, mask, &t, qfalse);
+
+	*result = t;
+}
+
+void	CG_ST_Trace( trace_t *result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, 
+					 int skipNumber, int mask ) {
+	trace_t	t;
+
+	trap_CM_BoxTrace ( &t, start, end, mins, maxs, 0, mask);
+	t.entityNum = t.fraction != 1.0 ? ENTITYNUM_WORLD : ENTITYNUM_NONE;
+	// check all other solid models
+	CG_ClipMoveToEntities (start, mins, maxs, end, skipNumber, mask, &t, qtrue);
 
 	*result = t;
 }
@@ -612,7 +628,7 @@ void CG_PredictPlayerState( void ) {
 
 	// prepare for pmove
 	cg_pmove.ps = &cg.predictedPlayerState;
-	cg_pmove.trace = CG_Trace;
+	cg_pmove.trace = CG_ST_Trace;
 	cg_pmove.pointcontents = CG_PointContents;
 	if ( cg_pmove.ps->pm_type == PM_DEAD ) {
 		cg_pmove.tracemask = MASK_PLAYERSOLID & ~CONTENTS_BODY;

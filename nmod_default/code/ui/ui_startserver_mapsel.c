@@ -1745,7 +1745,7 @@ static void MapSelect_MenuInit(int gametype, int index, const char* mapname)
 	s_mapselect.logo.generic.x			= UIE_LOGO_X;
 	s_mapselect.logo.generic.y			= UIE_LOGO_Y;
 	s_mapselect.logo.width				= 64;
-	s_mapselect.logo.height				= 16;
+	s_mapselect.logo.height				= 22;
 	s_mapselect.logo.focuspic 			= UIE_LOGO_NAME;
 	s_mapselect.logo.focuscolor 			= color_translucent;
 #endif

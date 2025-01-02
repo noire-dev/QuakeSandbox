@@ -45,15 +45,11 @@ MAIN MENU
 #define ID_GAMEMODEP			18
 #define ID_LINK					19
 #define ID_MODLOADER			20
-#define ID_BUTTON1				21
-#define ID_BUTTON2				22
-#define ID_BUTTON3				23
-#define ID_MODLIST				24
+#define ID_TOGGLEADDONS			21
+#define ID_MODLIST				22
 
 #define LINK				"menu/officialsite"
-#define M_BUTTON1			"menu/button1"
-#define M_BUTTON2			"menu/button2"
-#define M_BUTTON3			"menu/button3"
+#define M_ADDONSTOGGLE		"menu/addonstoggle"
 #define MAIN_MENU_VERTICAL_SPACING		34
 
 #define MAIN_MENU_CENTER 200
@@ -66,9 +62,7 @@ typedef struct {
 	menutext_s		gamemodep;
     menubitmap_s	modloader;
 	menubitmap_s	link;
-	menubitmap_s	button1;
-	menubitmap_s	button2;
-	menubitmap_s	button3;
+	menubitmap_s	addonstoggle;
 	menutext_s		singleplayer;
 	menutext_s      skirmish;
 	menutext_s		multiplayer;
@@ -157,7 +151,7 @@ void Main_MenuEvent (void* ptr, int event) {
 	switch( ((menucommon_s*)ptr)->id ) {
 	case ID_SINGLEPLAYER:
         if(ui_singlemode.integer){
-            trap_Cmd_ExecuteText( EXEC_APPEND, "ns_openscript_ui new_game.ns;" );
+            trap_Cmd_ExecuteText( EXEC_APPEND, "ns_openscript_ui new_game.ns \n" );
         }
 		UI_StartServerMenu( qtrue );
 		break;
@@ -213,24 +207,16 @@ void Main_MenuEvent (void* ptr, int event) {
 	case ID_EXIT:
 		UI_CreditMenu(0);
 		break;
-	case ID_BUTTON1:
-		trap_Cmd_ExecuteText( EXEC_APPEND, "toggle r_fullscreen;" );
-		trap_Cmd_ExecuteText( EXEC_APPEND, "set vid_xpos 0;" );
-		trap_Cmd_ExecuteText( EXEC_APPEND, "set vid_ypos 0;" );
-		trap_Cmd_ExecuteText( EXEC_APPEND, "vid_restart;" );
-		trap_Cmd_ExecuteText( EXEC_APPEND, "minimize;" );
-		break;
-	case ID_BUTTON2:
-		trap_Cmd_ExecuteText( EXEC_APPEND, "toggle r_fullscreen;" );
-		trap_Cmd_ExecuteText( EXEC_APPEND, "set vid_xpos 0;" );
-		trap_Cmd_ExecuteText( EXEC_APPEND, "set vid_ypos 0;" );
-		trap_Cmd_ExecuteText( EXEC_APPEND, "vid_restart;" );
-		break;
-	case ID_BUTTON3:
-		trap_Cmd_ExecuteText( EXEC_APPEND, "quit;" );
+	case ID_TOGGLEADDONS:
+	if(!uis.addonsdraw){
+		uis.addonsdraw = qtrue;
+	} else {
+		uis.addonsdraw = qfalse;
+	}
+		UI_MainMenu();
 		break;
 	case ID_MODLIST:
-		trap_Cmd_ExecuteText( EXEC_INSERT, va("nsgui %s.ns\n", s_main.modlist.itemnames[s_main.modlist.curvalue]) );
+		trap_Cmd_ExecuteText( EXEC_INSERT, va("nsgui %s.ns \n", s_main.modlist.itemnames[s_main.modlist.curvalue]) );
 		break;
 	}
 }
@@ -244,9 +230,7 @@ MainMenu_Cache
 void MainMenu_Cache( void ) {
 	trap_R_RegisterShaderNoMip( MODLOADER );
 	trap_R_RegisterShaderNoMip( LINK );
-	trap_R_RegisterShaderNoMip( M_BUTTON1 );
-	trap_R_RegisterShaderNoMip( M_BUTTON2 );
-	trap_R_RegisterShaderNoMip( M_BUTTON3 );
+	trap_R_RegisterShaderNoMip( M_ADDONSTOGGLE );
 }
 
 sfxHandle_t ErrorMessage_Key(int key)
@@ -274,11 +258,13 @@ static void Main_MenuDraw( void ) {
 	}
 	else
 	{
+	   if(uis.addonsdraw){
 	   UI_DrawRoundedRect(317+uis.wideoffset, 30, 1000000, 20*SMALLCHAR_HEIGHT*1.25, 10, modlistcolor);
+	   }
 	   // standard menu drawing
 	   Menu_Draw( &s_main.menu );
    }
-	UI_DrawString( 600+uis.wideoffset, 465, "Noire's Mod v1.0", UI_RIGHT|UI_SMALLFONT, color );
+	UI_DrawString( 218 - uis.wideoffset, 108, "v1.0", UI_RIGHT|UI_SMALLFONT, color );
 }
 
 /*
@@ -337,8 +323,8 @@ void UI_MainMenu( void ) {
 	s_main.modloader.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_main.modloader.generic.id			= ID_MODLOADER;
 	s_main.modloader.generic.callback	= Main_MenuEvent;
-	s_main.modloader.generic.x			= 397 + uis.wideoffset;
-	s_main.modloader.generic.y			= 333;
+	s_main.modloader.generic.x			= 390 + 256*0.62 + 5 + uis.wideoffset;
+	s_main.modloader.generic.y			= 450;
 	s_main.modloader.width				= 256*0.62;
 	s_main.modloader.height				= 38*0.62;
 	
@@ -346,37 +332,19 @@ void UI_MainMenu( void ) {
 	s_main.link.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_main.link.generic.id			= ID_LINK;
 	s_main.link.generic.callback	= Main_MenuEvent;
-	s_main.link.generic.x			= 397 + 256*0.62 + 5 + uis.wideoffset;
-	s_main.link.generic.y			= 333;
+	s_main.link.generic.x			= 390 + uis.wideoffset;
+	s_main.link.generic.y			= 450;
 	s_main.link.width				= 256*0.62;
 	s_main.link.height				= 38*0.62;
 	
-	s_main.button1.generic.type			= MTYPE_BITMAP;
-	s_main.button1.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
-	s_main.button1.generic.id			= ID_BUTTON1;
-	s_main.button1.generic.callback		= Main_MenuEvent;
-	s_main.button1.generic.x			= 577 + uis.wideoffset;
-	s_main.button1.generic.y			= 5;
-	s_main.button1.width				= 24;
-	s_main.button1.height				= 12;
-	
-	s_main.button2.generic.type			= MTYPE_BITMAP;
-	s_main.button2.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
-	s_main.button2.generic.id			= ID_BUTTON2;
-	s_main.button2.generic.callback		= Main_MenuEvent;
-	s_main.button2.generic.x			= 601 + uis.wideoffset;
-	s_main.button2.generic.y			= 5;
-	s_main.button2.width				= 24;
-	s_main.button2.height				= 12;
-	
-	s_main.button3.generic.type			= MTYPE_BITMAP;
-	s_main.button3.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
-	s_main.button3.generic.id			= ID_BUTTON3;
-	s_main.button3.generic.callback		= Main_MenuEvent;
-	s_main.button3.generic.x			= 625 + uis.wideoffset;
-	s_main.button3.generic.y			= 5;
-	s_main.button3.width				= 24;
-	s_main.button3.height				= 12;
+	s_main.addonstoggle.generic.type			= MTYPE_BITMAP;
+	s_main.addonstoggle.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_main.addonstoggle.generic.id			= ID_TOGGLEADDONS;
+	s_main.addonstoggle.generic.callback		= Main_MenuEvent;
+	s_main.addonstoggle.generic.x			= 625 + uis.wideoffset;
+	s_main.addonstoggle.generic.y			= 2;
+	s_main.addonstoggle.width				= 24;
+	s_main.addonstoggle.height				= 12;
 
 	y = 152;
 	s_main.singleplayer.generic.type		= MTYPE_PTEXT;
@@ -505,12 +473,8 @@ void UI_MainMenu( void ) {
 	s_main.modloader.focuspic			= MODLOADER;
 	s_main.link.generic.name		= LINK;
 	s_main.link.focuspic			= LINK;	
-	s_main.button1.generic.name		= M_BUTTON1;
-	s_main.button1.focuspic			= M_BUTTON1;
-	s_main.button2.generic.name		= M_BUTTON2;
-	s_main.button2.focuspic			= M_BUTTON2;
-	s_main.button3.generic.name		= M_BUTTON3;
-	s_main.button3.focuspic			= M_BUTTON3;
+	s_main.addonstoggle.generic.name		= M_ADDONSTOGGLE;
+	s_main.addonstoggle.focuspic			= M_ADDONSTOGGLE;
 
 	s_main.modlist.generic.type			= MTYPE_UIOBJECT;
 	s_main.modlist.type					= 5;
@@ -551,9 +515,7 @@ void UI_MainMenu( void ) {
 	Menu_AddItem( &s_main.menu,	&s_main.gamemodep );
 	Menu_AddItem( &s_main.menu,	&s_main.modloader );
 	Menu_AddItem( &s_main.menu,	&s_main.link );
-	Menu_AddItem( &s_main.menu,	&s_main.button1 );
-	Menu_AddItem( &s_main.menu,	&s_main.button2 );
-	Menu_AddItem( &s_main.menu,	&s_main.button3 );
+	Menu_AddItem( &s_main.menu,	&s_main.addonstoggle );
 	Menu_AddItem( &s_main.menu,	&s_main.singleplayer );
 	Menu_AddItem( &s_main.menu,	&s_main.multiplayer );
 	Menu_AddItem( &s_main.menu,	&s_main.setup );
@@ -561,7 +523,9 @@ void UI_MainMenu( void ) {
 	Menu_AddItem( &s_main.menu,	&s_main.mods );
 	Menu_AddItem( &s_main.menu,	&s_main.exit );
 	Menu_AddItem( &s_main.menu,	&s_main.name );
+	if(uis.addonsdraw){
 	Menu_AddItem( &s_main.menu, &s_main.modlist );
+	}
 
 	trap_Key_SetCatcher( KEYCATCH_UI );
 	uis.menusp = 0;

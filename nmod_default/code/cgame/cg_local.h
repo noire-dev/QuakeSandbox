@@ -1816,6 +1816,7 @@ sfxHandle_t	CG_CustomSound( int clientNum, const char *soundName );
 void CG_BuildSolidList( void );
 int	CG_PointContents( const vec3_t point, int passEntityNum );
 void CG_Trace( trace_t *result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int skipNumber, int mask );
+void CG_ST_Trace( trace_t *result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int skipNumber, int mask );
 void CG_PredictPlayerState( void );
 void CG_ReloadPlayers( void );
 

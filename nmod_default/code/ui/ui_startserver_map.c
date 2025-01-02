@@ -1836,7 +1836,7 @@ void StartServer_MapPage_MenuInit(void)
 	s_mapcontrols.logo.generic.x			= UIE_LOGO_X;
 	s_mapcontrols.logo.generic.y			= UIE_LOGO_Y;
 	s_mapcontrols.logo.width				= 64;
-	s_mapcontrols.logo.height				= 16;
+	s_mapcontrols.logo.height				= 22;
 	s_mapcontrols.logo.focuspic 			= UIE_LOGO_NAME;
 	s_mapcontrols.logo.focuscolor 			= color_translucent;
 #endif
