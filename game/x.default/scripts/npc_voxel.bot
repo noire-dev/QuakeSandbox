@@ -1,0 +1,135 @@
+{
+name		npc1
+model		voxel/1
+aifile	bots/npc_c.c
+}
+{
+name		npc2
+model		voxel/2
+aifile	bots/npc_c.c
+}
+{
+name		npc3
+model		voxel/3
+aifile	bots/npc_c.c
+}
+{
+name		npc4
+model		voxel/4
+aifile	bots/npc_c.c
+}
+{
+name		npc5
+model		voxel/5
+aifile	bots/npc_c.c
+}
+{
+name		npc6
+model		voxel/6
+aifile	bots/npc_c.c
+}
+{
+name		npc7
+model		voxel/7
+aifile	bots/npc_c.c
+}
+{
+name		npc8
+model		voxel/8
+aifile	bots/npc_c.c
+}
+{
+name		npc9
+model		voxel/9
+aifile	bots/npc_c.c
+}
+{
+name		npc10
+model		voxel/10
+aifile	bots/npc_c.c
+}
+{
+name		npc11
+model		voxel/11
+aifile	bots/npc_c.c
+}
+{
+name		npc12
+model		voxel/12
+aifile	bots/npc_c.c
+}
+{
+name		npc13
+model		voxel/13
+aifile	bots/npc_c.c
+}
+{
+name		npc14
+model		voxel/14
+aifile	bots/npc_c.c
+}
+{
+name		npc15
+model		voxel/15
+aifile	bots/npc_c.c
+}
+{
+name		npc16
+model		voxel/16
+aifile	bots/npc_c.c
+}
+{
+name		npc17
+model		voxel/17
+aifile	bots/npc_c.c
+}
+{
+name		npc18
+model		voxel/18
+aifile	bots/npc_c.c
+}
+{
+name		npc19
+model		voxel/19
+aifile	bots/npc_c.c
+}
+{
+name		npc20
+model		voxel/20
+aifile	bots/npc_c.c
+}
+{
+name		npc21
+model		voxel/21
+aifile	bots/npc_c.c
+}
+{
+name		npc22
+model		voxel/22
+aifile	bots/npc_c.c
+}
+{
+name		npc23
+model		voxel/23
+aifile	bots/npc_c.c
+}
+{
+name		npc24
+model		voxel/24
+aifile	bots/npc_c.c
+}
+{
+name		npc25
+model		voxel/25
+aifile	bots/npc_c.c
+}
+{
+name		npc26
+model		voxel/26
+aifile	bots/npc_c.c
+}
+{
+name		npc27
+model		voxel/27
+aifile	bots/npc_c.c
+}

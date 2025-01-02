@@ -1,6 +1,0 @@
-// Nextbots model
-{
-name		nb_skelebot
-model		nextbot/1
-aifile	bots/nextbots_c.c
-}
