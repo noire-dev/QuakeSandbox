@@ -88,7 +88,13 @@ static void UI_saveMapEdMenu_SaveEvent( void *ptr, int event ) {
 		return;
 	}
 	COM_StripExtension(saveMapEd.savename.field.buffer, configname, sizeof(configname));
-	trap_Cmd_ExecuteText( EXEC_APPEND, va( "savemap maps/%s.add\n", configname ) );
+	trap_Cmd_ExecuteText( EXEC_APPEND, va( "savemap maps/%s.add \n", configname ) );
+	UI_ForceMenuOff();
+	trap_Cmd_ExecuteText( EXEC_APPEND, "set cg_draw2D 0 \n" );
+	trap_Cmd_ExecuteText( EXEC_APPEND, "wait 5 \n" );
+	trap_Cmd_ExecuteText( EXEC_APPEND, va( "screenshotJPEG maps/%s \n", configname ) );
+	trap_Cmd_ExecuteText( EXEC_APPEND, "wait 5 \n" );
+	trap_Cmd_ExecuteText( EXEC_APPEND, "set cg_draw2D 1 \n" );
 	UI_PopMenu();
 }
 

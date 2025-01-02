@@ -9,7 +9,7 @@
   engine_win32="nmod.x64.exe"
   engine_linux="nmod.x64"
   engine_macos="nmod.app"
-  prefix=".nmod"
+  prefix=".noiresmod"
   basegame="game"
   basegamename="Noire's Mod"
   unknowngamename="Noire's Mod modification"

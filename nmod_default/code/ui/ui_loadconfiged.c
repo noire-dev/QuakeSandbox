@@ -61,7 +61,7 @@ typedef struct {
 
 	menutext_s		banner;
 
-	menulist_s		list;
+	menuobject_s	list;
 
 	menubitmap_s	arrows;
 	menubitmap_s	left;
@@ -99,11 +99,11 @@ static void loadMapEd_MenuEvent( void *ptr, int event ) {
 		break;
 
 	case ID_LEFT:
-		ScrollList_Key( &s_loadMapEd.list, K_LEFTARROW );
+		UIObject_Key( &s_loadMapEd.list, K_LEFTARROW );
 		break;
 
 	case ID_RIGHT:
-		ScrollList_Key( &s_loadMapEd.list, K_RIGHTARROW );
+		UIObject_Key( &s_loadMapEd.list, K_RIGHTARROW );
 		break;
 	}
 }
@@ -197,17 +197,21 @@ static void loadMapEd_MenuInit( void ) {
 	s_loadMapEd.go.focuspic			= ART_FIGHT1;
 
 	// scan for configs
-	s_loadMapEd.list.generic.type		= MTYPE_SCROLLLIST;
+	s_loadMapEd.list.generic.type			= MTYPE_UIOBJECT;
+	s_loadMapEd.list.type					= 5;
+	s_loadMapEd.list.styles					= 2;
+	s_loadMapEd.list.fontsize				= 1;
+	s_loadMapEd.list.string					= "screenshots/maps/";
 	s_loadMapEd.list.generic.flags	= QMF_PULSEIFFOCUS;
 	s_loadMapEd.list.generic.callback	= loadMapEd_MenuEvent;
 	s_loadMapEd.list.generic.id		= ID_LIST;
-	s_loadMapEd.list.generic.x		= 118;
-	s_loadMapEd.list.generic.y		= 130;
-	s_loadMapEd.list.width			= 16;
-	s_loadMapEd.list.height			= 14;
+	s_loadMapEd.list.generic.x		= 20;
+	s_loadMapEd.list.generic.y		= 50;
+	s_loadMapEd.list.width			= 15;
+	s_loadMapEd.list.height			= 3;
 	s_loadMapEd.list.numitems			= trap_FS_GetFileList( "maps", "add", s_loadMapEd.names, 524288 );
 	s_loadMapEd.list.itemnames		= (const char **)s_loadMapEd.configlist;
-	s_loadMapEd.list.columns			= 1;
+	s_loadMapEd.list.columns			= 5;
 
 	if (!s_loadMapEd.list.numitems) {
 		if(cl_language.integer == 0){

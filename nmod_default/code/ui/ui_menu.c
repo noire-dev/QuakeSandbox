@@ -43,14 +43,14 @@ MAIN MENU
 #define ID_SKIRMISH             16
 #define ID_PLAYERNAME			17
 #define ID_GAMEMODEP			18
-#define ID_MODDB				19
+#define ID_LINK					19
 #define ID_MODLOADER			20
 #define ID_BUTTON1				21
 #define ID_BUTTON2				22
 #define ID_BUTTON3				23
 #define ID_MODLIST				24
 
-#define MODDB				"menu/moddb"
+#define LINK				"menu/officialsite"
 #define M_BUTTON1			"menu/button1"
 #define M_BUTTON2			"menu/button2"
 #define M_BUTTON3			"menu/button3"
@@ -65,7 +65,7 @@ typedef struct {
 
 	menutext_s		gamemodep;
     menubitmap_s	modloader;
-	menubitmap_s	moddb;
+	menubitmap_s	link;
 	menubitmap_s	button1;
 	menubitmap_s	button2;
 	menubitmap_s	button3;
@@ -198,15 +198,15 @@ void Main_MenuEvent (void* ptr, int event) {
 		StartServer_ServerPage_Mods();
 		break;
 		
-	case ID_MODDB:
+	case ID_LINK:
 	if(trap_Cvar_VariableValue("os_windows")){
-		trap_System("start https://www.moddb.com/games/nmod");
+		trap_System("start https://noiremod.neocities.org/");
 	}
 	if(trap_Cvar_VariableValue("os_linux")){
-		trap_System("xdg-open https://www.moddb.com/games/nmod");
+		trap_System("xdg-open https://noiremod.neocities.org/");
 	}
 	if(trap_Cvar_VariableValue("os_macos")){
-		trap_System("open https://www.moddb.com/games/nmod");
+		trap_System("open https://noiremod.neocities.org/");
 	}
 		break;
 
@@ -243,7 +243,7 @@ MainMenu_Cache
 */
 void MainMenu_Cache( void ) {
 	trap_R_RegisterShaderNoMip( MODLOADER );
-	trap_R_RegisterShaderNoMip( MODDB );
+	trap_R_RegisterShaderNoMip( LINK );
 	trap_R_RegisterShaderNoMip( M_BUTTON1 );
 	trap_R_RegisterShaderNoMip( M_BUTTON2 );
 	trap_R_RegisterShaderNoMip( M_BUTTON3 );
@@ -337,19 +337,19 @@ void UI_MainMenu( void ) {
 	s_main.modloader.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_main.modloader.generic.id			= ID_MODLOADER;
 	s_main.modloader.generic.callback	= Main_MenuEvent;
-	s_main.modloader.generic.x			= 440 + uis.wideoffset;
-	s_main.modloader.generic.y			= 365;
-	s_main.modloader.width				= 256*0.90;
-	s_main.modloader.height				= 38*0.80;
+	s_main.modloader.generic.x			= 397 + uis.wideoffset;
+	s_main.modloader.generic.y			= 333;
+	s_main.modloader.width				= 256*0.62;
+	s_main.modloader.height				= 38*0.62;
 	
-	s_main.moddb.generic.type		= MTYPE_BITMAP;
-	s_main.moddb.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
-	s_main.moddb.generic.id			= ID_MODDB;
-	s_main.moddb.generic.callback	= Main_MenuEvent;
-	s_main.moddb.generic.x			= 460 + uis.wideoffset;
-	s_main.moddb.generic.y			= 365 + 38*0.80 + 15;
-	s_main.moddb.width				= 256*0.90;
-	s_main.moddb.height				= 38*0.80;
+	s_main.link.generic.type		= MTYPE_BITMAP;
+	s_main.link.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_main.link.generic.id			= ID_LINK;
+	s_main.link.generic.callback	= Main_MenuEvent;
+	s_main.link.generic.x			= 397 + 256*0.62 + 5 + uis.wideoffset;
+	s_main.link.generic.y			= 333;
+	s_main.link.width				= 256*0.62;
+	s_main.link.height				= 38*0.62;
 	
 	s_main.button1.generic.type			= MTYPE_BITMAP;
 	s_main.button1.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
@@ -503,8 +503,8 @@ void UI_MainMenu( void ) {
 
 	s_main.modloader.generic.name		= MODLOADER;
 	s_main.modloader.focuspic			= MODLOADER;
-	s_main.moddb.generic.name		= MODDB;
-	s_main.moddb.focuspic			= MODDB;
+	s_main.link.generic.name		= LINK;
+	s_main.link.focuspic			= LINK;	
 	s_main.button1.generic.name		= M_BUTTON1;
 	s_main.button1.focuspic			= M_BUTTON1;
 	s_main.button2.generic.name		= M_BUTTON2;
@@ -550,7 +550,7 @@ void UI_MainMenu( void ) {
 
 	Menu_AddItem( &s_main.menu,	&s_main.gamemodep );
 	Menu_AddItem( &s_main.menu,	&s_main.modloader );
-	Menu_AddItem( &s_main.menu,	&s_main.moddb );
+	Menu_AddItem( &s_main.menu,	&s_main.link );
 	Menu_AddItem( &s_main.menu,	&s_main.button1 );
 	Menu_AddItem( &s_main.menu,	&s_main.button2 );
 	Menu_AddItem( &s_main.menu,	&s_main.button3 );
